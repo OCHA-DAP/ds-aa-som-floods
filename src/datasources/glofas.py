@@ -14,6 +14,7 @@ the org's pa-aa-toolbox — rather than blocking on one request at a time.
 """
 
 import json
+import os
 import time
 import zipfile
 from pathlib import Path
@@ -26,7 +27,12 @@ from src.constants import STATIONS as _REGISTRY
 
 EWDS_URL = "https://ewds.climate.copernicus.eu/api"
 
-DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "glofas"
+# SOM_DATA_DIR overrides the repo-local data root on ephemeral runners
+# (Databricks pulls the code via git_source into a read-only checkout)
+DATA_DIR = (
+    Path(os.getenv("SOM_DATA_DIR") or Path(__file__).resolve().parents[2] / "data")
+    / "glofas"
+)
 
 
 def _snap(v):
@@ -83,6 +89,10 @@ def _station_area(station_key, buffer=0.1):
 
 
 def _key():
+    # Databricks Job Compute injects CDSAPI_KEY from the dsci secret scope
+    key = os.getenv("CDSAPI_KEY")
+    if key:
+        return key
     rc = Path.home() / ".cdsapirc"
     lines = dict(
         line.strip().split(": ", 1) for line in rc.read_text().splitlines() if ":" in line
@@ -262,18 +272,23 @@ def _plan_chunks(coll, request, out_prefix):
     return [(request, out_prefix)]
 
 
-def _submit_rolling(client, jobs, log_prefix=""):
+def _submit_rolling(client, jobs, log_prefix="", skip=None, on_downloaded=None):
     """Run jobs through EWDS with a rolling window of in-flight requests.
 
     jobs: list of (collection_id, request, out_path). Existing out_paths are
     skipped, so this is resumable. Keeping only MAX_IN_FLIGHT submitted at a
     time avoids flooding the shared per-user queue while still overlapping
     enough requests to saturate the processing slots.
+
+    skip: optional predicate on out_path marking a chunk already done
+    elsewhere (e.g. present in blob when local disk is ephemeral).
+    on_downloaded: optional callback on out_path after each finished chunk
+    (e.g. upload to blob as the run goes, so partial runs persist).
     """
     pending = []
     for collection_id, request, out_path in jobs:
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        if out_path.exists():
+        if out_path.exists() or (skip and skip(out_path)):
             print(f"{log_prefix}{out_path.stem}: already downloaded, skipping")
             continue
         pending.append((collection_id, request, out_path))
@@ -301,6 +316,8 @@ def _submit_rolling(client, jobs, log_prefix=""):
                 del in_flight[out_path]
                 done += 1
                 print(f"{log_prefix}{out_path.stem}: downloaded [{done}/{total}]")
+                if on_downloaded:
+                    on_downloaded(out_path)
             elif status == "failed":
                 print(f"{log_prefix}{out_path.stem}: FAILED - {remote.get_receipt()}")
                 del in_flight[out_path]
@@ -347,7 +364,7 @@ REFORECAST_CYCLE = {"year": ["2022"], "month": ["10"], "day": ["01"]}
 
 
 def download_reforecast_box(years=None, months=None, leadtime_days=(1, 2, 3, 4, 5, 6, 7),
-                            dir_suffix=""):
+                            dir_suffix="", blob_sync=False):
     """Download GloFAS v4.2 reforecast for the all-stations box at daily leads.
 
     Defaults: 2003-2023, Gu + Deyr months, leads 1-7 days, control plus
@@ -358,12 +375,43 @@ def download_reforecast_box(years=None, months=None, leadtime_days=(1, 2, 3, 4, 
     dir_suffix separates lead-band downloads (the readiness band 8-12 d
     lands in reforecast_som_ext_lead8_12/).
 
+    blob_sync=True uploads each chunk to blob as it finishes and skips
+    chunks already in blob — required on ephemeral runners (Databricks),
+    where nothing on local disk survives the run. Blob names mirror the
+    scripts/upload_to_blob.py convention:
+    ds-aa-som-floods/raw/glofas/raw/reforecast_som_ext{dir_suffix}/<file>.
+
     API note (2026-08-06): the old system_version=4_0 + hday=ALL_DAYS scheme
     is rejected since the EWDS restructure; see _reforecast_valid_days.
     """
     years = list(years or REFORECAST_YEARS)
     months = list(months or FLOOD_SEASON_MONTHS)
     raw_dir = DATA_DIR / "raw" / f"reforecast_som_ext{dir_suffix}"
+
+    skip = on_downloaded = None
+    if blob_sync:
+        import ocha_stratus as stratus
+
+        from src.constants import BLOB_STAGE
+
+        blob_prefix = f"ds-aa-som-floods/raw/glofas/raw/reforecast_som_ext{dir_suffix}/"
+        existing = set(
+            stratus.list_container_blobs(name_starts_with=blob_prefix, stage=BLOB_STAGE)
+        )
+        print(f"[reforecast/som-box] blob sync on: {len(existing)} chunks already in blob")
+
+        def skip(out_path):
+            return blob_prefix + out_path.name in existing
+
+        def on_downloaded(out_path):
+            stratus.upload_blob_data(
+                out_path.read_bytes(),
+                blob_prefix + out_path.name,
+                stage=BLOB_STAGE,
+                content_type="application/zip",
+            )
+            out_path.unlink()  # keep the ephemeral disk from filling
+            print(f"[reforecast/som-box] {out_path.name}: uploaded to blob")
 
     client = _client(wait_until_complete=False)
     coll = client.client.get_collection("cems-glofas-reforecast")
@@ -391,7 +439,10 @@ def download_reforecast_box(years=None, months=None, leadtime_days=(1, 2, 3, 4, 
             for creq, prefix in chunks:
                 jobs.append(("cems-glofas-reforecast", creq, raw_dir / f"{prefix}.zip"))
     print(f"[reforecast/som-box] {len(jobs)} chunks planned across {len(years)} years")
-    return _submit_rolling(client, jobs, log_prefix="[reforecast/som-box] ")
+    return _submit_rolling(
+        client, jobs, log_prefix="[reforecast/som-box] ",
+        skip=skip, on_downloaded=on_downloaded,
+    )
 def download_reforecast_months(station_key, year_months):
     """Download GloFAS reforecast for one station, for specific (year, month) pairs.
 
