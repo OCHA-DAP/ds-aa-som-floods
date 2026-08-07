@@ -1,0 +1,17 @@
+*.egg-info/
+/src/__pycache__
+.env
+src/*/__pycache__
+.venv/
+_book/
+.quarto/
+_freeze/
+.claude/
+
+# Data files — keep folder structure and scripts only
+data/*
+!data/.gitkeep
+!data/*.py
+
+# Researcher scratch — EDA outputs, throwaway scripts, plot dumps
+artefacts/

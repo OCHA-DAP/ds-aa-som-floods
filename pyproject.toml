@@ -1,0 +1,30 @@
+[project]
+name = "src"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "ipykernel>=6.29.5",
+    "jupyter_black>=0.4.0",
+    "matplotlib>=3.10.3",
+    "netcdf4>=1.7.2",
+    "numpy>=2.2.6",
+    "pandas>=2.2.3",
+    "seaborn>=0.13.2",
+    "xarray>=2025.4.0",
+    "pyarrow>=23.0.1",
+    "python-dotenv>=1.2.2",
+    "nbformat>=5.10.4",
+    "nbclient>=0.10.4",
+    "jupyter-cache>=1.0.1",
+    "ocha-stratus>=0.1.7",
+    "cdsapi>=0.7.7",
+    "cfgrib>=0.9.15.1",
+    "eccodes>=2.47.0",
+]
+
+[tool.black]
+line-length = 79
+
+[tool.isort]
+profile = "black"
+line_length = 79

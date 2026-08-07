@@ -1,0 +1,10 @@
+ipykernel==6.29.5
+jupyter_black==0.4.0
+matplotlib==3.10.3
+netcdf4==1.7.2
+numpy==2.2.6
+pandas==2.2.3
+seaborn==0.13.2
+xarray==2025.4.0
+pyarrow==23.0.1
+python-dotenv==1.2.2
