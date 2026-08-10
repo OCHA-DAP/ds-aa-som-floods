@@ -12,7 +12,7 @@
 #
 # Smoke test (one year, one month):
 #   databricks bundle run download_glofas_reforecast_box -t dev -p DEFAULT \
-#       --python-named-params "start_year=2020,end_year=2020,months=10"
+#       --params "start_year=2020,end_year=2020,months=10"
 
 bundle:
   name: ds-aa-som-floods

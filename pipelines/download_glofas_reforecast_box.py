@@ -17,7 +17,7 @@ Deploy and run on Databricks:
 
 Smoke test (one year, one month — ~15-30 min):
     databricks bundle run download_glofas_reforecast_box -t dev -p DEFAULT \\
-        --python-named-params "start_year=2020,end_year=2020,months=10"
+        --params "start_year=2020,end_year=2020,months=10"
 
 Local run (writes to data/glofas/... unless SOM_DATA_DIR is set; add
 blob_sync=true to mirror the Databricks behaviour):
@@ -30,7 +30,12 @@ import sys
 import tempfile
 from pathlib import Path
 
-repo_root = Path(__file__).resolve().parent.parent
+# spark_python_task exec()s this file, so __file__ is undefined there; the
+# git checkout root is the working directory in that case.
+try:
+    repo_root = Path(__file__).resolve().parent.parent
+except NameError:
+    repo_root = Path.cwd()
 if str(repo_root) not in sys.path:
     sys.path.insert(0, str(repo_root))
 
