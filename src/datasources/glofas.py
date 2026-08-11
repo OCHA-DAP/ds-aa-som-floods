@@ -295,6 +295,7 @@ def _submit_rolling(client, jobs, log_prefix="", skip=None, on_downloaded=None):
 
     total = len(pending)
     done = 0
+    failed = []
     in_flight = {}
     while pending or in_flight:
         while pending and len(in_flight) < MAX_IN_FLIGHT:
@@ -304,6 +305,7 @@ def _submit_rolling(client, jobs, log_prefix="", skip=None, on_downloaded=None):
                 print(f"{log_prefix}{out_path.stem}: submitted ({len(pending)} queued locally)")
             except Exception as e:
                 print(f"{log_prefix}{out_path.stem}: submission FAILED - {e}")
+                failed.append(out_path.stem)
         for out_path, remote in list(in_flight.items()):
             try:
                 remote.update()
@@ -321,8 +323,16 @@ def _submit_rolling(client, jobs, log_prefix="", skip=None, on_downloaded=None):
             elif status == "failed":
                 print(f"{log_prefix}{out_path.stem}: FAILED - {remote.get_receipt()}")
                 del in_flight[out_path]
+                failed.append(out_path.stem)
         if pending or in_flight:
             time.sleep(POLL_INTERVAL_SECONDS)
+    if failed:
+        # Fail loudly AFTER draining the queue: everything downloadable was
+        # downloaded, but a green run must mean a complete one (an EWDS
+        # schema flip mid-run once 400'd 28 chunks behind a 0 exit code).
+        raise RuntimeError(
+            f"{log_prefix}{len(failed)}/{total} chunks failed: {', '.join(failed)}"
+        )
     return done
 
 
@@ -333,30 +343,43 @@ FLOOD_SEASON_MONTHS = ["03", "04", "05", "06", "10", "11", "12"]
 REFORECAST_YEARS = [str(y) for y in range(2003, 2024)]
 
 
-def _reforecast_valid_days():
-    """Valid hday values per (hyear, hmonth) for the global_lisflood reforecast.
+def _reforecast_schema():
+    """Detect the live EWDS reforecast schema; return (base_fields, valid_days).
 
-    EWDS restructured cems-glofas-reforecast (observed 2026-08-06):
-    system_version is gone, the v4.2 reforecast lives under
-    hydrological_model=global_lisflood pinned to the forecast cycle
-    year=2022/month=10/day=01, and hday is strictly validated against the
-    twice-weekly reforecast dates, which vary by month and year.
+    EWDS has flipped cems-glofas-reforecast between two schemas: the
+    2026-08-06 restructure dropped system_version and put the v4.2 set
+    under hydrological_model=global_lisflood pinned to the forecast cycle
+    year=2022/month=10/day=01; on 2026-08-11 it reverted mid-flight to the
+    old system_version=version_4_0 + hydrological_model=lisflood scheme
+    (requests in the other spelling get 400s). Inspect constraints.json and
+    build requests to match whichever is live. Under both schemas hday is
+    strictly validated against the twice-weekly reforecast dates, which
+    vary by month and year — valid_days maps (hyear, hmonth) to them.
     """
     import requests
 
     url = ("https://ewds.climate.copernicus.eu/api/catalogue/v1/"
            "collections/cems-glofas-reforecast/constraints.json")
     blocks = requests.get(url, timeout=60).json()
+    if any("global_lisflood" in b.get("hydrological_model", []) for b in blocks):
+        base = {"hydrological_model": "global_lisflood", **REFORECAST_CYCLE}
+
+        def keep(b):
+            return "global_lisflood" in b.get("hydrological_model", [])
+    else:
+        base = {"system_version": "version_4_0", "hydrological_model": "lisflood"}
+
+        def keep(b):
+            return "version_4_0" in b.get("system_version", [])
+
     days = {}
     for b in blocks:
-        if "global_lisflood" not in b.get("hydrological_model", []):
-            continue
-        if not all(k in b for k in ("hyear", "hmonth", "hday")):
+        if not keep(b) or not all(k in b for k in ("hyear", "hmonth", "hday")):
             continue
         for y in b["hyear"]:
             for mo in b["hmonth"]:
                 days.setdefault((y, mo), set()).update(b["hday"])
-    return {k: sorted(v) for k, v in days.items()}
+    return base, {k: sorted(v) for k, v in days.items()}
 
 
 # forecast-cycle pin selecting the frozen GloFAS v4.2 reforecast set
@@ -381,8 +404,9 @@ def download_reforecast_box(years=None, months=None, leadtime_days=(1, 2, 3, 4, 
     scripts/upload_to_blob.py convention:
     ds-aa-som-floods/raw/glofas/raw/reforecast_som_ext{dir_suffix}/<file>.
 
-    API note (2026-08-06): the old system_version=4_0 + hday=ALL_DAYS scheme
-    is rejected since the EWDS restructure; see _reforecast_valid_days.
+    API note: EWDS has flipped the reforecast request schema twice
+    (2026-08-06 and back on 2026-08-11); requests follow whichever schema
+    is live, see _reforecast_schema.
     """
     years = list(years or REFORECAST_YEARS)
     months = list(months or FLOOD_SEASON_MONTHS)
@@ -415,10 +439,9 @@ def download_reforecast_box(years=None, months=None, leadtime_days=(1, 2, 3, 4, 
 
     client = _client(wait_until_complete=False)
     coll = client.client.get_collection("cems-glofas-reforecast")
-    valid_days = _reforecast_valid_days()
+    schema_base, valid_days = _reforecast_schema()
     base = {
-        "hydrological_model": "global_lisflood",
-        **REFORECAST_CYCLE,
+        **schema_base,
         "product_type": ["control_reforecast", "ensemble_perturbed_reforecast"],
         "variable": "river_discharge_in_the_last_24_hours",
         "leadtime_hour": [str(int(d) * 24) for d in leadtime_days],
