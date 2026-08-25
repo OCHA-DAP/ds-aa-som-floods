@@ -39,6 +39,15 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
 table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
 .tablewrap { overflow-x:auto; }
 table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-space:nowrap; }
+table.ai { table-layout:fixed; width:100%; border-collapse:collapse; font-size:10.5px; }
+table.ai th { font-size:9px; letter-spacing:.04em; padding:4px 1px; text-align:center;
+              color:var(--n7); text-transform:uppercase; font-weight:700;
+              border-bottom:2px solid var(--b1); overflow:hidden; }
+table.ai td { padding:3px 1px; text-align:center; border-bottom:1px solid #eef1f1;
+              color:var(--n8); white-space:nowrap; overflow:hidden; }
+table.ai .gl { border-left:2px solid var(--b1); }
+table.ai .dot { font-size:11px; line-height:1; }
+table.ai .num { font-size:10px; }
 .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
          gap:14px; margin:26px 0 6px; }
 .stat { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5);
@@ -202,9 +211,18 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
       backtested through the <em>retrospective</em> (the agreed reanalysis-as-stand-in
       convention) — hindsight, not lead time. Operationally its live forecasts do exist
       (leads to 14 days), but they run below its own retrospective climatology (quantified
-      below), so its operational thresholds will need the forecast-climatology refit the
-      moment enough archive exists. Until then, windows that include GEOGloWS pairs carry
-      up to that many votes of unproven lead-time skill.
+      below) — so the retrospective-fitted thresholds here <strong>cannot be applied to
+      its live forecasts as-is</strong>. Two debias routes for go-live: refit thresholds
+      on its forecast climatology (needs years of archive), or map the live forecast onto
+      the retrospective climatology by flow-duration-curve quantile mapping (SFDC — the
+      GEOGloWS group's own bias-correction method, which the team already applied in the
+      <a href="https://docs.google.com/document/d/1iORZn8POkhJCNTVdCWicOdP1zfRgjHBkPNseOhuotFw">Nepal
+      technical note</a>, June 2026) fitted on the 2024+ overlap. Honest caveat from that
+      note: SFDC did not rescue GEOGloWS's event detection in Nepal, where the forecast
+      ran at ~half its retrospective — Somalia's bias is far smaller (0.85–0.91×) and
+      GEOGloWS holds minority votes here, not the trigger basis, but the mapping must be
+      validated before its votes count operationally. Until then, windows that include
+      GEOGloWS pairs carry up to that many votes of unproven lead-time skill.
     </div>
 
     <h2>Seasonal peaks: model vs gauge</h2>
@@ -396,28 +414,26 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
        structure would raise the effective RP above it; that is a framework-team decision.</p>
 
     <h2>Activations, impact and response, year by year</h2>
-    <p>The two-historical-records rule: the trigger record against <em>impact</em>, not just
-       the hazard benchmark. Grouped <strong>basin → season</strong> so everything for one
-       basin-season sits together: whether each model's consensus would have activated on
-       the calibration record (the window's distinct stations with the model's own 1-in-6
-       thresholds; ✓ = would activate, cell tinted in the model's color; an inset outline
-       marks the adopted mechanism's activations), the SWALIM benchmark class of that season,
-       and IDMC flood displacement for that basin-season. National season-level columns
-       follow: EM-DAT affected and CERF flood allocations. Reverse-chronological.</p>
-    <div class="tablewrap">
-      <table class="data compact" id="aiTable"><tr><td>loading…</td></tr></table>
-    </div>
+    <p>The two-historical-records rule: the trigger record against <em>impact</em>, not
+       just the hazard benchmark. Everything is grouped <strong>basin → season</strong>,
+       so each basin-season's activations, benchmark and impact sit side by side,
+       reverse-chronological. One encoding: <strong>a dot means "activated"</strong> —
+       colored dots are the individual models (each judged over the window's distinct
+       stations with its own 1-in-6 thresholds), the black dot in the <em>trig</em>
+       column is the adopted trigger itself. <em>bnch</em> is the SWALIM benchmark class
+       of that season (sev = 1-in-5, mod = 1-in-3); EM-DAT is people affected and CERF
+       the flood allocation (US$), each attributed to the basin(s) named in the event or
+       allocation narrative.</p>
+    <table class="ai" id="aiTable"><tr><td>loading…</td></tr></table>
     <p style="font-size:12px;color:var(--n7);line-height:1.6">
-      <strong>Coverage &amp; caveats.</strong> EM-DAT is a floor (entry-criteria bias), split
-      to seasons by start month (Mar–Jun → Gu, Sep–Dec → Deyr) and to basins by keywords in
-      the event's location text (J = Juba, S = Shabelle, in tooltips). IDMC displacement
-      (2010–2025) is attributed to basins from the region in the event name — <em>region
-      tagging only becomes systematic around 2023</em>, so earlier riverine displacement
-      mostly sits in "other / not attributed" (e.g. the 406k displaced in Deyr 2019,
-      largely Belet Weyne). CERF amounts are national flood allocations from the OneGMS
-      mirror, windowed by allocation date, basins in tooltips. Impact columns are shown
-      for context, not as a skill score: a formal skill-vs-impact statistic still requires
-      choosing an impact threshold.</p>
+      <strong>Attribution &amp; caveats.</strong> EM-DAT is a floor (entry-criteria bias),
+      split to seasons by start month (Mar–Jun → Gu, Sep–Dec → Deyr); an event naming both
+      rivers is counted under <em>both</em> basins (not split — hover for deaths and the
+      multi-basin flag); events naming neither river (mostly flash floods elsewhere) are
+      excluded. A CERF allocation naming neither river in its narrative is shown under
+      both basins and marked * (they are national riverine-flood responses). Impact
+      columns are context, not a skill score: a formal skill-vs-impact statistic still
+      requires choosing an impact threshold.</p>
 
     <h2>Open items before a trigger report</h2>
     <ol>
@@ -426,9 +442,11 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
       <li><strong>Operational tuning of Juba Deyr and Shabelle Gu</strong> — the proxy
           over-firing and the all-8-pairs fragility above; trade N against RP within the
           1-in-4.3 basin budget using operational data.</li>
-      <li><strong>GEOGloWS forecast-climatology thresholds</strong> — refit its pairs'
-          operational thresholds on its forecast archive once it spans a few Deyr seasons,
-          and re-verify its votes at real lead time.</li>
+      <li><strong>GEOGloWS operational debias</strong> — before its votes count live,
+          either SFDC-map its forecasts onto the retrospective climatology (the method
+          from the team's Nepal technical note, fitted on the 2024+ overlap) or refit its
+          thresholds on forecast climatology as the archive grows; validate against
+          whichever Deyr/Gu seasons the archive then covers.</li>
       <li><strong>Version pinning for operations</strong> — action thresholds here are
           v5-climatology (GloFAS pairs), the readiness/backtest thresholds v4-climatology;
           refit on one consistent operational product before go-live.</li>
@@ -456,7 +474,7 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
        <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/docs/som_flood_trigger_evidence.pptx">evidence
        deck</a> in the repo. Ground truth: FAO SWALIM SNRFA river levels. Providers:
        GloFAS v4/v5 (Copernicus EWDS), Google Flood Hub (GRRR), GEOGloWS v2 (ECMWF).
-       Impact records: EM-DAT (CRED), IDMC (via HDX), CERF OneGMS. Calibration record
+       Impact records: EM-DAT (CRED), CERF OneGMS. Calibration record
        1999–2023; all return periods are Weibull plotting positions. Configuration tables
        live in blob under <code>ds-aa-som-floods/processed/workflow/som_ms_*</code>.</p>
   </div>
@@ -478,12 +496,6 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
     if (v >= 1e6) return (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + "M";
     if (v >= 1e3) return Math.round(v / 1e3) + "k";
     return String(v);
-  }
-  function impShade(v) {
-    if (!v) return "";
-    if (v >= 500000) return "background:rgba(244,169,59,.38)";
-    if (v >= 100000) return "background:rgba(244,169,59,.24)";
-    return "background:rgba(244,169,59,.12)";
   }
 
   // per-station selection detail (inside the <details> block)
@@ -525,65 +537,56 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
   // activation x impact table: basin -> season hierarchy, reverse chronological
   fetch("activation_impact.json").then(function (r) { return r.json(); })
     .then(function (D) {
-      var h = [];
       var groups = [["juba", "gu"], ["juba", "deyr"], ["shabelle", "gu"], ["shabelle", "deyr"]];
-      h.push('<tr><th rowspan="2" style="vertical-align:bottom">year</th>' +
+      var h = [];
+      h.push("<colgroup><col style='width:34px'>" +
+        groups.map(function () {
+          return "<col style='width:25px'><col style='width:19px'><col style='width:19px'>" +
+                 "<col style='width:19px'><col style='width:27px'><col style='width:34px'><col style='width:33px'>";
+        }).join("") + "</colgroup>");
+      h.push('<tr><th rowspan="2" style="vertical-align:bottom">yr</th>' +
         groups.map(function (g) {
-          return '<th colspan="5" style="border-left:2px solid var(--b1)">' +
+          return '<th colspan="7" class="gl">' +
                  g[0].charAt(0).toUpperCase() + g[0].slice(1) + " — " +
                  g[1].charAt(0).toUpperCase() + g[1].slice(1) + "</th>";
-        }).join("") +
-        '<th colspan="5" style="border-left:2px solid var(--b1)">National, by season</th></tr>');
-      var sub = SRC.map(function (s) { return "<th>" + SRC_SHORT[s] + "</th>"; }).join("") +
-                "<th>bench</th><th>displ.</th>";
-      h.push("<tr>" +
-        groups.map(function (_, i) {
-          return sub.replace("<th>GEO</th>",
-            '<th style="border-left:2px solid var(--b1)">GEO</th>');
-        }).join("") +
-        '<th style="border-left:2px solid var(--b1)">EM-DAT Gu</th><th>EM-DAT Deyr</th>' +
-        "<th>CERF Gu</th><th>CERF Deyr</th><th>displ. other*</th></tr>");
+        }).join("") + "</tr>");
+      h.push("<tr>" + groups.map(function () {
+        var AB = { geoglows: "GE", glofas_v5: "G5", google_grrr: "GO" };
+        return '<th class="gl">trig</th>' +
+               SRC.map(function (s2) {
+                 return '<th style="color:' + SRC_COLOR[s2] + '">' + AB[s2] + "</th>";
+               }).join("") +
+               "<th>bnch</th><th>EM-DAT</th><th>CERF</th>";
+      }).join("") + "</tr>");
       D.rows.slice().reverse().forEach(function (r) {
-        var cells = ["<td><b>" + r.year + "</b></td>"];
-        groups.forEach(function (g, gi) {
+        var cells = ["<td><b>" + String(r.year).slice(2) + "</b></td>"];
+        groups.forEach(function (g) {
           var w = r.basins[g[0]][g[1]];
-          SRC.forEach(function (s, si) {
-            var on = w.act[s];
-            var style = (si === 0 ? "border-left:2px solid var(--b1);" : "") +
-                        (on ? SRC_TINT[s].replace("rgba", "background:rgba") : "");
-            var mark = on ? '<b style="color:' + SRC_COLOR[s] + '">✓</b>'
-                          : '<span style="color:#c9cfd6">–</span>';
-            if (on && w.adopted) style += "box-shadow:inset 0 0 0 2px " + SRC_COLOR[s] + ";";
-            cells.push('<td style="' + style + '"' +
-                       (on && w.adopted ? ' title="adopted mechanism activates"' : "") +
-                       ">" + mark + "</td>");
+          cells.push('<td class="gl dot">' +
+            (w.adopted ? '<span style="color:#1A2733">●</span>'
+                       : '<span style="color:#e4e8ec">·</span>') + "</td>");
+          SRC.forEach(function (s2) {
+            cells.push('<td class="dot">' +
+              (w.act[s2] ? '<span style="color:' + SRC_COLOR[s2] + '">●</span>'
+                         : '<span style="color:#e4e8ec">·</span>') + "</td>");
           });
           if (w.bench === "severe")
-            cells.push('<td style="background:rgba(179,64,54,.14)">' +
-                       '<span style="color:#B34036;font-weight:700">sev</span></td>');
+            cells.push('<td><span style="color:#B34036;font-weight:700">sev</span></td>');
           else if (w.bench === "moderate")
-            cells.push('<td style="background:rgba(244,169,59,.14)">' +
-                       '<span style="color:#B8860B;font-weight:500">mod</span></td>');
-          else cells.push('<td style="color:#c9cfd6">–</td>');
-          cells.push('<td style="' + impShade(w.idmc) + '">' + fmtN(w.idmc) + "</td>");
+            cells.push('<td><span style="color:#B8860B;font-weight:500">mod</span></td>');
+          else cells.push('<td style="color:#c9cfd6"></td>');
+          var e = w.emdat;
+          cells.push('<td class="num"' +
+            (e ? ' title="' + fmtN(e.aff) + ' affected' +
+                 (e.deaths ? ", " + e.deaths + " deaths" : "") +
+                 (e.multi ? "; incl. multi-basin event(s) counted under both basins" : "") + '"' : "") +
+            ">" + (e ? fmtN(e.aff) : "") + "</td>");
+          var c2 = w.cerf;
+          cells.push('<td class="num"' +
+            (c2 ? ' title="US$ ' + c2.usd.toLocaleString() +
+                  (c2.unattr ? "; basin not stated in the allocation narrative - shown under both" : "") + '"' : "") +
+            ">" + (c2 ? fmtN(c2.usd) + (c2.unattr ? "*" : "") : "") + "</td>");
         });
-        ["gu", "deyr"].forEach(function (se, i) {
-          var e = r.national.emdat[se];
-          var style = (i === 0 ? "border-left:2px solid var(--b1);" : "") +
-                      impShade(e && e.affected);
-          cells.push("<td style='" + style + "'" +
-            (e ? ' title="' + (e.deaths ? e.deaths + " deaths " : "") +
-                 (e.basins ? "[" + e.basins + "]" : "") + '"' : "") + ">" +
-            fmtN(e && e.affected) + "</td>");
-        });
-        ["gu", "deyr"].forEach(function (se) {
-          var c = r.national.cerf[se];
-          cells.push("<td style='" + (c ? "background:rgba(38,151,119,.14)" : "") + "'" +
-            (c && c.basins ? ' title="[' + c.basins + ']"' : "") + ">" +
-            (c ? fmtN(c.usd) : "") + "</td>");
-        });
-        cells.push('<td style="' + impShade(r.national.idmc_other) + '">' +
-                   fmtN(r.national.idmc_other) + "</td>");
         h.push("<tr>" + cells.join("") + "</tr>");
       });
       document.getElementById("aiTable").innerHTML = h.join("");
