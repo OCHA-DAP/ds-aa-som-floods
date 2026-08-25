@@ -416,14 +416,13 @@ table.ai .num { font-size:10px; }
     <h2>Activations, impact and response, year by year</h2>
     <p>The two-historical-records rule: the trigger record against <em>impact</em>, not
        just the hazard benchmark. Everything is grouped <strong>basin → season</strong>,
-       so each basin-season's activations, benchmark and impact sit side by side,
-       reverse-chronological. One encoding: <strong>a filled
-       (shaded) cell means "activated"</strong> — model columns fill in the model's color
-       (each model judged over the window's distinct stations with its own 1-in-6
-       thresholds), and the <em>trig</em> column fills dark when the adopted trigger
-       itself activated. <em>bnch</em> is the SWALIM benchmark class
-       of that season (sev = 1-in-5, mod = 1-in-3); EM-DAT is people affected and CERF
-       the flood allocation (US$), each attributed to the basin(s) named in the event or
+       reverse-chronological. The <em>pairs</em> column is the trigger's actual decision
+       variable: <strong>the peak number of (station, model) pairs simultaneously over
+       their thresholds</strong> that season-year — the cell is highlighted dark when it
+       meets the requirement shown in the season header (= the trigger activates).
+       <em>bnch</em> is the SWALIM benchmark class of that season (sev = 1-in-5,
+       mod = 1-in-3); EM-DAT is people affected and CERF the flood allocation (US$),
+       shaded by magnitude, each attributed to the basin(s) named in the event or
        allocation narrative.</p>
     <table class="ai" id="aiTable"><tr><td>loading…</td></tr></table>
     <p style="font-size:12px;color:var(--n7);line-height:1.6">
@@ -537,59 +536,68 @@ table.ai .num { font-size:10px; }
       document.getElementById("selDetail").innerHTML = h.join("");
     });
 
-  // activation x impact table: basin -> season hierarchy, reverse chronological
+  // activation x impact table: basin -> season hierarchy, pair counts,
+  // reverse chronological
+  function emShade(v) {
+    if (!v) return "";
+    if (v >= 1e6) return "background:rgba(244,169,59,.45);";
+    if (v >= 2.5e5) return "background:rgba(244,169,59,.28);";
+    return "background:rgba(244,169,59,.14);";
+  }
+  function cerfShade(v) {
+    if (!v) return "";
+    return (v >= 8e6 ? "background:rgba(38,151,119,.32);"
+                     : "background:rgba(38,151,119,.17);");
+  }
   fetch("activation_impact.json").then(function (r) { return r.json(); })
     .then(function (D) {
       var groups = [["juba", "gu"], ["juba", "deyr"], ["shabelle", "gu"], ["shabelle", "deyr"]];
       var h = [];
-      h.push("<colgroup><col style='width:38px'>" +
+      h.push("<colgroup><col style='width:40px'>" +
         groups.map(function () {
-          return "<col style='width:24px'><col style='width:19px'><col style='width:19px'>" +
-                 "<col style='width:19px'><col style='width:26px'><col style='width:33px'><col style='width:32px'>";
+          return "<col style='width:40px'><col style='width:32px'>" +
+                 "<col style='width:44px'><col style='width:42px'>";
         }).join("") + "</colgroup>");
       h.push('<tr><th rowspan="3" style="vertical-align:bottom">year</th>' +
         ["Juba", "Shabelle"].map(function (b) {
-          return '<th colspan="14" class="gl" style="font-size:10px">' + b + "</th>";
+          return '<th colspan="8" class="gl" style="font-size:10px">' + b + "</th>";
         }).join("") + "</tr>");
       h.push("<tr>" + groups.map(function (g) {
-        return '<th colspan="7" class="gl">' +
-               g[1].charAt(0).toUpperCase() + g[1].slice(1) + "</th>";
+        var m = D.meta.windows[g[0] + "_" + g[1]];
+        return '<th colspan="4" class="gl">' +
+               g[1].charAt(0).toUpperCase() + g[1].slice(1) +
+               " — ≥" + m.n_req + "/" + m.pool + "</th>";
       }).join("") + "</tr>");
       h.push("<tr>" + groups.map(function () {
-        var AB = { geoglows: "GE", glofas_v5: "G5", google_grrr: "GO" };
-        return '<th class="gl">trig</th>' +
-               SRC.map(function (s2) {
-                 return '<th style="color:' + SRC_COLOR[s2] + '">' + AB[s2] + "</th>";
-               }).join("") +
-               "<th>bnch</th><th>EM-DAT</th><th>CERF</th>";
+        return '<th class="gl">pairs</th><th>bnch</th><th>EM-DAT</th><th>CERF</th>';
       }).join("") + "</tr>");
       D.rows.slice().reverse().forEach(function (r) {
         var cells = ["<td><b>" + r.year + "</b></td>"];
         groups.forEach(function (g) {
           var w = r.basins[g[0]][g[1]];
-          cells.push('<td class="gl dot"' +
-            (w.adopted ? ' style="background:rgba(26,39,51,.22)" title="adopted trigger activates"' : "") +
-            ">" + (w.adopted ? '<span style="color:#1A2733">●</span>'
-                             : '<span style="color:#e4e8ec">·</span>') + "</td>");
-          SRC.forEach(function (s2) {
-            cells.push('<td class="dot"' +
-              (w.act[s2] ? ' style="background:' + SRC_TINT[s2] + '"' : "") +
-              ">" + (w.act[s2] ? '<span style="color:' + SRC_COLOR[s2] + '">●</span>'
-                               : '<span style="color:#e4e8ec">·</span>') + "</td>");
-          });
+          var m = D.meta.windows[g[0] + "_" + g[1]];
+          if (w.adopted)
+            cells.push('<td class="gl" style="background:rgba(26,39,51,.24)" ' +
+              'title="trigger activates: ' + w.n + " of " + m.pool +
+              ' pairs over threshold (requires ' + m.n_req + ')">' +
+              "<b>" + w.n + "</b></td>");
+          else
+            cells.push('<td class="gl"' +
+              (w.n ? ' title="' + w.n + " of " + m.pool + ' pairs over threshold"' : "") +
+              ">" + (w.n ? w.n : '<span style="color:#c9cfd6">0</span>') + "</td>");
           if (w.bench === "severe")
             cells.push('<td><span style="color:#B34036;font-weight:700">sev</span></td>');
           else if (w.bench === "moderate")
             cells.push('<td><span style="color:#B8860B;font-weight:500">mod</span></td>');
           else cells.push('<td style="color:#c9cfd6"></td>');
           var e = w.emdat;
-          cells.push('<td class="num"' +
+          cells.push('<td class="num" style="' + emShade(e && e.aff) + '"' +
             (e ? ' title="' + fmtN(e.aff) + ' affected' +
                  (e.deaths ? ", " + e.deaths + " deaths" : "") +
                  (e.multi ? "; incl. multi-basin event(s) counted under both basins" : "") + '"' : "") +
             ">" + (e ? fmtN(e.aff) : "") + "</td>");
           var c2 = w.cerf;
-          cells.push('<td class="num"' +
+          cells.push('<td class="num" style="' + cerfShade(c2 && c2.usd) + '"' +
             (c2 ? ' title="US$ ' + c2.usd.toLocaleString() +
                   (c2.unattr ? "; basin not stated in the allocation narrative - shown under both" : "") + '"' : "") +
             ">" + (c2 ? fmtN(c2.usd) + (c2.unattr ? "*" : "") : "") + "</td>");
