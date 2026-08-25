@@ -301,6 +301,26 @@ table.ai .num { font-size:10px; }
         noise.</figcaption>
     </figure>
 
+    <h3>The tuning surface</h3>
+    <p>The Nigeria-style grid search (per state there; per basin × season here — the same
+       recipe as P. Wairimu's
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/08_trigger_grid.ipynb">notebook 08</a>):
+       every (per-pair RP threshold, N pairs required) cell is scored against the seasonal
+       SWALIM benchmark. The adopted cell is <em>not</em> always the best single-window
+       score — it is the best choice subject to the basin-level constraints (equal
+       1-in-4.3 per basin across the Gu+Deyr union, severe-coverage-first, ≥ 3-yr
+       overall). The surface shows what the neighbors would cost: e.g. Juba Gu could buy
+       POD 0.71 at N=7/12 for one extra activation in 25 years, and Shabelle Deyr's
+       adopted cell sits where FAR turns to zero.</p>
+
+    <figure>
+      <img src="figs/c_grid_heatmaps.png" alt="Twelve heatmaps: for each of the four windows, POD, FAR and activation return period over the per-pair RP threshold by N-required grid, with the adopted cell outlined">
+      <figcaption>POD and FAR are vs the seasonal 1-in-3 SWALIM benchmark; black box =
+        the adopted configuration. Dark = high POD / low FAR / frequent activation.
+        With 7–8 benchmark events per window, one hit moves POD by ~12 points — broad
+        plateaus, not sharp optima, are the honest reading.</figcaption>
+    </figure>
+
     <h2>Forecast skill against each model's own reanalysis</h2>
     <p>The assume-bias-for-all-sources rule, quantified: per model and lead time, how well
        the forecast reproduces the model's <em>own</em> reanalysis or retrospective — rank
