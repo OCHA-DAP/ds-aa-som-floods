@@ -1,0 +1,112 @@
+{
+  "adopted": {
+    "juba_gu": {
+      "source": "google_grrr",
+      "rp": 6,
+      "n_req": 6,
+      "years": [
+        2013,
+        2016,
+        2018,
+        2020
+      ]
+    },
+    "juba_deyr": {
+      "source": "glofas_v5",
+      "rp": 6,
+      "n_req": 6,
+      "years": [
+        2006,
+        2023
+      ]
+    },
+    "shabelle_gu": {
+      "source": "google_grrr",
+      "rp": 6,
+      "n_req": 6,
+      "years": [
+        2013,
+        2018,
+        2020
+      ]
+    },
+    "shabelle_deyr": {
+      "source": "glofas_v5",
+      "rp": 6,
+      "n_req": 7,
+      "years": [
+        2006,
+        2019,
+        2023
+      ]
+    }
+  },
+  "basin_rp": {
+    "juba": 4.3,
+    "shabelle": 4.3
+  },
+  "overall_rp": 3.7,
+  "overall_years": [
+    2006,
+    2013,
+    2016,
+    2018,
+    2019,
+    2020,
+    2023
+  ],
+  "readiness": {
+    "juba_deyr": {
+      "rp": 2,
+      "n_req": 6,
+      "rp_act": 4.4,
+      "years": [
+        2005,
+        2006,
+        2015,
+        2017,
+        2023
+      ]
+    },
+    "juba_gu": {
+      "rp": 2,
+      "n_req": 5,
+      "rp_act": 3.7,
+      "years": [
+        2005,
+        2010,
+        2013,
+        2016,
+        2018,
+        2020
+      ]
+    },
+    "shabelle_deyr": {
+      "rp": 2,
+      "n_req": 5,
+      "rp_act": 3.1,
+      "years": [
+        2007,
+        2010,
+        2013,
+        2014,
+        2017,
+        2019,
+        2020
+      ]
+    },
+    "shabelle_gu": {
+      "rp": 3,
+      "n_req": 2,
+      "rp_act": 3.7,
+      "years": [
+        2005,
+        2010,
+        2013,
+        2016,
+        2018,
+        2020
+      ]
+    }
+  }
+}

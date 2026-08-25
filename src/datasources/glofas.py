@@ -657,11 +657,16 @@ def load_reanalysis(station_key, version=DEFAULT_VERSION):
     return series.sort_index().dropna()
 
 
-def load_reforecast_box(version=DEFAULT_VERSION):
+def load_reforecast_box(version=DEFAULT_VERSION, dir_suffix=None):
     """Load the all-stations reforecast as one long DataFrame.
 
     Columns: station, issued_time, lead_hours, leadtime_days, valid_day,
     member, discharge. Members are 0 (control) plus 1-10 (perturbed).
+
+    dir_suffix selects a lead-band download made by download_reforecast_box
+    (e.g. "_lead8_12" reads reforecast_som_ext_lead8_12/, the readiness
+    band). With the default None, keeps the historical behaviour: extended
+    box if complete enough, else the legacy leads-1-7 box.
 
     Two lead conventions are kept deliberately:
       * leadtime_days = lead_hours / 24, i.e. GloFAS's own labelling
@@ -673,14 +678,22 @@ def load_reforecast_box(version=DEFAULT_VERSION):
     """
     cells = channel_cells(version=version)
 
-    # Prefer the extended box only once it has at least as many chunks as the
-    # legacy one — a partially downloaded _ext dir must not silently replace a
-    # complete legacy archive (ties go to _ext, which covers juba_07/08).
-    ext_dir = DATA_DIR / "raw" / "reforecast_som_ext"
-    leg_dir = DATA_DIR / "raw" / "reforecast_som"
-    n_ext, n_leg = len(list(ext_dir.glob("*.zip"))), len(list(leg_dir.glob("*.zip")))
-    rf_dir = ext_dir if n_ext >= max(n_leg, 1) else leg_dir
-    print(f"  reforecast source: {rf_dir.name} ({max(n_ext, n_leg)} chunks; ext={n_ext}, legacy={n_leg})")
+    if dir_suffix is not None:
+        rf_dir = DATA_DIR / "raw" / f"reforecast_som_ext{dir_suffix}"
+        n_chunks = len(list(rf_dir.glob("*.zip")))
+        print(f"  reforecast source: {rf_dir.name} ({n_chunks} chunks)")
+        if not n_chunks:
+            return None
+    else:
+        # Prefer the extended box only once it has at least as many chunks as
+        # the legacy one — a partially downloaded _ext dir must not silently
+        # replace a complete legacy archive (ties go to _ext, which covers
+        # juba_07/08).
+        ext_dir = DATA_DIR / "raw" / "reforecast_som_ext"
+        leg_dir = DATA_DIR / "raw" / "reforecast_som"
+        n_ext, n_leg = len(list(ext_dir.glob("*.zip"))), len(list(leg_dir.glob("*.zip")))
+        rf_dir = ext_dir if n_ext >= max(n_leg, 1) else leg_dir
+        print(f"  reforecast source: {rf_dir.name} ({max(n_ext, n_leg)} chunks; ext={n_ext}, legacy={n_leg})")
 
     # Extent guard, same as the reanalysis path: channel cells can lie outside
     # this file set's box (the legacy zips stop at S 0.2), and
