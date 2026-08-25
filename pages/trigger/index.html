@@ -157,7 +157,13 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
     <p>Each selected station gets its threshold from <strong>its own model's
        climatology</strong>: the Weibull plotting position of its seasonal maxima
        (1999–2023) at the target return period. Magnitude bias between models cancels out —
-       each station is equally likely to exceed its threshold by construction. The
+       each station is equally likely to exceed its threshold by construction. The same
+       principle carries into operations: <strong>we assume bias between reanalysis and
+       forecast for every source</strong>, so a threshold is only ever applied to the
+       product whose own historical values it was fitted on (the reforecast backtests below
+       refit thresholds on the reforecast's climatology for exactly this reason). To
+       inspect the indicators themselves, year by year, use the
+       <a href="../explorer/">indicator explorer</a>. The
        basin-level search then chooses, per season, the per-station return period and the
        consensus count N, subject to: per-basin activation frequency in the 1-in-4.3–6.5
        band; maximum coverage of the basin's severe (1-in-5) benchmark years; fewest
