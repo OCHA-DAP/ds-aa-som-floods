@@ -129,23 +129,56 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
        documented major flood year in Somalia. Per-basin thresholds are nominal
        (~1-in-4.3–5); the final adjustment belongs to the framework working group.</p>
 
+    <figure>
+      <img src="figs/map_stations.png" alt="Two-panel map of Somalia showing the Juba and Shabelle rivers with the 18 monitoring stations, colored by the provider that carries each in the Gu and Deyr windows">
+      <figcaption>The station network. 18 registry points (GloFAS-grid-verified
+        coordinates with per-provider ID mappings — P. Wairimu,
+        <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/src/constants.py">src/constants.py</a>)
+        on the two rivers; stars are the SWALIM reference gauges (Luuq, Belet Weyne) the
+        mechanism is calibrated against; numbers are each station's selection ρ. Google
+        (blue) carries the Gu windows, GloFAS v5 (red) the Deyr windows. juba 07/08 enter
+        only in Deyr (jilib only in Gu) — the top-8 cut differs slightly per window.</figcaption>
+    </figure>
+
     <h2>How the stations were chosen</h2>
     <p>Every combination of the 18 monitoring points and the three providers competes on
        one metric: best-lag Spearman rank correlation between the provider's
        reanalysis/retrospective discharge and the SWALIM reference-gauge level (Belet Weyne
-       for the Shabelle, Luuq for the Juba), per river and season. One source per station —
+       for the Shabelle, Luuq for the Juba), per river and season — the correlations
+       computed in P. Wairimu's
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/06_forecast_correlation.ipynb">notebook 06</a>,
+       against the SWALIM benchmark her
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/01_swalim_flood_threshold_exceedance.ipynb">notebook 01</a>
+       established (post-2000 record, official Moderate/High risk levels) and her
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/05_flood_benchmark.ipynb">notebook 05</a>
+       showed must be primary over FloodScan on the Shabelle. One source per station —
        consensus should be spatial agreement, not the same water seen through two models —
        with a timing guard: among sources within 0.05 of a station's best correlation, the
        one whose signal arrives <strong>earliest</strong> wins.</p>
 
     <figure>
-      <img src="figs/a_selection.png" alt="Scatter plots of correlation versus lag for every station-source pair, by river and season; selected pairs highlighted">
+      <img src="figs/a_selection.png" alt="Scatter plots of correlation versus lag for every station-source pair, by river and season; same-station sources connected by grey lines, selected pairs ring-marked and labeled">
       <figcaption>The candidate pool. Positive lag = the model's signal precedes the
-        reference gauge. GEOGloWS (purple) matches Google (blue) on correlation in Shabelle
-        Gu but trails the gauge by 4–10 days — anticipation a ≤ 6-day trigger cannot
-        spare — and loses everywhere. Google wins both Gu windows; GloFAS v5 wins both
-        Deyr windows.</figcaption>
+        reference gauge. A grey line connects one station's three sources — <strong>sources
+        compete within a station, never across stations</strong> — and the ring-marked,
+        labeled dot is the winner. GEOGloWS (purple) matches Google (blue) on correlation
+        in Shabelle Gu but trails the gauge by 4–10 days — anticipation a ≤ 6-day trigger
+        cannot spare — and loses everywhere. Google wins both Gu windows; GloFAS v5 wins
+        both Deyr windows.</figcaption>
     </figure>
+
+    <p>A reading trap this figure used to invite: in Juba Deyr a GEOGloWS dot (Dollow,
+       ρ 0.83 at lag +1) sits above-right of several GloFAS dots — but those are
+       <em>other stations</em>. Following Dollow's own grey line: GloFAS v5 at Dollow is
+       ρ 0.87 at lag +5, better on both axes; and the same holds at every Juba Deyr
+       station (GloFAS beats GEOGloWS on ρ <em>and</em> lag at all ten). The full
+       per-station numbers:</p>
+
+    <details style="margin:14px 0 22px">
+      <summary style="cursor:pointer;color:var(--b6);font-size:13.5px;font-weight:500">
+        Per-station selection detail (ρ / lag per source, all four windows)</summary>
+      <div id="selDetail" class="tablewrap" style="margin-top:10px">loading…</div>
+    </details>
 
     <p>The outcome is a mechanism that is <strong>multi-source by competition, not by
        quota</strong>: Google Flood Hub carries the Gu windows, GloFAS the Deyr windows,
@@ -238,7 +271,12 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
        (2016–2023) for the Gu legs, and for the GloFAS v5 Deyr legs the v4 reforecast
        (2003–2023) with thresholds refit on v4's own climatology, since <strong>no v5
        reforecast exists</strong>. A leg activates operationally when a single forecast
-       issuance shows the consensus at leads ≤ 6 days.</p>
+       issuance shows the consensus at leads ≤ 6 days. (That forecast skill barely decays
+       from lead 1 to 7 — it is initial-condition-driven on these slow rivers — is
+       P. Wairimu's
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/03_leadtime_forecast_skill.ipynb">notebook 03</a>
+       finding, and is what makes both the ≤ 6-day band and the 7–12-day readiness band
+       viable at all.)</p>
 
     <div class="tablewrap">
     <table class="data">
@@ -350,12 +388,19 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
     <p><strong>Provenance.</strong> Produced by
        <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/11_multisource_trigger.ipynb">notebook
        11</a> in <a href="https://github.com/OCHA-DAP/ds-aa-som-floods">ds-aa-som-floods</a>
-       (August 2026), building on the evidence notebooks 01–10 by Pauline Wairimu (SWALIM
-       thresholds and events, model-vs-gauge skill, lead-time skill, flood benchmarks,
-       station selection, trigger grids and the staged-mechanism exploration). Ground truth:
-       FAO SWALIM SNRFA river levels. Providers: GloFAS v4/v5 (Copernicus EWDS), Google
-       Flood Hub (GRRR), GEOGloWS v2 (ECMWF). Calibration record 1999–2023; all return
-       periods are Weibull plotting positions. Configuration tables live in blob under
+       (August 2026), building directly on the evidence notebooks
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/tree/main/analysis">01–10</a>
+       by Pauline Wairimu: SWALIM thresholds and flood events (01), model-vs-gauge trust
+       (02), lead-time skill (03), GloFAS v4/v5 bias (04), flood benchmarks (05), the
+       correlation screen (06), station selection (07), trigger grids (08–09) and the
+       staged-mechanism exploration (10) — summarised in her
+       <a href="https://docs.google.com/presentation/d/12oZOg0ORddO5SJA0-TvLjVXBdm_A7zZw6d1wdD57qZc">"Somalia
+       Floods" slide deck</a> (team Drive) and the
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/docs/som_flood_trigger_evidence.pptx">evidence
+       deck</a> in the repo. Ground truth: FAO SWALIM SNRFA river levels. Providers:
+       GloFAS v4/v5 (Copernicus EWDS), Google Flood Hub (GRRR), GEOGloWS v2 (ECMWF).
+       Calibration record 1999–2023; all return periods are Weibull plotting positions.
+       Configuration tables live in blob under
        <code>ds-aa-som-floods/processed/workflow/som_ms_*</code>.</p>
   </div>
 
@@ -390,6 +435,39 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
     if (!v) return '<td style="color:#c9cfd6"></td>';
     return "<td" + (extra ? ' title="' + extra + '"' : "") + ">" + fmtN(v) + "</td>";
   }
+
+  // per-station selection detail (inside the <details> block)
+  fetch("selection_detail.json").then(function (r) { return r.json(); })
+    .then(function (D) {
+      var order = ["juba_gu", "juba_deyr", "shabelle_gu", "shabelle_deyr"];
+      var h = [];
+      order.forEach(function (w) {
+        var rows = D[w];
+        if (!rows) return;
+        var name = w.replace("_", " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+        h.push('<p style="margin:14px 0 4px;font-weight:700;font-size:12.5px;color:var(--n9)">' +
+               name + "</p>");
+        h.push('<table class="data" style="margin-top:4px"><tr><th>station</th>' +
+               SRC.map(function (s) {
+                 return '<th style="color:' + SRC_COLOR[s] + '">' + SRC_SHORT[s] + " ρ / lag</th>";
+               }).join("") + "<th>selected</th></tr>");
+        rows.forEach(function (r) {
+          var cells = ["<td>" + r.station.replace("_", " ") + "</td>"];
+          SRC.forEach(function (s) {
+            var v = r[s];
+            var txt = v ? v.rho.toFixed(2) + " / " + (v.lag > 0 ? "+" : "") + v.lag + "d" : "—";
+            cells.push("<td" + (r.selected === s ? ' style="font-weight:700;color:' +
+                       SRC_COLOR[s] + '"' : "") + ">" + txt + "</td>");
+          });
+          cells.push(r.selected
+            ? '<td><b style="color:' + SRC_COLOR[r.selected] + '">' + SRC_SHORT[r.selected] + "</b></td>"
+            : '<td style="color:#c9cfd6">not in top 8</td>');
+          h.push("<tr>" + cells.join("") + "</tr>");
+        });
+        h.push("</table>");
+      });
+      document.getElementById("selDetail").innerHTML = h.join("");
+    });
 
   fetch("activation_impact.json").then(function (r) { return r.json(); })
     .then(function (D) {
