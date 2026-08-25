@@ -153,6 +153,58 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
        against, and its forecasts run 0.6–0.7× its retrospective climatology, so
        retrospective-fitted thresholds would under-fire operationally).</p>
 
+    <h2>Seasonal peaks: model vs gauge</h2>
+    <p>Daily rank correlation can flatter a model that merely tracks the seasonal cycle.
+       The sharper diagnostic is <strong>one point per season-year</strong>: the model's
+       seasonal peak against the observed seasonal peak at the reference gauge — does the
+       model rank the <em>years</em> correctly? For display each model's peak is divided by
+       its <strong>own</strong> 1-in-6 threshold (rank correlation is unaffected by the
+       normalisation), so the quadrants read directly: top-right = the model ran over its
+       own threshold in a year the gauge also ran high.</p>
+
+    <figure>
+      <img src="figs/i_peaks_reanalysis.png" alt="Scatter plots of model seasonal peaks over own threshold versus SWALIM observed seasonal peaks, by basin and season, all three providers">
+      <figcaption>Calibration record (reanalysis/retrospective, 1999–2023). Vertical
+        dashes: the gauge's Moderate (amber) and High (red) levels; horizontal dash: the
+        model at its own 1-in-6 threshold.</figcaption>
+    </figure>
+
+    <div class="tablewrap">
+    <table class="data">
+      <tr><th>window</th><th colspan="3">peak Spearman ρ — reanalysis (n = 21–25)</th>
+          <th colspan="2">peak ρ — reforecast ≤ 6 d</th></tr>
+      <tr><th></th><th>GEOGloWS</th><th>GloFAS v5</th><th>Google GRRR</th>
+          <th>GloFAS v4 (proxy)</th><th>Google GRRR</th></tr>
+      <tr><td><em>Juba Gu</em></td><td>0.65</td><td>0.64</td><td><strong>0.85</strong></td>
+          <td>0.63</td><td><strong>0.98</strong></td></tr>
+      <tr><td><em>Juba Deyr</em></td><td>0.65</td><td>0.59</td><td><strong>0.74</strong></td>
+          <td>0.64</td><td><strong>0.75</strong></td></tr>
+      <tr><td><em>Shabelle Gu</em></td><td>0.68</td><td>0.80</td><td><strong>0.85</strong></td>
+          <td>0.64</td><td><strong>0.74</strong></td></tr>
+      <tr><td><em>Shabelle Deyr</em></td><td>0.49</td><td>0.77</td><td><strong>0.78</strong></td>
+          <td>0.39</td><td><strong>0.81</strong></td></tr>
+    </table>
+    </div>
+
+    <figure>
+      <img src="figs/i_peaks_reforecast.png" alt="Scatter plots of reforecast seasonal peaks versus SWALIM observed peaks, by basin and season">
+      <figcaption>Operational record: the ≤ 6-day reforecast signal's seasonal peaks,
+        normalised by a 1-in-6 threshold fitted on the reforecast's own seasonal maxima
+        (GRRR's 8-season archive makes its own threshold estimate wide — treat its vertical
+        placement, not its ranking, with caution).</figcaption>
+    </figure>
+
+    <div class="callout">
+      <strong>An honest tension the working group should see.</strong> On the peak view,
+      Google ranks seasonal peaks best in <em>all four</em> windows at the reference
+      station — including Juba Deyr, where its daily tracking was too poor to win
+      selection (daily ρ 0.31–0.60 vs GloFAS v5's 0.78–0.87). Daily correlation and peak
+      ranking disagree there. The adopted Deyr legs rest on all-8-station daily tracking
+      plus event coverage (GloFAS v5 catches Deyr 2023 at full consensus); whether a
+      Google-based or hybrid Juba Deyr leg would be more robust is a candidate refinement
+      for the review, not a settled question.
+    </div>
+
     <h2>Thresholds and calibration</h2>
     <p>Each selected station gets its threshold from <strong>its own model's
        climatology</strong>: the Weibull plotting position of its seasonal maxima
@@ -252,11 +304,35 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
        the evidence deck) the effective RP equals the overall RP, 3.7 years. A split
        structure would raise the effective RP above it; that is a framework-team decision.</p>
 
+    <h2>Activations, impact and response, year by year</h2>
+    <p>The two-historical-records rule: the trigger record against <em>impact</em>, not just
+       the hazard benchmark. For each basin, whether <strong>each indicator's</strong>
+       consensus would have activated on the calibration record (that season's station set
+       and N-of-8 requirement, with the indicator's own 1-in-6 thresholds — GEOGloWS
+       included, via its retrospective; G = Gu, D = Deyr), alongside the SWALIM benchmark
+       class, EM-DAT flood impacts, IDMC flood displacement and CERF flood allocations.</p>
+    <div class="tablewrap">
+      <table class="data" id="aiTable"><tr><td>loading…</td></tr></table>
+    </div>
+    <p style="font-size:12px;color:var(--n7);line-height:1.6">
+      <strong>Coverage &amp; caveats.</strong> EM-DAT is a floor (entry-criteria bias), split
+      to seasons by start month (Mar–Jun → Gu, Sep–Dec → Deyr) and to basins by keywords in
+      the event's location text (J = Juba, S = Shabelle; blank = not attributable — often
+      flash floods elsewhere). IDMC displacement (2010–2025) is attributed to basins from
+      the region in the event name — <em>region tagging only becomes systematic around
+      2023</em>, so earlier riverine displacement mostly sits in "other / not attributed"
+      (e.g. the 406k displaced in Deyr 2019, largely Belet Weyne). CERF amounts are
+      national flood allocations from the OneGMS mirror, windowed by allocation date,
+      basins from the narrative summaries. Impact columns are shown for context, not as a
+      skill score: a formal skill-vs-impact statistic still requires choosing an impact
+      threshold.</p>
+
     <h2>Open items before a trigger report</h2>
     <ol>
-      <li><strong>Impact-record cross-check</strong> — validate activation years against an
-          independent impact record (displacement, needs) per season-year; FloodScan-derived
-          exposure is not independent of the hazard chain.</li>
+      <li><strong>Formal impact-record cross-check</strong> — the year-by-year table above
+          now puts activations beside EM-DAT, IDMC displacement and CERF response
+          (descriptive); a formal statistic still requires the working group to fix an
+          impact threshold ("what counts as a year that should have triggered").</li>
       <li><strong>GloFAS v5 reforecast</strong> — re-verify both Deyr legs and the readiness
           band when EWDS publishes one.</li>
       <li><strong>Version pinning for operations</strong> — action thresholds here are
@@ -286,5 +362,75 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
 </div>
 
 <script src="../assets/hero.js" defer></script>
+<script>
+(function () {
+  "use strict";
+  var SRC = ["geoglows", "glofas_v5", "google_grrr"];
+  var SRC_SHORT = { geoglows: "GEO", glofas_v5: "GLO5", google_grrr: "GOO" };
+  var SRC_COLOR = { geoglows: "#8E5FA8", glofas_v5: "#B34036", google_grrr: "#2A78D6" };
+
+  function fmtN(v) {
+    if (!v) return "";
+    if (v >= 1e6) return (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + "M";
+    if (v >= 1e3) return Math.round(v / 1e3) + "k";
+    return String(v);
+  }
+  function actCell(letters, color) {
+    if (!letters) return '<td style="color:#c9cfd6">–</td>';
+    return '<td><b style="color:' + color + '">' + letters.split("").join(" ") + "</b></td>";
+  }
+  function benchCell(cls) {
+    if (cls === "severe")
+      return '<td><span style="color:#B34036;font-weight:700">severe</span></td>';
+    if (cls === "moderate")
+      return '<td><span style="color:#B8860B;font-weight:500">mod.</span></td>';
+    return '<td style="color:#c9cfd6">–</td>';
+  }
+  function impCell(v, extra) {
+    if (!v) return '<td style="color:#c9cfd6"></td>';
+    return "<td" + (extra ? ' title="' + extra + '"' : "") + ">" + fmtN(v) + "</td>";
+  }
+
+  fetch("activation_impact.json").then(function (r) { return r.json(); })
+    .then(function (D) {
+      var h = [];
+      h.push('<tr><th rowspan="2" style="vertical-align:bottom">year</th>' +
+        '<th colspan="4" style="border-left:1px solid #e2e7e7">Juba — indicator activates</th>' +
+        '<th colspan="4" style="border-left:1px solid #e2e7e7">Shabelle — indicator activates</th>' +
+        '<th colspan="2" style="border-left:1px solid #e2e7e7">EM-DAT affected</th>' +
+        '<th colspan="3" style="border-left:1px solid #e2e7e7">IDMC flood-displaced</th>' +
+        '<th colspan="2" style="border-left:1px solid #e2e7e7">CERF floods (US$)</th></tr>');
+      h.push("<tr>" +
+        SRC.map(function (s) { return "<th>" + SRC_SHORT[s] + "</th>"; }).join("") + "<th>bench</th>" +
+        SRC.map(function (s) { return "<th>" + SRC_SHORT[s] + "</th>"; }).join("") + "<th>bench</th>" +
+        "<th>Gu</th><th>Deyr</th>" +
+        "<th>Juba</th><th>Shab.</th><th>other*</th>" +
+        "<th>Gu</th><th>Deyr</th></tr>");
+      D.rows.forEach(function (r) {
+        var cells = ["<td><b>" + r.year + "</b></td>"];
+        ["juba", "shabelle"].forEach(function (b) {
+          SRC.forEach(function (s) { cells.push(actCell(r.act[b][s], SRC_COLOR[s])); });
+          cells.push(benchCell(r.bench[b]));
+        });
+        ["gu", "deyr"].forEach(function (se) {
+          var e = r.emdat[se];
+          cells.push(impCell(e && e.affected,
+            e ? (e.deaths ? e.deaths + " deaths" : "") + (e.basins ? " [" + e.basins + "]" : "") : ""));
+        });
+        ["juba", "shabelle"].forEach(function (b) {
+          var g = r.idmc[b].gu, d = r.idmc[b].deyr;
+          cells.push(impCell(g + d, "Gu " + fmtN(g) + " / Deyr " + fmtN(d)));
+        });
+        cells.push(impCell(r.idmc.other));
+        ["gu", "deyr"].forEach(function (se) {
+          var c = r.cerf[se];
+          cells.push(impCell(c && c.usd, c && c.basins ? "[" + c.basins + "]" : ""));
+        });
+        h.push("<tr>" + cells.join("") + "</tr>");
+      });
+      document.getElementById("aiTable").innerHTML = h.join("");
+    });
+})();
+</script>
 </body>
 </html>
