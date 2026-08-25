@@ -90,10 +90,10 @@
     </div>
     <div class="panel">
       <h3>Stations over their own 1-in-6 threshold, per source</h3>
-      <p class="sub">Of the season's 8 selected stations, how many exceed their own seasonal
+      <p class="sub">Of the season's selected stations, how many exceed their own seasonal
         1-in-6-year threshold that day (each source thresholded on its own 1999–2023
         climatology). Dashed grey: the consensus the action trigger requires. Amber ticks:
-        days the adopted source's consensus is met.</p>
+        days the window's majority model meets the adopted pair requirement.</p>
       <svg id="p2" viewBox="0 0 960 190" role="img" aria-label="station consensus counts"></svg>
     </div>
     <div class="panel">
@@ -303,7 +303,7 @@
       return '<span><i style="background:' + SRC_COLOR[s] + '"></i>' + SRC_LABEL[s] + "</span>";
     }).join("") +
       '<span><i style="background:' + INK + '"></i>SWALIM observed level</span>' +
-      '<span><i style="background:' + C_MOD + ';height:9px;width:3px"></i>adopted consensus met</span>';
+      '<span><i style="background:' + C_MOD + ';height:9px;width:3px"></i>majority-model consensus met</span>';
   }
 
   function setBasin(b) { state.basin = b; boot(); }

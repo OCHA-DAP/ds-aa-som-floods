@@ -77,10 +77,13 @@ def main():
         sets, n_req, adopted_src, act_years = {}, {}, {}, {}
         for season in ("gu", "deyr"):
             c = cfg[(cfg.river == basin) & (cfg.season == season)]
-            sets[season] = c.station.tolist()
-            n_req[season] = int(c.n_stations_required.iloc[0])
+            # the config is (station, model) pairs — the explorer shows counts
+            # per model over the window's DISTINCT stations
+            sets[season] = list(dict.fromkeys(c.station))
+            n_req[season] = int(c.n_pairs_required.iloc[0])
             leg = legs[(legs.river == basin) & (legs.season == season)].iloc[0]
-            adopted_src[season] = leg.source
+            # mixed-model windows: the tick line uses the window's majority model
+            adopted_src[season] = c.source.value_counts().idxmax()
             ys = str(leg.activation_years)
             act_years[season] = sorted({int(y) for y in ys.split(",") if y.strip().isdigit()})
         out.update(stations=sets, n_req=n_req, adopted_source=adopted_src,
