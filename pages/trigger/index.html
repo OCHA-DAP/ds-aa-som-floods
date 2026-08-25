@@ -436,14 +436,16 @@ table.ai .num { font-size:10px; }
     <h2>Activations, impact and response, year by year</h2>
     <p>The two-historical-records rule: the trigger record against <em>impact</em>, not
        just the hazard benchmark. Everything is grouped <strong>basin → season</strong>,
-       reverse-chronological. The <em>pairs</em> column is the trigger's actual decision
-       variable: <strong>the peak number of (station, model) pairs simultaneously over
-       their thresholds</strong> that season-year — the cell is highlighted dark when it
-       meets the requirement shown in the season header (= the trigger activates).
-       <em>bnch</em> is the SWALIM benchmark class of that season (sev = 1-in-5,
-       mod = 1-in-3); EM-DAT is people affected and CERF the flood allocation (US$),
-       shaded by magnitude, each attributed to the basin(s) named in the event or
-       allocation narrative.</p>
+       reverse-chronological. The <em>trigger</em> column is the trigger's actual
+       decision variable: <strong>the peak number of (station, model) pairs
+       simultaneously over their thresholds</strong> that season-year — the cell fills
+       <span style="color:#B34036;font-weight:700">red</span> when it meets the
+       requirement shown in the season header (= the trigger activates). <em>bnch</em> is
+       the SWALIM benchmark class of that season, shaded (sev = 1-in-5, mod = 1-in-3);
+       <span style="color:#8E5FA8;font-weight:700">EM-DAT</span> (purple) is people
+       affected and <span style="color:#2A78D6;font-weight:700">CERF</span> (blue) the
+       flood allocation (US$), shaded by magnitude, each attributed to the basin(s) named
+       in the event or allocation narrative.</p>
     <table class="ai" id="aiTable"><tr><td>loading…</td></tr></table>
     <p style="font-size:12px;color:var(--n7);line-height:1.6">
       <strong>Attribution &amp; caveats.</strong> EM-DAT is a floor (entry-criteria bias),
@@ -560,14 +562,14 @@ table.ai .num { font-size:10px; }
   // reverse chronological
   function emShade(v) {
     if (!v) return "";
-    if (v >= 1e6) return "background:rgba(244,169,59,.45);";
-    if (v >= 2.5e5) return "background:rgba(244,169,59,.28);";
-    return "background:rgba(244,169,59,.14);";
+    if (v >= 1e6) return "background:rgba(142,95,168,.42);";
+    if (v >= 2.5e5) return "background:rgba(142,95,168,.26);";
+    return "background:rgba(142,95,168,.13);";
   }
   function cerfShade(v) {
     if (!v) return "";
-    return (v >= 8e6 ? "background:rgba(38,151,119,.32);"
-                     : "background:rgba(38,151,119,.17);");
+    return (v >= 8e6 ? "background:rgba(42,120,214,.30);"
+                     : "background:rgba(42,120,214,.16);");
   }
   fetch("activation_impact.json").then(function (r) { return r.json(); })
     .then(function (D) {
@@ -575,8 +577,8 @@ table.ai .num { font-size:10px; }
       var h = [];
       h.push("<colgroup><col style='width:40px'>" +
         groups.map(function () {
-          return "<col style='width:40px'><col style='width:32px'>" +
-                 "<col style='width:44px'><col style='width:42px'>";
+          return "<col style='width:46px'><col style='width:32px'>" +
+                 "<col style='width:42px'><col style='width:40px'>";
         }).join("") + "</colgroup>");
       h.push('<tr><th rowspan="3" style="vertical-align:bottom">year</th>' +
         ["Juba", "Shabelle"].map(function (b) {
@@ -589,7 +591,8 @@ table.ai .num { font-size:10px; }
                " — ≥" + m.n_req + "/" + m.pool + "</th>";
       }).join("") + "</tr>");
       h.push("<tr>" + groups.map(function () {
-        return '<th class="gl">pairs</th><th>bnch</th><th>EM-DAT</th><th>CERF</th>';
+        return '<th class="gl" style="color:#B34036">trigger</th><th>bnch</th>' +
+               '<th style="color:#8E5FA8">EM-DAT</th><th style="color:#2A78D6">CERF</th>';
       }).join("") + "</tr>");
       D.rows.slice().reverse().forEach(function (r) {
         var cells = ["<td><b>" + r.year + "</b></td>"];
@@ -597,18 +600,20 @@ table.ai .num { font-size:10px; }
           var w = r.basins[g[0]][g[1]];
           var m = D.meta.windows[g[0] + "_" + g[1]];
           if (w.adopted)
-            cells.push('<td class="gl" style="background:rgba(26,39,51,.24)" ' +
+            cells.push('<td class="gl" style="background:rgba(179,64,54,.30)" ' +
               'title="trigger activates: ' + w.n + " of " + m.pool +
               ' pairs over threshold (requires ' + m.n_req + ')">' +
-              "<b>" + w.n + "</b></td>");
+              '<b style="color:#7A241C">' + w.n + "</b></td>");
           else
             cells.push('<td class="gl"' +
               (w.n ? ' title="' + w.n + " of " + m.pool + ' pairs over threshold"' : "") +
               ">" + (w.n ? w.n : '<span style="color:#c9cfd6">0</span>') + "</td>");
           if (w.bench === "severe")
-            cells.push('<td><span style="color:#B34036;font-weight:700">sev</span></td>');
+            cells.push('<td style="background:rgba(179,64,54,.14)">' +
+              '<span style="color:#B34036;font-weight:700">sev</span></td>');
           else if (w.bench === "moderate")
-            cells.push('<td><span style="color:#B8860B;font-weight:500">mod</span></td>');
+            cells.push('<td style="background:rgba(244,169,59,.18)">' +
+              '<span style="color:#B8860B;font-weight:500">mod</span></td>');
           else cells.push('<td style="color:#c9cfd6"></td>');
           var e = w.emdat;
           cells.push('<td class="num" style="' + emShade(e && e.aff) + '"' +
