@@ -417,10 +417,11 @@ table.ai .num { font-size:10px; }
     <p>The two-historical-records rule: the trigger record against <em>impact</em>, not
        just the hazard benchmark. Everything is grouped <strong>basin → season</strong>,
        so each basin-season's activations, benchmark and impact sit side by side,
-       reverse-chronological. One encoding: <strong>a dot means "activated"</strong> —
-       colored dots are the individual models (each judged over the window's distinct
-       stations with its own 1-in-6 thresholds), the black dot in the <em>trig</em>
-       column is the adopted trigger itself. <em>bnch</em> is the SWALIM benchmark class
+       reverse-chronological. One encoding: <strong>a filled
+       (shaded) cell means "activated"</strong> — model columns fill in the model's color
+       (each model judged over the window's distinct stations with its own 1-in-6
+       thresholds), and the <em>trig</em> column fills dark when the adopted trigger
+       itself activated. <em>bnch</em> is the SWALIM benchmark class
        of that season (sev = 1-in-5, mod = 1-in-3); EM-DAT is people affected and CERF
        the flood allocation (US$), each attributed to the basin(s) named in the event or
        allocation narrative.</p>
@@ -488,6 +489,8 @@ table.ai .num { font-size:10px; }
   var SRC = ["geoglows", "glofas_v5", "google_grrr"];
   var SRC_SHORT = { geoglows: "GEO", glofas_v5: "GLO5", google_grrr: "GOO" };
   var SRC_COLOR = { geoglows: "#8E5FA8", glofas_v5: "#B34036", google_grrr: "#2A78D6" };
+  var SRC_TINT = { geoglows: "rgba(142,95,168,.20)", glofas_v5: "rgba(179,64,54,.18)",
+                   google_grrr: "rgba(42,120,214,.17)" };
   var SRC_TINT = { geoglows: "rgba(142,95,168,.16)", glofas_v5: "rgba(179,64,54,.15)",
                    google_grrr: "rgba(42,120,214,.14)" };
 
@@ -539,17 +542,19 @@ table.ai .num { font-size:10px; }
     .then(function (D) {
       var groups = [["juba", "gu"], ["juba", "deyr"], ["shabelle", "gu"], ["shabelle", "deyr"]];
       var h = [];
-      h.push("<colgroup><col style='width:34px'>" +
+      h.push("<colgroup><col style='width:38px'>" +
         groups.map(function () {
-          return "<col style='width:25px'><col style='width:19px'><col style='width:19px'>" +
-                 "<col style='width:19px'><col style='width:27px'><col style='width:34px'><col style='width:33px'>";
+          return "<col style='width:24px'><col style='width:19px'><col style='width:19px'>" +
+                 "<col style='width:19px'><col style='width:26px'><col style='width:33px'><col style='width:32px'>";
         }).join("") + "</colgroup>");
-      h.push('<tr><th rowspan="2" style="vertical-align:bottom">yr</th>' +
-        groups.map(function (g) {
-          return '<th colspan="7" class="gl">' +
-                 g[0].charAt(0).toUpperCase() + g[0].slice(1) + " — " +
-                 g[1].charAt(0).toUpperCase() + g[1].slice(1) + "</th>";
+      h.push('<tr><th rowspan="3" style="vertical-align:bottom">year</th>' +
+        ["Juba", "Shabelle"].map(function (b) {
+          return '<th colspan="14" class="gl" style="font-size:10px">' + b + "</th>";
         }).join("") + "</tr>");
+      h.push("<tr>" + groups.map(function (g) {
+        return '<th colspan="7" class="gl">' +
+               g[1].charAt(0).toUpperCase() + g[1].slice(1) + "</th>";
+      }).join("") + "</tr>");
       h.push("<tr>" + groups.map(function () {
         var AB = { geoglows: "GE", glofas_v5: "G5", google_grrr: "GO" };
         return '<th class="gl">trig</th>' +
@@ -559,16 +564,18 @@ table.ai .num { font-size:10px; }
                "<th>bnch</th><th>EM-DAT</th><th>CERF</th>";
       }).join("") + "</tr>");
       D.rows.slice().reverse().forEach(function (r) {
-        var cells = ["<td><b>" + String(r.year).slice(2) + "</b></td>"];
+        var cells = ["<td><b>" + r.year + "</b></td>"];
         groups.forEach(function (g) {
           var w = r.basins[g[0]][g[1]];
-          cells.push('<td class="gl dot">' +
-            (w.adopted ? '<span style="color:#1A2733">●</span>'
-                       : '<span style="color:#e4e8ec">·</span>') + "</td>");
+          cells.push('<td class="gl dot"' +
+            (w.adopted ? ' style="background:rgba(26,39,51,.22)" title="adopted trigger activates"' : "") +
+            ">" + (w.adopted ? '<span style="color:#1A2733">●</span>'
+                             : '<span style="color:#e4e8ec">·</span>') + "</td>");
           SRC.forEach(function (s2) {
-            cells.push('<td class="dot">' +
-              (w.act[s2] ? '<span style="color:' + SRC_COLOR[s2] + '">●</span>'
-                         : '<span style="color:#e4e8ec">·</span>') + "</td>");
+            cells.push('<td class="dot"' +
+              (w.act[s2] ? ' style="background:' + SRC_TINT[s2] + '"' : "") +
+              ">" + (w.act[s2] ? '<span style="color:' + SRC_COLOR[s2] + '">●</span>'
+                               : '<span style="color:#e4e8ec">·</span>') + "</td>");
           });
           if (w.bench === "severe")
             cells.push('<td><span style="color:#B34036;font-weight:700">sev</span></td>');
