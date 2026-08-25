@@ -1,0 +1,52 @@
+name: Deploy pages site to GitHub Pages
+
+# Publishes the landing page and the trigger-analysis report (pages/) as this repo's one
+# Pages site, per the team convention (ds-knowledge-base methods/static-data-apps.md,
+# "One repo, one Pages site"). Template: OCHA-DAP/ds-seas5-skill (hand-edited-cards
+# variant — two cards do not need a manifest; the manifest-driven variant lives in
+# OCHA-DAP/ds-storm-impact-harmonisation). No build step, no Python, no credentials.
+#
+# The repo is private, so the site is served on a private *.pages.github.io subdomain,
+# visible to OCHA-DAP members only.
+#
+# workflow_dispatch exists for manual redeploys (including from a branch, pre-merge).
+# configure-pages with enablement: true creates/switches the site to workflow builds on
+# first run.
+
+on:
+  push:
+    branches: [main]
+    paths: ["pages/**", ".github/workflows/deploy-pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble site (landing at /, report at /trigger/)
+        run: |
+          mkdir -p site
+          rsync -a pages/ site/
+          test -f site/index.html && test -f site/trigger/index.html
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

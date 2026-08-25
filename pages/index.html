@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Somalia Riverine Flood Trigger — OCHA Centre for Humanitarian Data</title>
+<meta name="description" content="Anticipatory-action trigger design for riverine flooding on the Juba and Shabelle rivers, Somalia: multi-source forecast consensus calibrated against SWALIM river gauges.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <canvas id="bg" aria-hidden="true"></canvas>
+    <div class="inner">
+      <p class="eyebrow">OCHA Centre for Humanitarian Data</p>
+      <h1>Somalia Riverine Flood Trigger</h1>
+      <p>Trigger design for anticipatory action against riverine flooding on the Juba and
+         Shabelle rivers. Three global streamflow models — GloFAS, Google Flood Hub and
+         GEOGloWS — compete station by station against SWALIM river-gauge observations;
+         the winners form a per-basin forecast consensus with a readiness leg at 7–12 days
+         and an action leg at up to 6 days.</p>
+    </div>
+  </header>
+
+  <main>
+    <p class="label">The trigger analysis</p>
+    <div class="grid grid-one">
+
+      <a class="k k-feature" href="trigger/">
+        <span class="body">
+          <h2>The multi-source trigger mechanism</h2>
+          <p>The proposed mechanism and the evidence behind it: pooled station selection
+             across the three providers, per-station return-period thresholds, the
+             basin-level consensus rule, return-period bookkeeping (1-in-4.3 per basin,
+             1-in-3.7 overall), reforecast backtests and per-event anticipation.</p>
+          <span class="views">Mechanism · Selection · Calibration · Backtests ·
+             Readiness · Caveats</span>
+          <span class="foot"><em>/trigger/</em><span>August 2026</span></span>
+        </span>
+        <span class="shot">
+          <img src="trigger/figs/c_backtest_strip.png" alt="" loading="lazy">
+        </span>
+      </a>
+
+    </div>
+
+    <p class="label label-2">Source material</p>
+    <div class="grid">
+
+      <a class="k" href="https://github.com/OCHA-DAP/ds-aa-som-floods/tree/main/analysis">
+        <h2>Analysis notebooks<span class="chip chip-ext">GitHub</span></h2>
+        <p>The full evidence chain: SWALIM threshold analysis, model-vs-gauge skill,
+           lead-time skill, flood benchmarks, station selection, trigger grid search and
+           the staged-mechanism exploration (notebooks 01–10, P. Wairimu) plus the
+           multi-source mechanism itself (notebook 11).</p>
+        <span class="foot"><em>ds-aa-som-floods/analysis</em></span>
+      </a>
+
+      <a class="k" href="https://github.com/OCHA-DAP/ds-knowledge-base/blob/main/analysis/som-flooding-multisource.md">
+        <h2>Knowledge-base page<span class="chip chip-ext">GitHub</span></h2>
+        <p>The team knowledge-base landing page for this analysis: what was analysed, the
+           headline findings, data sources and how this relates to the (future) Somalia
+           flooding framework.</p>
+        <span class="foot"><em>ds-knowledge-base</em></span>
+      </a>
+
+    </div>
+  </main>
+
+  <div class="note">
+    <p><strong>Access.</strong> This repository is private, so this site is visible to
+       OCHA-DAP organisation members only.</p>
+    <p><strong>Adding a page?</strong> Create a directory under <code>pages/</code> with an
+       <code>index.html</code> and add a card above; the deploy workflow publishes
+       <code>pages/</code> as the site root. Template lineage:
+       <a href="https://github.com/OCHA-DAP/ds-seas5-skill">ds-seas5-skill</a> /
+       <a href="https://github.com/OCHA-DAP/ds-geospatial-impact-estimates">ds-geospatial-impact-estimates</a>.</p>
+  </div>
+
+</div>
+
+<script src="assets/hero.js" defer></script>
+</body>
+</html>
