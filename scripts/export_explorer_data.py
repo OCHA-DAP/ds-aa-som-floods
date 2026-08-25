@@ -86,8 +86,21 @@ def main():
             adopted_src[season] = c.source.value_counts().idxmax()
             ys = str(leg.activation_years)
             act_years[season] = sorted({int(y) for y in ys.split(",") if y.strip().isdigit()})
-        out.update(stations=sets, n_req=n_req, adopted_source=adopted_src,
-                   activation_years=act_years)
+        # the trigger's decision variable: daily count of pool pairs over their
+        # adopted thresholds (a station carried by two models counts twice)
+        pair_over, pool = {}, {}
+        for season in ("gu", "deyr"):
+            c = cfg[(cfg.river == basin) & (cfg.season == season)]
+            pool[season] = len(c)
+            for _, r in c.iterrows():
+                sser = dd[(dd.file_source == r.source) & (dd.station == r.station)
+                          ].set_index("date")["discharge"]
+                sser = sser[sser.index.month.isin(SEASONS[season])]
+                sser = sser[(sser.index.year >= YEARS[0]) & (sser.index.year <= YEARS[1])]
+                pair_over.setdefault(season, []).append(
+                    set(sser[sser >= r.threshold_m3s].index))
+        out.update(stations=sets, n_req=n_req, pool=pool,
+                   adopted_source=adopted_src, activation_years=act_years)
 
         b = bench[(bench.river == basin) & (bench.benchmark == GAUGE_BM[basin])]
         out["benchmark"] = {
@@ -163,10 +176,16 @@ def main():
                         None if (np.isnan(v) or np.isnan(t) or t == 0)
                         else round(float(v / t), 3)
                     )
+            trig = []
+            for ts in idx:
+                season = season_of(ts)
+                trig.append(None if season is None
+                            else int(sum(ts in po for po in pair_over[season])))
             years_out[str(year)] = {
                 "swalim": [None if np.isnan(v) else round(float(v), 2) for v in swv],
                 "counts": counts,
                 "ratio": ratio,
+                "trigger_pairs": trig,
             }
         out["years"] = years_out
 

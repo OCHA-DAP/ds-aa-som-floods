@@ -90,10 +90,12 @@
     </div>
     <div class="panel">
       <h3>Stations over their own 1-in-6 threshold, per source</h3>
-      <p class="sub">Of the season's selected stations, how many exceed their own seasonal
-        1-in-6-year threshold that day (each source thresholded on its own 1999–2023
-        climatology). Dashed grey: the consensus the action trigger requires. Amber ticks:
-        days the window's majority model meets the adopted pair requirement.</p>
+      <p class="sub">Colored lines: per source, how many of the season's selected stations
+        exceed their own seasonal 1-in-6-year threshold that day (each source thresholded
+        on its own 1999–2023 climatology). Black line: <strong>the trigger's decision
+        variable</strong> — the number of pool (station, model) pairs over their adopted
+        thresholds (a station carried by two models counts twice). Dashed grey: the
+        required count. Amber ticks: days the trigger activates.</p>
       <svg id="p2" viewBox="0 0 960 190" role="img" aria-label="station consensus counts"></svg>
     </div>
     <div class="panel">
@@ -227,22 +229,26 @@
                   '" stroke-width="1.8"/>');
     el("p1").innerHTML = s1.parts.join("");
 
-    // panel 2 — consensus counts
-    var s2 = scaffold(el("p2"), n, 0, 8.4, 960, 190, year,
+    // panel 2 — consensus counts + the trigger's pair count
+    var ymax2 = Math.max(8, (D.pool && D.pool.gu) || 0, (D.pool && D.pool.deyr) || 0) + 0.4;
+    var s2 = scaffold(el("p2"), n, 0, ymax2, 960, 190, year,
                       function (v) { return Math.round(v); });
     var ms = monthStarts(year);
     s2.parts.push(dash(s2, D.n_req.gu, FAINT, ms[2], ms[5]));
     s2.parts.push(dash(s2, D.n_req.deyr, FAINT, ms[9], n - 1));
     SRC.forEach(function (src) {
       s2.parts.push('<path d="' + linePath(Y.counts[src], s2, true) + '" fill="none" stroke="' +
-                    SRC_COLOR[src] + '" stroke-width="1.8" stroke-linejoin="round"/>');
+                    SRC_COLOR[src] + '" stroke-width="1.4" stroke-linejoin="round" opacity="0.75"/>');
     });
-    // amber ticks where the adopted source meets its requirement
+    if (Y.trigger_pairs)
+      s2.parts.push('<path d="' + linePath(Y.trigger_pairs, s2, true) + '" fill="none" stroke="' +
+                    INK + '" stroke-width="2.2" stroke-linejoin="round"/>');
+    // amber ticks where the trigger's pair count meets the requirement
     for (var i = 0; i < n; i++) {
       var mo = new Date(Date.UTC(year, 0, 1) + i * 864e5).getUTCMonth() + 1;
       var season = (mo >= 3 && mo <= 5) ? "gu" : (mo >= 10 ? "deyr" : null);
-      if (!season) continue;
-      var v = Y.counts[D.adopted_source[season]][i];
+      if (!season || !Y.trigger_pairs) continue;
+      var v = Y.trigger_pairs[i];
       if (v !== null && v >= D.n_req[season]) {
         s2.parts.push('<line x1="' + s2.x(i) + '" x2="' + s2.x(i) + '" y1="' + M.t +
                       '" y2="' + (M.t + 7) + '" stroke="' + C_MOD + '" stroke-width="2"/>');
@@ -302,8 +308,8 @@
     el("legend").innerHTML = SRC.map(function (s) {
       return '<span><i style="background:' + SRC_COLOR[s] + '"></i>' + SRC_LABEL[s] + "</span>";
     }).join("") +
-      '<span><i style="background:' + INK + '"></i>SWALIM observed level</span>' +
-      '<span><i style="background:' + C_MOD + ';height:9px;width:3px"></i>majority-model consensus met</span>';
+      '<span><i style="background:' + INK + '"></i>SWALIM level / trigger pair count</span>' +
+      '<span><i style="background:' + C_MOD + ';height:9px;width:3px"></i>trigger activates</span>';
   }
 
   function setBasin(b) { state.basin = b; boot(); }
@@ -344,6 +350,7 @@
   hookHover("p2", function (i) {
     var Y = D.years[state.year];
     return '<div class="d">' + dayLabel(+state.year, i) + " " + state.year + "</div>" +
+           row(INK, "trigger pairs", Y.trigger_pairs ? Y.trigger_pairs[i] : null) +
            SRC.map(function (s) { return row(SRC_COLOR[s], SRC_LABEL[s], Y.counts[s][i]); }).join("");
   });
   hookHover("p3", function (i) {
