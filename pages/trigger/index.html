@@ -98,11 +98,12 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
       <li><strong>Readiness (leads 7–12 days)</strong> — GloFAS ensemble-median forecast;
           releases only the small mobilisation share. GloFAS is the only provider whose
           forecasts reach past 7 days with a historical archive to validate against.</li>
-      <li><strong>Action (leads ≤ 6 days)</strong> — a consensus of the basin's 8
-          best-skill <strong>(station, model) pairs</strong>. Pairs compete freely — the
-          same station may carry two models — and every pair has its own return-period
-          threshold; the trigger activates when at least N of the 8 exceed their
-          thresholds on the same forecast valid day.</li>
+      <li><strong>Action (leads ≤ 6 days)</strong> — a consensus of
+          <strong>(station, model) pairs</strong>. Pairs compete freely — the same
+          station may carry two models — and the window's voting pool is every pair
+          within 0.10 ρ of its best pair (8–12 pairs per window). Every pair has its own
+          return-period threshold; the trigger activates when at least N of the pool
+          exceed their thresholds on the same forecast valid day.</li>
     </ul>
 
     <div class="tablewrap">
@@ -110,17 +111,17 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
       <tr><th>window</th><th>action trigger (leads ≤ 6 d)</th><th>leg RP</th>
           <th>readiness (leads 7–12 d)</th><th>readiness RP</th></tr>
       <tr><td><em>Juba Gu</em></td>
-          <td>Google GRRR ×6 + GloFAS v5 + GEOGloWS: ≥ 6 of 8 pairs over their 1-in-6-yr thresholds</td>
-          <td>6.5 yr</td><td>GloFAS ens-median: ≥ 4/7 over 1-in-2-yr</td><td>3.7 yr</td></tr>
+          <td>Google GRRR ×8 + GloFAS v5 ×3 + GEOGloWS: ≥ 9 of 12 pairs over their 1-in-5-yr thresholds</td>
+          <td>6.5 yr</td><td>GloFAS ens-median: ≥ 5/8 over 1-in-2-yr</td><td>3.7 yr</td></tr>
       <tr><td><em>Juba Deyr</em></td>
           <td>GloFAS v5 ×6 + GEOGloWS ×2: ≥ 5 of 8 pairs over their 1-in-4-yr thresholds</td>
           <td>13.0 yr</td><td>GloFAS ens-median: ≥ 5/6 over 1-in-2-yr</td><td>4.4 yr</td></tr>
       <tr><td><em>Shabelle Gu</em></td>
-          <td>Google GRRR ×7 + GloFAS v5: all 8 pairs over their 1-in-5-yr thresholds</td>
-          <td>13.0 yr</td><td>GloFAS ens-median: ≥ 2/7 over 1-in-3-yr</td><td>3.7 yr</td></tr>
+          <td>Google GRRR ×8 + GloFAS v5: all 9 pairs over their 1-in-5-yr thresholds</td>
+          <td>13.0 yr</td><td>GloFAS ens-median: ≥ 2/8 over 1-in-3-yr</td><td>3.7 yr</td></tr>
       <tr><td><em>Shabelle Deyr</em></td>
-          <td>GloFAS v5 ×7 + GEOGloWS: ≥ 6 of 8 pairs over their 1-in-5-yr thresholds</td>
-          <td>6.5 yr</td><td>GloFAS ens-median: ≥ 5/7 over 1-in-2-yr</td><td>3.1 yr</td></tr>
+          <td>GloFAS v5 ×8 + GEOGloWS ×2: ≥ 8 of 10 pairs over their 1-in-4-yr thresholds</td>
+          <td>6.5 yr</td><td>GloFAS ens-median: ≥ 5/8 over 1-in-2-yr</td><td>3.1 yr</td></tr>
     </table>
     </div>
 
@@ -138,8 +139,10 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
         <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/src/constants.py">src/constants.py</a>)
         on the two rivers; stars are the SWALIM reference gauges (Luuq, Belet Weyne) the
         mechanism is calibrated against; numbers are each station's best selection ρ. An
-        <strong>outer ring means the station carries a second model</strong> (×2): Luuq in
-        Gu (Google + GloFAS); Dollow, Luuq and Belet Weyne in Deyr (GloFAS + GEOGloWS).</figcaption>
+        <strong>outer ring means the station carries more than one model</strong> (×2): in
+        Gu, Bardheere, Dollow (which carries all three) and Luuq on the Juba and Belet
+        Weyne on the Shabelle; in Deyr, Dollow, Luuq, Belet Weyne and Bulo Burti (all
+        GloFAS + GEOGloWS).</figcaption>
     </figure>
 
     <h2>How the pairs were chosen</h2>
@@ -155,17 +158,17 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
        <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/05_flood_benchmark.ipynb">notebook 05</a>
        showed must be primary over FloodScan on the Shabelle.
        <strong>Pairs compete freely</strong> (decision 2026-08-25: the goal is the best
-       forecasts on the right basin, and a station may carry two models), subject to two
-       guards and one preference:</p>
+       forecasts on the right basin, and a station may carry two models), under two rules
+       — <strong>neither of which knows what a model is</strong>:</p>
     <ul>
       <li><strong>Timing guard</strong>: pairs whose signal trails the reference gauge by
           more than 3 days are excluded — a ≤ 6-day trigger cannot spare that
           anticipation.</li>
-      <li><strong>Top 8 pairs by ρ</strong> per river × season.</li>
-      <li><strong>Diversity rule</strong>: a model absent from the window whose best
-          qualifying pair is within 0.05 ρ of the cut swaps in for the lowest-ranked pair
-          of the majority model — multi-model representation was an explicit stakeholder
-          wish, and near-ties should break toward it.</li>
+      <li><strong>Relative quality floor</strong>: the voting pool is every qualifying
+          pair within 0.10 ρ of the window's best pair. No fixed count and no diversity
+          quota — with 25-year records, pairs that close are statistically
+          interchangeable, so all of them get a vote. Pool sizes come out at 8–12 pairs
+          per window.</li>
     </ul>
 
     <figure>
@@ -178,12 +181,14 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
         days and no guard-passing pair exists.</figcaption>
     </figure>
 
-    <p>How GEOGloWS ends up where it does: in <strong>Juba Deyr it enters on merit</strong>
-       — once the timing guard removes the four GloFAS pairs that trail the gauge by 4–5
-       days, GEOGloWS at Dollow (ρ 0.83, +1 d) and Luuq (0.82, −1 d) rank in the top 8
-       outright. In Juba Gu (Dollow) and Shabelle Deyr (Belet Weyne) it enters by the
-       diversity rule, within 0.02–0.05 ρ of the cut. In Shabelle Gu it has no pair
-       passing the timing guard (−4 to −10 d) and stays out. The full per-station numbers:</p>
+    <p>Multi-model representation is <strong>earned, not injected</strong>: GEOGloWS
+       clears the floor in three of the four windows — Juba Deyr (Dollow ρ 0.83 at +1 d
+       and Luuq 0.82, top-8 outright once the timing guard removes the trailing GloFAS
+       pairs), Juba Gu (Dollow 0.83, floor 0.77) and Shabelle Deyr (Belet Weyne 0.75 and
+       Bulo Burti 0.74, floor 0.73). In Shabelle Gu it has no pair passing the timing
+       guard (−4 to −10 d) and stays out. An earlier draft used an explicit diversity
+       rule to the same effect; it proved unnecessary and was dropped. The full
+       per-station numbers:</p>
 
     <details style="margin:14px 0 22px">
       <summary style="cursor:pointer;color:var(--b6);font-size:13.5px;font-weight:500">
@@ -322,9 +327,9 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
           <td><strong>over-fires</strong>: adds 2005, 2014, 2015, 2017 — see below</td></tr>
       <tr><td><em>Shabelle Gu</em></td><td>2016–2023</td><td>0</td>
           <td>0/2 — misses 2018 and 2020; adds 2016 (severe)</td>
-          <td><strong>fragile</strong>: the all-8-pairs rule rarely completes on
+          <td><strong>fragile</strong>: the all-9-pairs rule rarely completes on
               forecasts — see below</td></tr>
-      <tr><td><em>Shabelle Deyr</em></td><td>2003–2023</td><td>1</td>
+      <tr><td><em>Shabelle Deyr</em></td><td>2003–2023</td><td>2</td>
           <td>1/4 — catches 2019 (+11 d); <strong>misses Deyr 2023</strong>, 2014, 2006;
               adds 2013 (+21 d)</td>
           <td>the weak window; see the caveat below</td></tr>
@@ -345,7 +350,7 @@ table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-spac
       (1) <em>Juba Deyr over-fires on the proxy</em>: at its 1-in-4 pair thresholds the
       v4-reforecast evaluation activates 5 times in 21 years (~1-in-4.4) against the
       calibration's 2 — partly the two hindsight stand-in votes, partly v4-proxy
-      threshold transfer. (2) <em>Shabelle Gu's all-8-pairs consensus is fragile on
+      threshold transfer. (2) <em>Shabelle Gu's all-9-pairs consensus is fragile on
       forecasts</em>: one pair short on the right valid day and it stays silent (it
       reproduced neither 2018 nor 2020 operationally). Both windows' N and RP deserve a
       working-group pass with operational data before go-live — the basin-level RP

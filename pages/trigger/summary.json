@@ -1,9 +1,9 @@
 {
   "adopted": {
     "juba_gu": {
-      "label": "Google GRRR x6 + GloFAS v5 + GEOGloWS",
-      "rp": 6,
-      "n_req": 6,
+      "label": "Google GRRR x8 + GloFAS v5 x3 + GEOGloWS",
+      "rp": 5,
+      "n_req": 9,
       "years": [
         2013,
         2016,
@@ -21,18 +21,18 @@
       ]
     },
     "shabelle_gu": {
-      "label": "Google GRRR x7 + GloFAS v5",
+      "label": "Google GRRR x8 + GloFAS v5",
       "rp": 5,
-      "n_req": 8,
+      "n_req": 9,
       "years": [
         2018,
         2020
       ]
     },
     "shabelle_deyr": {
-      "label": "GloFAS v5 x7 + GEOGloWS",
-      "rp": 5,
-      "n_req": 6,
+      "label": "GloFAS v5 x8 + GEOGloWS x2",
+      "rp": 4,
+      "n_req": 8,
       "years": [
         2006,
         2014,
