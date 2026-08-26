@@ -1,38 +1,37 @@
 {
   "adopted": {
     "juba_gu": {
-      "label": "Google GRRR x8 + GloFAS v5 x3 + GEOGloWS",
-      "rp": 5,
-      "n_req": 9,
+      "label": "Google GRRR x2 + GloFAS v5 x2 + GEOGloWS",
+      "rp": 6,
+      "n_req": 3,
       "years": [
-        2013,
+        2010,
         2016,
         2018,
         2020
       ]
     },
     "juba_deyr": {
-      "label": "GloFAS v5 x6 + GEOGloWS x2",
-      "rp": 4,
-      "n_req": 5,
+      "label": "GloFAS v5 x2 + GEOGloWS x2",
+      "rp": 5,
+      "n_req": 3,
       "years": [
-        2006,
         2023
       ]
     },
     "shabelle_gu": {
-      "label": "Google GRRR x8 + GloFAS v5",
-      "rp": 5,
-      "n_req": 9,
+      "label": "Google GRRR x3 + GloFAS v5",
+      "rp": 6,
+      "n_req": 4,
       "years": [
-        2018,
+        2016,
         2020
       ]
     },
     "shabelle_deyr": {
-      "label": "GloFAS v5 x8 + GEOGloWS x2",
-      "rp": 4,
-      "n_req": 8,
+      "label": "GloFAS v5 x3 + GEOGloWS x2",
+      "rp": 5,
+      "n_req": 3,
       "years": [
         2006,
         2014,
@@ -42,13 +41,13 @@
     }
   },
   "basin_rp": {
-    "juba": 4.3,
+    "juba": 5.2,
     "shabelle": 4.3
   },
   "overall_rp": 3.2,
   "overall_years": [
     2006,
-    2013,
+    2010,
     2014,
     2016,
     2018,
