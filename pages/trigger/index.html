@@ -527,8 +527,11 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
        decision variable: <strong>the peak number of (station, model) pairs
        simultaneously over their thresholds</strong> that season-year — the cell fills
        <span style="color:#B34036;font-weight:700">red</span> when it meets the
-       requirement shown in the season header (= the trigger activates). <em>bnch</em> is
-       the SWALIM benchmark class of that season, shaded (sev = 1-in-5, mod = 1-in-3);
+       requirement shown in the season header (= the trigger activates). <em>RP</em> is
+       the empirical return period of that season's maximum level at the
+       SWALIM reference gauge — <strong>5yr</strong> = a 1-in-5-year level or higher,
+       <strong>3yr</strong> = 1-in-3 to 1-in-5 (Weibull on the gauge's own seasonal
+       maxima, per the threshold check above — not the official flood-risk levels);
        <span style="color:#8E5FA8;font-weight:700">EM-DAT</span> (purple) is people
        affected and <span style="color:#2A78D6;font-weight:700">CERF</span> (blue) the
        flood allocation (US$), shaded by magnitude, each attributed to the basin(s) named
@@ -740,7 +743,7 @@ document.querySelectorAll("article h2, article h3").forEach(function (el) {
                " — ≥" + m.n_req + "/" + m.pool + "</th>";
       }).join("") + "</tr>");
       h.push("<tr>" + groups.map(function () {
-        return '<th class="gl" style="color:#B34036">trigger</th><th>bnch</th>' +
+        return '<th class="gl" style="color:#B34036">trigger</th><th title="empirical RP of the season&#39;s max gauge level">RP</th>' +
                '<th style="color:#8E5FA8">EM-DAT</th><th style="color:#2A78D6">CERF</th>';
       }).join("") + "</tr>");
       D.rows.slice().reverse().forEach(function (r) {
@@ -758,11 +761,13 @@ document.querySelectorAll("article h2, article h3").forEach(function (el) {
               (w.n ? ' title="' + w.n + " of " + m.pool + ' pairs over threshold"' : "") +
               ">" + (w.n ? w.n : '<span style="color:#c9cfd6">0</span>') + "</td>");
           if (w.bench === "severe")
-            cells.push('<td style="background:rgba(179,64,54,.14)">' +
-              '<span style="color:#B34036;font-weight:700">sev</span></td>');
+            cells.push('<td style="background:rgba(179,64,54,.14)"' +
+              ' title="seasonal max level at the reference gauge: empirical RP ≥ 5 yr">' +
+              '<span style="color:#B34036;font-weight:700">5yr</span></td>');
           else if (w.bench === "moderate")
-            cells.push('<td style="background:rgba(244,169,59,.18)">' +
-              '<span style="color:#B8860B;font-weight:500">mod</span></td>');
+            cells.push('<td style="background:rgba(244,169,59,.18)"' +
+              ' title="seasonal max level at the reference gauge: empirical RP ≥ 3 yr">' +
+              '<span style="color:#B8860B;font-weight:500">3yr</span></td>');
           else cells.push('<td style="color:#c9cfd6"></td>');
           var e = w.emdat;
           cells.push('<td class="num" style="' + emShade(e && e.aff) + '"' +

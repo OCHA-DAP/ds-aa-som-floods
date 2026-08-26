@@ -280,10 +280,10 @@
       if (D.activation_years[s].indexOf(y) >= 0)
         tags.push(s.charAt(0).toUpperCase() + s.slice(1) + " action trigger activates");
     });
-    if (D.benchmark.severe_years.indexOf(y) >= 0) tags.push("severe (1-in-5) flood year");
-    else if (D.benchmark.moderate_years.indexOf(y) >= 0) tags.push("moderate (1-in-3) flood year");
+    if (D.benchmark.severe_years.indexOf(y) >= 0) tags.push("gauge level ≥ 1-in-5-yr RP");
+    else if (D.benchmark.moderate_years.indexOf(y) >= 0) tags.push("gauge level ≥ 1-in-3-yr RP");
     el("yearNote").innerHTML = tags.length ? "<b>" + esc(tags.join(" · ")) + "</b>"
-                                           : "no benchmark flood, no activation";
+                                           : "gauge level under the 1-in-3-yr RP, no activation";
   }
 
   // ---- controls ------------------------------------------------------
@@ -291,8 +291,8 @@
     var marks = [];
     if (D.activation_years.gu.indexOf(y) >= 0 || D.activation_years.deyr.indexOf(y) >= 0)
       marks.push("activated");
-    if (D.benchmark.severe_years.indexOf(y) >= 0) marks.push("severe");
-    else if (D.benchmark.moderate_years.indexOf(y) >= 0) marks.push("moderate");
+    if (D.benchmark.severe_years.indexOf(y) >= 0) marks.push("5yr RP");
+    else if (D.benchmark.moderate_years.indexOf(y) >= 0) marks.push("3yr RP");
     return y + (marks.length ? " — " + marks.join(", ") : "");
   }
   function fillControls() {
