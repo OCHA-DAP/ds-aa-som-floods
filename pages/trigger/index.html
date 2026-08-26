@@ -66,6 +66,35 @@ table.ai .num { font-size:10px; }
 a.hl { margin-left:8px; color:#d4dee4; text-decoration:none; font-weight:400;
        font-family:'Roboto',sans-serif; font-size:.85em; }
 h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
+/* provider-set switch: sticky banner toggling the whole report between the
+   adopted three-provider mechanism and the GloFAS+GEOGloWS-only variant */
+.vbar { position:sticky; top:0; z-index:40; background:rgba(255,255,255,.97);
+        backdrop-filter:saturate(1.6) blur(6px);
+        border-bottom:1px solid #dfe5e5; box-shadow:0 1px 6px rgba(26,39,51,.05); }
+.vbar-in { max-width:860px; margin:0 auto; padding:9px 44px; display:flex;
+           align-items:center; gap:14px; flex-wrap:wrap; }
+.vbar-l { font-size:10.5px; text-transform:uppercase; letter-spacing:.08em;
+          color:var(--n7); font-weight:700; }
+.vseg { display:inline-flex; border:1px solid #ccd5d5; border-radius:5px;
+        overflow:hidden; background:#fff; }
+.vseg button { appearance:none; border:0; background:#fff; cursor:pointer;
+               font-family:'Roboto',sans-serif; font-size:12.5px; color:var(--n8);
+               padding:6px 13px; line-height:1.2; white-space:nowrap; }
+.vseg button + button { border-left:1px solid #ccd5d5; }
+.vseg button:hover { background:var(--n05); }
+.vseg button.on { background:var(--b6); color:#fff; font-weight:500; }
+.vbar-note { font-size:12px; color:var(--n7); }
+.vbar.alt { background:#fff9f0ee; border-bottom-color:#e6c893; }
+.vbar.alt .vbar-note { color:#8a5d1b; }
+.altonly { display:none; }
+body.variant .altonly { display:block; }
+body.variant .stdonly { display:none; }
+span.altonly, a.altonly { display:none; }
+body.variant span.altonly { display:inline; }
+body.variant span.stdonly, body.variant a.stdonly { display:none; }
+.vswap { transition:background .35s ease; }
+.vswap.flash { background:#fff4dd; }
+@media (max-width:640px) { .vbar-in { padding:8px 22px; gap:9px; } }
 @media (max-width:640px) {
   article { padding:4px 22px 16px; }
   .hero.hero-sub { padding:32px 22px 28px; }
@@ -87,15 +116,37 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
     </div>
   </header>
 
+  <div class="vbar" id="vbar">
+    <div class="vbar-in">
+      <span class="vbar-l">Provider set</span>
+      <div class="vseg" role="group" aria-label="Provider set">
+        <button type="button" id="vAll" class="on" aria-pressed="true">All three providers</button>
+        <button type="button" id="vNog" aria-pressed="false">Without Google Flood Hub</button>
+      </div>
+      <span class="vbar-note" id="vbarNote">Adopted mechanism — GloFAS v5 + Google GRRR + GEOGloWS</span>
+    </div>
+  </div>
+
   <article>
 
+    <div class="callout warn altonly" style="margin-top:18px">
+      <strong>You are viewing the no-Google variant.</strong> The whole report below —
+      mechanism table, return periods, backtest and the year-by-year table — is
+      recalibrated from scratch with <strong>Google Flood Hub excluded</strong>, using
+      identical rules (active gauges, −3 d timing guard, 0.10 ρ floor, joint basin
+      calibration at ≥ 3 yr overall). This is a resilience scenario for the working
+      group, <em>not</em> the proposed mechanism. Narrative sections that do not depend
+      on the provider set (selection method, threshold philosophy, GEOGloWS debias,
+      impact records) read the same in both views.
+    </div>
+
     <div class="stats">
-      <div class="stat"><span class="v">1-in-3.2</span>
+      <div class="stat"><span class="v vswap" data-alt="1-in-3.7">1-in-3.2</span>
         <span class="l">overall action return period (either basin)</span></div>
-      <div class="stat"><span class="v">1-in-4.3 / 5.2</span>
-        <span class="l">per basin (Shabelle / Juba), near-equal by construction</span></div>
-      <div class="stat"><span class="v">5 gauges</span>
-        <span class="l">every forecast point sits on a live SWALIM gauge</span></div>
+      <div class="stat"><span class="v vswap" data-alt="1-in-4.3">1-in-4.3 / 5.2</span>
+        <span class="l vswap" data-alt="per basin — exactly equal here">per basin, Shabelle / Juba</span></div>
+      <div class="stat"><span class="v vswap" data-alt="2 providers">5 gauges</span>
+        <span class="l vswap" data-alt="GloFAS v5 + GEOGloWS only (Google excluded)">every forecast point sits on a live SWALIM gauge</span></div>
       <div class="stat"><span class="v">7–12 d</span>
         <span class="l">readiness lead time (action at ≤ 6 days)</span></div>
     </div>
@@ -115,8 +166,10 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
           SNRFA gauges still reporting</strong> (Belet Weyne, Bulo Burti, Jowhar on the
           Shabelle; Luuq, Dollow on the Juba — decision 2026-08-26, so every activation
           is verifiable against a live gauge). Pairs compete freely — the same station
-          may carry two or all three models — and the window's voting pool is every pair
-          within 0.10 ρ of its best pair (4–5 pairs per window). Every pair has its own
+          may carry <span class="vswap" data-alt="both remaining models">two or all three
+          models</span> — and the window's voting pool is every pair
+          within 0.10 ρ of its best pair (<span class="vswap" data-alt="1–5 pairs per
+          window in this variant">4–5 pairs per window</span>). Every pair has its own
           return-period threshold; the trigger activates when at least N of the pool
           exceed their thresholds on the same forecast valid day.</li>
     </ul>
@@ -126,21 +179,21 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
       <tr><th>window</th><th>action trigger (leads ≤ 6 d)</th><th>leg RP</th>
           <th>readiness (leads 7–12 d)</th><th>readiness RP</th></tr>
       <tr><td><em>Juba Gu</em></td>
-          <td>Google GRRR ×2 + GloFAS v5 ×2 + GEOGloWS: ≥ 3 of 5 pairs over their 1-in-6-yr thresholds</td>
-          <td>6.5 yr</td><td>GloFAS ens-median: 2/2 stations over 1-in-2-yr</td><td>3.7 yr</td></tr>
+          <td class="vswap" data-alt="GloFAS v5 ×2 + GEOGloWS: all 3 pairs over their 1-in-3-yr thresholds">Google GRRR ×2 + GloFAS v5 ×2 + GEOGloWS: ≥ 3 of 5 pairs over their 1-in-6-yr thresholds</td>
+          <td class="vswap" data-alt="5.2 yr">6.5 yr</td><td class="vswap" data-alt="GloFAS ens-median: ≥ 1/2 over 1-in-2-yr">GloFAS ens-median: 2/2 stations over 1-in-2-yr</td><td>3.7 yr</td></tr>
       <tr><td><em>Juba Deyr</em></td>
-          <td>GloFAS v5 ×2 + GEOGloWS ×2: ≥ 3 of 4 pairs over their 1-in-5-yr thresholds</td>
-          <td>26.0 yr</td><td>GloFAS ens-median: 2/2 stations over 1-in-2-yr</td><td>4.4 yr</td></tr>
+          <td class="vswap" data-alt="GloFAS v5 ×2 + GEOGloWS ×2: ≥ 3 of 4 pairs over their 1-in-5-yr thresholds (unchanged — no Google pairs)">GloFAS v5 ×2 + GEOGloWS ×2: ≥ 3 of 4 pairs over their 1-in-5-yr thresholds</td>
+          <td>26.0 yr</td><td class="vswap" data-alt="GloFAS ens-median: ≥ 1/2 over 1-in-2-yr">GloFAS ens-median: 2/2 stations over 1-in-2-yr</td><td>4.4 yr</td></tr>
       <tr><td><em>Shabelle Gu</em></td>
-          <td>Google GRRR ×3 + GloFAS v5: all 4 pairs over their 1-in-6-yr thresholds</td>
-          <td>13.0 yr</td><td>GloFAS ens-median: ≥ 2/3 stations over 1-in-3-yr</td><td>3.7 yr</td></tr>
+          <td class="vswap" data-alt="GloFAS v5 at Belet Weyne alone — the single pair clearing the timing guard — over its 1-in-6-yr threshold">Google GRRR ×3 + GloFAS v5: all 4 pairs over their 1-in-6-yr thresholds</td>
+          <td class="vswap" data-alt="6.5 yr">13.0 yr</td><td class="vswap" data-alt="GloFAS ens-median: 1/1 station over 1-in-3-yr">GloFAS ens-median: ≥ 2/3 stations over 1-in-3-yr</td><td>3.7 yr</td></tr>
       <tr><td><em>Shabelle Deyr</em></td>
-          <td>GloFAS v5 ×3 + GEOGloWS ×2: ≥ 3 of 5 pairs over their 1-in-5-yr thresholds</td>
-          <td>6.5 yr</td><td>GloFAS ens-median: 3/3 stations over 1-in-3-yr</td><td>7.3 yr</td></tr>
+          <td class="vswap" data-alt="GloFAS v5 ×3 + GEOGloWS ×2: ≥ 4 of 5 pairs over their 1-in-4-yr thresholds (same pool, retuned by the joint calibration)">GloFAS v5 ×3 + GEOGloWS ×2: ≥ 3 of 5 pairs over their 1-in-5-yr thresholds</td>
+          <td class="vswap" data-alt="13.0 yr">6.5 yr</td><td>GloFAS ens-median: 3/3 stations over 1-in-3-yr</td><td>7.3 yr</td></tr>
     </table>
     </div>
 
-    <p>Backtested on 1999–2023, the Shabelle activates 6 of 25 years (1-in-4.3) and the
+    <p class="stdonly">Backtested on 1999–2023, the Shabelle activates 6 of 25 years (1-in-4.3) and the
        Juba 5 (1-in-5.2) — <strong>near-equal by construction</strong> (the two basins
        are now calibrated <em>jointly</em>: activation counts may differ by at most one,
        and the either-basin union must stay at ≥ 3 years). At least one basin activates
@@ -150,6 +203,55 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
        gauges (zero activations outside the moderate benchmark set). Per-basin
        thresholds are nominal; the final adjustment belongs to the framework working
        group.</p>
+    <p class="altonly">Backtested on 1999–2023, <strong>both basins activate 6 of 25 years
+       (1-in-4.3, exactly equal)</strong> and at least one activates in 7 —
+       <strong>overall return period 3.7 years</strong>, still meeting the ≥ 3-year
+       specification with room to spare. The activation years are 2005, 2010, 2016,
+       2018, 2019, 2020 and 2023, again all within the 1-in-3 gauge benchmark set. So
+       the headline answer is <strong>yes, a workable mechanism survives without
+       Google</strong> — but see what it costs, below.</p>
+
+    <h3>What happens without Google Flood Hub</h3>
+    <p>Google Flood Hub is the only provider here without a public inter-agency
+       commitment behind it, so the working group asked what the mechanism looks like
+       if it disappears. The switch at the top of this page recalibrates the entire
+       report — <strong>not</strong> by deleting Google's votes from the adopted
+       configuration, but by re-running selection, the RP × N grid and the joint basin
+       calibration from scratch over GloFAS v5 + GEOGloWS only. Side by side:</p>
+
+    <div class="tablewrap">
+    <table class="data">
+      <tr><th></th><th>adopted (three providers)</th><th>variant (no Google)</th></tr>
+      <tr><td><em>Overall RP</em></td><td>1-in-3.2 (8 yrs)</td><td>1-in-3.7 (7 yrs) — still meets spec</td></tr>
+      <tr><td><em>Per basin</em></td><td>Shabelle 1-in-4.3, Juba 1-in-5.2</td><td>both 1-in-4.3 (exactly equal)</td></tr>
+      <tr><td><em>Severe-year coverage</em></td>
+          <td>Juba 4/8, <strong>Shabelle 6/7</strong></td>
+          <td><strong>Juba 5/8</strong>, Shabelle 4/7</td></tr>
+      <tr><td><em>False activations</em></td><td>0</td><td>0</td></tr>
+      <tr><td><em>Smallest pool</em></td><td>4 pairs (Shabelle Gu)</td>
+          <td><strong>1 pair</strong> (Shabelle Gu — no consensus at all)</td></tr>
+      <tr><td><em>Windows changed</em></td><td>—</td>
+          <td>both Gu legs rebuilt; Juba Deyr identical; Shabelle Deyr retuned
+              (same pool, new RP/N)</td></tr>
+    </table>
+    </div>
+
+    <div class="callout warn">
+      <strong>The real cost is concentration, not frequency.</strong> The variant's
+      return periods look fine — arguably tidier, since the basins come out exactly
+      equal and the Juba even gains a severe year. Two things to weigh against that.
+      (1) <strong>Shabelle Gu collapses to a single station-model</strong>: GloFAS v5 at
+      Belet Weyne, the only pair clearing the timing guard once Google is gone (every
+      GEOGloWS pair there trails the gauge by 4–10 days). A one-pair trigger has no
+      consensus protection — a single model glitch is the whole decision, and the
+      N-of-M design exists precisely to avoid that. (2) <strong>Shabelle severe
+      coverage drops from 6/7 to 4/7</strong>, losing the 2006 and 2014 Deyr floods.
+      Google's short-lead skill on the Shabelle is doing real work in the adopted
+      mechanism. Read together: the variant is a viable contingency, not an equivalent
+      design — and if it were ever adopted, Shabelle Gu would need either a relaxed
+      timing guard (accepting GEOGloWS's lag) or an explicit single-source risk
+      acceptance.
+    </div>
 
     <figure>
       <img src="figs/map_stations.png" alt="Two-panel map of Somalia showing the Juba and Shabelle rivers with the 18 monitoring stations, colored by the models that carry them in the Gu and Deyr windows; dual-model stations carry an outer ring">
@@ -165,8 +267,9 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
     </figure>
 
     <h2>How the pairs were chosen</h2>
-    <p>Every combination of the <strong>five active SWALIM gauges</strong> and the three
-       providers competes on one metric: best-lag Spearman rank correlation between the provider's
+    <p>Every combination of the <strong>five active SWALIM gauges</strong> and the
+       <span class="vswap" data-alt="two remaining providers">three
+       providers</span> competes on one metric: best-lag Spearman rank correlation between the provider's
        reanalysis/retrospective discharge and the SWALIM reference-gauge level (Belet Weyne
        for the Shabelle, Luuq for the Juba), per river and season — the correlations
        computed in P. Wairimu's
@@ -192,8 +295,11 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
       <li><strong>Relative quality floor</strong>: the voting pool is every qualifying
           pair within 0.10 ρ of the window's best pair. No fixed count and no diversity
           quota — with 25-year records, pairs that close are statistically
-          interchangeable, so all of them get a vote. Pool sizes come out at 4–5 pairs
-          per window (from 15 candidate pairs: 5 gauges × 3 providers).</li>
+          interchangeable, so all of them get a vote. <span class="vswap"
+          data-alt="Without Google the pools come out at 1–5 pairs, from 10 candidates
+          (5 gauges × 2 providers) — and Shabelle Gu is left with a single pair.">Pool
+          sizes come out at 4–5 pairs per window (from 15 candidate pairs: 5 gauges × 3
+          providers).</span></li>
     </ul>
 
     <figure>
@@ -351,14 +457,19 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
        option.</p>
 
     <figure>
-      <img src="figs/c_backtest_strip.png" alt="Heat strip of activation years per trigger leg, per basin versus severe years, and overall, 1999 to 2023">
-      <figcaption>The calibration backtest. Basin rows compare activations (amber/blue)
+      <img src="figs/c_backtest_strip.png" class="vswap" data-alt-src="figs/c_backtest_strip_nogoogle.png" alt="Heat strip of activation years per trigger leg, per basin versus severe years, and overall, 1999 to 2023">
+      <figcaption><span class="stdonly">The calibration backtest. Basin rows compare activations (amber/blue)
         with severe 1-in-5 years at the SWALIM reference gauge (blue = caught, red =
         missed). Shabelle catches 6 of 7 severe years (misses only 2021); Juba 4 of 8
         (misses 2005, 2006, 2011, 2014 — though 2006 and 2014 are caught overall via the
         Shabelle). Neither basin activates outside the moderate set. The gauge
         restriction costs Juba severe coverage — its strongest candidates sat at
-        now-dead gauges (Bardheere) and ungauged points. With 25-year records, one hit
+        now-dead gauges (Bardheere) and ungauged points.</span><span class="altonly">The
+        no-Google variant's backtest, same layout. Juba catches 5 of 8 severe years
+        (gaining 2005 over the adopted mechanism), Shabelle 4 of 7 — losing the 2006 and
+        2014 Deyr floods. Note the Shabelle Gu row: it is now driven by one
+        station-model, so its activations and its silences are a single model's
+        judgement.</span> With 25-year records, one hit
         moves coverage by ~12–15 points — differences under ~0.15 are noise.</figcaption>
     </figure>
 
@@ -443,20 +554,22 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
     <table class="data">
       <tr><th>window</th><th>archive</th><th>stand-in pairs</th>
           <th>reproduces calibration years?</th><th>notes</th></tr>
-      <tr><td><em>Juba Gu</em></td><td>2016–2023</td><td>1</td>
-          <td>2/3 — 2018, 2020; misses 2016</td><td>near-clean</td></tr>
+      <tr><td><em>Juba Gu</em></td><td class="vswap" data-alt="2003–2023">2016–2023</td><td>1</td>
+          <td class="vswap" data-alt="5/5 — all calibration years reproduced">2/3 — 2018, 2020; misses 2016</td>
+          <td class="vswap" data-alt="clean — the variant's strongest window">near-clean</td></tr>
       <tr><td><em>Juba Deyr</em></td><td>2003–2023</td><td>2</td>
           <td>1/1 — catches 2023 (25 d after the Luuq Moderate crossing)</td>
           <td><strong>over-fires</strong>: adds 2014, 2015 (~1-in-7 vs the
               calibration's 1-in-26) — see below</td></tr>
-      <tr><td><em>Shabelle Gu</em></td><td>2016–2023</td><td>0</td>
-          <td>1/2 — catches 2016 (−3 d); misses 2020</td>
-          <td><strong>fragile</strong>: the all-4-pairs rule leaves no slack on
+      <tr><td><em>Shabelle Gu</em></td><td class="vswap" data-alt="2003–2023">2016–2023</td><td>0</td>
+          <td class="vswap" data-alt="3/4 — 2005, 2016, 2018; misses 2020, adds 2010">1/2 — catches 2016 (−3 d); misses 2020</td>
+          <td class="vswap" data-alt="single-pair window: no consensus buffer either way">
+              <strong>fragile</strong>: the all-4-pairs rule leaves no slack on
               forecasts — see below</td></tr>
       <tr><td><em>Shabelle Deyr</em></td><td>2003–2023</td><td>2</td>
-          <td>1/4 — catches 2019 (+11 d); <strong>misses Deyr 2023</strong>, 2014, 2006;
+          <td class="vswap" data-alt="0/2 — misses both 2019 and 2023 at the variant's tighter 4-of-5 rule">1/4 — catches 2019 (+11 d); <strong>misses Deyr 2023</strong>, 2014, 2006;
               adds 2013 (+21 d) and 2020 (−1 d)</td>
-          <td>the weak window; see the caveat below</td></tr>
+          <td class="vswap" data-alt="the variant's weakest window — see the v5 caveat">the weak window; see the caveat below</td></tr>
     </table>
     </div>
 
@@ -497,7 +610,10 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
        just 2 on the Juba, 3 on the Shabelle now — thresholds on GloFAS v4's own
        climatology, at a lower bar: readiness releases only the mobilisation share and
        may activate more often than action. It fully covers the action years for Juba Gu,
-       Juba Deyr and Shabelle Gu at 1-in-3.7–4.4 frequencies.
+       Juba Deyr and Shabelle Gu at 1-in-3.7–4.4 frequencies<span class="altonly"> —
+       unchanged in the no-Google variant, since readiness was
+       always GloFAS-only; only the required station counts relax (1-of-2 on the Juba,
+       1-of-1 on Shabelle Gu) to match the variant's smaller action pools</span>.
        <strong>Shabelle Deyr readiness covers 2 of 4 action years</strong> — at 7–12 days
        GloFAS v4 cannot see Deyr-2023-type events at all. Individually the readiness legs
        sit at 1-in-3.7–7.3, but their union runs ~1-in-1.8 — the working group should see
@@ -507,17 +623,26 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
     <div class="tablewrap">
     <table class="data">
       <tr><th>level</th><th>trigger</th><th>activations (1999–2023)</th><th>RP</th></tr>
-      <tr><td>individual</td><td>Juba Gu action</td><td>4 — 2010, 2016, 2018, 2020</td><td>6.5 yr</td></tr>
+      <tr><td>individual</td><td>Juba Gu action</td>
+          <td class="vswap" data-alt="5 — 2005, 2010, 2016, 2018, 2020">4 — 2010, 2016, 2018, 2020</td>
+          <td class="vswap" data-alt="5.2 yr">6.5 yr</td></tr>
       <tr><td>individual</td><td>Juba Deyr action</td><td>1 — 2023</td><td>26.0 yr</td></tr>
-      <tr><td>individual</td><td>Shabelle Gu action</td><td>2 — 2016, 2020</td><td>13.0 yr</td></tr>
-      <tr><td>individual</td><td>Shabelle Deyr action</td><td>4 — 2006, 2014, 2019, 2023</td><td>6.5 yr</td></tr>
-      <tr><td>basin</td><td>Juba (Gu or Deyr)</td><td>5</td><td><em>5.2 yr</em></td></tr>
+      <tr><td>individual</td><td>Shabelle Gu action</td>
+          <td class="vswap" data-alt="4 — 2005, 2016, 2018, 2020">2 — 2016, 2020</td>
+          <td class="vswap" data-alt="6.5 yr">13.0 yr</td></tr>
+      <tr><td>individual</td><td>Shabelle Deyr action</td>
+          <td class="vswap" data-alt="2 — 2019, 2023">4 — 2006, 2014, 2019, 2023</td>
+          <td class="vswap" data-alt="13.0 yr">6.5 yr</td></tr>
+      <tr><td>basin</td><td>Juba (Gu or Deyr)</td>
+          <td class="vswap" data-alt="6">5</td><td><em class="vswap" data-alt="4.3 yr">5.2 yr</em></td></tr>
       <tr><td>basin</td><td>Shabelle (Gu or Deyr)</td><td>6</td><td><em>4.3 yr</em></td></tr>
-      <tr><td>overall</td><td>action, either basin</td><td>8</td><td><em>3.2 yr</em></td></tr>
+      <tr><td>overall</td><td>action, either basin</td>
+          <td class="vswap" data-alt="7">8</td><td><em class="vswap" data-alt="3.7 yr">3.2 yr</em></td></tr>
     </table>
     </div>
     <p>Under all-in funding (the full envelope on any activation, the working assumption in
-       the evidence deck) the effective RP equals the overall RP, 3.2 years. A split
+       the evidence deck) the effective RP equals the overall RP,
+       <span class="vswap" data-alt="3.7 years in this variant">3.2 years</span>. A split
        structure would raise the effective RP above it; that is a framework-team decision.</p>
 
     <h2>Activations, impact and response, year by year</h2>
@@ -592,6 +717,12 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
           over-firing (and the 1-in-26 calibration leg it sits under) and the
           all-4-pairs fragility above; trade N against RP within the basin budgets
           using operational data.</li>
+      <li><strong>Provider-dependency decision</strong> — the no-Google variant (switch
+          at the top of this page) shows the mechanism survives Google's loss at
+          1-in-3.7 overall, but Shabelle Gu collapses to a single station-model and
+          Shabelle severe coverage falls to 4/7. If the working group wants a
+          provider-independence guarantee, that is a design constraint to set now, not
+          after a provider change.</li>
       <li><strong>Gauge network watch</strong> — the candidate set is the five SNRFA
           gauges still reporting. If SWALIM revives Bardheere (data stop Nov 2023) or
           Bualle (Mar 2024), the Juba pool widens and its severe-year coverage likely
@@ -723,8 +854,12 @@ document.querySelectorAll("article h2, article h3").forEach(function (el) {
     return (v >= 8e6 ? "background:rgba(42,120,214,.30);"
                      : "background:rgba(42,120,214,.16);");
   }
+  var AI_DATA = null;
   fetch("activation_impact.json").then(function (r) { return r.json(); })
-    .then(function (D) {
+    .then(function (D) { AI_DATA = D; renderAI(); });
+  function renderAI() {
+      var D = AI_DATA;
+      if (!D) return;
       var groups = [["juba", "gu"], ["juba", "deyr"], ["shabelle", "gu"], ["shabelle", "deyr"]];
       var h = [];
       h.push("<colgroup><col style='width:40px'>" +
@@ -737,7 +872,7 @@ document.querySelectorAll("article h2, article h3").forEach(function (el) {
           return '<th colspan="8" class="gl" style="font-size:10px">' + b + "</th>";
         }).join("") + "</tr>");
       h.push("<tr>" + groups.map(function (g) {
-        var m = D.meta.windows[g[0] + "_" + g[1]];
+        var m = (VARIANT ? D.meta.windows_v : D.meta.windows)[g[0] + "_" + g[1]];
         return '<th colspan="4" class="gl">' +
                g[1].charAt(0).toUpperCase() + g[1].slice(1) +
                " — ≥" + m.n_req + "/" + m.pool + "</th>";
@@ -749,8 +884,12 @@ document.querySelectorAll("article h2, article h3").forEach(function (el) {
       D.rows.slice().reverse().forEach(function (r) {
         var cells = ["<td><b>" + r.year + "</b></td>"];
         groups.forEach(function (g) {
-          var w = r.basins[g[0]][g[1]];
-          var m = D.meta.windows[g[0] + "_" + g[1]];
+          var wRaw = r.basins[g[0]][g[1]];
+          var w = VARIANT
+            ? {n: wRaw.nv, adopted: wRaw.adopted_v, bench: wRaw.bench,
+               emdat: wRaw.emdat, cerf: wRaw.cerf}
+            : wRaw;
+          var m = (VARIANT ? D.meta.windows_v : D.meta.windows)[g[0] + "_" + g[1]];
           if (w.adopted)
             cells.push('<td class="gl" style="background:rgba(179,64,54,.30)" ' +
               'title="trigger activates: ' + w.n + " of " + m.pool +
@@ -784,7 +923,42 @@ document.querySelectorAll("article h2, article h3").forEach(function (el) {
         h.push("<tr>" + cells.join("") + "</tr>");
       });
       document.getElementById("aiTable").innerHTML = h.join("");
+  }
+
+  // ---- provider-set switch -------------------------------------------
+  // Every element carrying .vswap holds the adopted text/src and its
+  // no-Google counterpart in data-alt / data-alt-src; toggling swaps the
+  // two and stashes the original so the switch is reversible.
+  var VARIANT = false;
+  function applyVariant(on) {
+    VARIANT = on;
+    document.body.classList.toggle("variant", on);
+    document.getElementById("vbar").classList.toggle("alt", on);
+    document.getElementById("vAll").classList.toggle("on", !on);
+    document.getElementById("vNog").classList.toggle("on", on);
+    document.getElementById("vAll").setAttribute("aria-pressed", String(!on));
+    document.getElementById("vNog").setAttribute("aria-pressed", String(on));
+    document.getElementById("vbarNote").textContent = on
+      ? "Resilience variant — GloFAS v5 + GEOGloWS only, recalibrated end to end"
+      : "Adopted mechanism — GloFAS v5 + Google GRRR + GEOGloWS";
+    Array.prototype.forEach.call(document.querySelectorAll(".vswap"), function (el) {
+      if (el.hasAttribute("data-alt-src")) {
+        if (!el.dataset.stdSrc) el.dataset.stdSrc = el.getAttribute("src");
+        el.setAttribute("src", on ? el.dataset.altSrc : el.dataset.stdSrc);
+        return;
+      }
+      if (!el.hasAttribute("data-alt")) return;
+      if (el.dataset.stdHtml === undefined) el.dataset.stdHtml = el.innerHTML;
+      el.innerHTML = on ? el.dataset.alt : el.dataset.stdHtml;
+      el.classList.add("flash");
+      setTimeout(function () { el.classList.remove("flash"); }, 400);
     });
+    renderAI();
+    try { history.replaceState(null, "", on ? "#nogoogle" : location.pathname); } catch (e) {}
+  }
+  document.getElementById("vAll").addEventListener("click", function () { applyVariant(false); });
+  document.getElementById("vNog").addEventListener("click", function () { applyVariant(true); });
+  if (location.hash === "#nogoogle") applyVariant(true);
 })();
 </script>
 </body>
