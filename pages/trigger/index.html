@@ -239,9 +239,11 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
 
     <figure>
       <img src="figs/i_peaks_reanalysis.png" alt="Scatter plots of model seasonal peaks over own threshold versus SWALIM observed seasonal peaks, by basin and season, all three providers">
-      <figcaption>Calibration record (reanalysis/retrospective, 1999–2023). Vertical
-        dashes: the gauge's Moderate (amber) and High (red) levels; horizontal dash: the
-        model at its own 1-in-6 threshold.</figcaption>
+      <figcaption>Calibration record (reanalysis/retrospective, 1999–2023), at the
+        reference station. <strong>Dark-edged points are selected pairs</strong> (the
+        reference station carries two models in most windows). Vertical dashes: the
+        gauge's Moderate (amber) and High (red) levels; horizontal dash: the model at its
+        own 1-in-6 threshold.</figcaption>
     </figure>
 
     <div class="tablewrap">
@@ -268,6 +270,39 @@ h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
         (GRRR's 8-season archive makes its own threshold estimate wide — treat its vertical
         placement, not its ranking, with caution).</figcaption>
     </figure>
+
+    <h3>Does the selection metric matter? Daily ρ vs peak ρ vs lead time</h3>
+    <p>Nigeria's recipe: select on daily wet-season lag-optimised Spearman ρ, use
+       annual-peak ρ and peak-timing offset as post-selection <em>guards</em>, and let
+       lead time enter through the reforecast checks rather than the selection score.
+       Here the question was put to the data directly: every candidate pair scored on
+       both metrics, and the full pool → grid → basin calibration re-run under three
+       selection rules — daily-ρ floor (adopted), peak-ρ floor, and their mean, each with
+       the same timing guard.</p>
+
+    <figure>
+      <img src="figs/i_metric_plane.png" alt="Four scatter plots, one per window, of daily correlation versus seasonal-peak correlation for every candidate station-model pair; selected pairs dark-edged, timing-guard failures shown as crosses">
+      <figcaption>Every candidate pair on both metrics. The two measure different things
+        — within-window correlation between them ranges from +0.61 (Juba Gu) to −0.50
+        (Juba Deyr, where the pairs that best track daily levels are worst at ranking the
+        extreme years). Crosses fail the −3 d timing guard; dark-edged points are the
+        selected pool.</figcaption>
+    </figure>
+
+    <div class="callout">
+      <strong>Result: the calibrated trigger is identical under all three metrics</strong>
+      — same activation years per basin, same 1-in-4.3 basin RPs, same 1-in-3.2 overall
+      (table <code>som_ms_metric_robustness</code>). The pools reshuffle at the margin
+      (peak-ρ pulls more Google pairs into the Deyr pools), but the own-threshold
+      construction and the RP × N grid search absorb the difference. Daily ρ stays as the
+      primary metric because it is the far more stable estimator (~2,000 daily
+      observations against ~22 annual peaks, where a single flood year moves peak-ρ by
+      ~0.1); peak-ρ is published per pair as a diagnostic (figure above and the
+      <code>som_ms_pair_metrics</code> table), and lead time is already in the design
+      twice — the −3-day timing guard at selection, and the reforecast backtests at the
+      operational lead bands. A composite score was considered and rejected: it would add
+      a tunable weight without changing the outcome.
+    </div>
 
     <div class="callout warn">
       <strong>An honest tension the working group should see.</strong> On the peak view,
