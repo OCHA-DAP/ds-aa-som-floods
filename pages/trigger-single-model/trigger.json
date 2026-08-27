@@ -1,0 +1,388 @@
+{
+ "generated": "2026-08-27",
+ "restrictions": {
+  "stations": {
+   "juba": [
+    "luuq",
+    "dollow",
+    "bardheere",
+    "bualle"
+   ],
+   "shabelle": [
+    "belet_weyne",
+    "bulo_burti",
+    "jowhar"
+   ]
+  },
+  "rp_floor": 3,
+  "one_model_per": "river-season",
+  "action_leads": [
+   1,
+   7
+  ],
+  "readiness_leads": [
+   8,
+   12
+  ]
+ },
+ "selections": {
+  "reanalysis": {
+   "basis": "reanalysis",
+   "excluded": [],
+   "years": [
+    1999,
+    2023
+   ],
+   "n_years": 25,
+   "rps_available": [
+    3,
+    4,
+    5,
+    6
+   ],
+   "off_target": false,
+   "envelope": {
+    "fires": 9,
+    "n_years": 25,
+    "env_rp": 2.9,
+    "severe_caught": 8,
+    "severe_missed": [
+     2011,
+     2021
+    ],
+    "no_flood_years": [],
+    "years": [
+     2005,
+     2006,
+     2013,
+     2014,
+     2016,
+     2018,
+     2019,
+     2020,
+     2023
+    ],
+    "n_severe": 10
+   },
+   "windows": [
+    {
+     "river": "juba",
+     "season": "gu",
+     "source": "google_grrr",
+     "rp": 5,
+     "n_req": 3,
+     "n_of": 4,
+     "stations": [
+      "bardheere",
+      "luuq",
+      "bualle",
+      "dollow"
+     ],
+     "rho": 0.86,
+     "years": [
+      2013,
+      2016,
+      2018,
+      2020
+     ]
+    },
+    {
+     "river": "juba",
+     "season": "deyr",
+     "source": "google_grrr",
+     "rp": 5,
+     "n_req": 3,
+     "n_of": 4,
+     "stations": [
+      "dollow",
+      "luuq",
+      "bardheere",
+      "bualle"
+     ],
+     "rho": 0.6,
+     "years": [
+      2006,
+      2019,
+      2023
+     ]
+    },
+    {
+     "river": "shabelle",
+     "season": "gu",
+     "source": "google_grrr",
+     "rp": 5,
+     "n_req": 2,
+     "n_of": 3,
+     "stations": [
+      "belet_weyne",
+      "bulo_burti",
+      "jowhar"
+     ],
+     "rho": 0.77,
+     "years": [
+      2005,
+      2013,
+      2016,
+      2018,
+      2020
+     ]
+    },
+    {
+     "river": "shabelle",
+     "season": "deyr",
+     "source": "glofas_v5",
+     "rp": 5,
+     "n_req": 2,
+     "n_of": 3,
+     "stations": [
+      "bulo_burti",
+      "belet_weyne",
+      "jowhar"
+     ],
+     "rho": 0.81,
+     "years": [
+      2006,
+      2014,
+      2019,
+      2023
+     ]
+    }
+   ]
+  },
+  "forecast": {
+   "basis": "forecast",
+   "excluded": [
+    "google_grrr"
+   ],
+   "years": [
+    2003,
+    2023
+   ],
+   "n_years": 21,
+   "rps_available": [
+    3,
+    4,
+    5
+   ],
+   "off_target": true,
+   "envelope": {
+    "fires": 10,
+    "n_years": 21,
+    "env_rp": 2.2,
+    "severe_caught": 6,
+    "severe_missed": [
+     2006,
+     2011,
+     2014,
+     2021
+    ],
+    "no_flood_years": [],
+    "years": [
+     2005,
+     2010,
+     2013,
+     2015,
+     2016,
+     2017,
+     2018,
+     2019,
+     2020,
+     2023
+    ],
+    "n_severe": 10
+   },
+   "windows": [
+    {
+     "river": "juba",
+     "season": "gu",
+     "source": "glofas_v4",
+     "rp": 3,
+     "n_req": 2,
+     "n_of": 4,
+     "stations": [
+      "luuq",
+      "bardheere",
+      "dollow",
+      "bualle"
+     ],
+     "rho": 0.83,
+     "years": [
+      2005,
+      2010,
+      2013,
+      2016,
+      2018,
+      2020,
+      2023
+     ]
+    },
+    {
+     "river": "juba",
+     "season": "deyr",
+     "source": "glofas_v4",
+     "rp": 5,
+     "n_req": 3,
+     "n_of": 4,
+     "stations": [
+      "bualle",
+      "bardheere",
+      "luuq",
+      "dollow"
+     ],
+     "rho": 0.85,
+     "years": [
+      2015,
+      2017,
+      2023
+     ]
+    },
+    {
+     "river": "shabelle",
+     "season": "gu",
+     "source": "glofas_v4",
+     "rp": 4,
+     "n_req": 2,
+     "n_of": 3,
+     "stations": [
+      "jowhar",
+      "bulo_burti",
+      "belet_weyne"
+     ],
+     "rho": 0.84,
+     "years": [
+      2005,
+      2010,
+      2016,
+      2018
+     ]
+    },
+    {
+     "river": "shabelle",
+     "season": "deyr",
+     "source": "glofas_v4",
+     "rp": 5,
+     "n_req": 2,
+     "n_of": 3,
+     "stations": [
+      "jowhar",
+      "bulo_burti",
+      "belet_weyne"
+     ],
+     "rho": 0.67,
+     "years": [
+      2010,
+      2013,
+      2019,
+      2020
+     ]
+    }
+   ]
+  }
+ },
+ "readiness": {
+  "model": "glofas_v4",
+  "leads": [
+   8,
+   12
+  ],
+  "years": [
+   2003,
+   2023
+  ],
+  "n_years": 21,
+  "windows": [
+   {
+    "river": "juba",
+    "season": "gu",
+    "n_action": 4,
+    "rp": 3,
+    "n_req": 2,
+    "n_of": 4,
+    "fires": [
+     2004,
+     2005,
+     2006,
+     2010,
+     2013,
+     2016,
+     2018,
+     2020
+    ],
+    "severe_caught": 5,
+    "precedes": 4
+   },
+   {
+    "river": "juba",
+    "season": "deyr",
+    "n_action": 3,
+    "rp": 4,
+    "n_req": 2,
+    "n_of": 4,
+    "fires": [
+     2005,
+     2006,
+     2015,
+     2017,
+     2023
+    ],
+    "severe_caught": 3,
+    "precedes": 2
+   },
+   {
+    "river": "shabelle",
+    "season": "gu",
+    "n_action": 5,
+    "rp": 3,
+    "n_req": 2,
+    "n_of": 3,
+    "fires": [
+     2005,
+     2006,
+     2010,
+     2013,
+     2016,
+     2018,
+     2020
+    ],
+    "severe_caught": 5,
+    "precedes": 5
+   },
+   {
+    "river": "shabelle",
+    "season": "deyr",
+    "n_action": 4,
+    "rp": 5,
+    "n_req": 2,
+    "n_of": 3,
+    "fires": [
+     2013,
+     2014,
+     2019,
+     2020
+    ],
+    "severe_caught": 3,
+    "precedes": 2
+   }
+  ]
+ },
+ "severe_years": [
+  2005,
+  2006,
+  2011,
+  2014,
+  2016,
+  2018,
+  2019,
+  2020,
+  2021,
+  2023
+ ],
+ "figures": [
+  "activation",
+  "backtest",
+  "crossings",
+  "grid",
+  "map",
+  "thresholds"
+ ]
+}
