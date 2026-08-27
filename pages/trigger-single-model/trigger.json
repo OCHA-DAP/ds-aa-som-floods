@@ -525,66 +525,55 @@
    ],
    "windows": {
     "juba_gu": {
-     "rp": 3,
+     "rp": 5,
      "n_req": 3,
      "n_of": 4,
      "fires": [
-      2005,
       2010,
-      2013,
       2016,
       2018,
       2020
      ],
      "covers": [
-      2013,
       2016,
       2018,
       2020
      ],
      "n_action": 4,
-     "severe_caught": 4
+     "severe_caught": 3
     },
     "juba_deyr": {
-     "rp": 4,
-     "n_req": 2,
+     "rp": 5,
+     "n_req": 3,
      "n_of": 4,
      "fires": [
-      2005,
-      2006,
       2015,
       2017,
       2023
      ],
      "covers": [
-      2006,
       2023
      ],
      "n_action": 3,
-     "severe_caught": 3
+     "severe_caught": 1
     },
     "shabelle_gu": {
-     "rp": 3,
+     "rp": 5,
      "n_req": 2,
      "n_of": 3,
      "fires": [
       2005,
-      2006,
       2010,
       2013,
-      2016,
-      2018,
-      2020
+      2016
      ],
      "covers": [
       2005,
       2013,
-      2016,
-      2018,
-      2020
+      2016
      ],
      "n_action": 5,
-     "severe_caught": 5
+     "severe_caught": 2
     },
     "shabelle_deyr": {
      "rp": 5,
@@ -623,11 +612,10 @@
    ],
    "windows": {
     "juba_gu": {
-     "rp": 4,
+     "rp": 5,
      "n_req": 2,
      "n_of": 4,
      "fires": [
-      2005,
       2010,
       2016,
       2018,
@@ -640,45 +628,43 @@
       2020
      ],
      "n_action": 4,
-     "severe_caught": 4
+     "severe_caught": 3
     },
     "juba_deyr": {
-     "rp": 5,
+     "rp": 4,
      "n_req": 3,
      "n_of": 4,
      "fires": [
+      2005,
+      2006,
       2015,
       2017,
       2023
      ],
      "covers": [
+      2006,
       2023
      ],
      "n_action": 2,
-     "severe_caught": 1
+     "severe_caught": 3
     },
     "shabelle_gu": {
-     "rp": 3,
+     "rp": 5,
      "n_req": 2,
      "n_of": 3,
      "fires": [
       2005,
-      2006,
       2010,
       2013,
-      2016,
-      2018,
-      2020
+      2016
      ],
      "covers": [
       2005,
       2010,
-      2016,
-      2018,
-      2020
+      2016
      ],
      "n_action": 5,
-     "severe_caught": 5
+     "severe_caught": 2
     },
     "shabelle_deyr": {
      "rp": 5,

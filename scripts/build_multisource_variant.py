@@ -231,10 +231,12 @@ for k, v in action.items():
 
 # ---------------------------------------------------------- the readiness leg
 def readiness_leg(action_ref):
-    """Leads 7-12 on GloFAS v4, thresholds at or above 1-in-3.
+    """Leads 7-12 on GloFAS v4, carrying the action window's own rule shape.
 
-    Readiness releases only the mobilisation share, so it may fire more often
-    than action, but it is held to the same threshold floor: no 1-in-2.
+    Readiness is not required to precede activation (directive 2026-08-27), so
+    nothing is tuned to cover the action years: the window keeps its votes and
+    return period, the thresholds are refitted on the readiness series, and how
+    often it happens to lead an activation is simply reported.
     """
     if fc_ready is None:
         return {"error": "no reforecast covers leads 7-12"}
@@ -247,41 +249,37 @@ def readiness_leg(action_ref):
     for k in WINDOWS:
         river, season = k
         months = SEASONS[season]
-        act_years = [y for y in action_ref["windows"][k]["years"] if y in span]
-        best = None
-        for rp in rps:
-            cols = []
-            for st in TRIGGER_STATIONS[river]:
-                s = fc_ready[(fc_ready.src == READINESS_MODEL)
-                             & (fc_ready.station == st)]
-                if s.empty:
-                    continue
-                s = s.set_index("date")["discharge"].sort_index()
-                s = s[s.index.month.isin(months) & s.index.year.isin(span)]
-                if len(s) < 60:
-                    continue
-                am = s.groupby(s.index.year).max().dropna()
-                t = weibull_threshold(am.values, rp)
-                if not np.isnan(t):
-                    cols.append((s >= t).rename(st))
-            if len(cols) < 2:
+        aw = action_ref["windows"][k]
+        act_years = [y for y in aw["years"] if y in span]
+        cols = []
+        for st in TRIGGER_STATIONS[river]:
+            s = fc_ready[(fc_ready.src == READINESS_MODEL) & (fc_ready.station == st)]
+            if s.empty:
                 continue
-            mat = pd.concat(cols, axis=1).fillna(False)
-            mx = mat.sum(axis=1).groupby(mat.index.year).max()
-            for n in range(2, len(cols)):
-                fires = sorted(set(mx[mx >= n].index) & span)
-                if not fires or len(fires) < len(act_years):
-                    continue
-                if len(act_years) and len(fires) > 2 * len(act_years):
-                    continue
-                covers = [y for y in act_years if y in fires]
-                score = (len(covers), len(set(fires) & severe), -len(fires), -rp)
-                if best is None or score > best[0]:
-                    best = (score, {"rp": rp, "n_req": n, "n_of": len(cols),
-                                    "fires": fires, "covers": covers,
-                                    "n_action": len(act_years),
-                                    "severe_caught": len(set(fires) & severe)})
-        rows[k] = best[1] if best else {"error": "no rule fits the frequency band"}
+            s = s.set_index("date")["discharge"].sort_index()
+            s = s[s.index.month.isin(months) & s.index.year.isin(span)]
+            if len(s) < 60:
+                continue
+            am = s.groupby(s.index.year).max().dropna()
+            # the action window's return period, or the rarest this record allows
+            rp = aw["rp"] if aw["rp"] in rps else max(rps)
+            t = weibull_threshold(am.values, rp)
+            if not np.isnan(t):
+                cols.append((s >= t).rename(st))
+        if len(cols) < 2:
+            rows[k] = {"error": "too few points with a usable readiness record"}
+            continue
+        rp = aw["rp"] if aw["rp"] in rps else max(rps)
+        n_req = min(aw["n_req"], len(cols) - 1) or 2
+        mat = pd.concat(cols, axis=1).fillna(False)
+        mx = mat.sum(axis=1).groupby(mat.index.year).max()
+        fires = sorted(set(mx[mx >= n_req].index) & span)
+        rows[k] = {
+            "rp": rp, "n_req": n_req, "n_of": len(cols), "fires": fires,
+            "covers": [y for y in act_years if y in fires],
+            "n_action": len(act_years),
+            "severe_caught": len(set(fires) & severe),
+        }
     return {"model": READINESS_MODEL, "leads": list(READINESS_LEADS),
             "years": [min(span), max(span)], "n_years": len(span),
             "rps_available": rps, "windows": rows}
@@ -620,10 +618,9 @@ SECTIONS = {
     "The readiness leg (7–12 days)": f"""
     <p>Readiness runs on {NICE[READINESS_MODEL]} ensemble-median forecasts at leads 7 to
       12, the only archive covering that band, over the same full set of points, with
-      thresholds fitted on that series. It releases only the mobilisation share and may
-      fire more often than action, but it is held to the same floor:
-      <strong>no threshold below 1-in-3</strong>, which is the change from the published
-      mechanism, where readiness sat on 1-in-2 levels.</p>
+      thresholds refitted on that series. It releases only the mobilisation share and is
+      held to the same floor: <strong>no threshold below 1-in-3</strong>, which is the
+      change from the published mechanism, where readiness sat on 1-in-2 levels.</p>
 {data_table(
     ["window", "readiness rule", "readiness years", "covers action years"],
     [
@@ -637,10 +634,11 @@ SECTIONS = {
         for k, w in (ready[False].get("windows", {}) or {}).items()
     ],
 )}
-    <p>Readiness is sized to fire at least as often as the action leg and at most twice as
-      often, so it buys preparation time without becoming routine. The Gu windows lead
-      every action year; the Deyr windows cover about half, which is the honest limit of
-      what GloFAS v4 sees at 7 to 12 days in that season.</p>
+    <p>Readiness carries each window's own rule, the same votes and the same return
+      period, refitted on the 7-to-12-day series. It is not tuned to precede activation:
+      an action trigger may fire with no readiness phase ahead of it, which is accepted
+      (decision 2026-08-27). The last column reports how often readiness did lead an
+      activation, as an observation rather than a requirement.</p>
 """,
     "Return-period bookkeeping": f"""
 {bookkeeping_table()}
@@ -665,9 +663,9 @@ SECTIONS = {
       <li><strong>Two Juba points can no longer be verified.</strong> Bardheere's gauge
         record ends 2023-11-30 and Bualle's 2024-03-14. Both can still be forecast at,
         but neither can be checked against observations from here on.</li>
-      <li><strong>Deyr readiness is weak.</strong> At 7 to 12 days GloFAS v4 covers only
-        about half the Deyr action years, so a Deyr activation may arrive with little or
-        no readiness phase.</li>
+      <li><strong>Readiness coverage is uneven by season,</strong> which is accepted
+        rather than solved: at 7 to 12 days GloFAS v4 leads Gu activations more reliably
+        than Deyr ones, so a Deyr activation may arrive with no readiness phase.</li>
     </ul>
 """,
 }
