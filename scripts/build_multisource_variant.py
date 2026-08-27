@@ -413,10 +413,141 @@ for stale in ["_alt", "_altpng"]:
 for svg in FIGS.glob("*.svg"):
     svg.unlink()
 # figures inherited unchanged from the source document
-for keep in ["f_own_skill.png"]:
+for keep in ["f_own_skill.png", "i_peaks_reanalysis.png", "i_peaks_reforecast.png",
+             "i_metric_plane.png", "e_anticipation.png", "j2_impact_shares.png"]:
     if (SRC_FIGS / keep).exists():
         shutil.copy2(SRC_FIGS / keep, FIGS / keep)
 print("  figs:", sorted(p.name for p in FIGS.glob("*.png")))
+
+
+# --------------------------------------------------- the JSON-driven tables
+def write_selection_detail():
+    """Per-point tracking correlation for every product, with the pick marked.
+
+    Same table the published document shows, but "selected" is now the single
+    source that carries the whole window, not a per-station pick.
+    """
+    # still reporting means reporting now, not merely past the calibration
+    # window: Bardheere ends 2023-11-30 and Bualle 2024-03-14, so five remain
+    last = lv.dropna(subset=["level_m"]).groupby("station")["date"].max()
+    live = set(last[last.dt.year >= last.max().year].index)
+    out = {}
+    for k in WINDOWS:
+        river, season = k
+        ref = lv[lv.station == REFERENCE_GAUGE[river]].set_index("date")["level_m"]
+        ref = ref[ref.index.month.isin(SEASONS[season])].sort_index()
+        chosen = std["windows"][k]["source"]
+        rows = []
+        for st in TRIGGER_STATIONS[river]:
+            row = {"station": st, "gauge_active": st in live,
+                   "selected": [chosen]}
+            for m in MODELS:
+                ser = model_season(m, st, SEASONS[season])
+                if not len(ser):
+                    continue
+                best, best_lag = 0.0, 0
+                for lag in range(-10, 31):
+                    j = pd.concat([ser, ref.shift(-lag)], axis=1,
+                                  join="inner").dropna()
+                    if len(j) < 60:
+                        continue
+                    r = j.iloc[:, 0].corr(j.iloc[:, 1], method="spearman")
+                    if pd.notna(r) and abs(r) > abs(best):
+                        best, best_lag = float(r), lag
+                if best:
+                    row[m] = {"rho": round(best, 3), "lag": best_lag}
+            rows.append(row)
+        out[f"{river}_{season}"] = rows
+    (OUT / "selection_detail.json").write_text(json.dumps(out, indent=1),
+                                               encoding="utf-8")
+    return out
+
+
+def write_activation_impact():
+    """Activations against the impact record, year by year.
+
+    The EM-DAT and CERF entries are taken verbatim from the published
+    document: they are observations, not model output. Everything else, the
+    per-window counts and whether the window fired, is recomputed here for
+    both provider sets.
+    """
+    src_path = SRC_PAGE.parent / "activation_impact.json"
+    impact = {}
+    meta_note = ""
+    if src_path.exists():
+        old = json.loads(src_path.read_text(encoding="utf-8"))
+        meta_note = old.get("meta", {}).get("note", "")
+        for row in old.get("rows", []):
+            for river, seasons in row.get("basins", {}).items():
+                for season, w in seasons.items():
+                    impact[(row["year"], river, season)] = (w.get("emdat"),
+                                                            w.get("cerf"))
+
+    def counts(act, k):
+        """Peak simultaneous points over threshold, per year, for one window."""
+        river, season = k
+        w = act["windows"][k]
+        cols = []
+        for st in TRIGGER_STATIONS[river]:
+            ser = model_season(w["source"], st, SEASONS[season])
+            if len(ser) < 100:
+                continue
+            am = ser.groupby(ser.index.year).max().dropna()
+            t = weibull_threshold(am.values, w["rp"])
+            if not np.isnan(t):
+                cols.append((ser >= t).rename(st))
+        if not cols:
+            return {}
+        mat = pd.concat(cols, axis=1).fillna(False)
+        return mat.sum(axis=1).groupby(mat.index.year).max().to_dict()
+
+    n_std = {k: counts(std, k) for k in WINDOWS}
+    n_alt = {k: counts(alt, k) for k in WINDOWS}
+    rows = []
+    for year in range(Y0, Y1 + 1):
+        basins = {}
+        for river in TRIGGER_STATIONS:
+            seasons = {}
+            for season in SEASONS:
+                k = (river, season)
+                em, cerf = impact.get((year, river, season), (None, None))
+                sev = year in severe_window_years(river, season)
+                mod = year in flood_years(river, season)
+                seasons[season] = {
+                    "n": int(n_std[k].get(year, 0)),
+                    "nv": int(n_alt[k].get(year, 0)),
+                    "adopted": year in std["windows"][k]["years"],
+                    "adopted_v": year in alt["windows"][k]["years"],
+                    "bench": "severe" if sev else ("moderate" if mod else ""),
+                    "emdat": em,
+                    "cerf": cerf,
+                }
+            basins[river] = seasons
+        rows.append({"year": year, "basins": basins})
+
+    def meta_for(act):
+        return {
+            f"{r}_{sn}": {
+                "label": f"{NICE[w['source']]} at {w['n_of']} points",
+                "n_req": w["n_req"], "pool": w["n_of"], "rp": w["rp"],
+            }
+            for (r, sn), w in act["windows"].items()
+        }
+
+    payload = {
+        "meta": {
+            "note": ("n = peak simultaneous count of monitored points over their "
+                     "thresholds in that season, at the adopted return period; "
+                     + (meta_note.split(";", 1)[1].strip() if ";" in meta_note
+                        else "EM-DAT and CERF records carried over unchanged")),
+            "windows": meta_for(std),
+            "windows_v": meta_for(alt),
+        },
+        "rows": rows,
+    }
+    (OUT / "activation_impact.json").write_text(json.dumps(payload, indent=1),
+                                                encoding="utf-8")
+    return payload
 
 
 # -------------------------------------------------------------------- sections
@@ -669,11 +800,20 @@ SECTIONS = {
     </ul>
 """,
 }
-DROP = {
+# Every section is kept. Three carry diagnostics from the published study that
+# do not depend on the trigger rule (seasonal peak comparisons, the selection
+# metric plane, each model's skill against its own reanalysis); they are marked
+# as carried over rather than silently reused.
+DROP = set()
+CARRIED_OVER = {
     "Seasonal peaks: model vs gauge",
-    "Activations, impact and response, year by year",
     "Forecast skill against each model's own reanalysis",
 }
+CARRY_NOTE = (
+    '    <p class="muted"><em>Carried over unchanged from the published '
+    "multi-source study: this diagnostic compares products, so it does not "
+    "depend on how many points vote or where the thresholds sit.</em></p>\n"
+)
 
 # ------------------------------------------------------------------- assemble
 print("assembling ...")
@@ -701,6 +841,9 @@ for p in parts[1:]:
                 break
     if replacement is None:
         print(f"  kept as-is: {title}")
+        if title in CARRIED_OVER:
+            hp = re.search(r"</h2>", p)
+            p = p[: hp.end()] + "\n" + CARRY_NOTE + p[hp.end():] if hp else p
         kept.append(p)
         continue
     print(f"  rebuilt: {title}")
@@ -712,12 +855,25 @@ for p in parts[1:]:
 
 body = head + "".join(kept)
 
-# only the provider-set switch survives: the two fetch-driven tables belonged
-# to sections this variant does not carry, and their JSON is not written here
-sw = tail_scripts.find("// ---- provider-set switch")
-last = tail_scripts.rfind("})();")
-if sw != -1 and last != -1:
-    body += "<script>\n(function () {\n" + tail_scripts[sw:last + 5] + "\n</script>"
+# every script is kept: both fetch-driven tables are back, and their JSON is
+# regenerated below. The product list the selection table iterates has to grow,
+# since GloFAS v4 is now part of the field.
+tail_scripts = tail_scripts.replace(
+    'var SRC = ["geoglows", "glofas_v5", "google_grrr"];',
+    'var SRC = ["geoglows", "glofas_v5", "glofas_v4", "google_grrr"];',
+)
+tail_scripts = tail_scripts.replace(
+    'var SRC_SHORT = { geoglows: "GEO", glofas_v5: "GLO5", google_grrr: "GOO" };',
+    'var SRC_SHORT = { geoglows: "GEO", glofas_v5: "GLO5", glofas_v4: "GLO4",'
+    ' google_grrr: "GOO" };',
+)
+tail_scripts = tail_scripts.replace(
+    'var SRC_COLOR = { geoglows: "#8E5FA8", glofas_v5: "#B34036", '
+    'google_grrr: "#2A78D6" };',
+    'var SRC_COLOR = { geoglows: "#8E5FA8", glofas_v5: "#B34036", '
+    'glofas_v4: "#EB6834", google_grrr: "#2A78D6" };',
+)
+body += tail_scripts
 body += "\n</body>\n</html>\n"
 
 # the head is the template's, so its hero blurb, provider note and stat tiles
@@ -827,6 +983,10 @@ body = body.replace(
 
 OUT.mkdir(parents=True, exist_ok=True)
 (OUT / "index.html").write_text(body, encoding="utf-8")
+write_selection_detail()
+write_activation_impact()
+print(f"wrote {OUT / 'selection_detail.json'}")
+print(f"wrote {OUT / 'activation_impact.json'}")
 def jsonable(obj):
     """Window keys are (river, season) tuples; JSON needs strings."""
     if isinstance(obj, dict):

@@ -1,0 +1,332 @@
+{
+ "juba_gu": [
+  {
+   "station": "luuq",
+   "gauge_active": true,
+   "selected": [
+    "google_grrr"
+   ],
+   "glofas_v5": {
+    "rho": 0.846,
+    "lag": 0
+   },
+   "glofas_v4": {
+    "rho": 0.821,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.866,
+    "lag": 0
+   },
+   "geoglows": {
+    "rho": 0.804,
+    "lag": 0
+   }
+  },
+  {
+   "station": "dollow",
+   "gauge_active": true,
+   "selected": [
+    "google_grrr"
+   ],
+   "glofas_v5": {
+    "rho": 0.825,
+    "lag": 0
+   },
+   "glofas_v4": {
+    "rho": 0.821,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.834,
+    "lag": 0
+   },
+   "geoglows": {
+    "rho": 0.818,
+    "lag": 0
+   }
+  },
+  {
+   "station": "bardheere",
+   "gauge_active": false,
+   "selected": [
+    "google_grrr"
+   ],
+   "glofas_v5": {
+    "rho": 0.823,
+    "lag": 0
+   },
+   "glofas_v4": {
+    "rho": 0.819,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.869,
+    "lag": 0
+   },
+   "geoglows": {
+    "rho": 0.783,
+    "lag": 0
+   }
+  },
+  {
+   "station": "bualle",
+   "gauge_active": false,
+   "selected": [
+    "google_grrr"
+   ],
+   "glofas_v5": {
+    "rho": 0.76,
+    "lag": -2
+   },
+   "glofas_v4": {
+    "rho": 0.815,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.862,
+    "lag": 0
+   },
+   "geoglows": {
+    "rho": 0.761,
+    "lag": 0
+   }
+  }
+ ],
+ "juba_deyr": [
+  {
+   "station": "luuq",
+   "gauge_active": true,
+   "selected": [
+    "google_grrr"
+   ],
+   "glofas_v5": {
+    "rho": 0.839,
+    "lag": 0
+   },
+   "glofas_v4": {
+    "rho": 0.843,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.621,
+    "lag": -8
+   },
+   "geoglows": {
+    "rho": 0.816,
+    "lag": 0
+   }
+  },
+  {
+   "station": "dollow",
+   "gauge_active": true,
+   "selected": [
+    "google_grrr"
+   ],
+   "glofas_v5": {
+    "rho": 0.842,
+    "lag": 0
+   },
+   "glofas_v4": {
+    "rho": 0.841,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.634,
+    "lag": -7
+   },
+   "geoglows": {
+    "rho": 0.827,
+    "lag": 0
+   }
+  },
+  {
+   "station": "bardheere",
+   "gauge_active": false,
+   "selected": [
+    "google_grrr"
+   ],
+   "glofas_v5": {
+    "rho": 0.805,
+    "lag": 0
+   },
+   "glofas_v4": {
+    "rho": 0.845,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.578,
+    "lag": -10
+   },
+   "geoglows": {
+    "rho": 0.785,
+    "lag": -4
+   }
+  },
+  {
+   "station": "bualle",
+   "gauge_active": false,
+   "selected": [
+    "google_grrr"
+   ],
+   "glofas_v5": {
+    "rho": 0.79,
+    "lag": -2
+   },
+   "glofas_v4": {
+    "rho": 0.849,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.548,
+    "lag": -10
+   },
+   "geoglows": {
+    "rho": 0.758,
+    "lag": -8
+   }
+  }
+ ],
+ "shabelle_gu": [
+  {
+   "station": "belet_weyne",
+   "gauge_active": true,
+   "selected": [
+    "google_grrr"
+   ],
+   "glofas_v5": {
+    "rho": 0.766,
+    "lag": 0
+   },
+   "glofas_v4": {
+    "rho": 0.828,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.775,
+    "lag": 0
+   },
+   "geoglows": {
+    "rho": 0.804,
+    "lag": 0
+   }
+  },
+  {
+   "station": "bulo_burti",
+   "gauge_active": true,
+   "selected": [
+    "google_grrr"
+   ],
+   "glofas_v5": {
+    "rho": 0.711,
+    "lag": -3
+   },
+   "glofas_v4": {
+    "rho": 0.83,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.769,
+    "lag": 0
+   },
+   "geoglows": {
+    "rho": 0.786,
+    "lag": 0
+   }
+  },
+  {
+   "station": "jowhar",
+   "gauge_active": true,
+   "selected": [
+    "google_grrr"
+   ],
+   "glofas_v5": {
+    "rho": 0.642,
+    "lag": -6
+   },
+   "glofas_v4": {
+    "rho": 0.836,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.764,
+    "lag": 0
+   },
+   "geoglows": {
+    "rho": 0.748,
+    "lag": 0
+   }
+  }
+ ],
+ "shabelle_deyr": [
+  {
+   "station": "belet_weyne",
+   "gauge_active": true,
+   "selected": [
+    "glofas_v5"
+   ],
+   "glofas_v5": {
+    "rho": 0.814,
+    "lag": 0
+   },
+   "glofas_v4": {
+    "rho": 0.671,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.627,
+    "lag": 0
+   },
+   "geoglows": {
+    "rho": 0.749,
+    "lag": 0
+   }
+  },
+  {
+   "station": "bulo_burti",
+   "gauge_active": true,
+   "selected": [
+    "glofas_v5"
+   ],
+   "glofas_v5": {
+    "rho": 0.816,
+    "lag": 0
+   },
+   "glofas_v4": {
+    "rho": 0.672,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.618,
+    "lag": 0
+   },
+   "geoglows": {
+    "rho": 0.738,
+    "lag": 0
+   }
+  },
+  {
+   "station": "jowhar",
+   "gauge_active": true,
+   "selected": [
+    "glofas_v5"
+   ],
+   "glofas_v5": {
+    "rho": 0.808,
+    "lag": 0
+   },
+   "glofas_v4": {
+    "rho": 0.682,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.621,
+    "lag": 0
+   },
+   "geoglows": {
+    "rho": 0.71,
+    "lag": 0
+   }
+  }
+ ]
+}
