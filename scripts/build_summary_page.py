@@ -416,8 +416,19 @@ for basis, field, frame, basis_span in FIELDS:
                           "short to fit a return-period threshold")
             }
             continue
-        rp_cap = max(2, len(use_span) // 4)
-        rps_here = [r for r in [3, 4, 5, 6] if r <= rp_cap] or [2]
+        # 1-in-3 is the floor for a gauge threshold (directive 2026-08-27), and
+        # the ceiling stays a quarter of the record. A field that cannot support
+        # a 1-in-3 threshold is reported as such rather than dropped to 1-in-2.
+        rp_cap = len(use_span) // 4
+        rps_here = [r for r in [3, 4, 5, 6] if r <= rp_cap]
+        if not rps_here:
+            variants[(basis, with_google)] = {
+                "error": (f"{len(use_span)} years of overlapping record "
+                          f"({min(use_span)}-{max(use_span)}) cannot support a "
+                          "1-in-3 gauge threshold: fitting one needs at least 12 "
+                          "years, and gauge thresholds may not go below 1-in-3")
+            }
+            continue
         cands = {
             k: model_selection.window_candidates(
                 frame, lv, k[0], k[1], models=models_here, span=use_span, rps=rps_here
