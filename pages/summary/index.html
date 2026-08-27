@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Somalia floods: data-source review &mdash; Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Generated summary of the Somalia riverine flood trigger evidence: gauge record, model performance, station selection, the adopted configuration and the envelope it implies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+.hero.hero-sub { padding:40px 44px 34px; }
+figure.chart { margin:24px 0 30px; }
+.tabbar { display:flex; flex-wrap:wrap; gap:6px; margin:18px 0 0; }
+.tab { font:inherit; font-size:13px; padding:7px 13px; cursor:pointer;
+  border:1px solid #d3d9e0; background:#f7f9fb; color:#3a4552;
+  border-radius:6px; }
+.tab:hover { background:#eef2f6; }
+.tab.active { background:#1f5c8b; border-color:#1f5c8b; color:#fff;
+  font-weight:500; }
+.panel { display:none; padding-top:6px; }
+.panel.active { display:block; }
+.muted { color:#6b7683; }
+figure.chart img { width:100%; height:auto; display:block; }
+figure.chart figcaption { font-size:13px; color:#55606d; line-height:1.55;
+  margin-top:10px; padding-left:2px; }
+.hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; }
+.crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+article { padding:8px 44px 24px; max-width:880px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9);
+             margin:40px 0 10px; line-height:1.25; }
+article h2 .num { color:var(--b5); font-size:15px; margin-right:8px; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; }
+article ul { padding-left:22px; }
+article strong { color:var(--n9); }
+article a { color:var(--b6); }
+article code { background:var(--n05); border:1px solid #e2e7e7; padding:1px 5px;
+               border-radius:3px; font-size:12.5px; color:var(--b7); }
+table.data { border-collapse:collapse; width:100%; margin:16px 0; font-size:13px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase;
+                letter-spacing:.07em; color:var(--n7); font-weight:700;
+                border-bottom:2px solid var(--b1); padding:7px 10px 6px; }
+table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8); }
+table.data td em { font-style:normal; color:var(--b6); font-weight:600; }
+.tablewrap { overflow-x:auto; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(158px,1fr));
+         gap:14px; margin:26px 0 6px; }
+.stat { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5);
+        border-radius:5px; padding:14px 16px 12px; }
+.stat.flag { border-top-color:#e0a04b; }
+.stat .v { font-family:'Merriweather',Georgia,serif; font-size:25px; font-weight:700;
+           color:var(--b6); line-height:1.1; }
+.stat.flag .v { color:#b0722b; }
+.stat .l { font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+           color:var(--n7); margin-top:6px; line-height:1.45; }
+.callout { margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05);
+           border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8);
+           line-height:1.6; }
+.callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
+.takeaways { margin:18px 0 6px; padding:0; list-style:none; }
+.takeaways li { border-left:3px solid var(--b1); padding:0 0 0 14px; margin:0 0 16px; }
+.provenance { margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7;
+              font-size:12px; color:var(--n7); line-height:1.7; }
+.provenance a { color:var(--b6); }
+.updated { font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+           color:var(--n7); margin:24px 0 0; }
+@media (max-width:640px) {
+  article { padding:4px 22px 16px; }
+  .hero.hero-sub { padding:32px 22px 28px; }
+  .provenance { margin:28px 22px 32px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero hero-sub">
+    <canvas id="bg" aria-hidden="true"></canvas>
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / data-source review</p>
+      <h1>Somalia floods analysis</h1>
+      <p>Review of the different data sources for the trigger: the SWALIM gauge record,
+         how the models perform against it, which gauges and model carry each river, and
+         what the resulting trigger would have done. Every figure here is computed from
+         the source data when the page is built.</p>
+    </div>
+  </header>
+
+  <article>
+
+    <div class="stats">
+      <div class="stat"><span class="v">1-in-2.9</span>
+        <span class="l">envelope activation rate (target 1-in-3)</span></div>
+      <div class="stat"><span class="v">8 of 10</span>
+        <span class="l">severe years caught (1-in-5 or rarer at the gauge)</span></div>
+      <div class="stat"><span class="v">4 + 3</span>
+        <span class="l">gauges monitored: Juba and Shabelle</span></div>
+      <div class="stat"><span class="v">7 days</span>
+        <span class="l">lead time | sources: GloFAS v5 + Google</span></div>
+    </div>
+
+    <h2><span class="num">1</span>The trigger</h2>
+    <p>Each window runs on a single forecast source, never a mixture, so one window is
+      one product plus one rule. Inside it, every gauge's forecast flow is compared with
+      its own return-period threshold, and the window fires when enough gauges cross in
+      the same season. At least two must agree, so no single gauge can release the money;
+      never all of them, so one gauge going quiet cannot block it.</p>
+    <div class="tabbar">
+      <button class="tab active" data-panel="reanalysis-google">Reanalysis</button>
+      <button class="tab" data-panel="reanalysis-nogoogle">Reanalysis, no Google</button>
+      <button class="tab" data-panel="forecast-google">Forecasts only</button>
+      <button class="tab" data-panel="forecast-nogoogle">Forecasts only, no Google</button>
+    </div>
+    <div class="panels">
+      <div class="panel active" id="reanalysis-google">
+        <p>Thresholds and activation years from the retrospective simulations. Every product is in the field: GloFAS v5, GloFAS v4, Google and GEOGloWS. Calibrated on 1999-2023, 25 years.</p>
+<div class="tablewrap">
+<table class="data">
+<thead><tr><th>River</th><th>Season</th><th>Forecast</th><th>Gauge threshold</th><th>Gauges that must agree</th><th>Would have fired in</th></tr></thead>
+<tbody><tr><td>Juba</td><td>Gu</td><td>Google</td><td>1-in-5</td><td>3 of 4</td><td>2013, 2016, 2018, 2020</td></tr><tr><td>Juba</td><td>Deyr</td><td>Google</td><td>1-in-5</td><td>3 of 4</td><td>2006, 2019, 2023</td></tr><tr><td>Shabelle</td><td>Gu</td><td>Google</td><td>1-in-5</td><td>2 of 3</td><td>2005, 2013, 2016, 2018, 2020</td></tr><tr><td>Shabelle</td><td>Deyr</td><td>GloFAS v5</td><td>1-in-5</td><td>2 of 3</td><td>2006, 2014, 2019, 2023</td></tr></tbody>
+</table>
+</div>
+        <p><strong>Envelope: 1-in-2.9</strong> (9 of 25 years), catching 8 of the 10 severe years, on GloFAS v5, Google. Fired with no recorded flood: never. Severe years missed: 2011, 2021.</p>
+      </div>
+      <div class="panel" id="reanalysis-nogoogle">
+        <p>Thresholds and activation years from the retrospective simulations. Every product is in the field: GloFAS v5, GloFAS v4, Google and GEOGloWS. Calibrated on 1999-2023, 25 years.</p>
+<div class="tablewrap">
+<table class="data">
+<thead><tr><th>River</th><th>Season</th><th>Forecast</th><th>Gauge threshold</th><th>Gauges that must agree</th><th>Would have fired in</th></tr></thead>
+<tbody><tr><td>Juba</td><td>Gu</td><td>GloFAS v5</td><td>1-in-5</td><td>2 of 4</td><td>2010, 2016, 2018, 2020</td></tr><tr><td>Juba</td><td>Deyr</td><td>GloFAS v5</td><td>1-in-4</td><td>3 of 4</td><td>2006, 2023</td></tr><tr><td>Shabelle</td><td>Gu</td><td>GloFAS v5</td><td>1-in-5</td><td>2 of 3</td><td>2005, 2010, 2016, 2018, 2020</td></tr><tr><td>Shabelle</td><td>Deyr</td><td>GloFAS v5</td><td>1-in-5</td><td>2 of 3</td><td>2006, 2014, 2019, 2023</td></tr></tbody>
+</table>
+</div>
+        <p><strong>Envelope: 1-in-2.9</strong> (9 of 25 years), catching 8 of the 10 severe years, on GloFAS v5. Fired with no recorded flood: never. Severe years missed: 2011, 2021.</p>
+      </div>
+      <div class="panel" id="forecast-google">
+        <p>Thresholds and activation years from the forecast archives themselves, so nothing is inherited from a retrospective. GEOGloWS is out, its forecasts run below its own retrospective; GloFAS v5 is out, it publishes no reforecast. Calibrated on 2016-2023, 8 years. Thresholds are capped at 1-in-2 here, a quarter of the 8-year record: anything rarer would be extrapolation.</p>
+<div class="tablewrap">
+<table class="data">
+<thead><tr><th>River</th><th>Season</th><th>Forecast</th><th>Gauge threshold</th><th>Gauges that must agree</th><th>Would have fired in</th></tr></thead>
+<tbody><tr><td>Juba</td><td>Gu</td><td>Google</td><td>1-in-2</td><td>2 of 4</td><td>2016, 2018, 2020, 2023</td></tr><tr><td>Juba</td><td>Deyr</td><td>Google</td><td>1-in-2</td><td>2 of 4</td><td>2017, 2019, 2020</td></tr><tr><td>Shabelle</td><td>Gu</td><td>GloFAS v4</td><td>1-in-2</td><td>2 of 3</td><td>2016, 2018, 2020, 2023</td></tr><tr><td>Shabelle</td><td>Deyr</td><td>Google</td><td>1-in-2</td><td>2 of 3</td><td>2017, 2018, 2019, 2020</td></tr></tbody>
+</table>
+</div>
+        <p><strong>Envelope: 1-in-1.5</strong> (the closest this evidence supports; nothing lands on the target) (6 of 8 years), catching 5 of the 6 severe years, on GloFAS v4, Google. Fired with no recorded flood: never. Severe years missed: 2021.</p>
+      </div>
+      <div class="panel" id="forecast-nogoogle">
+        <p>Thresholds and activation years from the forecast archives themselves, so nothing is inherited from a retrospective. GEOGloWS is out, its forecasts run below its own retrospective; GloFAS v5 is out, it publishes no reforecast. Calibrated on 2003-2023, 21 years.</p>
+<div class="tablewrap">
+<table class="data">
+<thead><tr><th>River</th><th>Season</th><th>Forecast</th><th>Gauge threshold</th><th>Gauges that must agree</th><th>Would have fired in</th></tr></thead>
+<tbody><tr><td>Juba</td><td>Gu</td><td>GloFAS v4</td><td>1-in-3</td><td>2 of 4</td><td>2005, 2010, 2013, 2016, 2018, 2020, 2023</td></tr><tr><td>Juba</td><td>Deyr</td><td>GloFAS v4</td><td>1-in-5</td><td>3 of 4</td><td>2015, 2017, 2023</td></tr><tr><td>Shabelle</td><td>Gu</td><td>GloFAS v4</td><td>1-in-4</td><td>2 of 3</td><td>2005, 2010, 2016, 2018</td></tr><tr><td>Shabelle</td><td>Deyr</td><td>GloFAS v4</td><td>1-in-5</td><td>2 of 3</td><td>2010, 2013, 2019, 2020</td></tr></tbody>
+</table>
+</div>
+        <p><strong>Envelope: 1-in-2.2</strong> (the closest this evidence supports; nothing lands on the target) (10 of 21 years), catching 6 of the 10 severe years, on GloFAS v4. Fired with no recorded flood: never. Severe years missed: 2006, 2011, 2014, 2021.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <strong>The envelope.</strong> The full amount is released whenever any window
+      fires, so that union, not the individual window, is what the 1-in-3 target
+      applies to. As configured above it would have released in
+      <strong>9 of 25 years, once every
+      2.9 years</strong>, catching 8 of the
+      10 severe years and never firing in a year with no
+      recorded flood at all. Severe years missed: 2011, 2021.
+    </div>
+    <figure class="chart">
+      <img src="figures/activation.svg" alt="Year by year, what the adopted configuration would have done, and what the envelope does when any of the four windows fires.">
+      <figcaption>Year by year, what the adopted configuration would have done, and what the envelope does when any of the four windows fires.</figcaption>
+    </figure>
+
+    <h2><span class="num">2</span>Key takeaways</h2>
+    <ul class="takeaways">
+      <li><strong>The gauge record is the reference, and only the reporting gauges can
+        serve a live trigger:</strong> 4 on the Juba, 3 on the Shabelle.
+        Thresholds are fitted on post-2000 data, because flooding has been recorded far
+        more often in recent decades.</li>
+      <li><strong>A flood is defined by the computed 1-in-3-year level at the gauge,</strong>
+        not by an official SWALIM mark: it is frequency-calibrated, so it means the same
+        thing at every gauge, where the official marks range from most years to never.
+        That definition is what the trigger is scored against; the forecast thresholds
+        the trigger actually watches are rarer, and set by the envelope calibration.</li>
+      <li><strong>The backtest cannot choose the model, so the forecasts do.</strong>
+        161 different model assignments across the four windows reach the same
+        severe-year coverage at the same activation rate: with 25 years and 10 severe
+        events there is enough freedom in the station count, threshold and vote rule for
+        almost any product to reproduce the same years. The choice therefore rests on
+        skill at lead time, where Google leads the Juba in Gu and GloFAS leads the
+        Shabelle in both seasons.</li>
+      <li><strong>The 1-in-3 rate belongs to the envelope, not to each window.</strong>
+        Four windows each calibrated to 1-in-3 release the money about every 1.5 years,
+        because they are not independent draws. Calibrated on the union instead, the
+        windows sit at 1-in-5.2 to 1-in-8.7 individually and the
+        envelope lands at 1-in-2.9.</li>
+      <li><strong>What that rate buys, and what it costs.</strong> It catches
+        8 of the 10 severe years with
+        no activation in a year that recorded no flood. It does not attempt the more
+        common 1-in-3 floods: at this rate the trigger is for the bad years.</li>
+    </ul>
+
+    <h2><span class="num">3</span>SWALIM thresholds, events and crossings</h2>
+    <p>SWALIM publishes three risk levels per station: moderate, high and bank full. Each
+      station's 1-in-3-year level is estimated from its own annual maxima and compared
+      against them: where the 1-in-3-year level sits above the moderate mark, that mark is
+      crossed more often than once every three years.</p>
+    <p>An event is a spell in which the level sits at or above the baseline. The level must
+      stay below it for at least 14 days before a new crossing counts separately, so a
+      brief dip mid-flood does not split one flood in two. Readings stop rising once a
+      gauge reaches bank full, or when a gauge is destroyed mid-flood, so the largest
+      events are understated.</p>
+    <figure class="chart">
+      <img src="figures/thresholds.svg" alt="Where the 1-in-3-year level sits against the official marks. The official Moderate band means very different things from gauge to gauge, which is why the trigger monitors the computed RP3 instead.">
+      <figcaption>Where the 1-in-3-year level sits against the official marks. The official Moderate band means very different things from gauge to gauge, which is why the trigger monitors the computed RP3 instead.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="figures/crossings.svg" alt="How often each gauge crosses its RP3 level. Most gauges reach it in roughly one season-year in three, by construction.">
+      <figcaption>How often each gauge crosses its RP3 level. Most gauges reach it in roughly one season-year in three, by construction.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="figures/backtest.svg" alt="The two baselines side by side. Amber cells are years the official Moderate mark fired and the RP3 did not, which is where the two definitions disagree.">
+      <figcaption>The two baselines side by side. Amber cells are years the official Moderate mark fired and the RP3 did not, which is where the two definitions disagree.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="figures/exposure.svg" alt="The gauge record matters because of who sits behind it: the districts along both rivers with the largest populations in flooded areas.">
+      <figcaption>The gauge record matters because of who sits behind it: the districts along both rivers with the largest populations in flooded areas.</figcaption>
+    </figure>
+
+    <h2><span class="num">4</span>Model performance against the gauges</h2>
+    <p>Each model's hindsight simulation is compared with the events recorded at the
+      gauges, 2002 to 2023, scored against each model's own 1-in-3-year discharge so it is
+      judged on timing rather than on scale. POD is the share of events caught; FAR the
+      share of alarms that were false.</p>
+    <figure class="chart">
+      <img src="figures/skill.svg" alt="Each model's 1-in-3-year signal against the floods the gauges actually recorded, within a 7-day window.">
+      <figcaption>Each model's 1-in-3-year signal against the floods the gauges actually recorded, within a 7-day window.</figcaption>
+    </figure>
+<div class="tablewrap">
+<table class="data">
+<thead><tr><th>Station</th><th>Events</th><th>GloFAS v5</th><th>GloFAS v4</th><th>Google</th><th>GEOGloWS</th></tr></thead>
+<tbody><tr><td>luuq</td><td>9</td><td>0.44 / 0.50</td><td>0.22 / 0.71</td><td>0.44 / 0.43</td><td>0.11 / 0.88</td></tr><tr><td>dollow</td><td>3</td><td>1.00 / 0.40</td><td>0.67 / 0.60</td><td>1.00 / 0.50</td><td>0.67 / 0.60</td></tr><tr><td>bardheere</td><td>4</td><td>0.50 / 0.75</td><td>0.25 / 0.86</td><td>0.50 / 0.75</td><td>0.25 / 0.88</td></tr><tr><td>bualle</td><td>7</td><td>0.29 / 0.67</td><td>0.43 / 0.57</td><td>0.43 / 0.50</td><td>0.43 / 0.57</td></tr><tr><td>belet_weyne</td><td>10</td><td>0.60 / 0.14</td><td>0.10 / 0.88</td><td>0.50 / 0.29</td><td>0.30 / 0.62</td></tr><tr><td>bulo_burti</td><td>9</td><td>0.44 / 0.43</td><td>0.11 / 0.88</td><td>0.33 / 0.57</td><td>0.44 / 0.50</td></tr><tr><td>jowhar</td><td>10</td><td>0.20 / 0.71</td><td>0.10 / 0.88</td><td>0.10 / 0.86</td><td>0.10 / 0.86</td></tr></tbody>
+</table>
+</div>
+    <p>GEOGloWS appears here as its raw retrospective. Bias correcting it (the SFDC
+      method, notebook 02) fixes the magnitude bias but not the timing: POD falls at
+      every gauge and reaches zero at four of them, and the correlations drop too.
+      Because each model is judged against its own return period, magnitude was never
+      what held GEOGloWS back, so the uncorrected series is both the fairer comparison
+      and the stronger one.</p>
+    <p>Jowhar defeats every model: its off-takes and marshes decouple the local level from
+      upstream flow. It is a station to watch and a poor station to trigger on.</p>
+
+    <h2><span class="num">5</span>Which model carries each window</h2>
+    <p>Every candidate is ranked by how closely its river signal tracks the reference
+      gauge, allowing for travel time. The reanalysis comparison below is what the
+      thresholds are fitted on; the forecast comparison after it is what the trigger
+      actually runs on:</p>
+    <figure class="chart">
+      <img src="figures/correlation.svg" alt="Daily tracking rather than event detection: the best-lag rank correlation between each model and the river's reference gauge.">
+      <figcaption>Daily tracking rather than event detection: the best-lag rank correlation between each model and the river's reference gauge.</figcaption>
+    </figure>
+    <figure class="chart">
+      <img src="figures/forecast.svg" alt="The same test run on the forecasts rather than the hindsight simulations. Accuracy holds across leads 1 to 7, which is what makes a one-week action window defensible.">
+      <figcaption>The same test run on the forecasts rather than the hindsight simulations. Accuracy holds across leads 1 to 7, which is what makes a one-week action window defensible.</figcaption>
+    </figure>
+<div class="tablewrap">
+<table class="data">
+<thead><tr><th>River</th><th>Best</th><th>Second</th><th>Third</th></tr></thead>
+<tbody><tr><td>Juba (worse season)</td><td>GloFAS v5 <em>0.83</em></td><td>GloFAS v4 0.82</td><td>GEOGloWS 0.8</td><td>Google 0.53</td></tr><tr><td>Shabelle (worse season)</td><td>GloFAS v4 <em>0.78</em></td><td>GloFAS v5 0.74</td><td>GEOGloWS 0.73</td><td>Google 0.63</td></tr></tbody>
+</table>
+</div>
+    <div class="callout warn">
+      <strong>How the model was chosen, and how much it rests on.</strong> Not on
+      the backtest: 140 model assignments across the four windows reach the same
+      severe-year coverage near the target rate, so the activation years cannot tell
+      the products apart. What separates them is lead time. Google leads the Juba in
+      Gu and holds its accuracy across leads 1 to 7, so it carries three windows.
+      GloFAS leads the Shabelle in both seasons, and although there is no v5
+      reforecast, v5 is the operational version, its reanalysis is the right basis for
+      its thresholds and the v4 reforecast provides the lead-time evidence, so it
+      carries Shabelle Deyr. GEOGloWS is out on a different ground: its forecasts run
+      below its own retrospective, so thresholds fitted on the retrospective would not
+      transfer.
+    </div>
+
+    <h2><span class="num">6</span>Gauges used</h2>
+    <figure class="chart">
+      <img src="figures/map.svg" alt="Seven gauges still reporting: four on the Juba, three on the Shabelle.">
+      <figcaption>Seven gauges still reporting: four on the Juba, three on the Shabelle.</figcaption>
+    </figure>
+<div class="tablewrap">
+<table class="data">
+<thead><tr><th>River</th><th>Gauges used</th></tr></thead>
+<tbody><tr><td>Juba</td><td><em>luuq</em>, <em>dollow</em>, <em>bardheere</em>, <em>bualle</em></td></tr><tr><td>Shabelle</td><td><em>belet_weyne</em>, <em>bulo_burti</em>, <em>jowhar</em></td></tr></tbody>
+</table>
+</div>
+    <p>Gauges whose records stop in 2008 or earlier (Kaitoi, Afgoi, Audegle, Mahadey
+      Weyne) can calibrate but cannot monitor, and five further SNRFA files hold no
+      readings at all. Upstream stations see the flood before the downstream reference
+      gauge: Dollow leads Luuq by about five days in Deyr, and Belet Weyne leads by about
+      six in Gu.</p>
+
+    <h2><span class="num">7</span>How each window performs</h2>
+<div class="tablewrap">
+<table class="data">
+<thead><tr><th>River</th><th>Season</th><th>Source</th><th>RP</th><th>Stations</th><th>POD</th><th>FAR</th><th>Activates</th></tr></thead>
+<tbody><tr><td>Juba</td><td>Gu</td><td>Google</td><td>5</td><td>3 of 4</td><td>0.43</td><td>0.25</td><td>1-in-6.5</td></tr><tr><td>Juba</td><td>Deyr</td><td>Google</td><td>5</td><td>3 of 4</td><td>0.25</td><td>0.33</td><td>1-in-8.7</td></tr><tr><td>Shabelle</td><td>Gu</td><td>Google</td><td>5</td><td>2 of 3</td><td>0.57</td><td><em>0.2</em></td><td>1-in-5.2</td></tr><tr><td>Shabelle</td><td>Deyr</td><td>GloFAS v5</td><td>5</td><td>2 of 3</td><td>0.5</td><td><em>0.0</em></td><td>1-in-6.5</td></tr></tbody>
+</table>
+</div>
+    <figure class="chart">
+      <img src="figures/grid.svg" alt="Every combination of station return period and number of gauges that must agree, scored against the gauge benchmark. The outlined cell is what we adopted.">
+      <figcaption>Every combination of station return period and number of gauges that must agree, scored against the gauge benchmark. The outlined cell is what we adopted.</figcaption>
+    </figure>
+    <p>Scored against the 1-in-3 flood definition at the reference gauge, which is a
+      harder test than the envelope is calibrated for: each window is deliberately set
+      rarer than 1-in-3 so the union lands on target. What each window would have
+      missed: Juba Gu 2005, 2006, 2010, 2023; Juba Deyr 2008, 2011, 2013, 2014, 2015, 2017; Shabelle Gu 2010, 2021, 2023; Shabelle Deyr 2008, 2009, 2012, 2020.</p>
+
+    <h2><span class="num">8</span>The envelope question</h2>
+    <p>The full amount is released whenever the trigger is reached along either river in
+      either season, so the combined rate across all four windows is what the budget must
+      be sized on. The four windows are not independent draws: the rivers flood together
+      in the seasons that matter most, and a window calibrated on its own has no
+      knowledge of the other three.</p>
+<div class="tablewrap">
+<table class="data">
+<thead><tr><th>Level</th><th>Gu: both rivers flood</th><th>Deyr: both rivers flood</th></tr></thead>
+<tbody><tr><td>3-year</td><td>6 of 7 seasons</td><td>4 of 8</td></tr><tr><td>4-year</td><td>3 of 5 seasons</td><td>3 of 6</td></tr><tr><td>5-year</td><td>2 of 4 seasons</td><td>3 of 4</td></tr></tbody>
+</table>
+</div>
+    <p>Setting every window to its own 1-in-3 releases the money about every 1.5 years.
+      Holding the envelope at 1-in-3 instead means asking each gauge
+      for a rarer flow and asking more gauges to agree, which is what the configuration
+      in section 1 does. The chart below is the whole trade-off: each point is the best
+      configuration available at that activation rate.</p>
+    <figure class="chart">
+      <img src="figures/frontier.svg" alt="The trade-off behind the activation rate. Releasing more often catches more of the severe years; the adopted point is the rarest release that still catches eight of the ten.">
+      <figcaption>The trade-off behind the activation rate. Releasing more often catches more of the severe years; the adopted point is the rarest release that still catches eight of the ten.</figcaption>
+    </figure>
+    <div class="callout">
+      <strong>Where that leaves us.</strong> At 1-in-2.9 the envelope
+      catches 8 of the 10 severe years
+      and never fires in a year with no recorded flood. Releasing more often would
+      recover 2011, 2021, at roughly one extra release every
+      25 years.
+      Which side of that line to sit on is a funding judgement, not a statistical one.
+    </div>
+
+    <h2><span class="num">9</span>Open items</h2>
+    <ul>
+      <li><strong>Define the years that should have triggered,</strong> so the trigger can
+        be scored against human impact rather than water levels.</li>
+      <li><strong>Confirm the 1-in-3 envelope rate</strong> with the funding rule: the
+        configuration meets it, but whether 2011, 2021 should have been covered is
+        a programme decision.</li>
+      <li><strong>GloFAS v5 forecasts:</strong> no forecast archive exists yet, so v5's
+        stronger hindsight cannot be validated at lead time.</li>
+      <li><strong>Readiness leg:</strong> Google cannot serve 7 to 12 days, so readiness
+        has to be built on GloFAS.</li>
+      <li><strong>Shabelle's fourth station:</strong> only 3 gauges report on that
+        river. A newer gauge would balance the two rivers.</li>
+    </ul>
+
+    <p class="updated">Generated 2026-08-27 from the source data</p>
+
+  </article>
+
+  <script>
+    document.querySelectorAll(".tab").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        document.querySelectorAll(".tab").forEach(function (b) {
+          b.classList.remove("active");
+        });
+        document.querySelectorAll(".panel").forEach(function (p) {
+          p.classList.remove("active");
+        });
+        btn.classList.add("active");
+        var panel = document.getElementById(btn.dataset.panel);
+        if (panel) { panel.classList.add("active"); }
+      });
+    });
+  </script>
+
+  <div class="provenance">
+    <p><strong>How this page stays current.</strong> It is built by
+      <code>scripts/build_summary_page.py</code>, which reads the gauge record, each
+      model's daily discharge and the seasonal flood benchmarks, and recomputes every
+      figure with the same helpers the notebooks use. It does not depend on any notebook
+      having been re-run. The adopted design (which gauges, which model, the return
+      periods and station counts) lives in <code>src/constants.py</code>, which notebook
+      09 reads as well, so this page and the analysis cannot disagree. Narrative text is
+      static; numbers, tables and the timestamp are generated. Underlying data stays on the
+      team's storage and is not published here.</p>
+  </div>
+
+</div>
+
+<script src="../assets/hero.js" defer></script>
+</body>
+</html>
