@@ -459,17 +459,14 @@ def fig_map(ctx, figdir):
         for lon, lat, nm in pts:
             ax.annotate(nm, (lon, lat), textcoords="offset points", xytext=(8, 2),
                         fontsize=8.5, color=INK)
-    for river, gauge in ctx["reference_gauge"].items():
-        st = STATIONS.get(gauge)
-        if st:
-            ax.scatter(st.lon, st.lat, marker="*", s=230, color=C_REF,
-                       edgecolors="white", linewidths=0.8, zorder=5)
+    # no reference-gauge marker: a flood year is decided by two or more of the
+    # river's gauges, so no single gauge carries the benchmark
     ax.set_xlim(40.5, 48.6)
     ax.set_ylim(-2.0, 6.6)
     ax.set_axis_off()
     ax.legend(loc="upper right", fontsize=9)
-    ax.set_title("The gauges the trigger runs on\nstar = reference gauge for the "
-                 "river's flood benchmark", fontsize=11.5, loc="left")
+    ax.set_title("The gauges the trigger runs on\nfour on the Juba, three on the "
+                 "Shabelle", fontsize=11.5, loc="left")
     return save(fig, figdir, "map")
 
 
