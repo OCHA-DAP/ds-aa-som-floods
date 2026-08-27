@@ -35,6 +35,7 @@ sys.path.insert(0, str(REPO / "scripts"))
 import ocha_stratus as stratus  # noqa: E402
 
 import model_selection  # noqa: E402
+import page_chrome  # noqa: E402
 import summary_figures  # noqa: E402
 
 from src.constants import (  # noqa: E402
@@ -451,34 +452,19 @@ HTML = f"""<!DOCTYPE html>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/site.css">
 <style>
-.hero.hero-sub {{ padding:40px 44px 34px; }}
-.hero.hero-sub h1 {{ font-size:28px; }}
-.crumb {{ font-size:12px; margin:0 0 14px; }}
-.crumb a {{ color:#cfe0ef; }}
-figure.chart {{ margin:24px 0 30px; }}
-figure.chart img {{ width:100%; height:auto; display:block; }}
-figure.chart figcaption {{ font-size:13px; color:#55606d; line-height:1.55;
-  margin-top:10px; }}
-.tabbar {{ display:flex; flex-wrap:wrap; gap:6px; margin:18px 0 0; }}
-.tab {{ font:inherit; font-size:13px; padding:7px 13px; cursor:pointer;
-  border:1px solid #d3d9e0; background:#f7f9fb; color:#3a4552;
-  border-radius:6px; }}
-.tab:hover {{ background:#eef2f6; }}
-.tab.active {{ background:#1f5c8b; border-color:#1f5c8b; color:#fff;
-  font-weight:500; }}
-.panel {{ display:none; padding-top:6px; }}
-.panel.active {{ display:block; }}
-.muted {{ color:#6b7683; }}
-h2 .num {{ display:inline-block; min-width:1.6em; color:#8a97a5; }}
+{page_chrome.STYLE}
 </style>
 </head>
 <body>
+<div class="wrap">
   <header class="hero hero-sub">
-    <p class="crumb"><a href="../">Somalia riverine flood trigger</a></p>
-    <h1>Single-model trigger variant</h1>
-    <p>Every river-season window runs on one source rather than a mixture of
-      three, all seven gauge points are monitored, and no threshold sits below
-      1-in-3. Generated {data['generated']} from the source data.</p>
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia riverine flood trigger</a></p>
+      <h1>Single-model trigger variant</h1>
+      <p>Every river-season window runs on one source rather than a mixture of
+        three, all seven gauge points are monitored, and no threshold sits below
+        1-in-3. Generated {data['generated']} from the source data.</p>
+    </div>
   </header>
 
   <article>
@@ -530,6 +516,7 @@ h2 .num {{ display:inline-block; min-width:1.6em; color:#8a97a5; }}
       <a href="../summary/">summary</a>.</p>
 
   </article>
+</div>
 
   <script>
     document.querySelectorAll(".tab").forEach(function (btn) {{

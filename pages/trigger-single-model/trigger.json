@@ -1,6 +1,6 @@
 {
  "generated": "2026-08-27",
- "restrictions": {
+ "conditions": {
   "stations": {
    "juba": [
     "luuq",
@@ -15,19 +15,20 @@
    ]
   },
   "rp_floor": 3,
-  "one_model_per": "river-season",
+  "one_model_per": "river-season window",
   "action_leads": [
    1,
    7
   ],
   "readiness_leads": [
-   8,
+   7,
    12
   ]
  },
- "selections": {
-  "reanalysis": {
+ "action": {
+  "reanalysis_google": {
    "basis": "reanalysis",
+   "drop_google": false,
    "excluded": [],
    "years": [
     1999,
@@ -41,6 +42,7 @@
     6
    ],
    "off_target": false,
+   "pinned": true,
    "envelope": {
     "fires": 9,
     "n_years": 25,
@@ -64,10 +66,8 @@
     ],
     "n_severe": 10
    },
-   "windows": [
-    {
-     "river": "juba",
-     "season": "gu",
+   "windows": {
+    "juba_gu": {
      "source": "google_grrr",
      "rp": 5,
      "n_req": 3,
@@ -86,9 +86,7 @@
       2020
      ]
     },
-    {
-     "river": "juba",
-     "season": "deyr",
+    "juba_deyr": {
      "source": "google_grrr",
      "rp": 5,
      "n_req": 3,
@@ -106,9 +104,7 @@
       2023
      ]
     },
-    {
-     "river": "shabelle",
-     "season": "gu",
+    "shabelle_gu": {
      "source": "google_grrr",
      "rp": 5,
      "n_req": 2,
@@ -127,9 +123,7 @@
       2020
      ]
     },
-    {
-     "river": "shabelle",
-     "season": "deyr",
+    "shabelle_deyr": {
      "source": "glofas_v5",
      "rp": 5,
      "n_req": 2,
@@ -147,10 +141,127 @@
       2023
      ]
     }
-   ]
+   }
   },
-  "forecast": {
+  "reanalysis_nogoogle": {
+   "basis": "reanalysis",
+   "drop_google": true,
+   "excluded": [],
+   "years": [
+    1999,
+    2023
+   ],
+   "n_years": 25,
+   "rps_available": [
+    3,
+    4,
+    5,
+    6
+   ],
+   "off_target": false,
+   "pinned": false,
+   "envelope": {
+    "fires": 9,
+    "n_years": 25,
+    "env_rp": 2.9,
+    "severe_caught": 8,
+    "severe_missed": [
+     2011,
+     2021
+    ],
+    "no_flood_years": [],
+    "years": [
+     2005,
+     2006,
+     2010,
+     2014,
+     2016,
+     2018,
+     2019,
+     2020,
+     2023
+    ],
+    "n_severe": 10
+   },
+   "windows": {
+    "juba_gu": {
+     "source": "glofas_v5",
+     "rp": 5,
+     "n_req": 2,
+     "n_of": 4,
+     "stations": [
+      "luuq",
+      "dollow",
+      "bardheere",
+      "bualle"
+     ],
+     "rho": 0.81,
+     "years": [
+      2010,
+      2016,
+      2018,
+      2020
+     ]
+    },
+    "juba_deyr": {
+     "source": "glofas_v5",
+     "rp": 4,
+     "n_req": 3,
+     "n_of": 4,
+     "stations": [
+      "dollow",
+      "luuq",
+      "bardheere",
+      "bualle"
+     ],
+     "rho": 0.82,
+     "years": [
+      2006,
+      2023
+     ]
+    },
+    "shabelle_gu": {
+     "source": "glofas_v5",
+     "rp": 5,
+     "n_req": 2,
+     "n_of": 3,
+     "stations": [
+      "belet_weyne",
+      "bulo_burti",
+      "jowhar"
+     ],
+     "rho": 0.71,
+     "years": [
+      2005,
+      2010,
+      2016,
+      2018,
+      2020
+     ]
+    },
+    "shabelle_deyr": {
+     "source": "glofas_v5",
+     "rp": 5,
+     "n_req": 2,
+     "n_of": 3,
+     "stations": [
+      "bulo_burti",
+      "belet_weyne",
+      "jowhar"
+     ],
+     "rho": 0.81,
+     "years": [
+      2006,
+      2014,
+      2019,
+      2023
+     ]
+    }
+   }
+  },
+  "forecast_google": {
    "basis": "forecast",
+   "drop_google": false,
    "excluded": [
     "google_grrr"
    ],
@@ -165,6 +276,7 @@
     5
    ],
    "off_target": true,
+   "pinned": false,
    "envelope": {
     "fires": 10,
     "n_years": 21,
@@ -191,10 +303,8 @@
     ],
     "n_severe": 10
    },
-   "windows": [
-    {
-     "river": "juba",
-     "season": "gu",
+   "windows": {
+    "juba_gu": {
      "source": "glofas_v4",
      "rp": 3,
      "n_req": 2,
@@ -216,9 +326,7 @@
       2023
      ]
     },
-    {
-     "river": "juba",
-     "season": "deyr",
+    "juba_deyr": {
      "source": "glofas_v4",
      "rp": 5,
      "n_req": 3,
@@ -236,9 +344,7 @@
       2023
      ]
     },
-    {
-     "river": "shabelle",
-     "season": "gu",
+    "shabelle_gu": {
      "source": "glofas_v4",
      "rp": 4,
      "n_req": 2,
@@ -256,9 +362,7 @@
       2018
      ]
     },
-    {
-     "river": "shabelle",
-     "season": "deyr",
+    "shabelle_deyr": {
      "source": "glofas_v4",
      "rp": 5,
      "n_req": 2,
@@ -276,94 +380,325 @@
       2020
      ]
     }
-   ]
+   }
+  },
+  "forecast_nogoogle": {
+   "basis": "forecast",
+   "drop_google": true,
+   "excluded": [
+    "google_grrr"
+   ],
+   "years": [
+    2003,
+    2023
+   ],
+   "n_years": 21,
+   "rps_available": [
+    3,
+    4,
+    5
+   ],
+   "off_target": true,
+   "pinned": false,
+   "envelope": {
+    "fires": 10,
+    "n_years": 21,
+    "env_rp": 2.2,
+    "severe_caught": 6,
+    "severe_missed": [
+     2006,
+     2011,
+     2014,
+     2021
+    ],
+    "no_flood_years": [],
+    "years": [
+     2005,
+     2010,
+     2013,
+     2015,
+     2016,
+     2017,
+     2018,
+     2019,
+     2020,
+     2023
+    ],
+    "n_severe": 10
+   },
+   "windows": {
+    "juba_gu": {
+     "source": "glofas_v4",
+     "rp": 3,
+     "n_req": 2,
+     "n_of": 4,
+     "stations": [
+      "luuq",
+      "bardheere",
+      "dollow",
+      "bualle"
+     ],
+     "rho": 0.83,
+     "years": [
+      2005,
+      2010,
+      2013,
+      2016,
+      2018,
+      2020,
+      2023
+     ]
+    },
+    "juba_deyr": {
+     "source": "glofas_v4",
+     "rp": 5,
+     "n_req": 3,
+     "n_of": 4,
+     "stations": [
+      "bualle",
+      "bardheere",
+      "luuq",
+      "dollow"
+     ],
+     "rho": 0.85,
+     "years": [
+      2015,
+      2017,
+      2023
+     ]
+    },
+    "shabelle_gu": {
+     "source": "glofas_v4",
+     "rp": 4,
+     "n_req": 2,
+     "n_of": 3,
+     "stations": [
+      "jowhar",
+      "bulo_burti",
+      "belet_weyne"
+     ],
+     "rho": 0.84,
+     "years": [
+      2005,
+      2010,
+      2016,
+      2018
+     ]
+    },
+    "shabelle_deyr": {
+     "source": "glofas_v4",
+     "rp": 5,
+     "n_req": 2,
+     "n_of": 3,
+     "stations": [
+      "jowhar",
+      "bulo_burti",
+      "belet_weyne"
+     ],
+     "rho": 0.67,
+     "years": [
+      2010,
+      2013,
+      2019,
+      2020
+     ]
+    }
+   }
   }
  },
  "readiness": {
-  "model": "glofas_v4",
-  "leads": [
-   8,
-   12
-  ],
-  "years": [
-   2003,
-   2023
-  ],
-  "n_years": 21,
-  "windows": [
-   {
-    "river": "juba",
-    "season": "gu",
-    "n_action": 4,
-    "rp": 3,
-    "n_req": 2,
-    "n_of": 4,
-    "fires": [
-     2004,
-     2005,
-     2006,
-     2010,
-     2013,
-     2016,
-     2018,
-     2020
-    ],
-    "severe_caught": 5,
-    "precedes": 4
-   },
-   {
-    "river": "juba",
-    "season": "deyr",
-    "n_action": 3,
-    "rp": 4,
-    "n_req": 2,
-    "n_of": 4,
-    "fires": [
-     2005,
-     2006,
-     2015,
-     2017,
-     2023
-    ],
-    "severe_caught": 3,
-    "precedes": 2
-   },
-   {
-    "river": "shabelle",
-    "season": "gu",
-    "n_action": 5,
-    "rp": 3,
-    "n_req": 2,
-    "n_of": 3,
-    "fires": [
-     2005,
-     2006,
-     2010,
-     2013,
-     2016,
-     2018,
-     2020
-    ],
-    "severe_caught": 5,
-    "precedes": 5
-   },
-   {
-    "river": "shabelle",
-    "season": "deyr",
-    "n_action": 4,
-    "rp": 5,
-    "n_req": 2,
-    "n_of": 3,
-    "fires": [
-     2013,
-     2014,
-     2019,
-     2020
-    ],
-    "severe_caught": 3,
-    "precedes": 2
+  "google": {
+   "model": "glofas_v4",
+   "leads": [
+    7,
+    12
+   ],
+   "years": [
+    2003,
+    2023
+   ],
+   "n_years": 21,
+   "rps_available": [
+    3,
+    4,
+    5
+   ],
+   "windows": {
+    "juba_gu": {
+     "rp": 3,
+     "n_req": 3,
+     "n_of": 4,
+     "fires": [
+      2005,
+      2010,
+      2013,
+      2016,
+      2018,
+      2020
+     ],
+     "covers": [
+      2013,
+      2016,
+      2018,
+      2020
+     ],
+     "n_action": 4,
+     "severe_caught": 4
+    },
+    "juba_deyr": {
+     "rp": 4,
+     "n_req": 2,
+     "n_of": 4,
+     "fires": [
+      2005,
+      2006,
+      2015,
+      2017,
+      2023
+     ],
+     "covers": [
+      2006,
+      2023
+     ],
+     "n_action": 3,
+     "severe_caught": 3
+    },
+    "shabelle_gu": {
+     "rp": 3,
+     "n_req": 2,
+     "n_of": 3,
+     "fires": [
+      2005,
+      2006,
+      2010,
+      2013,
+      2016,
+      2018,
+      2020
+     ],
+     "covers": [
+      2005,
+      2013,
+      2016,
+      2018,
+      2020
+     ],
+     "n_action": 5,
+     "severe_caught": 5
+    },
+    "shabelle_deyr": {
+     "rp": 5,
+     "n_req": 2,
+     "n_of": 3,
+     "fires": [
+      2013,
+      2014,
+      2019,
+      2020
+     ],
+     "covers": [
+      2014,
+      2019
+     ],
+     "n_action": 4,
+     "severe_caught": 3
+    }
    }
-  ]
+  },
+  "nogoogle": {
+   "model": "glofas_v4",
+   "leads": [
+    7,
+    12
+   ],
+   "years": [
+    2003,
+    2023
+   ],
+   "n_years": 21,
+   "rps_available": [
+    3,
+    4,
+    5
+   ],
+   "windows": {
+    "juba_gu": {
+     "rp": 4,
+     "n_req": 2,
+     "n_of": 4,
+     "fires": [
+      2005,
+      2010,
+      2016,
+      2018,
+      2020
+     ],
+     "covers": [
+      2010,
+      2016,
+      2018,
+      2020
+     ],
+     "n_action": 4,
+     "severe_caught": 4
+    },
+    "juba_deyr": {
+     "rp": 5,
+     "n_req": 3,
+     "n_of": 4,
+     "fires": [
+      2015,
+      2017,
+      2023
+     ],
+     "covers": [
+      2023
+     ],
+     "n_action": 2,
+     "severe_caught": 1
+    },
+    "shabelle_gu": {
+     "rp": 3,
+     "n_req": 2,
+     "n_of": 3,
+     "fires": [
+      2005,
+      2006,
+      2010,
+      2013,
+      2016,
+      2018,
+      2020
+     ],
+     "covers": [
+      2005,
+      2010,
+      2016,
+      2018,
+      2020
+     ],
+     "n_action": 5,
+     "severe_caught": 5
+    },
+    "shabelle_deyr": {
+     "rp": 5,
+     "n_req": 2,
+     "n_of": 3,
+     "fires": [
+      2013,
+      2014,
+      2019,
+      2020
+     ],
+     "covers": [
+      2014,
+      2019
+     ],
+     "n_action": 4,
+     "severe_caught": 3
+    }
+   }
+  }
  },
  "severe_years": [
   2005,
@@ -376,13 +711,5 @@
   2020,
   2021,
   2023
- ],
- "figures": [
-  "activation",
-  "backtest",
-  "crossings",
-  "grid",
-  "map",
-  "thresholds"
  ]
 }
