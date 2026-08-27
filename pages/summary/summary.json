@@ -903,6 +903,112 @@
    ]
   }
  },
+ "station_scores_forecast": [
+  {
+   "station": "luuq",
+   "river": "juba",
+   "source": "glofas_v4",
+   "n_events": 9,
+   "POD": 0.22,
+   "FAR": 0.71
+  },
+  {
+   "station": "luuq",
+   "river": "juba",
+   "source": "google_grrr",
+   "n_events": 2,
+   "POD": 0.5,
+   "FAR": 0.67
+  },
+  {
+   "station": "dollow",
+   "river": "juba",
+   "source": "glofas_v4",
+   "n_events": 3,
+   "POD": 0.67,
+   "FAR": 0.6
+  },
+  {
+   "station": "dollow",
+   "river": "juba",
+   "source": "google_grrr",
+   "n_events": 2,
+   "POD": 1.0,
+   "FAR": 0.33
+  },
+  {
+   "station": "bardheere",
+   "river": "juba",
+   "source": "glofas_v4",
+   "n_events": 4,
+   "POD": 0.25,
+   "FAR": 0.86
+  },
+  {
+   "station": "bualle",
+   "river": "juba",
+   "source": "glofas_v4",
+   "n_events": 7,
+   "POD": 0.43,
+   "FAR": 0.5
+  },
+  {
+   "station": "bualle",
+   "river": "juba",
+   "source": "google_grrr",
+   "n_events": 4,
+   "POD": 0.5,
+   "FAR": 0.0
+  },
+  {
+   "station": "belet_weyne",
+   "river": "shabelle",
+   "source": "glofas_v4",
+   "n_events": 8,
+   "POD": 0.12,
+   "FAR": 0.86
+  },
+  {
+   "station": "belet_weyne",
+   "river": "shabelle",
+   "source": "google_grrr",
+   "n_events": 6,
+   "POD": 0.17,
+   "FAR": 0.5
+  },
+  {
+   "station": "bulo_burti",
+   "river": "shabelle",
+   "source": "glofas_v4",
+   "n_events": 9,
+   "POD": 0.11,
+   "FAR": 0.86
+  },
+  {
+   "station": "bulo_burti",
+   "river": "shabelle",
+   "source": "google_grrr",
+   "n_events": 6,
+   "POD": 0.0,
+   "FAR": 1.0
+  },
+  {
+   "station": "jowhar",
+   "river": "shabelle",
+   "source": "glofas_v4",
+   "n_events": 4,
+   "POD": 0.5,
+   "FAR": 0.71
+  },
+  {
+   "station": "jowhar",
+   "river": "shabelle",
+   "source": "google_grrr",
+   "n_events": 3,
+   "POD": 0.33,
+   "FAR": 0.67
+  }
+ ],
  "figures": [
   "activation",
   "backtest",

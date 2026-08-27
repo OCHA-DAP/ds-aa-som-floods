@@ -55,11 +55,14 @@ STAGE = "dev"
 # so the comparison charts and the tie count cover the same field the choice
 # was made in
 MODELS = ["glofas_v5", "glofas_v4", "google_grrr", "geoglows"]
+# Product and version on every label: GloFAS appears as two versions, so
+# naming the others without a version made four columns look like four
+# unrelated products.
 NICE = {
-    "google_grrr": "Google",
+    "google_grrr": "Google GRRR",
     "glofas_v5": "GloFAS v5",
     "glofas_v4": "GloFAS v4",
-    "geoglows": "GEOGloWS",
+    "geoglows": "GEOGloWS v2",
 }
 GAUGE_BM = {r: f"swalim_{g}" for r, g in REFERENCE_GAUGE.items()}
 MIN_LAG, MAX_LAG, MIN_OBS = -10, 30, 60
@@ -495,6 +498,53 @@ for basis, field, frame, basis_span in FIELDS:
 data["variants"] = {f"{b}_{'google' if g else 'nogoogle'}": v
                     for (b, g), v in variants.items()}
 
+# ---- the same per-gauge test, but on the forecast archives
+# Thresholds fitted on each product's own forecast series, so a forecast is
+# never judged against a retrospective-fitted number. GloFAS v5 has no
+# reforecast and GEOGloWS's forecasts sit below its retrospective, so only
+# Google and GloFAS v4 can be scored this way.
+fc_scores, fc_spans_used = [], {}
+if fc_daily is not None:
+    for river, stns in TRIGGER_STATIONS.items():
+        for st in stns:
+            obs = lv[lv.station == st].set_index("date")["level_m"].dropna().sort_index()
+            modern = obs[obs.index.year >= 2000]
+            am_o = modern.groupby(modern.index.year).max().dropna()
+            base = weibull_level(am_o.values, BENCHMARK_RP)
+            if np.isnan(base):
+                continue
+            for src in sorted(fc_daily.src.unique()):
+                m = fc_daily[(fc_daily.src == src) & (fc_daily.station == st)]
+                if m.empty:
+                    continue
+                m = m.set_index("date")["discharge"].sort_index()
+                am_m = m.groupby(m.index.year).max().dropna()
+                if len(am_m) < 8:
+                    continue
+                t = weibull_threshold(am_m.values, BENCHMARK_RP)
+                if np.isnan(t):
+                    continue
+                j = pd.concat([m.rename("mod"), obs.rename("obs")], axis=1,
+                              join="inner").dropna()
+                if len(j) < 300:
+                    continue
+                oev = episodes(j["obs"] >= base)
+                mev = episodes(j["mod"] >= t)
+                if not oev:
+                    continue
+                pod = hits(oev, mev) / len(oev)
+                far = (1 - hits(mev, oev) / len(mev)) if mev else None
+                fc_spans_used.setdefault(
+                    src, (int(m.index.year.min()), int(m.index.year.max()))
+                )
+                fc_scores.append({
+                    "station": st, "river": river, "source": src,
+                    "n_events": len(oev), "POD": round(pod, 2),
+                    "FAR": round(far, 2) if far is not None else None,
+                })
+data["station_scores_forecast"] = fc_scores
+print(f"  forecast-basis station scores: {len(fc_scores)}")
+
 # ---- charts: the same figures the review deck carried
 print("drawing the figures ...")
 figs = summary_figures.build(
@@ -594,7 +644,8 @@ for i, (key, lab) in enumerate(TAB_LABELS.items()):
     slug = f"{key[0]}-{'google' if key[1] else 'nogoogle'}"
     active = " active" if i == 0 else ""
     tab_buttons.append(
-        f'      <button class="tab{active}" data-panel="{slug}">{esc(lab)}</button>'
+        f'      <button class="tab{active}" data-group="variant" '
+        f'data-panel="{slug}">{esc(lab)}</button>'
     )
     if not v or "error" in v:
         why = v.get("error", "not available") if v else "not available"
@@ -853,6 +904,58 @@ else:
         "data to score.</div>"
     )
 
+# ---- section 4 as two panels: reanalysis and forecasts, never mixed
+def score_table(scores, sources, labels):
+    if not scores:
+        return ('<div class="callout">Nothing to score on this basis.</div>')
+    sc = pd.DataFrame(scores)
+    rows = []
+    for st, g in sc.groupby("station", sort=False):
+        cells = []
+        for src in sources:
+            r = g[g.source == src]
+            cells.append(
+                f"{r.iloc[0]['POD']:.2f} / {r.iloc[0]['FAR']:.2f}" if len(r) else "-"
+            )
+        rows.append((st, int(g.n_events.iloc[0]), *cells))
+    return table(["Gauge", "Events", *labels], rows)
+
+
+fc_sources = sorted(fc_spans_used)
+basis_panels = (
+    '    <div class="tabbar">\n'
+    '      <button class="tab active" data-group="basis" data-panel="basis-rean">'
+    "Reanalysis</button>\n"
+    '      <button class="tab" data-group="basis" data-panel="basis-fc">'
+    "Forecasts</button>\n"
+    "    </div>\n"
+    '    <div class="panels">\n'
+    '      <div class="panel active" id="basis-rean">\n'
+    "        <p>Each product's retrospective simulation against the events recorded at "
+    f"the gauges, {Y0 + 3} to {Y1}, scored at its own 1-in-{BENCHMARK_RP} discharge so "
+    "it is judged on timing rather than on scale.</p>\n"
+    f"{scores_html}\n"
+    f"{figure('skill')}\n"
+    "      </div>\n"
+    '      <div class="panel" id="basis-fc">\n'
+    "        <p>The same gauge events, but each product scored on its own forecast "
+    "archive: the ensemble median at leads 1 to 7, with thresholds fitted on that "
+    "forecast series rather than inherited from a retrospective. Only two products can "
+    "be tested this way. GloFAS v5 publishes no reforecast, and GEOGloWS's forecasts "
+    "run below its own retrospective, so a retrospective-fitted threshold would not "
+    "transfer.</p>\n"
+    "        <p>Read these rates with care: an archive covering 8 years holds only a "
+    "handful of gauge events, so one hit or miss moves POD a long way. The event count "
+    "per gauge is in the second column.</p>\n"
+    + score_table(
+        fc_scores,
+        fc_sources,
+        [f"{NICE.get(m, m)} ({fc_spans_used[m][0]}-{fc_spans_used[m][1]})"
+         for m in fc_sources],
+    )
+    + "\n      </div>\n    </div>"
+)
+
 HTML = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1012,12 +1115,10 @@ table.data td em {{ font-style:normal; color:var(--b6); font-weight:600; }}
 {figure("exposure")}
 
     <h2><span class="num">4</span>Model performance against the gauges</h2>
-    <p>Each model's hindsight simulation is compared with the events recorded at the
-      gauges, 2002 to 2023, scored against each model's own 1-in-3-year discharge so it is
-      judged on timing rather than on scale. POD is the share of events caught; FAR the
-      share of alarms that were false.</p>
-{figure("skill")}
-{scores_html}
+    <p>POD is the share of gauge-recorded events the product caught, FAR the share of
+      its alarms that were false, both within a 7-day window. The two bases are kept
+      apart: thresholds are fitted on whichever series is being judged.</p>
+{basis_panels}
     <p>GEOGloWS appears here as its raw retrospective. Bias correcting it (the SFDC
       method, notebook 02) fixes the magnitude bias but not the timing: POD falls at
       every gauge and reaches zero at four of them, and the correlations drop too.
@@ -1110,11 +1211,16 @@ table.data td em {{ font-style:normal; color:var(--b6); font-weight:600; }}
   <script>
     document.querySelectorAll(".tab").forEach(function (btn) {{
       btn.addEventListener("click", function () {{
-        document.querySelectorAll(".tab").forEach(function (b) {{
+        // tabs are grouped: switching one group must not disturb another
+        var group = btn.dataset.group || "variant";
+        var siblings = document.querySelectorAll('.tab[data-group="' + group + '"]');
+        if (!siblings.length) {{
+          siblings = document.querySelectorAll(".tab:not([data-group])");
+        }}
+        siblings.forEach(function (b) {{
           b.classList.remove("active");
-        }});
-        document.querySelectorAll(".panel").forEach(function (p) {{
-          p.classList.remove("active");
+          var p = document.getElementById(b.dataset.panel);
+          if (p) {{ p.classList.remove("active"); }}
         }});
         btn.classList.add("active");
         var panel = document.getElementById(btn.dataset.panel);
