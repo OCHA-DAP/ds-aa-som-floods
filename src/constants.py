@@ -233,6 +233,11 @@ READINESS_MODEL = "glofas_v4"
 # thresholds, and judge the union of the four windows. Models are never mixed
 # inside a window, so a window is one product plus one rule.
 #
+# Calibrated to activate no more often than 1-in-3 (directive 2026-08-27): 8
+# activations in 25 years, 1-in-3.2, catching 8 of the 10 severe years. The
+# 9-activation alternative sits at 1-in-2.9 with the same severe coverage;
+# this one drops 2010, which was not a severe year.
+#
 # The backtest does not identify the model on its own: 161 assignments across
 # the four windows reach the same 8-of-10 severe-year coverage near 1-in-3.
 # Where the envelope is indifferent, the forecast side decides, which is why
@@ -241,9 +246,9 @@ READINESS_MODEL = "glofas_v4"
 # operational v5 forecast, and the v4 reforecast supplies the lead-time
 # evidence.
 TRIGGER_CONFIG = {
-    ("juba", "gu"): {"source": "google_grrr", "rp": 5, "n_req": 3},
+    ("juba", "gu"): {"source": "geoglows", "rp": 5, "n_req": 2},
     ("juba", "deyr"): {"source": "google_grrr", "rp": 5, "n_req": 3},
-    ("shabelle", "gu"): {"source": "google_grrr", "rp": 5, "n_req": 2},
+    ("shabelle", "gu"): {"source": "glofas_v5", "rp": 6, "n_req": 2},
     ("shabelle", "deyr"): {"source": "glofas_v5", "rp": 5, "n_req": 2},
 }
 # The operative source per window, which is what the trigger, the envelope

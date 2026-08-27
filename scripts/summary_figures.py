@@ -12,7 +12,7 @@ Chart order follows the deck:
   4 skill           POD and FAR per model and gauge, RP3 baseline
   5 correlation     best-lag rank correlation per model, gauge and season
   6 grid            POD / FAR / F1 over the station RP and votes grid
-  7 activation      when each window fires, and the envelope it implies
+  7 activation      when each window activates, and the envelope it implies
   8 map             the gauges the trigger runs on (optional: needs codab)
 """
 
@@ -383,7 +383,7 @@ def fig_grid(ctx, figdir):
 
 # --------------------------------------------------------------- 7. activation
 def fig_activation(ctx, figdir):
-    """When each window fires, against how bad the year actually was.
+    """When each window activates, against how bad the year actually was.
 
     At a 1-in-3 envelope rate the trigger is not trying to catch every
     1-in-3 flood, so the chart separates the severe years (the ones it is
@@ -403,9 +403,9 @@ def fig_activation(ctx, figdir):
     colors = {"hit_sev": "#123F5F", "hit": "#3E86BE", "false": "#F4A93B",
               "miss_sev": "#B34036", "miss": "#E3B4AF", "quiet": "#EDF1F4"}
     fig, ax = plt.subplots(figsize=(12.4, 0.62 * len(lines) + 2.4))
-    for i, (name, fired, ev, sev) in enumerate(lines[::-1]):
+    for i, (name, activated, ev, sev) in enumerate(lines[::-1]):
         for j, y in enumerate(years):
-            if y in fired:
+            if y in activated:
                 kind = "hit_sev" if y in sev else "hit" if y in ev else "false"
             else:
                 kind = "miss_sev" if y in sev else "miss" if y in ev else "quiet"
@@ -421,11 +421,11 @@ def fig_activation(ctx, figdir):
         s.set_visible(False)
     ax.axhline(0.5, color=INK, linewidth=1.0)
     handles = [Rectangle((0, 0), 1, 1, facecolor=colors["hit_sev"],
-                         label="fired, severe flood"),
+                         label="activated, severe flood"),
                Rectangle((0, 0), 1, 1, facecolor=colors["hit"],
-                         label="fired, ordinary flood"),
+                         label="activated, ordinary flood"),
                Rectangle((0, 0), 1, 1, facecolor=colors["false"],
-                         label="fired, no flood at the gauge"),
+                         label="activated, no flood at the gauge"),
                Rectangle((0, 0), 1, 1, facecolor=colors["miss_sev"],
                          label="severe flood missed"),
                Rectangle((0, 0), 1, 1, facecolor=colors["miss"],
@@ -435,7 +435,7 @@ def fig_activation(ctx, figdir):
     ax.legend(handles=handles, ncol=3, fontsize=8.5, loc="upper center",
               bbox_to_anchor=(0.5, -0.07))
     ax.set_title(f"Backtest of the adopted configuration, {ctx['Y0']}-{ctx['Y1']}\n"
-                 "bottom row: the funding envelope, which releases when any window fires")
+                 "bottom row: the funding envelope, which releases when any window activates")
     return save(fig, figdir, "activation")
 
 
@@ -652,7 +652,7 @@ BUILDERS = [
      "one season-year in three, by construction."),
     ("backtest", fig_backtest,
      "The two baselines side by side. Amber cells are years the official Moderate "
-     "mark fired and the RP3 did not, which is where the two definitions disagree."),
+     "mark activated and the RP3 did not, which is where the two definitions disagree."),
     ("exposure", fig_exposure,
      "The gauge record matters because of who sits behind it: the districts along "
      "both rivers with the largest populations in flooded areas."),
@@ -675,7 +675,7 @@ BUILDERS = [
      "catches eight of the ten."),
     ("activation", fig_activation,
      "Year by year, what the adopted configuration would have done, and what the "
-     "envelope does when any of the four windows fires."),
+     "envelope does when any of the four windows activates."),
 ]
 
 

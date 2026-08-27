@@ -192,7 +192,7 @@ def evaluate(combo, any_flood, severe, span=None):
     }
 
 
-def choose(cands, any_flood, severe, per_river=False, span=None):
+def choose(cands, any_flood, severe, per_river=False, span=None, min_rp=None):
     """Joint search over the four windows for an envelope near the target."""
     span = span or SPAN
     keys = list(cands)
@@ -216,10 +216,18 @@ def choose(cands, any_flood, severe, per_river=False, span=None):
         # frontier: the best severe-year coverage at each activation count
         score = (r["severe_caught"], -len(r["no_flood_years"]),
                  -sum(c["unanimous"] for c in combo),
+                 # tracking correlation breaks remaining ties: an indifferent
+                 # envelope must not hand a window to the worst tracker
+                 round(sum(c["rho"] for c in combo), 2),
                  -sum(c["rp"] for c in combo))
         if r["fires"] not in frontier or score > frontier[r["fires"]][0]:
             frontier[r["fires"]] = (score, combo, r)
-        if abs(r["env_rp"] - ENVELOPE_TARGET_RP) <= 0.45:
+        # min_rp: accept only rates at or rarer than this, for when the target
+        # must not be exceeded (the record quantises the achievable rates)
+        near = abs(r["env_rp"] - ENVELOPE_TARGET_RP) <= 0.45
+        if min_rp is not None:
+            near = r["env_rp"] >= min_rp - 0.01 and r["env_rp"] <= min_rp + 0.6
+        if near:
             pick_score = (r["severe_caught"], -len(r["no_flood_years"]),
                           -abs(r["env_rp"] - ENVELOPE_TARGET_RP),
                           -sum(c["unanimous"] for c in combo))

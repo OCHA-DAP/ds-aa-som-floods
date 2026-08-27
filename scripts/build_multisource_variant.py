@@ -178,7 +178,7 @@ def action_leg(basis, drop_google=False):
                           f"a 1-in-{RP_FLOOR} threshold, and 1-in-2 is not allowed")}
     cands = {k: model_selection.window_candidates(
         frame, lv, k[0], k[1], models=models, span=span, rps=rps) for k in WINDOWS}
-    pinned = basis == "reanalysis" and not drop_google
+    pinned = False  # one model per RIVER is searched, not read from constants
     off_target = False
     if pinned:
         combo = []
@@ -193,7 +193,13 @@ def action_leg(basis, drop_google=False):
         if combo is not None:
             res = model_selection.evaluate(tuple(combo), any_flood, severe, span=span)
     if not pinned:
-        _, best, frontier = model_selection.choose(cands, any_flood, severe, span=span)
+        # one source per river AND season (directive 2026-08-27): four choices,
+        # never mixed inside a window
+        # never more often than the target: the record quantises the
+        # achievable rates, so 1-in-3.2 is the nearest at or rarer than 1-in-3
+        _, best, frontier = model_selection.choose(
+            cands, any_flood, severe, span=span,
+            min_rp=float(ENVELOPE_TARGET_RP))
         if best is None and frontier:
             best = min(frontier.values(),
                        key=lambda t: abs(t[2]["env_rp"] - ENVELOPE_TARGET_RP))
@@ -468,7 +474,7 @@ def write_activation_impact():
 
     The EM-DAT and CERF entries are taken verbatim from the published
     document: they are observations, not model output. Everything else, the
-    per-window counts and whether the window fired, is recomputed here for
+    per-window counts and whether the window activated, is recomputed here for
     both provider sets.
     """
     src_path = SRC_PAGE.parent / "activation_impact.json"
@@ -657,7 +663,7 @@ def forecast_panel():
         f"{use['years'][0]}&ndash;{use['years'][1]}, thresholds from 1-in-"
         f"{min(use['rps_available'])} to 1-in-{max(use['rps_available'])}.{excl}</p>"
         + data_table(["window", "source", "gauge threshold", "points that must agree",
-                      "would have fired in"], rows)
+                      "would have activated in"], rows)
         + f"<p><strong>Envelope 1-in-{e['env_rp']}</strong> ({e['fires']} of "
         f"{use['n_years']} years), catching {e['severe_caught']} of the "
         f"{e['n_severe']} severe years.{note}</p>"
@@ -672,7 +678,7 @@ SECTIONS = {
     "The mechanism at a glance": f"""
     <p>Four river-season windows, each running on <strong>one</strong> forecast source
       rather than a mixture. Inside a window, every monitored point's flow is compared
-      with its own return-period threshold and the window fires when enough points cross
+      with its own return-period threshold and the window activates when enough points cross
       in the same season. At least two points must agree, so no single point releases the
       money, and never all of them, so one quiet point cannot block it.</p>
     <p>All seven reporting-era points are monitored: four on the Juba (Luuq, Dollow,
@@ -681,11 +687,11 @@ SECTIONS = {
 {glance_table()}
     <div class="callout">
       <strong>The envelope.</strong> The full amount is released whenever any window
-      fires, so the union is what the 1-in-3 target applies to. As configured it would
+      activates, so the union is what the 1-in-3 target applies to. As configured it would
       have released in <strong>{env['fires']} of {N_YEARS} years, once every
       {env['env_rp']} years</strong>, catching {env['severe_caught']} of the
       {env['n_severe']} years the reference gauge recorded as 1-in-{SEVERE_RP} or rarer,
-      and never firing in a year with no recorded flood.
+      and never activating in a year with no recorded flood.
     </div>
     <h3>What happens without Google Flood Hub</h3>
     <p>Use the provider switch above to see it. With Google removed the windows run on
@@ -721,7 +727,7 @@ SECTIONS = {
 )}
     <p>Readiness carries each window's own rule, the same votes and the same return
       period, refitted on the 7-to-12-day series. It is not tuned to precede activation:
-      an action trigger may fire with no readiness phase ahead of it, which is accepted
+      an action trigger may activate with no readiness phase ahead of it, which is accepted
       (decision 2026-08-27). The last column reports how often readiness did lead an
       activation, as an observation rather than a requirement.</p>
 """,
@@ -804,39 +810,43 @@ OPERATIONAL_NOTE_TOKEN = (
 SECTION_EDITS = {
     "How the pairs were chosen": [
         (r"<h2([^>]*)>\s*How the pairs were chosen\s*</h2>",
-         r"<h2\1>How the model was chosen, one per window</h2>"),
-        (r"<p>\s*Every combination of the.*?</p>",
-         "<p>The published mechanism let every combination of gauge and provider "
-         "compete, so one point could cast two or three votes and three providers "
-         "each held a veto. Here the unit is the point: <strong>each window takes a "
-         "single source</strong>, and only the threshold and the number of points "
-         "that must agree are searched. Products are compared on best-lag Spearman "
-         "correlation between their reanalysis discharge and the river's reference "
-         "gauge level (Luuq for the Juba, Belet Weyne for the Shabelle), per window."
-         "</p>"),
-        (r"<ul>.*?</ul>",
-         "<ul>\n"
-         "<li><strong>All seven points, none dropped</strong> (directive "
-         "2026-08-27): four on the Juba and three on the Shabelle. Bardheere and "
-         "Bualle are included as forecast points although their gauges stopped "
-         "reporting in 2023 and 2024, so they can no longer be verified.</li>\n"
-         "<li><strong>One source per window, never mixed.</strong> Four model "
-         "choices in total, so no point votes twice and no provider holds a "
-         "veto.</li>\n"
-         "<li><strong>Thresholds at or above 1-in-3</strong>, with a quarter of the "
-         "record as the ceiling, on every leg including readiness.</li>\n"
-         "<li><strong>At least two points must agree, and never all of them</strong>, "
-         "so no single point releases the money and no single quiet point blocks "
-         "it.</li>\n</ul>"),
-        (r"<p>\s*Multi-model representation.*?</p>",
-         "<p><strong>The correlation ranks the products; it does not settle the "
-         "choice.</strong> Many assignments reproduce the same activation years, "
-         "because with 25 years and a handful of severe events the threshold and "
-         "vote count absorb the difference. What separates the products "
-         "operationally is skill at lead time and whether their archive can carry "
-         "the threshold at all.</p>"),
+         r"<h2\1>How the model was chosen, one per river and season</h2>"),
+        (r"<p>\s*Every combination of the.*?</p>\s*<ul>.*?</ul>",
+         "<p>One source per river and season, so four choices. Four steps:</p>\n"
+         "<ol>\n"
+         "<li><strong>Build the candidate rules.</strong> For a window and a candidate "
+         "model, put a threshold at every one of the river's points, taken from that "
+         "model's own annual maxima (1-in-3 to 1-in-6). The window activates in a year "
+         "when at least N points cross in that season.</li>\n"
+         "<li><strong>Score the envelope, not the window.</strong> The money is "
+         "released when any of the four windows activates, so candidates are judged on "
+         "that union: how often it activates, how many of the 10 severe years it "
+         "catches, and how often it activates in a year with no recorded flood.</li>\n"
+         "<li><strong>Apply the constraints.</strong> Thresholds never below 1-in-3 nor "
+         "above a quarter of the record; all seven points monitored; at least two must "
+         "agree but never all of them; every window must activate at least twice in 25 "
+         "years.</li>\n"
+         "<li><strong>Pick.</strong> Nearest 1-in-3 overall with the most severe years "
+         "caught. Ties break on fewer no-flood activations, then on tracking "
+         "correlation.</li>\n"
+         "</ol>"),
+        (r"<p>\s*<strong>Multi-model representation.*?</p>",
+         "<p><strong>Why correlation is only a tie-break.</strong> Many model "
+         "assignments reproduce the same activation years: with 25 years and 10 severe "
+         "events, the threshold and the vote count absorb the difference between "
+         "products. Correlation decides only when the envelope cannot.</p>"),
+        (r"      <figcaption>The candidate pool\..*?</figcaption>",
+         "      <figcaption>Mean best-lag correlation between each product and the "
+         "river's reference gauge, per window, across that window's points. The marker "
+         "shows the source chosen for that window.</figcaption>"),
+        (r'alt="Scatter plots of correlation versus lag[^"]*"',
+         'alt="Mean best-lag correlation per window and product"'),
     ],
     "Thresholds and calibration": [
+        (r"<h3[^>]*>\s*Are SWALIM.s official flood-risk levels trustworthy\?\s*</h3>",
+         "<h3>How the official SWALIM levels compare with the fitted ones</h3>"),
+        (r"shows they imply very different frequencies from gauge to gauge",
+         "shows they imply very different frequencies from gauge to gauge"),
         (r"<p>\s*Each selected pair gets its threshold.*?</p>",
          "<p>Each monitored point gets its threshold from its own model's "
          "climatology: the Weibull plotting position of that point's seasonal "
@@ -1036,11 +1046,31 @@ body = body.replace(
 )
 
 OUT.mkdir(parents=True, exist_ok=True)
-(OUT / "index.html").write_text(body, encoding="utf-8")
-write_selection_detail()
-write_activation_impact()
+sel_payload = write_selection_detail()
+ai_payload = write_activation_impact()
 print(f"wrote {OUT / 'selection_detail.json'}")
 print(f"wrote {OUT / 'activation_impact.json'}")
+
+# Embed both payloads and let fetch be the fallback, so the page also works
+# opened straight from disk, where a browser refuses to fetch sibling files.
+embedded = (
+    "<script>\n"
+    "window.__PAYLOADS__ = {\n"
+    '  "selection_detail.json": ' + json.dumps(sel_payload).replace("</", "<\\/")
+    + ",\n"
+    '  "activation_impact.json": ' + json.dumps(ai_payload).replace("</", "<\\/")
+    + "\n};\n"
+    "window.__data__ = function (name) {\n"
+    "  var d = window.__PAYLOADS__[name];\n"
+    "  if (d) { return Promise.resolve({ json: function () { return d; } }); }\n"
+    "  return fetch(name);\n"
+    "};\n"
+    "</script>\n"
+)
+body = body.replace("</head>", embedded + "</head>", 1)
+for name in ("selection_detail.json", "activation_impact.json"):
+    body = body.replace(f'fetch("{name}")', f'window.__data__("{name}")')
+(OUT / "index.html").write_text(body, encoding="utf-8")
 def jsonable(obj):
     """Window keys are (river, season) tuples; JSON needs strings."""
     if isinstance(obj, dict):

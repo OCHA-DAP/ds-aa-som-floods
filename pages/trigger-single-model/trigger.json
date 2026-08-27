@@ -42,11 +42,11 @@
     6
    ],
    "off_target": false,
-   "pinned": true,
+   "pinned": false,
    "envelope": {
-    "fires": 9,
+    "fires": 8,
     "n_years": 25,
-    "env_rp": 2.9,
+    "env_rp": 3.2,
     "severe_caught": 8,
     "severe_missed": [
      2011,
@@ -56,7 +56,6 @@
     "years": [
      2005,
      2006,
-     2013,
      2014,
      2016,
      2018,
@@ -68,27 +67,25 @@
    },
    "windows": {
     "juba_gu": {
-     "source": "google_grrr",
+     "source": "geoglows",
      "rp": 5,
-     "n_req": 3,
+     "n_req": 2,
      "n_of": 4,
      "stations": [
-      "bardheere",
+      "dollow",
       "luuq",
-      "bualle",
-      "dollow"
+      "bardheere",
+      "bualle"
      ],
-     "rho": 0.86,
+     "rho": 0.79,
      "years": [
-      2013,
-      2016,
       2018,
       2020
      ]
     },
     "juba_deyr": {
-     "source": "google_grrr",
-     "rp": 5,
+     "source": "glofas_v5",
+     "rp": 4,
      "n_req": 3,
      "n_of": 4,
      "stations": [
@@ -97,16 +94,15 @@
       "bardheere",
       "bualle"
      ],
-     "rho": 0.6,
+     "rho": 0.82,
      "years": [
       2006,
-      2019,
       2023
      ]
     },
     "shabelle_gu": {
-     "source": "google_grrr",
-     "rp": 5,
+     "source": "glofas_v5",
+     "rp": 6,
      "n_req": 2,
      "n_of": 3,
      "stations": [
@@ -114,10 +110,9 @@
       "bulo_burti",
       "jowhar"
      ],
-     "rho": 0.77,
+     "rho": 0.71,
      "years": [
       2005,
-      2013,
       2016,
       2018,
       2020
@@ -161,9 +156,9 @@
    "off_target": false,
    "pinned": false,
    "envelope": {
-    "fires": 9,
+    "fires": 8,
     "n_years": 25,
-    "env_rp": 2.9,
+    "env_rp": 3.2,
     "severe_caught": 8,
     "severe_missed": [
      2011,
@@ -173,7 +168,6 @@
     "years": [
      2005,
      2006,
-     2010,
      2014,
      2016,
      2018,
@@ -185,20 +179,18 @@
    },
    "windows": {
     "juba_gu": {
-     "source": "glofas_v5",
+     "source": "geoglows",
      "rp": 5,
      "n_req": 2,
      "n_of": 4,
      "stations": [
-      "luuq",
       "dollow",
+      "luuq",
       "bardheere",
       "bualle"
      ],
-     "rho": 0.81,
+     "rho": 0.79,
      "years": [
-      2010,
-      2016,
       2018,
       2020
      ]
@@ -222,7 +214,7 @@
     },
     "shabelle_gu": {
      "source": "glofas_v5",
-     "rp": 5,
+     "rp": 6,
      "n_req": 2,
      "n_of": 3,
      "stations": [
@@ -233,7 +225,6 @@
      "rho": 0.71,
      "years": [
       2005,
-      2010,
       2016,
       2018,
       2020
@@ -526,7 +517,7 @@
    "windows": {
     "juba_gu": {
      "rp": 5,
-     "n_req": 3,
+     "n_req": 2,
      "n_of": 4,
      "fires": [
       2010,
@@ -535,27 +526,29 @@
       2020
      ],
      "covers": [
-      2016,
       2018,
       2020
      ],
-     "n_action": 4,
+     "n_action": 2,
      "severe_caught": 3
     },
     "juba_deyr": {
-     "rp": 5,
+     "rp": 4,
      "n_req": 3,
      "n_of": 4,
      "fires": [
+      2005,
+      2006,
       2015,
       2017,
       2023
      ],
      "covers": [
+      2006,
       2023
      ],
-     "n_action": 3,
-     "severe_caught": 1
+     "n_action": 2,
+     "severe_caught": 3
     },
     "shabelle_gu": {
      "rp": 5,
@@ -569,10 +562,9 @@
      ],
      "covers": [
       2005,
-      2013,
       2016
      ],
-     "n_action": 5,
+     "n_action": 4,
      "severe_caught": 2
     },
     "shabelle_deyr": {
@@ -622,12 +614,10 @@
       2020
      ],
      "covers": [
-      2010,
-      2016,
       2018,
       2020
      ],
-     "n_action": 4,
+     "n_action": 2,
      "severe_caught": 3
     },
     "juba_deyr": {
@@ -660,10 +650,9 @@
      ],
      "covers": [
       2005,
-      2010,
       2016
      ],
-     "n_action": 5,
+     "n_action": 4,
      "severe_caught": 2
     },
     "shabelle_deyr": {

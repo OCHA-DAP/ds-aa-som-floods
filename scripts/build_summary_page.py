@@ -250,7 +250,7 @@ for (river, season), spec in TRIGGER_CONFIG.items():
     )
 data["windows"] = win_rows
 
-# ---- the envelope: released whenever any window fires
+# ---- the envelope: released whenever any window activates
 union = {y for a in per_window.values() for y in a}
 counts = {}
 for a in per_window.values():
@@ -671,7 +671,7 @@ for i, (key, lab) in enumerate(TAB_LABELS.items()):
     ]
     body = table(
         ["River", "Season", "Forecast", "Gauge threshold", "Gauges that must agree",
-         "Would have fired in"],
+         "Would have activated in"],
         rows,
     )
     srcs = ", ".join(sorted({NICE.get(w["source"], w["source"]) for w in v["windows"]}))
@@ -688,7 +688,7 @@ for i, (key, lab) in enumerate(TAB_LABELS.items()):
         f'{" (the closest this evidence supports; nothing lands on the target)" if v.get("off_target") else ""} '
         f'({e["fires"]} of {v["n_years"]} years), catching '
         f'{e["severe_caught"]} of the {e["n_severe"]} severe years, on {srcs}. '
-        f'Fired with no recorded flood: '
+        f'Activated with no recorded flood: '
         f'{", ".join(str(y) for y in e["no_flood_years"]) or "never"}. '
         f'Severe years missed: '
         f'{", ".join(str(y) for y in e["severe_missed"]) or "none"}.</p>\n'
@@ -715,7 +715,7 @@ for w in win_rows:
     )
 trigger_html = table(
     ["River", "Season", "Forecast", "Gauge threshold", "Gauges that must agree",
-     "Would have fired in"],
+     "Would have activated in"],
     trigger_rows,
 )
 severe_missed = ", ".join(str(y) for y in adopted["severe_missed"]) or "none"
@@ -723,7 +723,7 @@ severe_missed = ", ".join(str(y) for y in adopted["severe_missed"]) or "none"
 if no_google:
     ng_html = table(
         ["River", "Season", "Forecast", "Gauge threshold", "Gauges that must agree",
-         "Would have fired in"],
+         "Would have activated in"],
         [
             (
                 w["river"].capitalize(),
@@ -963,7 +963,7 @@ HTML = f"""<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Somalia floods: data-source review &mdash; Somalia Riverine Flood Trigger</title>
-<meta name="description" content="Generated summary of the Somalia riverine flood trigger evidence: gauge record, model performance, station selection, the adopted configuration and the envelope it implies.">
+<meta name="description" content="Review of the data sources behind the Somalia riverine flood trigger: the SWALIM gauge record, how each model performs against it, the stations selected, and the resulting configuration.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -974,16 +974,13 @@ HTML = f"""<!DOCTYPE html>
 </head>
 <body>
 <div class="wrap">
-
   <header class="hero hero-sub">
-    <canvas id="bg" aria-hidden="true"></canvas>
     <div class="inner">
       <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / data-source review</p>
-      <h1>Somalia floods analysis</h1>
-      <p>Review of the different data sources for the trigger: the SWALIM gauge record,
-         how the models perform against it, which gauges and model carry each river, and
-         what the resulting trigger would have done. Every figure here is computed from
-         the source data when the page is built.</p>
+      <h1>Somalia floods: data-source review</h1>
+      <p>The evidence behind the trigger: the SWALIM gauge record, how each model
+        performs against it, the stations selected, and the configuration that follows.
+        Generated {data['generated']} from the source data.</p>
     </div>
   </header>
 
@@ -993,198 +990,83 @@ HTML = f"""<!DOCTYPE html>
 {tiles_html}
     </div>
 
-    <h2><span class="num">1</span>The trigger</h2>
-    <p>Each window runs on a single forecast source, never a mixture, so one window is
-      one product plus one rule. Inside it, every gauge's forecast flow is compared with
-      its own return-period threshold, and the window fires when enough gauges cross in
-      the same season. At least two must agree, so no single gauge can release the money;
-      never all of them, so one gauge going quiet cannot block it.</p>
-{tabs_html}
-    <div class="callout">
-      <strong>The envelope.</strong> The full amount is released whenever any window
-      fires, so that union, not the individual window, is what the 1-in-3 target
-      applies to. As configured above it would have released in
-      <strong>{adopted['fires']} of {env['n_years_in_span']} years, once every
-      {adopted['env_rp']} years</strong>, catching {adopted['severe_caught']} of the
-      {len(data['severe_years'])} severe years and never firing in a year with no
-      recorded flood at all. Severe years missed: {severe_missed}.
-    </div>
-{figure("activation")}
-
-    <h2><span class="num">2</span>Key takeaways</h2>
+    <h2><span class="num">1</span>Key takeaways</h2>
     <ul class="takeaways">
-      <li><strong>The gauge record is the reference, and only the reporting gauges can
-        serve a live trigger:</strong> {n_juba} on the Juba, {n_shab} on the Shabelle.
-        Thresholds are fitted on post-2000 data, because flooding has been recorded far
-        more often in recent decades.</li>
-      <li><strong>A flood is defined by the computed 1-in-3-year level at the gauge,</strong>
-        not by an official SWALIM mark: it is frequency-calibrated, so it means the same
-        thing at every gauge, where the official marks range from most years to never.
-        That definition is what the trigger is scored against; the forecast thresholds
-        the trigger actually watches are rarer, and set by the envelope calibration.</li>
-      <li><strong>The backtest cannot choose the model, so the forecasts do.</strong>
-        161 different model assignments across the four windows reach the same
-        severe-year coverage at the same activation rate: with 25 years and 10 severe
-        events there is enough freedom in the station count, threshold and vote rule for
-        almost any product to reproduce the same years. The choice therefore rests on
-        skill at lead time, where Google leads the Juba in Gu and GloFAS leads the
-        Shabelle in both seasons.</li>
-      <li><strong>The 1-in-3 rate belongs to the envelope, not to each window.</strong>
-        Four windows each calibrated to 1-in-3 release the money about every 1.5 years,
-        because they are not independent draws. Calibrated on the union instead, the
-        windows sit at 1-in-{min(act_rps)} to 1-in-{max(act_rps)} individually and the
-        envelope lands at 1-in-{adopted['env_rp']}.</li>
-      <li><strong>What that rate buys, and what it costs.</strong> It catches
-        {adopted['severe_caught']} of the {len(data['severe_years'])} severe years with
-        no activation in a year that recorded no flood. It does not attempt the more
-        common 1-in-3 floods: at this rate the trigger is for the bad years.</li>
+      <li><strong>Model performance differs by river and season.</strong> GloFAS leads
+        the Shabelle and both Deyr windows; Google leads the Juba in Gu.</li>
+      <li><strong>Accuracy holds from one to seven days ahead,</strong> so a one-week
+        action window is defensible. Models still miss a share of floods, so SWALIM
+        guidance belongs in the trigger design.</li>
+      <li><strong>The gauge record is the reference,</strong> and only the reporting
+        gauges can serve a live trigger: {n_juba} on the Juba, {n_shab} on the
+        Shabelle. Thresholds are fitted on post-2000 data, because flooding has been
+        recorded far more often in recent decades.</li>
+      <li><strong>A flood is defined by the computed 1-in-3-year level at the
+        gauge,</strong> not by an official SWALIM mark: it is frequency-calibrated, so
+        it means the same thing at every gauge.</li>
     </ul>
 
-    <h2><span class="num">3</span>SWALIM thresholds, events and crossings</h2>
-    <p>SWALIM publishes three risk levels per station: moderate, high and bank full. Each
-      station's 1-in-3-year level is estimated from its own annual maxima and compared
-      against them: where the 1-in-3-year level sits above the moderate mark, that mark is
-      crossed more often than once every three years.</p>
-    <p>An event is a spell in which the level sits at or above the baseline. The level must
-      stay below it for at least 14 days before a new crossing counts separately, so a
-      brief dip mid-flood does not split one flood in two. Readings stop rising once a
-      gauge reaches bank full, or when a gauge is destroyed mid-flood, so the largest
-      events are understated.</p>
+    <h2><span class="num">2</span>SWALIM thresholds</h2>
+    <p>SWALIM publishes three risk levels per station: moderate, high and bank full.
+      Each station's 1-in-3-year level is estimated from its own annual maxima and
+      compared against them. Where the 1-in-3-year level sits above the moderate mark,
+      that mark is crossed more often than once every three years.</p>
 {figure("thresholds")}
-{figure("crossings")}
+
+    <h2><span class="num">3</span>SWALIM events</h2>
+    <p>An event is a spell in which the level sits at or above the baseline. The level
+      must stay below it for at least 14 days before a new crossing counts separately,
+      so a brief dip mid-flood does not split one flood in two. Readings stop rising
+      once a gauge reaches bank full, so the largest events are understated.</p>
+{figure("map")}
 {figure("backtest")}
+
+    <h2><span class="num">4</span>SWALIM risk level crossings</h2>
+{figure("crossings")}
+
+    <h2><span class="num">5</span>SWALIM against flood exposure</h2>
 {figure("exposure")}
 
-    <h2><span class="num">4</span>Model performance against the gauges</h2>
-    <p>POD is the share of gauge-recorded events the product caught, FAR the share of
-      its alarms that were false, both within a 7-day window. The two bases are kept
-      apart: thresholds are fitted on whichever series is being judged.</p>
-{basis_panels}
-    <p>GEOGloWS appears here as its raw retrospective. Bias correcting it (the SFDC
-      method, notebook 02) fixes the magnitude bias but not the timing: POD falls at
-      every gauge and reaches zero at four of them, and the correlations drop too.
-      Because each model is judged against its own return period, magnitude was never
-      what held GEOGloWS back, so the uncorrected series is both the fairer comparison
-      and the stronger one.</p>
-    <p>Jowhar defeats every model: its off-takes and marshes decouple the local level from
-      upstream flow. It is a station to watch and a poor station to trigger on.</p>
+    <h2><span class="num">6</span>Reanalysis performance</h2>
+    <p>Each model's 1-in-3-year signal against the events recorded at the gauges, 2002
+      to 2023, within a 7-day window. POD is the share of events caught; FAR the share
+      of alarms that were false.</p>
+{figure("skill")}
+{scores_html}
 
-    <h2><span class="num">5</span>Which model carries each window</h2>
-    <p>Every candidate is ranked by how closely its river signal tracks the reference
-      gauge, allowing for travel time. The reanalysis comparison below is what the
-      thresholds are fitted on; the forecast comparison after it is what the trigger
-      actually runs on:</p>
+    <h2><span class="num">7</span>Model correlation</h2>
+    <p>Daily tracking rather than event detection: the best-lag rank correlation between
+      each model and the river's reference gauge, allowing for travel time.</p>
 {figure("correlation")}
-{figure("forecast")}
 {choice_html}
-    <div class="callout warn">
-      <strong>How the model was chosen, and how much it rests on.</strong> Not on
-      the backtest: {n_tied} model assignments across the four windows reach the same
-      severe-year coverage near the target rate, so the activation years cannot tell
-      the products apart. What separates them is lead time. Google leads the Juba in
-      Gu and holds its accuracy across leads 1 to 7, so it carries three windows.
-      GloFAS leads the Shabelle in both seasons, and although there is no v5
-      reforecast, v5 is the operational version, its reanalysis is the right basis for
-      its thresholds and the v4 reforecast provides the lead-time evidence, so it
-      carries Shabelle Deyr. GEOGloWS is out on a different ground: its forecasts run
-      below its own retrospective, so thresholds fitted on the retrospective would not
-      transfer.
-    </div>
 
-    <h2><span class="num">6</span>Gauges used</h2>
-{figure("map")}
+    <h2><span class="num">8</span>Forecast correlation</h2>
+    <p>The same test on the forecasts rather than the hindsight simulations, leads 1 to
+      7.</p>
+{figure("forecast")}
+
+    <h2><span class="num">9</span>Selected stations</h2>
 {station_html}
-    <p>Gauges whose records stop in 2008 or earlier (Kaitoi, Afgoi, Audegle, Mahadey
-      Weyne) can calibrate but cannot monitor, and five further SNRFA files hold no
-      readings at all. Upstream stations see the flood before the downstream reference
-      gauge: Dollow leads Luuq by about five days in Deyr, and Belet Weyne leads by about
-      six in Gu.</p>
+    <p>Gauges whose records stop in 2008 or earlier can calibrate but cannot monitor.
+      Upstream stations see the flood before the downstream reference gauge: Dollow leads
+      Luuq by about five days in Deyr, and Belet Weyne leads by about six in Gu.</p>
 
-    <h2><span class="num">7</span>How each window performs</h2>
-{config_html}
+    <h2><span class="num">10</span>Grid search</h2>
+    <p>Every combination of station return period and number of gauges that must agree,
+      scored against the gauge benchmark. The outlined cell is the one adopted.</p>
 {figure("grid")}
-    <p>Scored against the 1-in-3 flood definition at the reference gauge, which is a
-      harder test than the envelope is calibrated for: each window is deliberately set
-      rarer than 1-in-3 so the union lands on target. What each window would have
-      missed: {missed_html}.</p>
 
-    <h2><span class="num">8</span>The envelope question</h2>
+    <h2><span class="num">11</span>Best configuration</h2>
+{trigger_html}
     <p>The full amount is released whenever the trigger is reached along either river in
       either season, so the combined rate across all four windows is what the budget must
-      be sized on. The four windows are not independent draws: the rivers flood together
-      in the seasons that matter most, and a window calibrated on its own has no
-      knowledge of the other three.</p>
-{cooc_html}
-    <p>Setting every window to its own 1-in-3 releases the money about every 1.5 years.
-      Holding the envelope at 1-in-{ENVELOPE_TARGET_RP} instead means asking each gauge
-      for a rarer flow and asking more gauges to agree, which is what the configuration
-      in section 1 does. The chart below is the whole trade-off: each point is the best
-      configuration available at that activation rate.</p>
-{figure("frontier")}
-    <div class="callout">
-      <strong>Where that leaves us.</strong> At 1-in-{adopted['env_rp']} the envelope
-      catches {adopted['severe_caught']} of the {len(data['severe_years'])} severe years
-      and never fires in a year with no recorded flood. Releasing more often would
-      recover {severe_missed}, at roughly one extra release every
-      {env['n_years_in_span'] // max(env['n_fires'] - adopted['fires'], 1)} years.
-      Which side of that line to sit on is a funding judgement, not a statistical one.
-    </div>
-
-    <h2><span class="num">9</span>Open items</h2>
-    <ul>
-      <li><strong>Define the years that should have triggered,</strong> so the trigger can
-        be scored against human impact rather than water levels.</li>
-      <li><strong>Confirm the 1-in-3 envelope rate</strong> with the funding rule: the
-        configuration meets it, but whether {severe_missed} should have been covered is
-        a programme decision.</li>
-      <li><strong>GloFAS v5 forecasts:</strong> no forecast archive exists yet, so v5's
-        stronger hindsight cannot be validated at lead time.</li>
-      <li><strong>Readiness leg:</strong> Google cannot serve 7 to 12 days, so readiness
-        has to be built on GloFAS.</li>
-      <li><strong>Shabelle's fourth station:</strong> only {n_shab} gauges report on that
-        river. A newer gauge would balance the two rivers.</li>
-    </ul>
-
-    <p class="updated">Generated {data['generated']} from the source data</p>
+      be sized on. As configured it would have released in {adopted['fires']} of
+      {env['n_years_in_span']} years, once every {adopted['env_rp']} years, catching
+      {adopted['severe_caught']} of the {len(data['severe_years'])} severe years.</p>
+{figure("activation")}
 
   </article>
-
-  <script>
-    document.querySelectorAll(".tab").forEach(function (btn) {{
-      btn.addEventListener("click", function () {{
-        // tabs are grouped: switching one group must not disturb another
-        var group = btn.dataset.group || "variant";
-        var siblings = document.querySelectorAll('.tab[data-group="' + group + '"]');
-        if (!siblings.length) {{
-          siblings = document.querySelectorAll(".tab:not([data-group])");
-        }}
-        siblings.forEach(function (b) {{
-          b.classList.remove("active");
-          var p = document.getElementById(b.dataset.panel);
-          if (p) {{ p.classList.remove("active"); }}
-        }});
-        btn.classList.add("active");
-        var panel = document.getElementById(btn.dataset.panel);
-        if (panel) {{ panel.classList.add("active"); }}
-      }});
-    }});
-  </script>
-
-  <div class="provenance">
-    <p><strong>How this page stays current.</strong> It is built by
-      <code>scripts/build_summary_page.py</code>, which reads the gauge record, each
-      model's daily discharge and the seasonal flood benchmarks, and recomputes every
-      figure with the same helpers the notebooks use. It does not depend on any notebook
-      having been re-run. The adopted design (which gauges, which model, the return
-      periods and station counts) lives in <code>src/constants.py</code>, which notebook
-      09 reads as well, so this page and the analysis cannot disagree. Narrative text is
-      static; numbers, tables and the timestamp are generated. Underlying data stays on the
-      team's storage and is not published here.</p>
-  </div>
-
 </div>
-
-<script src="../assets/hero.js" defer></script>
 </body>
 </html>
 """
