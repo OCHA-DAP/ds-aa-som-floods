@@ -247,7 +247,7 @@ READINESS_MODEL = "glofas_v4"
 # evidence.
 TRIGGER_CONFIG = {
     ("juba", "gu"): {"source": "geoglows", "rp": 5, "n_req": 2},
-    ("juba", "deyr"): {"source": "google_grrr", "rp": 5, "n_req": 3},
+    ("juba", "deyr"): {"source": "glofas_v5", "rp": 4, "n_req": 3},
     ("shabelle", "gu"): {"source": "glofas_v5", "rp": 6, "n_req": 2},
     ("shabelle", "deyr"): {"source": "glofas_v5", "rp": 5, "n_req": 2},
 }

@@ -19,7 +19,7 @@
  },
  "window_model": {
   "juba_gu": "geoglows",
-  "juba_deyr": "google_grrr",
+  "juba_deyr": "glofas_v5",
   "shabelle_gu": "glofas_v5",
   "shabelle_deyr": "glofas_v5"
  },
@@ -48,16 +48,15 @@
   {
    "river": "juba",
    "season": "deyr",
-   "source": "google_grrr",
-   "rp": 5,
+   "source": "glofas_v5",
+   "rp": 4,
    "n_req": 3,
    "n_of": 4,
    "pod": 0.4,
-   "far": 0.33,
-   "act_rp": 8.7,
+   "far": 0.0,
+   "act_rp": 13.0,
    "activations": [
     2006,
-    2019,
     2023
    ],
    "missed": [
@@ -127,7 +126,6 @@
   "multi_window_years": [
    2006,
    2018,
-   2019,
    2020,
    2023
   ]
@@ -471,68 +469,62 @@
   {
    "env_rp": 2.9,
    "fires": 9,
-   "severe_caught": 8,
+   "severe_caught": 7,
    "no_flood_years": 0
   },
   {
    "env_rp": 2.6,
    "fires": 10,
-   "severe_caught": 8,
-   "no_flood_years": 0
+   "severe_caught": 7,
+   "no_flood_years": 1
   },
   {
    "env_rp": 2.4,
    "fires": 11,
-   "severe_caught": 8,
-   "no_flood_years": 1
+   "severe_caught": 7,
+   "no_flood_years": 2
   },
   {
    "env_rp": 2.2,
    "fires": 12,
-   "severe_caught": 8,
+   "severe_caught": 7,
    "no_flood_years": 2
   },
   {
    "env_rp": 2.0,
    "fires": 13,
-   "severe_caught": 8,
-   "no_flood_years": 2
+   "severe_caught": 7,
+   "no_flood_years": 3
   },
   {
    "env_rp": 1.9,
    "fires": 14,
-   "severe_caught": 8,
-   "no_flood_years": 3
+   "severe_caught": 7,
+   "no_flood_years": 4
   },
   {
    "env_rp": 1.7,
    "fires": 15,
-   "severe_caught": 8,
+   "severe_caught": 7,
    "no_flood_years": 4
   },
   {
    "env_rp": 1.6,
    "fires": 16,
-   "severe_caught": 8,
+   "severe_caught": 7,
    "no_flood_years": 5
   },
   {
    "env_rp": 1.5,
    "fires": 17,
-   "severe_caught": 8,
+   "severe_caught": 7,
    "no_flood_years": 6
   },
   {
    "env_rp": 1.4,
    "fires": 18,
-   "severe_caught": 8,
+   "severe_caught": 7,
    "no_flood_years": 7
-  },
-  {
-   "env_rp": 1.4,
-   "fires": 19,
-   "severe_caught": 8,
-   "no_flood_years": 8
   }
  ],
  "adopted": {
@@ -605,8 +597,8 @@
     {
      "river": "juba",
      "season": "deyr",
-     "source": "google_grrr",
-     "rp": 5,
+     "source": "glofas_v5",
+     "rp": 4,
      "n_req": 3,
      "n_of": 4,
      "stations": [
@@ -617,7 +609,6 @@
      ],
      "years": [
       2006,
-      2019,
       2023
      ]
     },

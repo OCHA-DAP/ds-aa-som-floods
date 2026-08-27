@@ -314,7 +314,7 @@ def fig_correlation(ctx, figdir):
 
 
 # -------------------------------------------------------------- 6. grid search
-def grid_scores(ctx, river, season, model, rps=(3, 4, 5), n_max=None):
+def grid_scores(ctx, river, season, model, rps=(3, 4, 5, 6), n_max=None):
     """POD / FAR / F1 over the (station RP, votes required) grid for one window."""
     months = SEASONS[season]
     stns = TRIGGER_STATIONS[river]
@@ -350,7 +350,7 @@ def fig_grid(ctx, figdir):
     windows = list(TRIGGER_CONFIG.items())
     fig, axes = plt.subplots(len(windows), 3,
                              figsize=(11.0, 2.1 * len(windows) + 1.0))
-    rps = (3, 4, 5)
+    rps = (3, 4, 5, 6)
     for r, ((river, season), spec) in enumerate(windows):
         model = WINDOW_MODEL[(river, season)]
         g = grid_scores(ctx, river, season, model, rps=rps)
