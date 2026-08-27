@@ -15,3 +15,4 @@ data/*
 
 # Researcher scratch — EDA outputs, throwaway scripts, plot dumps
 artefacts/
+*.pyc
