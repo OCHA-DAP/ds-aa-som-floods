@@ -115,7 +115,8 @@ th = load("swalim_thresholds").set_index("station")
 dd = pd.concat([load(f"discharge_daily_{m}").assign(src=m) for m in MODELS],
                ignore_index=True)
 dd["date"] = pd.to_datetime(dd["date"])
-any_flood, severe = envelope_search.benchmark_years(bench)
+# a flood year needs two or more of the river's gauges, not one reference
+any_flood, severe = envelope_search.benchmark_years_from_gauges(lv)
 
 
 def reforecast_band(lead_lo, lead_hi, sources):
@@ -311,15 +312,11 @@ for g, v in ready.items():
 
 # ------------------------------------------------------------------- figures
 def flood_years(river, season, rp=BENCHMARK_RP):
-    b = bench[(bench.river == river) & (bench.season == season)
-              & (bench.benchmark == f"swalim_{REFERENCE_GAUGE[river]}")]
-    return set(b[b[f"flood_{rp}yr"] == 1].year) & SPAN
+    return envelope_search.gauge_consensus_years(lv, river, season, rp)
 
 
 def severe_window_years(river, season):
-    b = bench[(bench.river == river) & (bench.season == season)
-              & (bench.benchmark == f"swalim_{REFERENCE_GAUGE[river]}")]
-    return set(b[b.rp >= SEVERE_RP].year) & SPAN
+    return envelope_search.gauge_consensus_years(lv, river, season, SEVERE_RP)
 
 
 def model_season(model, station, months):

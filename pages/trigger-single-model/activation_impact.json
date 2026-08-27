@@ -284,7 +284,7 @@
       "nv": 0,
       "adopted": false,
       "adopted_v": false,
-      "bench": "",
+      "bench": "moderate",
       "emdat": {
        "aff": 0,
        "deaths": 0,
@@ -358,7 +358,7 @@
       "nv": 1,
       "adopted": false,
       "adopted_v": false,
-      "bench": "severe",
+      "bench": "moderate",
       "emdat": {
        "aff": 7520,
        "deaths": 12,
@@ -411,7 +411,7 @@
       "nv": 0,
       "adopted": false,
       "adopted_v": false,
-      "bench": "moderate",
+      "bench": "",
       "emdat": null,
       "cerf": null
      },
@@ -528,7 +528,7 @@
       "nv": 0,
       "adopted": false,
       "adopted_v": false,
-      "bench": "moderate",
+      "bench": "severe",
       "emdat": {
        "aff": 52000,
        "deaths": 0,
@@ -601,7 +601,7 @@
       "nv": 0,
       "adopted": false,
       "adopted_v": false,
-      "bench": "moderate",
+      "bench": "",
       "emdat": {
        "aff": 1750,
        "deaths": 0,
@@ -675,7 +675,7 @@
       "nv": 1,
       "adopted": false,
       "adopted_v": false,
-      "bench": "severe",
+      "bench": "",
       "emdat": null,
       "cerf": null
      }
@@ -740,7 +740,7 @@
       "nv": 0,
       "adopted": false,
       "adopted_v": false,
-      "bench": "moderate",
+      "bench": "",
       "emdat": {
        "aff": 32200,
        "deaths": 31,
@@ -773,7 +773,7 @@
       "nv": 0,
       "adopted": false,
       "adopted_v": false,
-      "bench": "moderate",
+      "bench": "",
       "emdat": null,
       "cerf": null
      }
@@ -875,7 +875,7 @@
       "nv": 2,
       "adopted": false,
       "adopted_v": false,
-      "bench": "moderate",
+      "bench": "",
       "emdat": null,
       "cerf": null
      }
@@ -915,7 +915,7 @@
       "nv": 1,
       "adopted": false,
       "adopted_v": false,
-      "bench": "severe",
+      "bench": "moderate",
       "emdat": {
        "aff": 0,
        "deaths": 9,
@@ -1167,7 +1167,7 @@
       "nv": 0,
       "adopted": false,
       "adopted_v": false,
-      "bench": "moderate",
+      "bench": "severe",
       "emdat": null,
       "cerf": null
      }
@@ -1207,7 +1207,7 @@
       "nv": 0,
       "adopted": false,
       "adopted_v": false,
-      "bench": "severe",
+      "bench": "",
       "emdat": {
        "aff": 400000,
        "deaths": 25,
@@ -1281,7 +1281,7 @@
       "nv": 0,
       "adopted": false,
       "adopted_v": false,
-      "bench": "moderate",
+      "bench": "severe",
       "emdat": {
        "aff": 568003,
        "deaths": 43,

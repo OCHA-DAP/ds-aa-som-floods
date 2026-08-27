@@ -31,7 +31,7 @@
    "rp": 5,
    "n_req": 2,
    "n_of": 4,
-   "pod": 0.29,
+   "pod": 0.33,
    "far": 0.0,
    "act_rp": 13.0,
    "activations": [
@@ -40,7 +40,6 @@
    ],
    "missed": [
     2005,
-    2006,
     2010,
     2016,
     2023
@@ -53,7 +52,7 @@
    "rp": 5,
    "n_req": 3,
    "n_of": 4,
-   "pod": 0.25,
+   "pod": 0.4,
    "far": 0.33,
    "act_rp": 8.7,
    "activations": [
@@ -63,10 +62,7 @@
    ],
    "missed": [
     2008,
-    2011,
-    2013,
     2014,
-    2015,
     2017
    ]
   },
@@ -87,8 +83,8 @@
     2020
    ],
    "missed": [
+    2003,
     2010,
-    2021,
     2023
    ]
   },
@@ -99,7 +95,7 @@
    "rp": 5,
    "n_req": 2,
    "n_of": 3,
-   "pod": 0.5,
+   "pod": 0.67,
    "far": 0.0,
    "act_rp": 6.5,
    "activations": [
@@ -110,8 +106,6 @@
    ],
    "missed": [
     2008,
-    2009,
-    2012,
     2020
    ]
   }
@@ -205,7 +199,7 @@
    },
    "deyr": {
     "both": 4,
-    "of": 8
+    "of": 6
    }
   },
   {
@@ -216,18 +210,18 @@
    },
    "deyr": {
     "both": 3,
-    "of": 6
+    "of": 5
    }
   },
   {
    "rp": 5,
    "gu": {
     "both": 2,
-    "of": 4
+    "of": 3
    },
    "deyr": {
     "both": 3,
-    "of": 4
+    "of": 5
    }
   }
  ],
@@ -458,22 +452,20 @@
   }
  ],
  "severe_years": [
-  2005,
   2006,
-  2011,
+  2008,
   2014,
   2016,
   2018,
   2019,
   2020,
-  2021,
   2023
  ],
  "frontier": [
   {
    "env_rp": 3.2,
    "fires": 8,
-   "severe_caught": 8,
+   "severe_caught": 7,
    "no_flood_years": 0
   },
   {
@@ -492,64 +484,63 @@
    "env_rp": 2.4,
    "fires": 11,
    "severe_caught": 8,
-   "no_flood_years": 0
+   "no_flood_years": 1
   },
   {
    "env_rp": 2.2,
    "fires": 12,
-   "severe_caught": 9,
+   "severe_caught": 8,
    "no_flood_years": 2
   },
   {
    "env_rp": 2.0,
    "fires": 13,
-   "severe_caught": 9,
+   "severe_caught": 8,
    "no_flood_years": 2
   },
   {
    "env_rp": 1.9,
    "fires": 14,
-   "severe_caught": 9,
-   "no_flood_years": 2
+   "severe_caught": 8,
+   "no_flood_years": 3
   },
   {
    "env_rp": 1.7,
    "fires": 15,
-   "severe_caught": 9,
-   "no_flood_years": 2
+   "severe_caught": 8,
+   "no_flood_years": 4
   },
   {
    "env_rp": 1.6,
    "fires": 16,
-   "severe_caught": 9,
-   "no_flood_years": 3
+   "severe_caught": 8,
+   "no_flood_years": 5
   },
   {
    "env_rp": 1.5,
    "fires": 17,
-   "severe_caught": 9,
-   "no_flood_years": 4
+   "severe_caught": 8,
+   "no_flood_years": 6
   },
   {
    "env_rp": 1.4,
    "fires": 18,
-   "severe_caught": 10,
-   "no_flood_years": 4
+   "severe_caught": 8,
+   "no_flood_years": 7
   },
   {
    "env_rp": 1.4,
    "fires": 19,
-   "severe_caught": 10,
-   "no_flood_years": 5
+   "severe_caught": 8,
+   "no_flood_years": 8
   }
  ],
  "adopted": {
   "fires": 8,
   "env_rp": 3.2,
-  "severe_caught": 8,
+  "severe_caught": 7,
   "severe_missed": [
-   2011,
-   2021
+   2008
   ],
   "no_flood_years": 0,
   "votes": 9,
@@ -575,10 +566,9 @@
     "fires": 8,
     "n_years": 25,
     "env_rp": 3.2,
-    "severe_caught": 8,
+    "severe_caught": 7,
     "severe_missed": [
-     2011,
-     2021
+     2008
     ],
     "no_flood_years": [],
     "years": [
@@ -591,7 +581,7 @@
      2020,
      2023
     ],
-    "n_severe": 10
+    "n_severe": 8
    },
    "windows": [
     {
@@ -681,10 +671,9 @@
     "fires": 9,
     "n_years": 25,
     "env_rp": 2.9,
-    "severe_caught": 8,
+    "severe_caught": 7,
     "severe_missed": [
-     2011,
-     2021
+     2008
     ],
     "no_flood_years": [],
     "years": [
@@ -698,7 +687,7 @@
      2020,
      2023
     ],
-    "n_severe": 10
+    "n_severe": 8
    },
    "windows": [
     {
@@ -793,14 +782,16 @@
     "fires": 10,
     "n_years": 21,
     "env_rp": 2.2,
-    "severe_caught": 6,
+    "severe_caught": 5,
     "severe_missed": [
      2006,
-     2011,
-     2014,
-     2021
+     2008,
+     2014
     ],
-    "no_flood_years": [],
+    "no_flood_years": [
+     2013,
+     2015
+    ],
     "years": [
      2005,
      2010,
@@ -813,7 +804,7 @@
      2020,
      2023
     ],
-    "n_severe": 10
+    "n_severe": 8
    },
    "windows": [
     {
@@ -1018,16 +1009,15 @@
   "skill",
   "thresholds"
  ],
- "n_tied_assignments": 140,
+ "n_tied_assignments": 21,
  "no_google": {
   "envelope": {
    "fires": 9,
    "n_years": 25,
    "env_rp": 2.9,
-   "severe_caught": 8,
+   "severe_caught": 7,
    "severe_missed": [
-    2011,
-    2021
+    2008
    ],
    "no_flood_years": [],
    "years": [
@@ -1041,7 +1031,7 @@
     2020,
     2023
    ],
-   "n_severe": 10
+   "n_severe": 8
   },
   "windows": [
    {

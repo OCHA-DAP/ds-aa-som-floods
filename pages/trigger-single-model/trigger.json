@@ -47,10 +47,9 @@
     "fires": 8,
     "n_years": 25,
     "env_rp": 3.2,
-    "severe_caught": 8,
+    "severe_caught": 7,
     "severe_missed": [
-     2011,
-     2021
+     2008
     ],
     "no_flood_years": [],
     "years": [
@@ -63,7 +62,7 @@
      2020,
      2023
     ],
-    "n_severe": 10
+    "n_severe": 8
    },
    "windows": {
     "juba_gu": {
@@ -159,10 +158,9 @@
     "fires": 8,
     "n_years": 25,
     "env_rp": 3.2,
-    "severe_caught": 8,
+    "severe_caught": 7,
     "severe_missed": [
-     2011,
-     2021
+     2008
     ],
     "no_flood_years": [],
     "years": [
@@ -175,7 +173,7 @@
      2020,
      2023
     ],
-    "n_severe": 10
+    "n_severe": 8
    },
    "windows": {
     "juba_gu": {
@@ -272,14 +270,16 @@
     "fires": 10,
     "n_years": 21,
     "env_rp": 2.2,
-    "severe_caught": 6,
+    "severe_caught": 5,
     "severe_missed": [
      2006,
-     2011,
-     2014,
-     2021
+     2008,
+     2014
     ],
-    "no_flood_years": [],
+    "no_flood_years": [
+     2013,
+     2015
+    ],
     "years": [
      2005,
      2010,
@@ -292,7 +292,7 @@
      2020,
      2023
     ],
-    "n_severe": 10
+    "n_severe": 8
    },
    "windows": {
     "juba_gu": {
@@ -395,14 +395,16 @@
     "fires": 10,
     "n_years": 21,
     "env_rp": 2.2,
-    "severe_caught": 6,
+    "severe_caught": 5,
     "severe_missed": [
      2006,
-     2011,
-     2014,
-     2021
+     2008,
+     2014
     ],
-    "no_flood_years": [],
+    "no_flood_years": [
+     2013,
+     2015
+    ],
     "years": [
      2005,
      2010,
@@ -415,7 +417,7 @@
      2020,
      2023
     ],
-    "n_severe": 10
+    "n_severe": 8
    },
    "windows": {
     "juba_gu": {
@@ -548,7 +550,7 @@
       2023
      ],
      "n_action": 2,
-     "severe_caught": 3
+     "severe_caught": 2
     },
     "shabelle_gu": {
      "rp": 5,
@@ -565,7 +567,7 @@
       2016
      ],
      "n_action": 4,
-     "severe_caught": 2
+     "severe_caught": 1
     },
     "shabelle_deyr": {
      "rp": 5,
@@ -636,7 +638,7 @@
       2023
      ],
      "n_action": 2,
-     "severe_caught": 3
+     "severe_caught": 2
     },
     "shabelle_gu": {
      "rp": 5,
@@ -653,7 +655,7 @@
       2016
      ],
      "n_action": 4,
-     "severe_caught": 2
+     "severe_caught": 1
     },
     "shabelle_deyr": {
      "rp": 5,
@@ -676,15 +678,13 @@
   }
  },
  "severe_years": [
-  2005,
   2006,
-  2011,
+  2008,
   2014,
   2016,
   2018,
   2019,
   2020,
-  2021,
   2023
  ]
 }

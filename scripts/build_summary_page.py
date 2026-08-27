@@ -193,22 +193,12 @@ def model_season(model, station, months):
 
 
 def flood_years(river, season, rp=BENCHMARK_RP):
-    b = bench[
-        (bench.river == river)
-        & (bench.season == season)
-        & (bench.benchmark == GAUGE_BM[river])
-    ]
-    return set(b[b[f"flood_{rp}yr"] == 1].year) & span
+    return envelope_search.gauge_consensus_years(lv, river, season, rp)
 
 
 def severe_window_years(river, season):
-    """Years the river's reference gauge recorded a 1-in-SEVERE_RP or rarer season."""
-    b = bench[
-        (bench.river == river)
-        & (bench.season == season)
-        & (bench.benchmark == GAUGE_BM[river])
-    ]
-    return set(b[b.rp >= SEVERE_RP].year) & span
+    """Years at least two of the river's gauges crossed their 1-in-SEVERE_RP level."""
+    return envelope_search.gauge_consensus_years(lv, river, season, SEVERE_RP)
 
 
 # ---- the adopted configuration, scored window by window
@@ -370,7 +360,7 @@ data["station_scores"] = station_scores
 # give different answers. The adopted configuration is marked on the chart.
 print("searching the envelope frontier ...")
 _opts = envelope_search.window_options(dd, bench)
-_any_flood, _severe = envelope_search.benchmark_years(bench)
+_any_flood, _severe = envelope_search.benchmark_years_from_gauges(lv)
 _keys, _best = envelope_search.search(_opts, _any_flood, _severe)
 frontier = []
 for _k in sorted(_best):

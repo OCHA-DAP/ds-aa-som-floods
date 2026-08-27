@@ -45,7 +45,7 @@ from src.constants import (  # noqa: E402
     TRIGGER_STATIONS,
     TRIGGER_YEARS,
 )
-from src.utils import weibull_threshold  # noqa: E402
+from src.utils import weibull_level, weibull_threshold  # noqa: E402
 
 PREFIX, STAGE = "ds-aa-som-floods/processed", "dev"
 # Station return periods are capped at a quarter of the record: a 1-in-10
@@ -62,6 +62,41 @@ WINDOWS = [(r, s) for r in TRIGGER_STATIONS for s in SEASONS]
 
 def load(name):
     return stratus.load_parquet_from_blob(f"{PREFIX}/{name}.parquet", stage=STAGE)
+
+
+# ----------------------------------------------------- the gauge benchmark
+# A river-season counts as a flood when at least BENCH_GAUGES of that river's
+# gauges cross their own post-2000 return level in the same season (directive
+# 2026-08-27). One reference gauge deciding the benchmark put too much weight
+# on a single record.
+BENCH_GAUGES = 2
+
+
+def gauge_consensus_years(lv, river, season, rp, n_req=BENCH_GAUGES):
+    """Years in which at least n_req of the river's gauges crossed their own RP."""
+    counts = {}
+    for st in TRIGGER_STATIONS[river]:
+        s = lv[lv.station == st].set_index("date")["level_m"].dropna().sort_index()
+        s = s[s.index.month.isin(SEASONS[season])]
+        modern = s[s.index.year >= 2000]
+        am = modern.groupby(modern.index.year).max().dropna()
+        if not len(am):
+            continue
+        level = weibull_level(am.values, rp)
+        if np.isnan(level):
+            continue
+        for y in set(am[am >= level].index) & SPAN:
+            counts[y] = counts.get(y, 0) + 1
+    return {y for y, n in counts.items() if n >= n_req}
+
+
+def benchmark_years_from_gauges(lv, flood_rp=3, severe_rp=SEVERE_RP):
+    """(flood years, severe years) across every window, on the consensus rule."""
+    flood, severe = set(), set()
+    for river, season in WINDOWS:
+        flood |= gauge_consensus_years(lv, river, season, flood_rp)
+        severe |= gauge_consensus_years(lv, river, season, severe_rp)
+    return flood, severe
 
 
 def window_options(dd, bench):
