@@ -697,55 +697,9 @@ SECTIONS = {
       <figcaption>The seven points the trigger watches, four on the Juba and three on
         the Shabelle.</figcaption></figure>
 """,
-    "How the pairs were chosen": f"""
-    <h2>How the model was chosen, one per window</h2>
-    <p>The published mechanism let (station, provider) pairs compete freely, so one
-      station could cast two or three votes and three providers each held a veto. Here
-      the unit is the point, not the pair: each window takes a single source, and the
-      only things searched are the threshold and how many points must agree.</p>
-    <p>Products are compared on best-lag Spearman correlation between their reanalysis
-      discharge and the river's reference gauge level (Luuq for the Juba, Belet Weyne for
-      the Shabelle), averaged over that window's points.</p>
-    <figure><img src="figs/a_selection.png" alt="Mean tracking correlation per window">
-      <figcaption>Mean best-lag correlation per window and product; the marker shows the
-        source adopted for that window.</figcaption></figure>
-    <div class="callout warn">
-      <strong>The correlation does not settle it.</strong> Many product assignments
-      reproduce the same activation years, because with 25 years and
-      {len(severe)} severe events the threshold and vote count carry enough freedom to
-      absorb the difference. Correlation ranks the products; what separates them
-      operationally is skill at lead time and whether their archive can carry the
-      threshold at all.
-    </div>
-""",
-    "Thresholds and calibration": f"""
-    <p>Every threshold is a return period on the product's own climatology at that point,
-      so a product is judged on timing rather than on scale. <strong>1-in-3 is the floor
-      and a quarter of the record is the ceiling</strong>: on 25 years that allows 1-in-3
-      to 1-in-6, and 1-in-2 is not used anywhere, on either leg.</p>
-    <figure><img src="figs/c_grid_heatmaps.png" alt="Threshold and vote grid">
-      <figcaption>POD, FAR and F1 across the threshold and vote grid for each window,
-        against the reference gauge's 1-in-3 flood definition. The outlined cell is
-        adopted.</figcaption></figure>
-    <figure><img src="figs/a2_swalim_rp.png" alt="Where the thresholds sit">
-      <figcaption>Where each point's 1-in-3 level sits against SWALIM's official Moderate
-        to High band, per season.</figcaption></figure>
-    <h3>Calibrated on the reanalysis, checked on the forecasts</h3>
-    {forecast_panel()}
-""",
-    "Would it have worked operationally?": f"""
-    <p>Year by year, against the flood record at the reference gauges. Severe years are
-      those the gauge recorded as 1-in-{SEVERE_RP} or rarer; ordinary floods are 1-in-3
-      or rarer and are deliberately not all covered at this activation rate.</p>
-    <figure><img src="figs/c_backtest_strip.png" alt="Backtest by year">
-      <figcaption>Each window and the envelope, {Y0} to {Y1}.</figcaption></figure>
-    <figure class="altonly"><img src="figs/c_backtest_strip_nogoogle.png"
-      alt="Backtest by year without Google">
-      <figcaption>The same backtest with Google removed.</figcaption></figure>
-    <p>Severe years missed: {", ".join(str(y) for y in env["severe_missed"]) or "none"}.
-      Years the envelope fired with no flood recorded at either reference gauge:
-      {", ".join(str(y) for y in env["no_flood_years"]) or "none"}.</p>
-""",
+
+
+
     "The readiness leg (7–12 days)": f"""
     <p>Readiness runs on {NICE[READINESS_MODEL]} ensemble-median forecasts at leads 7 to
       12, the only archive covering that band, over the same full set of points, with
@@ -815,6 +769,102 @@ CARRY_NOTE = (
     "depend on how many points vote or where the thresholds sit.</em></p>\n"
 )
 
+FORECAST_PANEL_TOKEN = forecast_panel()
+OPERATIONAL_TABLE_TOKEN = data_table(
+    ["window", "calibrated on", "run on", "reproduces its calibration years?"],
+    [
+        (
+            WLABEL[k],
+            f"{NICE[w['source']]} reanalysis",
+            (f"{NICE[w['source']]} forecasts, leads 1-7"
+             if w["source"] in FC_MODELS
+             else f"{NICE[w['source']]} operationally; lead-time evidence from "
+                  f"{NICE['glofas_v4']}"),
+            ("yes, same archive"
+             if w["source"] in FC_MODELS else
+             "cannot be shown directly: no reforecast for this version"),
+        )
+        for k, w in std["windows"].items()
+    ],
+)
+OPERATIONAL_NOTE_TOKEN = (
+    '<div class="callout warn">\n<strong>What the calibration cannot settle.</strong> '
+    "Google's reforecast starts in 2016, so a Google window cannot be calibrated on "
+    "its own forecasts at a 1-in-3 threshold, which needs about 12 years: it is "
+    "calibrated on the retrospective and only checked at lead time. GloFAS v5 has no "
+    "reforecast at all, so its window inherits its lead-time evidence from v4. "
+    "Readiness is not tuned to precede activation, so an action trigger may fire with "
+    "no readiness phase ahead of it.\n</div>"
+)
+
+# Sections that keep the template's markup and have only the passages whose
+# claims changed rewritten. Each entry is a list of (pattern, replacement)
+# applied with re.sub; anything unmatched is left exactly as it was, so
+# subsections, figures and script anchors cannot be lost.
+SECTION_EDITS = {
+    "How the pairs were chosen": [
+        (r"<h2([^>]*)>\s*How the pairs were chosen\s*</h2>",
+         r"<h2\1>How the model was chosen, one per window</h2>"),
+        (r"<p>\s*Every combination of the.*?</p>",
+         "<p>The published mechanism let every combination of gauge and provider "
+         "compete, so one point could cast two or three votes and three providers "
+         "each held a veto. Here the unit is the point: <strong>each window takes a "
+         "single source</strong>, and only the threshold and the number of points "
+         "that must agree are searched. Products are compared on best-lag Spearman "
+         "correlation between their reanalysis discharge and the river's reference "
+         "gauge level (Luuq for the Juba, Belet Weyne for the Shabelle), per window."
+         "</p>"),
+        (r"<ul>.*?</ul>",
+         "<ul>\n"
+         "<li><strong>All seven points, none dropped</strong> (directive "
+         "2026-08-27): four on the Juba and three on the Shabelle. Bardheere and "
+         "Bualle are included as forecast points although their gauges stopped "
+         "reporting in 2023 and 2024, so they can no longer be verified.</li>\n"
+         "<li><strong>One source per window, never mixed.</strong> Four model "
+         "choices in total, so no point votes twice and no provider holds a "
+         "veto.</li>\n"
+         "<li><strong>Thresholds at or above 1-in-3</strong>, with a quarter of the "
+         "record as the ceiling, on every leg including readiness.</li>\n"
+         "<li><strong>At least two points must agree, and never all of them</strong>, "
+         "so no single point releases the money and no single quiet point blocks "
+         "it.</li>\n</ul>"),
+        (r"<p>\s*Multi-model representation.*?</p>",
+         "<p><strong>The correlation ranks the products; it does not settle the "
+         "choice.</strong> Many assignments reproduce the same activation years, "
+         "because with 25 years and a handful of severe events the threshold and "
+         "vote count absorb the difference. What separates the products "
+         "operationally is skill at lead time and whether their archive can carry "
+         "the threshold at all.</p>"),
+    ],
+    "Thresholds and calibration": [
+        (r"<p>\s*Each selected pair gets its threshold.*?</p>",
+         "<p>Each monitored point gets its threshold from its own model's "
+         "climatology: the Weibull plotting position of that point's seasonal "
+         "maxima, so a product is judged on timing rather than on scale. "
+         "<strong>1-in-3 is the floor and a quarter of the record is the "
+         "ceiling</strong>, which on 25 years allows 1-in-3 to 1-in-6. 1-in-2 is "
+         "not used anywhere, on either leg.</p>"),
+        (r"(<h3[^>]*>\s*The tuning surface)",
+         "<h3>Calibrated on the reanalysis, checked on the forecasts</h3>\n"
+         + FORECAST_PANEL_TOKEN + "\n\\1"),
+    ],
+    "Would it have worked operationally?": [
+        (r"<div class=\"tablewrap\">.*?</div>\s*(?=<div class=\"callout)",
+         OPERATIONAL_TABLE_TOKEN),
+        (r"<div class=\"callout warn\">\s*<strong>Two operational tuning items.*?</div>",
+         OPERATIONAL_NOTE_TOKEN),
+    ],
+}
+
+
+def apply_edits(title, html):
+    for pattern, repl in SECTION_EDITS.get(title, []):
+        html, n = re.subn(pattern, repl, html, count=1, flags=re.S)
+        if not n:
+            print(f"    ! {title}: no match for {pattern[:46]}")
+    return html
+
+
 # ------------------------------------------------------------------- assemble
 print("assembling ...")
 template = SRC_PAGE.read_text(encoding="utf-8")
@@ -839,6 +889,10 @@ for p in parts[1:]:
             if title.startswith(key[:18]):
                 replacement = SECTIONS[key]
                 break
+    if replacement is None and title in SECTION_EDITS:
+        print(f"  edited in place: {title}")
+        kept.append(apply_edits(title, p))
+        continue
     if replacement is None:
         print(f"  kept as-is: {title}")
         if title in CARRIED_OVER:

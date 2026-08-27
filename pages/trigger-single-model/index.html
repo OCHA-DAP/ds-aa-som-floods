@@ -181,27 +181,55 @@ figure figcaption { font-size:12.5px; color:#55606d; line-height:1.5;
     <figure><img src="figs/map_stations.png" alt="The seven monitored points">
       <figcaption>The seven points the trigger watches, four on the Juba and three on
         the Shabelle.</figcaption></figure>
+<h2>How the model was chosen, one per window</h2>
+    <p>The published mechanism let every combination of gauge and provider compete, so one point could cast two or three votes and three providers each held a veto. Here the unit is the point: <strong>each window takes a single source</strong>, and only the threshold and the number of points that must agree are searched. Products are compared on best-lag Spearman correlation between their reanalysis discharge and the river's reference gauge level (Luuq for the Juba, Belet Weyne for the Shabelle), per window.</p>
+    <ul>
+<li><strong>All seven points, none dropped</strong> (directive 2026-08-27): four on the Juba and three on the Shabelle. Bardheere and Bualle are included as forecast points although their gauges stopped reporting in 2023 and 2024, so they can no longer be verified.</li>
+<li><strong>One source per window, never mixed.</strong> Four model choices in total, so no point votes twice and no provider holds a veto.</li>
+<li><strong>Thresholds at or above 1-in-3</strong>, with a quarter of the record as the ceiling, on every leg including readiness.</li>
+<li><strong>At least two points must agree, and never all of them</strong>, so no single point releases the money and no single quiet point blocks it.</li>
+</ul>
 
-    <h2>How the model was chosen, one per window</h2>
-    <p>The published mechanism let (station, provider) pairs compete freely, so one
-      station could cast two or three votes and three providers each held a veto. Here
-      the unit is the point, not the pair: each window takes a single source, and the
-      only things searched are the threshold and how many points must agree.</p>
-    <p>Products are compared on best-lag Spearman correlation between their reanalysis
-      discharge and the river's reference gauge level (Luuq for the Juba, Belet Weyne for
-      the Shabelle), averaged over that window's points.</p>
-    <figure><img src="figs/a_selection.png" alt="Mean tracking correlation per window">
-      <figcaption>Mean best-lag correlation per window and product; the marker shows the
-        source adopted for that window.</figcaption></figure>
-    <div class="callout warn">
-      <strong>The correlation does not settle it.</strong> Many product assignments
-      reproduce the same activation years, because with 25 years and
-      10 severe events the threshold and vote count carry enough freedom to
-      absorb the difference. Correlation ranks the products; what separates them
-      operationally is skill at lead time and whether their archive can carry the
-      threshold at all.
+    <figure>
+      <img src="figs/a_selection.png" alt="Scatter plots of correlation versus lag for every station-model pair, by river and season; same-station models connected by grey lines, selected pairs ring-marked and labeled, timing guard shown as a dotted line">
+      <figcaption>The candidate pool. Positive lag = the model's signal precedes the
+        reference gauge; the dotted red line is the timing guard; <strong>small pale-grey
+        dots are pairs at points with no active gauge</strong> — ineligible regardless of
+        score. A grey line connects one station's three models, and ring-marked, labeled
+        dots are the pairs that clear the floor. Google dominates Gu, GloFAS v5 dominates
+        Deyr; GEOGloWS clears the floor in every window except Shabelle Gu, where it
+        trails the gauge by 4–10 days and no guard-passing pair exists.</figcaption>
+    </figure>
+
+    <p><strong>The correlation ranks the products; it does not settle the choice.</strong> Many assignments reproduce the same activation years, because with 25 years and a handful of severe events the threshold and vote count absorb the difference. What separates the products operationally is skill at lead time and whether their archive can carry the threshold at all.</p>
+
+    <details style="margin:14px 0 22px">
+      <summary style="cursor:pointer;color:var(--b6);font-size:13.5px;font-weight:500">
+        Per-station selection detail (ρ / lag per model, all four windows)</summary>
+      <div id="selDetail" class="tablewrap" style="margin-top:10px">loading…</div>
+    </details>
+
+    <div class="callout">
+      <strong>What GEOGloWS votes can and cannot prove.</strong> GEOGloWS has no
+      historical forecast archive before July 2024, so its pairs are calibrated and
+      backtested through the <em>retrospective</em> (the agreed reanalysis-as-stand-in
+      convention) — hindsight, not lead time. Operationally its live forecasts do exist
+      (leads to 14 days), but they run below its own retrospective climatology (quantified
+      below) — so the retrospective-fitted thresholds here <strong>cannot be applied to
+      its live forecasts as-is</strong>. Two debias routes for go-live: refit thresholds
+      on its forecast climatology (needs years of archive), or map the live forecast onto
+      the retrospective climatology by flow-duration-curve quantile mapping (SFDC — the
+      GEOGloWS group's own bias-correction method, which the team already applied in the
+      <a href="https://docs.google.com/document/d/1iORZn8POkhJCNTVdCWicOdP1zfRgjHBkPNseOhuotFw">Nepal
+      technical note</a>, June 2026) fitted on the 2024+ overlap. Honest caveat from that
+      note: SFDC did not rescue GEOGloWS's event detection in Nepal, where the forecast
+      ran at ~half its retrospective — Somalia's bias is far smaller (0.85–0.91×) and
+      GEOGloWS holds minority votes here, not the trigger basis, but the mapping must be
+      validated before its votes count operationally. Until then, windows that include
+      GEOGloWS pairs carry up to that many votes of unproven lead-time skill.
     </div>
-<h2>Seasonal peaks: model vs gauge</h2>
+
+    <h2>Seasonal peaks: model vs gauge</h2>
     <p class="muted"><em>Carried over unchanged from the published multi-source study: this diagnostic compares products, so it does not depend on how many points vote or where the thresholds sit.</em></p>
 
     <p>Daily rank correlation can flatter a model that merely tracks the seasonal cycle.
@@ -293,25 +321,77 @@ figure figcaption { font-size:12.5px; color:#55606d; line-height:1.5;
     </div>
 
     <h2>Thresholds and calibration</h2>
-    <p>Every threshold is a return period on the product's own climatology at that point,
-      so a product is judged on timing rather than on scale. <strong>1-in-3 is the floor
-      and a quarter of the record is the ceiling</strong>: on 25 years that allows 1-in-3
-      to 1-in-6, and 1-in-2 is not used anywhere, on either leg.</p>
-    <figure><img src="figs/c_grid_heatmaps.png" alt="Threshold and vote grid">
-      <figcaption>POD, FAR and F1 across the threshold and vote grid for each window,
-        against the reference gauge's 1-in-3 flood definition. The outlined cell is
-        adopted.</figcaption></figure>
-    <figure><img src="figs/a2_swalim_rp.png" alt="Where the thresholds sit">
-      <figcaption>Where each point's 1-in-3 level sits against SWALIM's official Moderate
-        to High band, per season.</figcaption></figure>
+    <p>Each monitored point gets its threshold from its own model's climatology: the Weibull plotting position of that point's seasonal maxima, so a product is judged on timing rather than on scale. <strong>1-in-3 is the floor and a quarter of the record is the ceiling</strong>, which on 25 years allows 1-in-3 to 1-in-6. 1-in-2 is not used anywhere, on either leg.</p>
+
+    <figure>
+      <img src="figs/c_backtest_strip.png" class="vswap" data-alt-src="figs/c_backtest_strip_nogoogle.png" alt="Heat strip of activation years per trigger leg, per basin versus severe years, and overall, 1999 to 2023">
+      <figcaption><span class="stdonly">The calibration backtest. Basin rows compare activations (amber/blue)
+        with severe 1-in-5 years at the SWALIM reference gauge (blue = caught, red =
+        missed). Shabelle catches 6 of 7 severe years (misses only 2021); Juba 4 of 8
+        (misses 2005, 2006, 2011, 2014 — though 2006 and 2014 are caught overall via the
+        Shabelle). Neither basin activates outside the moderate set. The gauge
+        restriction costs Juba severe coverage — its strongest candidates sat at
+        now-dead gauges (Bardheere) and ungauged points.</span><span class="altonly">The
+        no-Google variant's backtest, same layout. Juba catches 5 of 8 severe years
+        (gaining 2005 over the adopted mechanism), Shabelle 4 of 7 — losing the 2006 and
+        2014 Deyr floods. Note the Shabelle Gu row: it is now driven by one
+        station-model, so its activations and its silences are a single model's
+        judgement.</span> With 25-year records, one hit
+        moves coverage by ~12–15 points — differences under ~0.15 are noise.</figcaption>
+    </figure>
+
     <h3>Calibrated on the reanalysis, checked on the forecasts</h3>
-    <p>Refitting the same rule on the forecast archives themselves, 2003&ndash;2023, thresholds from 1-in-3 to 1-in-5. Out of the field: Google GRRR, whose archive is too short to carry a 1-in-3 threshold, so it can only be calibrated on the retrospective.</p><div class="tablewrap">
+<p>Refitting the same rule on the forecast archives themselves, 2003&ndash;2023, thresholds from 1-in-3 to 1-in-5. Out of the field: Google GRRR, whose archive is too short to carry a 1-in-3 threshold, so it can only be calibrated on the retrospective.</p><div class="tablewrap">
 <table class="data">
 <thead><tr><th>window</th><th>source</th><th>gauge threshold</th><th>points that must agree</th><th>would have fired in</th></tr></thead>
 <tbody><tr><td>Juba Gu</td><td>GloFAS v4</td><td>1-in-3</td><td>2 of 4</td><td>2005, 2010, 2013, 2016, 2018, 2020, 2023</td></tr><tr><td>Juba Deyr</td><td>GloFAS v4</td><td>1-in-5</td><td>3 of 4</td><td>2015, 2017, 2023</td></tr><tr><td>Shabelle Gu</td><td>GloFAS v4</td><td>1-in-4</td><td>2 of 3</td><td>2005, 2010, 2016, 2018</td></tr><tr><td>Shabelle Deyr</td><td>GloFAS v4</td><td>1-in-5</td><td>2 of 3</td><td>2010, 2013, 2019, 2020</td></tr></tbody>
 </table>
 </div><p><strong>Envelope 1-in-2.2</strong> (10 of 21 years), catching 6 of the 10 severe years. This is the closest rate the forecast record supports; nothing lands on 1-in-3.</p>
-<h2>Forecast skill against each model's own reanalysis</h2>
+<h3>The tuning surface</h3>
+    <p>The Nigeria-style grid search (per state there; per basin × season here — the same
+       recipe as P. Wairimu's
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/08_trigger_grid.ipynb">notebook 08</a>):
+       every (per-pair RP threshold, N pairs required) cell is scored against the seasonal
+       SWALIM benchmark. The adopted cell is <em>not</em> always the best single-window
+       score — it is the best choice subject to the basin-level constraints (near-equal
+       per-basin frequency across the Gu+Deyr union, severe-coverage-first, ≥ 3-yr
+       overall enforced jointly across the basins). With 4–5-pair pools the surface is
+       small enough to read whole: the neighbors show what loosening a leg would cost in
+       false activations, or tightening one in missed severe years.</p>
+
+    <figure>
+      <img src="figs/c_grid_heatmaps.png" alt="Twelve heatmaps: for each of the four windows, POD, FAR and activation return period over the per-pair RP threshold by N-required grid, with the adopted cell outlined">
+      <figcaption>POD and FAR are vs the seasonal 1-in-3 SWALIM benchmark; black box =
+        the adopted configuration. Dark = high POD / low FAR / frequent activation.
+        With 7–8 benchmark events per window, one hit moves POD by ~12 points — broad
+        plateaus, not sharp optima, are the honest reading.</figcaption>
+    </figure>
+
+    <h3>Are SWALIM's official flood-risk levels trustworthy?</h3>
+    <p>The benchmark years above are defined by <strong>empirical return periods of the
+       gauges' own seasonal maxima</strong>, not by SWALIM's published Moderate/High
+       flood-risk levels — and the check below is why. Putting the official levels on the
+       empirical RP scale (per active gauge and season, 1999–2023) shows they imply wildly
+       inconsistent frequencies: "Moderate" ranges from a level the river reaches most
+       years (Dollow Deyr, ~1-in-1.3; Jowhar Gu, ~1-in-1.6) to a genuinely rare one (Luuq
+       Gu, ~1-in-4.6), and "High" from ~1-in-1.8 (Dollow) to ~1-in-11.5 (Luuq Gu). They
+       are engineering levels of uncertain provenance, not a consistent severity scale —
+       the same conclusion P. Wairimu's notebook 01 flagged when the published
+       <code>max_level</code> at Belet Weyne came out <em>below</em> its bank-full level.
+       Everything in this mechanism therefore runs on each gauge's own empirical RP3/RP5
+       levels (table <code>som_ms_swalim_rp</code>); the official levels remain useful
+       only as familiar reference lines for readers of SWALIM bulletins.</p>
+
+    <figure>
+      <img src="figs/a2_swalim_rp.png" alt="Five panels, one per active SWALIM gauge, of empirical return-period curves of seasonal maximum levels for Gu and Deyr, with the official moderate and high flood-risk levels as horizontal dashed lines">
+      <figcaption>Empirical Weibull curves of seasonal-maximum level (blue Gu, orange
+        Deyr) per active gauge, with the official Moderate (amber) and High (red) levels
+        as dashed lines. Where a dashed line crosses the curves far from the RP 3–5 band,
+        the official label and the observed frequency disagree. Dollow's curve rests on
+        only 8–9 seasons (gauge online 2015) — read it loosely.</figcaption>
+    </figure>
+
+    <h2>Forecast skill against each model's own reanalysis</h2>
     <p class="muted"><em>Carried over unchanged from the published multi-source study: this diagnostic compares products, so it does not depend on how many points vote or where the thresholds sit.</em></p>
 
     <p>The assume-bias-for-all-sources rule, quantified: per model and lead time, how well
@@ -334,18 +414,46 @@ figure figcaption { font-size:12.5px; color:#55606d; line-height:1.5;
     </figure>
 
     <h2>Would it have worked operationally?</h2>
-    <p>Year by year, against the flood record at the reference gauges. Severe years are
-      those the gauge recorded as 1-in-5 or rarer; ordinary floods are 1-in-3
-      or rarer and are deliberately not all covered at this activation rate.</p>
-    <figure><img src="figs/c_backtest_strip.png" alt="Backtest by year">
-      <figcaption>Each window and the envelope, 1999 to 2023.</figcaption></figure>
-    <figure class="altonly"><img src="figs/c_backtest_strip_nogoogle.png"
-      alt="Backtest by year without Google">
-      <figcaption>The same backtest with Google removed.</figcaption></figure>
-    <p>Severe years missed: 2011, 2021.
-      Years the envelope fired with no flood recorded at either reference gauge:
-      none.</p>
-<h2>The readiness leg (7–12 days)</h2>
+    <p>The calibration record is reanalysis — a model's afterwards-view of its own past.
+       The operational test replays the historical forecasts: per pair and valid day, the
+       most alarming ≤ 6-day signal (max over issue dates — with mixed providers in one
+       window, a monitoring day combines each provider's latest forecast). Google pairs
+       use their own reforecast (2016–2023); GloFAS v5 pairs the v4 reforecast (2003–2023,
+       ensemble median, thresholds refit on v4's own climatology, since <strong>no v5
+       reforecast exists</strong>); GEOGloWS pairs the retrospective as a lead-0 stand-in
+       (hindsight — flagged per window). That forecast skill barely decays from lead 1 to
+       7 — initial-condition-driven on these slow rivers — is P. Wairimu's
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/03_leadtime_forecast_skill.ipynb">notebook 03</a>
+       finding, and is what makes both lead bands viable at all.</p>
+
+    <div class="tablewrap">
+<table class="data">
+<thead><tr><th>window</th><th>calibrated on</th><th>run on</th><th>reproduces its calibration years?</th></tr></thead>
+<tbody><tr><td>Juba Gu</td><td>Google GRRR reanalysis</td><td>Google GRRR forecasts, leads 1-7</td><td>yes, same archive</td></tr><tr><td>Juba Deyr</td><td>Google GRRR reanalysis</td><td>Google GRRR forecasts, leads 1-7</td><td>yes, same archive</td></tr><tr><td>Shabelle Gu</td><td>Google GRRR reanalysis</td><td>Google GRRR forecasts, leads 1-7</td><td>yes, same archive</td></tr><tr><td>Shabelle Deyr</td><td>GloFAS v5 reanalysis</td><td>GloFAS v5 operationally; lead-time evidence from GloFAS v4</td><td>cannot be shown directly: no reforecast for this version</td></tr></tbody>
+</table>
+</div><div class="callout warn">
+      <strong>The caveat that matters most.</strong> At ≤ 6-day leads the GloFAS v4
+      reforecast misses Deyr 2023 on the Shabelle — the largest flood in the record — even
+      though the v5 reanalysis flags it clearly. The operational forecast has been v5 since
+      August 2026 and should behave like the v5 reanalysis here, but there is no v5
+      reforecast to prove it. Re-verifying both Deyr legs the moment EWDS publishes a v5
+      reforecast is the single most important follow-up.
+    </div>
+
+    <div class="callout warn">
+<strong>What the calibration cannot settle.</strong> Google's reforecast starts in 2016, so a Google window cannot be calibrated on its own forecasts at a 1-in-3 threshold, which needs about 12 years: it is calibrated on the retrospective and only checked at lead time. GloFAS v5 has no reforecast at all, so its window inherits its lead-time evidence from v4. Readiness is not tuned to precede activation, so an action trigger may fire with no readiness phase ahead of it.
+</div>
+
+    <figure>
+      <img src="figs/e_anticipation.png" alt="Bar chart of days between the first alert and the SWALIM Moderate crossing, per activation event">
+      <figcaption>Per-event anticipation: days between the alert date (the N-th pair's
+        earliest alerting forecast on the first consensus day) and the season's first
+        SWALIM Moderate crossing at the reference gauge. Range −25 to +21 days.
+        Stakeholders should not expect a consistent warning window — the readiness leg
+        exists to buy mobilisation time.</figcaption>
+    </figure>
+
+    <h2>The readiness leg (7–12 days)</h2>
     <p>Readiness runs on GloFAS v4 ensemble-median forecasts at leads 7 to
       12, the only archive covering that band, over the same full set of points, with
       thresholds refitted on that series. It releases only the mobilisation share and is
