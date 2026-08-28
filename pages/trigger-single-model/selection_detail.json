@@ -1,29 +1,6 @@
 {
  "juba_gu": [
   {
-   "station": "luuq",
-   "gauge_active": true,
-   "selected": [
-    "geoglows"
-   ],
-   "glofas_v5": {
-    "rho": 0.846,
-    "lag": 0
-   },
-   "glofas_v4": {
-    "rho": 0.821,
-    "lag": 0
-   },
-   "google_grrr": {
-    "rho": 0.866,
-    "lag": 0
-   },
-   "geoglows": {
-    "rho": 0.804,
-    "lag": 0
-   }
-  },
-  {
    "station": "dollow",
    "gauge_active": true,
    "selected": [
@@ -43,6 +20,29 @@
    },
    "geoglows": {
     "rho": 0.818,
+    "lag": 0
+   }
+  },
+  {
+   "station": "luuq",
+   "gauge_active": true,
+   "selected": [
+    "geoglows"
+   ],
+   "glofas_v5": {
+    "rho": 0.846,
+    "lag": 0
+   },
+   "glofas_v4": {
+    "rho": 0.821,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.866,
+    "lag": 0
+   },
+   "geoglows": {
+    "rho": 0.804,
     "lag": 0
    }
   },
@@ -95,29 +95,6 @@
  ],
  "juba_deyr": [
   {
-   "station": "luuq",
-   "gauge_active": true,
-   "selected": [
-    "glofas_v5"
-   ],
-   "glofas_v5": {
-    "rho": 0.839,
-    "lag": 0
-   },
-   "glofas_v4": {
-    "rho": 0.843,
-    "lag": 0
-   },
-   "google_grrr": {
-    "rho": 0.621,
-    "lag": -8
-   },
-   "geoglows": {
-    "rho": 0.816,
-    "lag": 0
-   }
-  },
-  {
    "station": "dollow",
    "gauge_active": true,
    "selected": [
@@ -137,6 +114,29 @@
    },
    "geoglows": {
     "rho": 0.827,
+    "lag": 0
+   }
+  },
+  {
+   "station": "luuq",
+   "gauge_active": true,
+   "selected": [
+    "glofas_v5"
+   ],
+   "glofas_v5": {
+    "rho": 0.839,
+    "lag": 0
+   },
+   "glofas_v4": {
+    "rho": 0.843,
+    "lag": 0
+   },
+   "google_grrr": {
+    "rho": 0.621,
+    "lag": -8
+   },
+   "geoglows": {
+    "rho": 0.816,
     "lag": 0
    }
   },

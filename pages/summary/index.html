@@ -81,7 +81,7 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:600; }
       <h1>Somalia floods: data-source review</h1>
       <p>The evidence behind the trigger: the SWALIM gauge record, how each model
         performs against it, the stations selected, and the configuration that follows.
-        Generated 2026-08-27 from the source data.</p>
+        Generated 2026-08-28 from the source data.</p>
     </div>
   </header>
 
@@ -100,7 +100,10 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:600; }
 
     <h2><span class="num">1</span>Key takeaways</h2>
     <ul class="takeaways">
-      <li><strong>Model performance differs by river and season.</strong> GloFAS carries three of the four windows and GEOGloWS the fourth. Google leads the Juba in Gu on tracking correlation, but no Google rule reaches the 1-in-3 activation rate without dropping a severe year.</li>
+      <li><strong>Model performance differs by river and season.</strong> GloFAS
+        carries three of the four windows and GEOGloWS the fourth. Google leads the Juba
+        in Gu on tracking correlation, but no Google rule reaches the 1-in-3 activation
+        rate without dropping a severe year.</li>
       <li><strong>Accuracy holds from one to seven days ahead,</strong> so a one-week
         action window is defensible. Models still miss a share of floods, so SWALIM
         guidance belongs in the trigger design.</li>
@@ -128,23 +131,7 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:600; }
       must stay below it for at least 14 days before a new crossing counts separately,
       so a brief dip mid-flood does not split one flood in two. Readings stop rising
       once a gauge reaches bank full, so the largest events are understated.</p>
-    <!-- Benchmark validation, 2026-08-28 (not shown to readers)
-     Checked the two-gauge rule against gauge availability and the EM-DAT /
-     CERF record:
-       agreement on the big years: 2006, 2018, 2019, 2020, 2023 are all severe
-       1999-2001 unassessable: Juba had 0 gauges reporting, Shabelle 1, so
-         consensus is impossible; 22 assessable years, not 25
-       2021: 400,000 affected in EM-DAT, only Bardheere and Belet Weyne
-         crossed. Belet Weyne's peak reads 8.30 m, exactly its bank-full value,
-         where the record is censored
-       2016: 3 of 4 Juba gauges and all 3 Shabelle gauges crossed in Gu, EM-DAT
-         records nobody affected
-       smaller single-gauge cases: 2013 (50,000 affected, only Jowhar and Luuq
-         crossed, one per river) and 2012 (32,200 affected, only Jowhar)
-       possible remedy for the censoring: treat a reading at bank full as a
-         crossing at any return period, since the gauge cannot report higher
--->
-<div class="callout warn">
+    <div class="callout warn">
       <strong>What the two-gauge benchmark sees, and what it misses.</strong> A
       river-season counts as a flood only when two or more of that river's gauges cross
       their own level, which keeps one record from deciding the benchmark but has three
@@ -169,7 +156,6 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:600; }
           affected. Gauge levels and recorded impact are not the same measurement.</li>
       </ul>
     </div>
-
     <figure class="chart">
       <img src="figures/map.svg" alt="Seven gauges still reporting: four on the Juba, three on the Shabelle.">
       <figcaption>Seven gauges still reporting: four on the Juba, three on the Shabelle.</figcaption>
@@ -202,7 +188,7 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:600; }
 <div class="tablewrap">
 <table class="data">
 <thead><tr><th>Station</th><th>Events</th><th>GloFAS v5</th><th>GloFAS v4</th><th>Google GRRR</th><th>GEOGloWS v2</th></tr></thead>
-<tbody><tr><td>luuq</td><td>9</td><td>0.44 / 0.50</td><td>0.22 / 0.71</td><td>0.44 / 0.43</td><td>0.11 / 0.88</td></tr><tr><td>dollow</td><td>3</td><td>1.00 / 0.40</td><td>0.67 / 0.60</td><td>1.00 / 0.50</td><td>0.67 / 0.60</td></tr><tr><td>bardheere</td><td>4</td><td>0.50 / 0.75</td><td>0.25 / 0.86</td><td>0.50 / 0.75</td><td>0.25 / 0.88</td></tr><tr><td>bualle</td><td>7</td><td>0.29 / 0.67</td><td>0.43 / 0.57</td><td>0.43 / 0.50</td><td>0.43 / 0.57</td></tr><tr><td>belet_weyne</td><td>10</td><td>0.60 / 0.14</td><td>0.10 / 0.88</td><td>0.50 / 0.29</td><td>0.30 / 0.62</td></tr><tr><td>bulo_burti</td><td>9</td><td>0.44 / 0.43</td><td>0.11 / 0.88</td><td>0.33 / 0.57</td><td>0.44 / 0.50</td></tr><tr><td>jowhar</td><td>10</td><td>0.20 / 0.71</td><td>0.10 / 0.88</td><td>0.10 / 0.86</td><td>0.10 / 0.86</td></tr></tbody>
+<tbody><tr><td>dollow</td><td>3</td><td>1.00 / 0.40</td><td>0.67 / 0.60</td><td>1.00 / 0.50</td><td>0.67 / 0.60</td></tr><tr><td>luuq</td><td>9</td><td>0.44 / 0.50</td><td>0.22 / 0.71</td><td>0.44 / 0.43</td><td>0.11 / 0.88</td></tr><tr><td>bardheere</td><td>4</td><td>0.50 / 0.75</td><td>0.25 / 0.86</td><td>0.50 / 0.75</td><td>0.25 / 0.88</td></tr><tr><td>bualle</td><td>7</td><td>0.29 / 0.67</td><td>0.43 / 0.57</td><td>0.43 / 0.50</td><td>0.43 / 0.57</td></tr><tr><td>belet_weyne</td><td>10</td><td>0.60 / 0.14</td><td>0.10 / 0.88</td><td>0.50 / 0.29</td><td>0.30 / 0.62</td></tr><tr><td>bulo_burti</td><td>9</td><td>0.44 / 0.43</td><td>0.11 / 0.88</td><td>0.33 / 0.57</td><td>0.44 / 0.50</td></tr><tr><td>jowhar</td><td>10</td><td>0.20 / 0.71</td><td>0.10 / 0.88</td><td>0.10 / 0.86</td><td>0.10 / 0.86</td></tr></tbody>
 </table>
 </div>
 
@@ -232,7 +218,7 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:600; }
 <div class="tablewrap">
 <table class="data">
 <thead><tr><th>River</th><th>Gauges used</th></tr></thead>
-<tbody><tr><td>Juba</td><td><em>luuq</em>, <em>dollow</em>, <em>bardheere</em>, <em>bualle</em></td></tr><tr><td>Shabelle</td><td><em>belet_weyne</em>, <em>bulo_burti</em>, <em>jowhar</em></td></tr></tbody>
+<tbody><tr><td>Juba</td><td><em>dollow</em>, <em>luuq</em>, <em>bardheere</em>, <em>bualle</em></td></tr><tr><td>Shabelle</td><td><em>belet_weyne</em>, <em>bulo_burti</em>, <em>jowhar</em></td></tr></tbody>
 </table>
 </div>
     <p>Gauges whose records stop in 2008 or earlier can calibrate but cannot monitor.
@@ -254,6 +240,11 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:600; }
 <tbody><tr><td>Juba</td><td>Gu</td><td>GEOGloWS v2</td><td>1-in-5</td><td>2 of 4</td><td>2018, 2020</td></tr><tr><td>Juba</td><td>Deyr</td><td>GloFAS v5</td><td>1-in-4</td><td>3 of 4</td><td>2006, 2023</td></tr><tr><td>Shabelle</td><td>Gu</td><td>GloFAS v5</td><td>1-in-6</td><td>2 of 3</td><td>2005, 2016, 2018, 2020</td></tr><tr><td>Shabelle</td><td>Deyr</td><td>GloFAS v5</td><td>1-in-5</td><td>2 of 3</td><td>2006, 2014, 2019, 2023</td></tr></tbody>
 </table>
 </div>
+    <p>The full amount is released whenever the trigger is reached along either river in
+      either season, so the combined rate across all four windows is what the budget must
+      be sized on. As configured it would have released in 8 of
+      25 years, once every 3.2 years, catching
+      7 of the 8 severe years.</p>
     <div class="callout warn">
       <strong>GEOGloWS carries Juba Gu, with conditions.</strong> Its forecasts run
       below its own retrospective, so the threshold must be refitted on the forecast
@@ -262,12 +253,6 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:600; }
       detection was also the weakest of the four products, and the SFDC bias correction
       lowers it further rather than fixing it.
     </div>
-
-    <p>The full amount is released whenever the trigger is reached along either river in
-      either season, so the combined rate across all four windows is what the budget must
-      be sized on. As configured it would have released in 8 of
-      25 years, once every 3.2 years, catching
-      7 of the 8 severe years.</p>
     <figure class="chart">
       <img src="figures/activation.svg" alt="Year by year, what the adopted configuration would have done, and what the envelope does when any of the four windows activates.">
       <figcaption>Year by year, what the adopted configuration would have done, and what the envelope does when any of the four windows activates.</figcaption>

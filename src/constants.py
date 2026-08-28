@@ -205,8 +205,10 @@ SOURCE_COLORS = {
 # skill: Kaitoi, Afgoi and Audegle stop in 2008 and Mahadey Weyne in 1990,
 # while Jamaame, Mareere, Kamsuma, Mogambo and Balad have SNRFA files with no
 # readings at all.
+# Listed upstream to downstream, the direction the water travels, so tables and
+# the map read in the same order.
 TRIGGER_STATIONS = {
-    "juba": ["luuq", "dollow", "bardheere", "bualle"],
+    "juba": ["dollow", "luuq", "bardheere", "bualle"],
     "shabelle": ["belet_weyne", "bulo_burti", "jowhar"],
 }
 ALL_TRIGGER_STATIONS = [s for v in TRIGGER_STATIONS.values() for s in v]

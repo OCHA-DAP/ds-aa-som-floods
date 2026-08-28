@@ -1,13 +1,13 @@
 {
- "generated": "2026-08-27",
+ "generated": "2026-08-28",
  "years": [
   1999,
   2023
  ],
  "stations": {
   "juba": [
-   "luuq",
    "dollow",
+   "luuq",
    "bardheere",
    "bualle"
   ],
@@ -225,38 +225,6 @@
  ],
  "station_scores": [
   {
-   "station": "luuq",
-   "river": "juba",
-   "source": "glofas_v5",
-   "n_events": 9,
-   "POD": 0.44,
-   "FAR": 0.5
-  },
-  {
-   "station": "luuq",
-   "river": "juba",
-   "source": "glofas_v4",
-   "n_events": 9,
-   "POD": 0.22,
-   "FAR": 0.71
-  },
-  {
-   "station": "luuq",
-   "river": "juba",
-   "source": "google_grrr",
-   "n_events": 9,
-   "POD": 0.44,
-   "FAR": 0.43
-  },
-  {
-   "station": "luuq",
-   "river": "juba",
-   "source": "geoglows",
-   "n_events": 9,
-   "POD": 0.11,
-   "FAR": 0.88
-  },
-  {
    "station": "dollow",
    "river": "juba",
    "source": "glofas_v5",
@@ -287,6 +255,38 @@
    "n_events": 3,
    "POD": 0.67,
    "FAR": 0.6
+  },
+  {
+   "station": "luuq",
+   "river": "juba",
+   "source": "glofas_v5",
+   "n_events": 9,
+   "POD": 0.44,
+   "FAR": 0.5
+  },
+  {
+   "station": "luuq",
+   "river": "juba",
+   "source": "glofas_v4",
+   "n_events": 9,
+   "POD": 0.22,
+   "FAR": 0.71
+  },
+  {
+   "station": "luuq",
+   "river": "juba",
+   "source": "google_grrr",
+   "n_events": 9,
+   "POD": 0.44,
+   "FAR": 0.43
+  },
+  {
+   "station": "luuq",
+   "river": "juba",
+   "source": "geoglows",
+   "n_events": 9,
+   "POD": 0.11,
+   "FAR": 0.88
   },
   {
    "station": "bardheere",
@@ -883,22 +883,6 @@
  },
  "station_scores_forecast": [
   {
-   "station": "luuq",
-   "river": "juba",
-   "source": "glofas_v4",
-   "n_events": 9,
-   "POD": 0.22,
-   "FAR": 0.71
-  },
-  {
-   "station": "luuq",
-   "river": "juba",
-   "source": "google_grrr",
-   "n_events": 2,
-   "POD": 0.5,
-   "FAR": 0.67
-  },
-  {
    "station": "dollow",
    "river": "juba",
    "source": "glofas_v4",
@@ -913,6 +897,22 @@
    "n_events": 2,
    "POD": 1.0,
    "FAR": 0.33
+  },
+  {
+   "station": "luuq",
+   "river": "juba",
+   "source": "glofas_v4",
+   "n_events": 9,
+   "POD": 0.22,
+   "FAR": 0.71
+  },
+  {
+   "station": "luuq",
+   "river": "juba",
+   "source": "google_grrr",
+   "n_events": 2,
+   "POD": 0.5,
+   "FAR": 0.67
   },
   {
    "station": "bardheere",
