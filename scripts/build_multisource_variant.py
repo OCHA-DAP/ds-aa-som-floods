@@ -82,6 +82,15 @@ N_YEARS = len(SPAN)
 WINDOWS = list(TRIGGER_CONFIG)
 WLABEL = {k: f"{k[0].capitalize()} {k[1].capitalize()}" for k in WINDOWS}
 
+# Which provider set fills which role on the page. The default excludes
+# GEOGloWS, because its return periods cannot yet be fitted on its own
+# forecasts (archive begins July 2024).
+BASE_SET = "nogeoglows"      # shown on load
+ALT_SET = False              # data-alt: all providers
+ALT2_SET = True              # data-alt2: without Google
+
+
+
 
 def load(name):
     return stratus.load_parquet_from_blob(f"{PREFIX}/{name}.parquet", stage=STAGE)
@@ -395,16 +404,16 @@ def draw_model_choice(path):
 
 print("figures ...")
 FIGS.mkdir(parents=True, exist_ok=True)
-figs_built = summary_figures.build(ctx_for(action[("reanalysis", False)]), FIGS)
+figs_built = summary_figures.build(ctx_for(action[("reanalysis", BASE_SET)]), FIGS)
 figs_alt = {}
-if "error" not in action[("reanalysis", True)]:
+if "error" not in action[("reanalysis", ALT_SET)]:
     alt_dir = FIGS / "_alt"
-    figs_alt = summary_figures.build(ctx_for(action[("reanalysis", True)]), alt_dir)
+    figs_alt = summary_figures.build(ctx_for(action[("reanalysis", ALT_SET)]), alt_dir)
 
 # convert the SVGs this page needs into PNGs at the document's own filenames,
 # by redrawing them: matplotlib is the source, so no rasteriser is needed
 summary_figures.os.environ["SUMMARY_FIG_PNG"] = str(FIGS)
-figs_built = summary_figures.build(ctx_for(action[("reanalysis", False)]), FIGS)
+figs_built = summary_figures.build(ctx_for(action[("reanalysis", BASE_SET)]), FIGS)
 name_map = {"map": "map_stations", "thresholds": "a2_swalim_rp",
             "grid": "c_grid_heatmaps", "activation": "c_backtest_strip",
             "crossings": "c_crossings"}
@@ -414,18 +423,18 @@ for svg, png in name_map.items():
         shutil.move(str(src), str(FIGS / f"{png}.png"))
 if figs_alt:
     summary_figures.os.environ["SUMMARY_FIG_PNG"] = str(FIGS / "_altpng")
-    summary_figures.build(ctx_for(action[("reanalysis", True)]), FIGS / "_alt")
+    summary_figures.build(ctx_for(action[("reanalysis", ALT_SET)]), FIGS / "_alt")
     alt = FIGS / "_altpng" / "activation.png"
     if alt.exists():
-        shutil.move(str(alt), str(FIGS / "c_backtest_strip_nogoogle.png"))
+        shutil.move(str(alt), str(FIGS / "c_backtest_strip_all.png"))
 # and the same for the set without GEOGloWS
-_ng = action[("reanalysis", "nogeoglows")]
+_ng = action[("reanalysis", ALT2_SET)]
 if "error" not in _ng:
     summary_figures.os.environ["SUMMARY_FIG_PNG"] = str(FIGS / "_ngpng")
     summary_figures.build(ctx_for(_ng), FIGS / "_ng")
     ngp = FIGS / "_ngpng" / "activation.png"
     if ngp.exists():
-        shutil.move(str(ngp), str(FIGS / "c_backtest_strip_nogeoglows.png"))
+        shutil.move(str(ngp), str(FIGS / "c_backtest_strip_nogoogle.png"))
 summary_figures.os.environ.pop("SUMMARY_FIG_PNG", None)
 draw_model_choice(FIGS / "a_selection.png")
 for stale in ["_alt", "_altpng", "_ng", "_ngpng"]:
@@ -578,10 +587,10 @@ def vswap(std, alt, alt2=None):
 
 
 def glance_table():
-    std, alt = action[("reanalysis", False)], action[("reanalysis", True)]
-    ng = action[("reanalysis", "nogeoglows")]
-    rst, ralt = ready[False], ready[True]
-    rng = ready["nogeoglows"]
+    std, alt = action[("reanalysis", BASE_SET)], action[("reanalysis", ALT_SET)]
+    ng = action[("reanalysis", ALT2_SET)]
+    rst, ralt = ready[BASE_SET], ready[ALT_SET]
+    rng = ready[ALT2_SET]
     rows = []
     for k in WINDOWS:
         w = std["windows"][k]
@@ -623,8 +632,8 @@ def glance_table():
 
 
 def bookkeeping_table():
-    std, alt = action[("reanalysis", False)], action[("reanalysis", True)]
-    ng = action[("reanalysis", "nogeoglows")]
+    std, alt = action[("reanalysis", BASE_SET)], action[("reanalysis", ALT_SET)]
+    ng = action[("reanalysis", ALT2_SET)]
     rows = []
     for k in WINDOWS:
         w, wa = std["windows"][k], alt["windows"][k]
@@ -704,8 +713,8 @@ def forecast_panel():
     )
 
 
-std = action[("reanalysis", False)]
-alt = action[("reanalysis", True)]
+std = action[("reanalysis", BASE_SET)]
+alt = action[("reanalysis", ALT_SET)]
 env, env_alt = std["envelope"], alt["envelope"]
 
 SECTIONS = {
@@ -727,8 +736,8 @@ SECTIONS = {
       {env['n_severe']} years in which two or more of a river's gauges recorded a 1-in-{SEVERE_RP} or rarer season,
       and never activating in a year with no recorded flood.
     </div>
-    <div class="callout warn hide-in-alt2">
-      <strong>GEOGloWS carries Juba Gu, with conditions.</strong> It is the only product
+    <div class="callout warn altonly">
+      <strong>GEOGloWS carries a window here, with conditions.</strong> It is the only product
       in the field that cannot be operated exactly as calibrated. Its forecasts run
       below its own retrospective, so a threshold fitted on the retrospective sits too
       low on the live forecast and would activate too often: the threshold has to be
@@ -916,8 +925,8 @@ SECTION_EDITS = {
     "Thresholds and calibration": [
         # the backtest strip swaps by provider set: add the third source
         (r'data-alt-src="figs/c_backtest_strip_nogoogle\.png"',
-         'data-alt-src="figs/c_backtest_strip_nogoogle.png" '
-         'data-alt2-src="figs/c_backtest_strip_nogeoglows.png"'),
+         'data-alt-src="figs/c_backtest_strip_all.png" '
+         'data-alt2-src="figs/c_backtest_strip_nogoogle.png"'),
         (r"<h3[^>]*>\s*Are SWALIM.s official flood-risk levels trustworthy\?\s*</h3>",
          "<h3>How the official SWALIM levels compare with the fitted ones</h3>"),
         (r"shows they imply very different frequencies from gauge to gauge",
@@ -1058,11 +1067,11 @@ body += """
   // is exact.
   var MODES = [
     { btn: "vAll", cls: null,
-      note: "Adopted: one source per window" },
+      note: "Adopted: GloFAS + Google, one source per window" },
     { btn: "vNog", cls: "variant",
-      note: "Without Google Flood Hub: recalibrated from scratch" },
+      note: "All providers: GEOGloWS then carries a window" },
     { btn: "vNoGeo", cls: "variant2",
-      note: "Without GEOGloWS: every window on a product with a forecast archive" }
+      note: "Without Google Flood Hub: recalibrated from scratch" }
   ];
   function apply(mode) {
     var m = MODES[mode];
@@ -1106,10 +1115,10 @@ body += "\n</body>\n</html>\n"
 body = body.replace(
     '<button type="button" id="vNog" aria-pressed="false">Without Google Flood Hub'
     "</button>",
-    '<button type="button" id="vNog" aria-pressed="false">Without Google Flood Hub'
+    '<button type="button" id="vNog" aria-pressed="false">All providers'
     "</button>\n"
-    '        <button type="button" id="vNoGeo" aria-pressed="false">Without GEOGloWS'
-    "</button>",
+    '        <button type="button" id="vNoGeo" aria-pressed="false">Without Google '
+    "Flood Hub</button>",
     1,
 )
 # a note for the third state, alongside the template's no-Google one
@@ -1117,8 +1126,10 @@ _ng_note = ""
 if "error" not in _ng:
     _nge = _ng["envelope"]
     _ng_note = (
-        '    <div class="callout warn alt2only" style="margin-top:18px">\n'
-        "      <strong>You are viewing the set without GEOGloWS.</strong> Every window "
+        '    <div class="callout warn altonly" style="margin-top:18px">\n'
+        "      <strong>You are viewing all providers.</strong> GEOGloWS then carries a "
+        "window, and its return periods cannot yet be fitted on its own forecasts: that "
+        "archive begins in July 2024. Every window "
         "then sits on a product whose return periods can be fitted on a forecast "
         "archive, which GEOGloWS's cannot yet be: its forecast record begins in "
         "July 2024. The whole report below is recalibrated with GEOGloWS excluded, "
@@ -1190,7 +1201,7 @@ body = re.sub(
     count=1,
     flags=re.S,
 )
-body = body.replace("All three providers", "All providers")
+body = body.replace("All three providers", "GloFAS + Google")
 
 stats_new = (
     '<div class="stats">\n'
@@ -1212,6 +1223,13 @@ stats_new = (
 )
 body = re.sub(r'<div class="stats">.*?\n\s*</div>', stats_new, body, count=1,
               flags=re.S)
+
+# the template's no-Google note belongs to the third state now
+body = body.replace(
+    'class="callout warn altonly" style="margin-top:18px">',
+    'class="callout warn alt2only" style="margin-top:18px">',
+    1,
+)
 
 # the note explaining the no-Google view lists the published study's rules
 body = re.sub(

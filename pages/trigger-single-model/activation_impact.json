@@ -3,8 +3,8 @@
   "note": "n = peak simultaneous count of monitored points over their thresholds in that season, at the adopted return period; EM-DAT multi-basin events counted under both basins; CERF allocations with no basin stated shown under both, flagged",
   "windows": {
    "juba_gu": {
-    "label": "GEOGloWS v2 at 4 points",
-    "n_req": 2,
+    "label": "Google GRRR at 4 points",
+    "n_req": 3,
     "pool": 4,
     "rp": 5
    },
@@ -15,7 +15,7 @@
     "rp": 4
    },
    "shabelle_gu": {
-    "label": "GloFAS v5 at 3 points",
+    "label": "Google GRRR at 3 points",
     "n_req": 2,
     "pool": 3,
     "rp": 6
@@ -24,7 +24,7 @@
     "label": "GloFAS v5 at 3 points",
     "n_req": 2,
     "pool": 3,
-    "rp": 5
+    "rp": 4
    }
   },
   "windows_v": {
@@ -354,7 +354,7 @@
    "basins": {
     "juba": {
      "gu": {
-      "n": 1,
+      "n": 0,
       "nv": 1,
       "adopted": false,
       "adopted_v": false,
@@ -378,9 +378,9 @@
     },
     "shabelle": {
      "gu": {
-      "n": 3,
+      "n": 0,
       "nv": 3,
-      "adopted": true,
+      "adopted": false,
       "adopted_v": true,
       "bench": "moderate",
       "emdat": {
@@ -617,7 +617,7 @@
    "basins": {
     "juba": {
      "gu": {
-      "n": 1,
+      "n": 2,
       "nv": 1,
       "adopted": false,
       "adopted_v": false,
@@ -646,7 +646,7 @@
       "cerf": null
      },
      "deyr": {
-      "n": 0,
+      "n": 1,
       "nv": 0,
       "adopted": false,
       "adopted_v": false,
@@ -756,9 +756,9 @@
    "basins": {
     "juba": {
      "gu": {
-      "n": 1,
+      "n": 4,
       "nv": 1,
-      "adopted": false,
+      "adopted": true,
       "adopted_v": false,
       "bench": "",
       "emdat": {
@@ -780,9 +780,9 @@
     },
     "shabelle": {
      "gu": {
-      "n": 0,
+      "n": 3,
       "nv": 0,
-      "adopted": false,
+      "adopted": true,
       "adopted_v": false,
       "bench": "",
       "emdat": {
@@ -793,9 +793,9 @@
       "cerf": null
      },
      "deyr": {
-      "n": 1,
+      "n": 3,
       "nv": 1,
-      "adopted": false,
+      "adopted": true,
       "adopted_v": false,
       "bench": "",
       "emdat": null,
@@ -911,9 +911,9 @@
    "basins": {
     "juba": {
      "gu": {
-      "n": 1,
+      "n": 4,
       "nv": 1,
-      "adopted": false,
+      "adopted": true,
       "adopted_v": false,
       "bench": "moderate",
       "emdat": {
@@ -1005,7 +1005,7 @@
    "basins": {
     "juba": {
      "gu": {
-      "n": 2,
+      "n": 4,
       "nv": 2,
       "adopted": true,
       "adopted_v": true,
@@ -1123,7 +1123,7 @@
    "basins": {
     "juba": {
      "gu": {
-      "n": 3,
+      "n": 4,
       "nv": 3,
       "adopted": true,
       "adopted_v": true,
@@ -1163,9 +1163,9 @@
       }
      },
      "deyr": {
-      "n": 0,
+      "n": 2,
       "nv": 0,
-      "adopted": false,
+      "adopted": true,
       "adopted_v": false,
       "bench": "severe",
       "emdat": null,
@@ -1277,7 +1277,7 @@
    "basins": {
     "juba": {
      "gu": {
-      "n": 0,
+      "n": 1,
       "nv": 0,
       "adopted": false,
       "adopted_v": false,

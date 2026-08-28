@@ -4,7 +4,7 @@
    "station": "dollow",
    "gauge_active": true,
    "selected": [
-    "geoglows"
+    "google_grrr"
    ],
    "glofas_v5": {
     "rho": 0.825,
@@ -27,7 +27,7 @@
    "station": "luuq",
    "gauge_active": true,
    "selected": [
-    "geoglows"
+    "google_grrr"
    ],
    "glofas_v5": {
     "rho": 0.846,
@@ -50,7 +50,7 @@
    "station": "bardheere",
    "gauge_active": false,
    "selected": [
-    "geoglows"
+    "google_grrr"
    ],
    "glofas_v5": {
     "rho": 0.823,
@@ -73,7 +73,7 @@
    "station": "bualle",
    "gauge_active": false,
    "selected": [
-    "geoglows"
+    "google_grrr"
    ],
    "glofas_v5": {
     "rho": 0.76,
@@ -192,7 +192,7 @@
    "station": "belet_weyne",
    "gauge_active": true,
    "selected": [
-    "glofas_v5"
+    "google_grrr"
    ],
    "glofas_v5": {
     "rho": 0.766,
@@ -215,7 +215,7 @@
    "station": "bulo_burti",
    "gauge_active": true,
    "selected": [
-    "glofas_v5"
+    "google_grrr"
    ],
    "glofas_v5": {
     "rho": 0.711,
@@ -238,7 +238,7 @@
    "station": "jowhar",
    "gauge_active": true,
    "selected": [
-    "glofas_v5"
+    "google_grrr"
    ],
    "glofas_v5": {
     "rho": 0.642,
