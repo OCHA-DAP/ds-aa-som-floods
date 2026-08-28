@@ -155,7 +155,7 @@ fc_ready, fc_ready_spans = reforecast_band(*READINESS_LEADS, [READINESS_MODEL])
 
 
 # ------------------------------------------------------------- the action leg
-def action_leg(basis, drop_google=False):
+def action_leg(basis, drop_google=False, drop_geoglows=False):
     """One model per window, all points, thresholds at or above 1-in-3."""
     if basis == "reanalysis":
         frame, models, span, excluded = dd, list(MODELS), set(SPAN), []
@@ -173,6 +173,10 @@ def action_leg(basis, drop_google=False):
         models = [m for m in models if m != "google_grrr"]
         if not models:
             return {"error": "nothing left once Google is removed"}
+    if drop_geoglows:
+        models = [m for m in models if m != "geoglows"]
+        if not models:
+            return {"error": "nothing left once GEOGloWS is removed"}
     rps = rp_choices(len(span))
     if not rps:
         return {"error": (f"{len(span)} years ({min(span)}-{max(span)}) cannot carry "
@@ -227,6 +231,10 @@ action = {
     ("forecast", False): action_leg("forecast"),
     ("forecast", True): action_leg("forecast", drop_google=True),
 }
+# the third provider set: GEOGloWS out, so every window sits on a product whose
+# return periods can be fitted on a forecast archive
+action[("reanalysis", "nogeoglows")] = action_leg("reanalysis", drop_geoglows=True)
+action[("forecast", "nogeoglows")] = action_leg("forecast", drop_geoglows=True)
 for k, v in action.items():
     if "error" in v:
         print(f"  {k}: {v['error']}")
@@ -296,6 +304,7 @@ print("readiness leg ...")
 ready = {
     False: readiness_leg(action[("reanalysis", False)]),
     True: readiness_leg(action[("reanalysis", True)]),
+    "nogeoglows": readiness_leg(action[("reanalysis", "nogeoglows")]),
 }
 for g, v in ready.items():
     if "error" in v:
@@ -409,9 +418,17 @@ if figs_alt:
     alt = FIGS / "_altpng" / "activation.png"
     if alt.exists():
         shutil.move(str(alt), str(FIGS / "c_backtest_strip_nogoogle.png"))
+# and the same for the set without GEOGloWS
+_ng = action[("reanalysis", "nogeoglows")]
+if "error" not in _ng:
+    summary_figures.os.environ["SUMMARY_FIG_PNG"] = str(FIGS / "_ngpng")
+    summary_figures.build(ctx_for(_ng), FIGS / "_ng")
+    ngp = FIGS / "_ngpng" / "activation.png"
+    if ngp.exists():
+        shutil.move(str(ngp), str(FIGS / "c_backtest_strip_nogeoglows.png"))
 summary_figures.os.environ.pop("SUMMARY_FIG_PNG", None)
 draw_model_choice(FIGS / "a_selection.png")
-for stale in ["_alt", "_altpng"]:
+for stale in ["_alt", "_altpng", "_ng", "_ngpng"]:
     shutil.rmtree(FIGS / stale, ignore_errors=True)
 for svg in FIGS.glob("*.svg"):
     svg.unlink()
@@ -554,24 +571,33 @@ def write_activation_impact():
 
 
 # -------------------------------------------------------------------- sections
-def vswap(std, alt):
-    """The document's own with/without-Google swap."""
-    return f'<td class="vswap" data-alt="{esc(alt)}">{std}</td>'
+def vswap(std, alt, alt2=None):
+    """The document's provider swap: adopted, without Google, without GEOGloWS."""
+    extra = "" if alt2 is None else f' data-alt2="{esc(alt2)}"'
+    return f'<td class="vswap" data-alt="{esc(alt)}"{extra}>{std}</td>'
 
 
 def glance_table():
     std, alt = action[("reanalysis", False)], action[("reanalysis", True)]
+    ng = action[("reanalysis", "nogeoglows")]
     rst, ralt = ready[False], ready[True]
+    rng = ready["nogeoglows"]
     rows = []
     for k in WINDOWS:
         w = std["windows"][k]
         wa = alt["windows"][k] if "error" not in alt else w
+        wg = ng["windows"][k] if "error" not in ng else w
         rd = rst["windows"].get(k, {}) if "error" not in rst else {}
         rda = ralt["windows"].get(k, {}) if "error" not in ralt else {}
+        rdg = rng["windows"].get(k, {}) if "error" not in rng else {}
         act_std = (f"{NICE[w['source']]}: {w['n_req']} of {w['n_of']} points over "
                    f"their 1-in-{w['rp']}-yr thresholds")
         act_alt = (f"{NICE[wa['source']]}: {wa['n_req']} of {wa['n_of']} points over "
                    f"their 1-in-{wa['rp']}-yr thresholds")
+        act_ng = (f"{NICE[wg['source']]}: {wg['n_req']} of {wg['n_of']} points over "
+                  f"their 1-in-{wg['rp']}-yr thresholds")
+        rd_ng = (f"{NICE[READINESS_MODEL]} ens-median: {rdg['n_req']} of "
+                 f"{rdg['n_of']} over 1-in-{rdg['rp']}-yr" if "rp" in rdg else "-")
         rd_std = (f"{NICE[READINESS_MODEL]} ens-median: {rd['n_req']} of {rd['n_of']} "
                   f"over 1-in-{rd['rp']}-yr" if "rp" in rd else "no rule fits")
         rd_alt = (f"{NICE[READINESS_MODEL]} ens-median: {rda['n_req']} of "
@@ -579,9 +605,10 @@ def glance_table():
                   else rd_std)
         rows.append(
             "<tr><td>" + WLABEL[k] + "</td>"
-            + vswap(act_std, act_alt)
-            + vswap(rp_of(len(w["years"])), rp_of(len(wa["years"])))
-            + vswap(rd_std, rd_alt)
+            + vswap(act_std, act_alt, act_ng)
+            + vswap(rp_of(len(w["years"])), rp_of(len(wa["years"])),
+                    rp_of(len(wg["years"])))
+            + vswap(rd_std, rd_alt, rd_ng)
             + vswap(rp_of(len(rd.get("fires", [])), rst.get("n_years", N_YEARS))
                     if "rp" in rd else "-",
                     rp_of(len(rda.get("fires", [])), ralt.get("n_years", N_YEARS))
@@ -597,16 +624,21 @@ def glance_table():
 
 def bookkeeping_table():
     std, alt = action[("reanalysis", False)], action[("reanalysis", True)]
+    ng = action[("reanalysis", "nogeoglows")]
     rows = []
     for k in WINDOWS:
         w, wa = std["windows"][k], alt["windows"][k]
+        wg = ng["windows"][k] if "error" not in ng else w
         rows.append(
             f"<tr><td>individual</td><td>{WLABEL[k]} action</td>"
             + vswap(f"{len(w['years'])} &mdash; "
                     + ", ".join(str(y) for y in w["years"]),
                     f"{len(wa['years'])} &mdash; "
-                    + ", ".join(str(y) for y in wa["years"]))
-            + vswap(rp_of(len(w["years"])), rp_of(len(wa["years"])))
+                    + ", ".join(str(y) for y in wa["years"]),
+                    f"{len(wg['years'])} &mdash; "
+                    + ", ".join(str(y) for y in wg["years"]))
+            + vswap(rp_of(len(w["years"])), rp_of(len(wa["years"])),
+                    rp_of(len(wg["years"])))
             + "</tr>"
         )
     for river in TRIGGER_STATIONS:
@@ -614,16 +646,21 @@ def bookkeeping_table():
                       for y in w["years"]})
         yrs_a = sorted({y for k, w in alt["windows"].items() if k[0] == river
                         for y in w["years"]})
+        yrs_g = sorted({y for k, w in ng["windows"].items() if k[0] == river
+                        for y in w["years"]}) if "error" not in ng else yrs
         rows.append(
             f"<tr><td>basin</td><td>{river.capitalize()} (Gu or Deyr)</td>"
-            + vswap(str(len(yrs)), str(len(yrs_a)))
-            + vswap(rp_of(len(yrs)), rp_of(len(yrs_a))) + "</tr>"
+            + vswap(str(len(yrs)), str(len(yrs_a)), str(len(yrs_g)))
+            + vswap(rp_of(len(yrs)), rp_of(len(yrs_a)), rp_of(len(yrs_g)))
+            + "</tr>"
         )
     e, ea = std["envelope"], alt["envelope"]
+    eg = ng["envelope"] if "error" not in ng else e
     rows.append(
         "<tr><td>overall</td><td>action, either basin</td>"
-        + vswap(str(e["fires"]), str(ea["fires"]))
-        + vswap(f"{e['env_rp']} yr", f"{ea['env_rp']} yr") + "</tr>"
+        + vswap(str(e["fires"]), str(ea["fires"]), str(eg["fires"]))
+        + vswap(f"{e['env_rp']} yr", f"{ea['env_rp']} yr", f"{eg['env_rp']} yr")
+        + "</tr>"
     )
     head = ("<th>level</th><th>trigger</th><th>activations (1999-2023)</th>"
             "<th>RP</th>")
@@ -690,7 +727,7 @@ SECTIONS = {
       {env['n_severe']} years in which two or more of a river's gauges recorded a 1-in-{SEVERE_RP} or rarer season,
       and never activating in a year with no recorded flood.
     </div>
-    <div class="callout warn">
+    <div class="callout warn hide-in-alt2">
       <strong>GEOGloWS carries Juba Gu, with conditions.</strong> It is the only product
       in the field that cannot be operated exactly as calibrated. Its forecasts run
       below its own retrospective, so a threshold fitted on the retrospective sits too
@@ -877,6 +914,10 @@ SECTION_EDITS = {
          'alt="Mean best-lag correlation per window and product"'),
     ],
     "Thresholds and calibration": [
+        # the backtest strip swaps by provider set: add the third source
+        (r'data-alt-src="figs/c_backtest_strip_nogoogle\.png"',
+         'data-alt-src="figs/c_backtest_strip_nogoogle.png" '
+         'data-alt2-src="figs/c_backtest_strip_nogeoglows.png"'),
         (r"<h3[^>]*>\s*Are SWALIM.s official flood-risk levels trustworthy\?\s*</h3>",
          "<h3>How the official SWALIM levels compare with the fitted ones</h3>"),
         (r"shows they imply very different frequencies from gauge to gauge",
@@ -972,7 +1013,97 @@ tail_scripts = tail_scripts.replace(
     'glofas_v4: "#EB6834", google_grrr: "#2A78D6" };',
 )
 body += tail_scripts
+# The template's controller handles two states on data-alt. Replace it with one
+# that handles three, keeping the same ids and classes.
+_sw = tail_scripts.find("// ---- provider-set switch")
+if _sw != -1:
+    _last = tail_scripts.rfind("})();")
+    tail_scripts = tail_scripts[:_sw] + "})();" + tail_scripts[_last + 5:]
+body += """
+<script>
+(function () {
+  // three provider sets: 0 all, 1 without Google, 2 without GEOGloWS.
+  // Every .vswap element holds the adopted text in the DOM, the no-Google text
+  // in data-alt and the no-GEOGloWS text in data-alt2; images use data-alt-src
+  // and data-alt2-src. The original is stashed on first use so switching back
+  // is exact.
+  var MODES = [
+    { btn: "vAll", cls: null,
+      note: "Adopted: one source per window" },
+    { btn: "vNog", cls: "variant",
+      note: "Without Google Flood Hub: recalibrated from scratch" },
+    { btn: "vNoGeo", cls: "variant2",
+      note: "Without GEOGloWS: every window on a product with a forecast archive" }
+  ];
+  function apply(mode) {
+    var m = MODES[mode];
+    document.body.classList.toggle("variant", m.cls === "variant");
+    document.body.classList.toggle("variant2", m.cls === "variant2");
+    var bar = document.getElementById("vbar");
+    if (bar) { bar.classList.toggle("alt", mode !== 0); }
+    MODES.forEach(function (x, i) {
+      var b = document.getElementById(x.btn);
+      if (!b) { return; }
+      b.classList.toggle("on", i === mode);
+      b.setAttribute("aria-pressed", String(i === mode));
+    });
+    var note = document.getElementById("vbarNote");
+    if (note) { note.textContent = m.note; }
+    document.querySelectorAll(".vswap").forEach(function (el) {
+      if (el.dataset.orig === undefined) { el.dataset.orig = el.innerHTML; }
+      var alt = mode === 1 ? el.dataset.alt : mode === 2 ? el.dataset.alt2 : null;
+      el.innerHTML = alt === undefined || alt === null ? el.dataset.orig : alt;
+    });
+    document.querySelectorAll("img[data-alt-src], img[data-alt2-src]").forEach(
+      function (img) {
+        if (img.dataset.origSrc === undefined) { img.dataset.origSrc = img.src; }
+        var src = mode === 1 ? img.dataset.altSrc
+                : mode === 2 ? img.dataset.alt2Src : null;
+        img.src = src || img.dataset.origSrc;
+      }
+    );
+  }
+  MODES.forEach(function (m, i) {
+    var b = document.getElementById(m.btn);
+    if (b) { b.addEventListener("click", function () { apply(i); }); }
+  });
+  apply(0);
+})();
+</script>
+"""
 body += "\n</body>\n</html>\n"
+
+# a third provider set on the switch: GEOGloWS out
+body = body.replace(
+    '<button type="button" id="vNog" aria-pressed="false">Without Google Flood Hub'
+    "</button>",
+    '<button type="button" id="vNog" aria-pressed="false">Without Google Flood Hub'
+    "</button>\n"
+    '        <button type="button" id="vNoGeo" aria-pressed="false">Without GEOGloWS'
+    "</button>",
+    1,
+)
+# a note for the third state, alongside the template's no-Google one
+_ng_note = ""
+if "error" not in _ng:
+    _nge = _ng["envelope"]
+    _ng_note = (
+        '    <div class="callout warn alt2only" style="margin-top:18px">\n'
+        "      <strong>You are viewing the set without GEOGloWS.</strong> Every window "
+        "then sits on a product whose return periods can be fitted on a forecast "
+        "archive, which GEOGloWS's cannot yet be: its forecast record begins in "
+        "July 2024. The whole report below is recalibrated with GEOGloWS excluded, "
+        f"under the same rules. The envelope becomes 1-in-{_nge['env_rp']} "
+        f"({_nge['fires']} of {N_YEARS} years), catching {_nge['severe_caught']} of the "
+        f"{_nge['n_severe']} severe years"
+        + " What changes with the provider set is the configuration: the mechanism table, the return periods and the backtest. The comparison sections further down (tracking correlation, seasonal peaks, per-point detail) still show every candidate product including GEOGloWS, because they are evidence about the products rather than a statement of what was chosen."
+        + (f", and it activates in {', '.join(str(y) for y in _nge['no_flood_years'])}, "
+           "where two gauges did not record a flood"
+           if _nge["no_flood_years"] else ", with no activation in a year that recorded "
+           "no flood")
+        + ".\n    </div>\n"
+    )
+body = body.replace('    <div class="stats">', _ng_note + '    <div class="stats">', 1)
 
 # the head is the template's, so its hero blurb, provider note and stat tiles
 # all describe the mixed-model mechanism and have to be restated
@@ -1071,7 +1202,12 @@ body = re.sub(r"<title>.*?</title>",
               "Riverine Flood Trigger</title>", body, count=1, flags=re.S)
 body = body.replace(
     "</head>",
-    "<style>\nfigure { margin:24px 0 30px; }\n"
+    "<style>\nbody.variant .alt2only { display:none; }\n"
+    ".alt2only { display:none; }\n"
+    "body.variant2 .alt2only { display:block; }\n"
+    "body.variant2 .altonly { display:none; }\n"
+    "body.variant2 .stdonly { display:none; }\n"
+    "figure { margin:24px 0 30px; }\n"
     "figure img { width:100%; height:auto; display:block; }\n"
     "figure figcaption { font-size:12.5px; color:#55606d; line-height:1.5;\n"
     "  margin-top:8px; }\n.altonly { display:none; }\n"
@@ -1105,6 +1241,9 @@ body = body.replace("</head>", embedded + "</head>", 1)
 for name in ("selection_detail.json", "activation_impact.json"):
     body = body.replace(f'fetch("{name}")', f'window.__data__("{name}")')
 (OUT / "index.html").write_text(body, encoding="utf-8")
+SET_KEY = {False: "google", True: "nogoogle", "nogeoglows": "nogeoglows"}
+
+
 def jsonable(obj):
     """Window keys are (river, season) tuples; JSON needs strings."""
     if isinstance(obj, dict):
@@ -1126,10 +1265,10 @@ def jsonable(obj):
                 "action_leads": list(ACTION_LEADS),
                 "readiness_leads": list(READINESS_LEADS),
             },
-            "action": {f"{b}_{'nogoogle' if g else 'google'}": jsonable(a)
+            # three provider sets, so the key cannot be a boolean
+            "action": {f"{b}_{SET_KEY[g]}": jsonable(a)
                        for (b, g), a in action.items()},
-            "readiness": {("nogoogle" if g else "google"): jsonable(r)
-                          for g, r in ready.items()},
+            "readiness": {SET_KEY[g]: jsonable(r) for g, r in ready.items()},
             "severe_years": sorted(severe),
         },
         indent=1,

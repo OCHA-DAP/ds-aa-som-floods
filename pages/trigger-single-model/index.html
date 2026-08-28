@@ -102,6 +102,12 @@ body.variant span.stdonly, body.variant a.stdonly { display:none; }
 }
 </style>
 <style>
+body.variant2 .hide-in-alt2 { display:none; }
+body.variant .alt2only { display:none; }
+.alt2only { display:none; }
+body.variant2 .alt2only { display:block; }
+body.variant2 .altonly { display:none; }
+body.variant2 .stdonly { display:none; }
 figure { margin:24px 0 30px; }
 figure img { width:100%; height:auto; display:block; }
 figure figcaption { font-size:12.5px; color:#55606d; line-height:1.5;
@@ -139,8 +145,9 @@ window.__data__ = function (name) {
       <div class="vseg" role="group" aria-label="Provider set">
         <button type="button" id="vAll" class="on" aria-pressed="true">All providers</button>
         <button type="button" id="vNog" aria-pressed="false">Without Google Flood Hub</button>
+        <button type="button" id="vNoGeo" aria-pressed="false">Without GEOGloWS</button>
       </div>
-      <span class="vbar-note" id="vbarNote">Adopted: one source per window. Google carries no window, so the no-Google view is identical</span>
+      <span class="vbar-note" id="vbarNote">Adopted: one source per window</span>
     </div>
   </div>
 
@@ -153,6 +160,9 @@ window.__data__ = function (name) {
       group, <em>not</em> the proposed mechanism. Narrative sections that do not depend on the provider set (how the model is chosen, the threshold floor, the readiness band) read the same in both views.
     </div>
 
+    <div class="callout warn alt2only" style="margin-top:18px">
+      <strong>You are viewing the set without GEOGloWS.</strong> Every window then sits on a product whose return periods can be fitted on a forecast archive, which GEOGloWS's cannot yet be: its forecast record begins in July 2024. The whole report below is recalibrated with GEOGloWS excluded, under the same rules. The envelope becomes 1-in-3.2 (8 of 25 years), catching 7 of the 8 severe years, and it activates in 2013, where two gauges did not record a flood. What changes with the provider set is the configuration: the mechanism table, the return periods and the backtest. The comparison sections further down (tracking correlation, seasonal peaks, per-point detail) still show every candidate product including GEOGloWS, because they are evidence about the products rather than a statement of what was chosen.
+    </div>
     <div class="stats">
       <div class="stat"><span class="v vswap" data-alt="1-in-3.2">1-in-3.2</span><span class="l">overall action return period (either basin)</span></div>
       <div class="stat"><span class="v vswap" data-alt="1-in-3.2 / 1-in-6.5">1-in-3.2 / 1-in-6.5</span><span class="l">per basin, Shabelle / Juba</span></div>
@@ -172,17 +182,18 @@ window.__data__ = function (name) {
 <div class="tablewrap">
 <table class="data">
 <thead><tr><th>window</th><th>action trigger (leads 1-7 d)</th><th>leg RP</th><th>readiness (leads 7-12 d)</th><th>readiness RP</th></tr></thead>
-<tbody><tr><td>Juba Gu</td><td class="vswap" data-alt="GEOGloWS v2: 2 of 4 points over their 1-in-5-yr thresholds">GEOGloWS v2: 2 of 4 points over their 1-in-5-yr thresholds</td><td class="vswap" data-alt="13.0 yr">13.0 yr</td><td class="vswap" data-alt="GloFAS v4 ens-median: 2 of 4 over 1-in-5-yr">GloFAS v4 ens-median: 2 of 4 over 1-in-5-yr</td><td class="vswap" data-alt="5.5 yr">5.5 yr</td></tr><tr><td>Juba Deyr</td><td class="vswap" data-alt="GloFAS v5: 3 of 4 points over their 1-in-4-yr thresholds">GloFAS v5: 3 of 4 points over their 1-in-4-yr thresholds</td><td class="vswap" data-alt="13.0 yr">13.0 yr</td><td class="vswap" data-alt="GloFAS v4 ens-median: 3 of 4 over 1-in-4-yr">GloFAS v4 ens-median: 3 of 4 over 1-in-4-yr</td><td class="vswap" data-alt="4.4 yr">4.4 yr</td></tr><tr><td>Shabelle Gu</td><td class="vswap" data-alt="GloFAS v5: 2 of 3 points over their 1-in-6-yr thresholds">GloFAS v5: 2 of 3 points over their 1-in-6-yr thresholds</td><td class="vswap" data-alt="6.5 yr">6.5 yr</td><td class="vswap" data-alt="GloFAS v4 ens-median: 2 of 3 over 1-in-5-yr">GloFAS v4 ens-median: 2 of 3 over 1-in-5-yr</td><td class="vswap" data-alt="5.5 yr">5.5 yr</td></tr><tr><td>Shabelle Deyr</td><td class="vswap" data-alt="GloFAS v5: 2 of 3 points over their 1-in-5-yr thresholds">GloFAS v5: 2 of 3 points over their 1-in-5-yr thresholds</td><td class="vswap" data-alt="6.5 yr">6.5 yr</td><td class="vswap" data-alt="GloFAS v4 ens-median: 2 of 3 over 1-in-5-yr">GloFAS v4 ens-median: 2 of 3 over 1-in-5-yr</td><td class="vswap" data-alt="5.5 yr">5.5 yr</td></tr></tbody>
+<tbody><tr><td>Juba Gu</td><td class="vswap" data-alt="GEOGloWS v2: 2 of 4 points over their 1-in-5-yr thresholds" data-alt2="Google GRRR: 3 of 4 points over their 1-in-5-yr thresholds">GEOGloWS v2: 2 of 4 points over their 1-in-5-yr thresholds</td><td class="vswap" data-alt="13.0 yr" data-alt2="6.5 yr">13.0 yr</td><td class="vswap" data-alt="GloFAS v4 ens-median: 2 of 4 over 1-in-5-yr" data-alt2="GloFAS v4 ens-median: 3 of 4 over 1-in-5-yr">GloFAS v4 ens-median: 2 of 4 over 1-in-5-yr</td><td class="vswap" data-alt="5.5 yr">5.5 yr</td></tr><tr><td>Juba Deyr</td><td class="vswap" data-alt="GloFAS v5: 3 of 4 points over their 1-in-4-yr thresholds" data-alt2="GloFAS v5: 3 of 4 points over their 1-in-4-yr thresholds">GloFAS v5: 3 of 4 points over their 1-in-4-yr thresholds</td><td class="vswap" data-alt="13.0 yr" data-alt2="13.0 yr">13.0 yr</td><td class="vswap" data-alt="GloFAS v4 ens-median: 3 of 4 over 1-in-4-yr" data-alt2="GloFAS v4 ens-median: 3 of 4 over 1-in-4-yr">GloFAS v4 ens-median: 3 of 4 over 1-in-4-yr</td><td class="vswap" data-alt="4.4 yr">4.4 yr</td></tr><tr><td>Shabelle Gu</td><td class="vswap" data-alt="GloFAS v5: 2 of 3 points over their 1-in-6-yr thresholds" data-alt2="Google GRRR: 2 of 3 points over their 1-in-6-yr thresholds">GloFAS v5: 2 of 3 points over their 1-in-6-yr thresholds</td><td class="vswap" data-alt="6.5 yr" data-alt2="6.5 yr">6.5 yr</td><td class="vswap" data-alt="GloFAS v4 ens-median: 2 of 3 over 1-in-5-yr" data-alt2="GloFAS v4 ens-median: 2 of 3 over 1-in-5-yr">GloFAS v4 ens-median: 2 of 3 over 1-in-5-yr</td><td class="vswap" data-alt="5.5 yr">5.5 yr</td></tr><tr><td>Shabelle Deyr</td><td class="vswap" data-alt="GloFAS v5: 2 of 3 points over their 1-in-5-yr thresholds" data-alt2="GloFAS v5: 2 of 3 points over their 1-in-4-yr thresholds">GloFAS v5: 2 of 3 points over their 1-in-5-yr thresholds</td><td class="vswap" data-alt="6.5 yr" data-alt2="4.3 yr">6.5 yr</td><td class="vswap" data-alt="GloFAS v4 ens-median: 2 of 3 over 1-in-5-yr" data-alt2="GloFAS v4 ens-median: 2 of 3 over 1-in-4-yr">GloFAS v4 ens-median: 2 of 3 over 1-in-5-yr</td><td class="vswap" data-alt="5.5 yr">5.5 yr</td></tr></tbody>
 </table>
 </div>
     <div class="callout">
       <strong>The envelope.</strong> The full amount is released whenever any window
       activates, so the union is what the 1-in-3 target applies to. As configured it would
       have released in <strong>8 of 25 years, once every
-      3.2 years</strong>, catching 7 of the 8 years in which two or more of a river's gauges recorded a 1-in-5 or rarer season,
+      3.2 years</strong>, catching 7 of the
+      8 years in which two or more of a river's gauges recorded a 1-in-5 or rarer season,
       and never activating in a year with no recorded flood.
     </div>
-        <div class="callout warn">
+    <div class="callout warn hide-in-alt2">
       <strong>GEOGloWS carries Juba Gu, with conditions.</strong> It is the only product
       in the field that cannot be operated exactly as calibrated. Its forecasts run
       below its own retrospective, so a threshold fitted on the retrospective sits too
@@ -194,23 +205,7 @@ window.__data__ = function (name) {
       detection at every gauge. Treat Juba Gu as provisional, and revisit it once two
       or three Gu seasons of GEOGloWS forecasts exist.
     </div>
-    <!-- Benchmark validation, 2026-08-28 (not shown to readers)
-     Checked the two-gauge rule against gauge availability and the EM-DAT /
-     CERF record:
-       agreement on the big years: 2006, 2018, 2019, 2020, 2023 are all severe
-       1999-2001 unassessable: Juba had 0 gauges reporting, Shabelle 1, so
-         consensus is impossible; 22 assessable years, not 25
-       2021: 400,000 affected in EM-DAT, only Bardheere and Belet Weyne
-         crossed. Belet Weyne's peak reads 8.30 m, exactly its bank-full value,
-         where the record is censored
-       2016: 3 of 4 Juba gauges and all 3 Shabelle gauges crossed in Gu, EM-DAT
-         records nobody affected
-       smaller single-gauge cases: 2013 (50,000 affected, only Jowhar and Luuq
-         crossed, one per river) and 2012 (32,200 affected, only Jowhar)
-       possible remedy for the censoring: treat a reading at bank full as a
-         crossing at any return period, since the gauge cannot report higher
--->
-<div class="callout warn">
+    <div class="callout warn">
       <strong>What the two-gauge benchmark sees, and what it misses.</strong> A
       river-season counts as a flood only when two or more of that river's gauges cross
       their own level, which keeps one record from deciding the benchmark but has three
@@ -235,7 +230,7 @@ window.__data__ = function (name) {
           affected. Gauge levels and recorded impact are not the same measurement.</li>
       </ul>
     </div>
-<h3>What happens without Google Flood Hub</h3>
+    <h3>What happens without Google Flood Hub</h3>
     <p>Use the provider switch above to see it. With Google removed the windows run on
       GloFAS, the envelope sits at <strong>1-in-3.2</strong>
       (8 of 25 years) and severe-year coverage is
@@ -248,7 +243,7 @@ window.__data__ = function (name) {
     <p>One source per river and season, so four choices. Four steps:</p>
 <ol>
 <li><strong>Build the candidate rules.</strong> For a window and a candidate model, put a threshold at every one of the river's points, taken from that model's own annual maxima (1-in-3 to 1-in-6). The window activates in a year when at least N points cross in that season.</li>
-<li><strong>Score the envelope, not the window.</strong> The money is released when any of the four windows activates, so candidates are judged on that union: how often it activates, how many of the severe years it catches, and how often it activates in a year with no recorded flood.</li>
+<li><strong>Score the envelope, not the window.</strong> The money is released when any of the four windows activates, so candidates are judged on that union: how often it activates, how many of the 10 severe years it catches, and how often it activates in a year with no recorded flood.</li>
 <li><strong>Apply the constraints.</strong> Thresholds never below 1-in-3 nor above a quarter of the record; all seven points monitored; at least two must agree but never all of them; every window must activate at least twice in 25 years.</li>
 <li><strong>Pick.</strong> Nearest 1-in-3 overall with the most severe years caught. Ties break on fewer no-flood activations, then on tracking correlation.</li>
 </ol>
@@ -389,10 +384,10 @@ window.__data__ = function (name) {
     <p>Each monitored point gets its threshold from its own model's climatology: the Weibull plotting position of that point's seasonal maxima, so a product is judged on timing rather than on scale. <strong>1-in-3 is the floor and a quarter of the record is the ceiling</strong>, which on 25 years allows 1-in-3 to 1-in-6. 1-in-2 is not used anywhere, on either leg.</p>
 
     <figure>
-      <img src="figs/c_backtest_strip.png" class="vswap" data-alt-src="figs/c_backtest_strip_nogoogle.png" alt="Heat strip of activation years per trigger leg, per basin versus severe years, and overall, 1999 to 2023">
+      <img src="figs/c_backtest_strip.png" class="vswap" data-alt-src="figs/c_backtest_strip_nogoogle.png" data-alt2-src="figs/c_backtest_strip_nogeoglows.png" alt="Heat strip of activation years per trigger leg, per basin versus severe years, and overall, 1999 to 2023">
       <figcaption><span class="stdonly">The calibration backtest. Basin rows compare activations (amber/blue)
-        with severe 1-in-5 years, meaning two or more of that river's gauges crossed their own 1-in-5 level (blue = caught, red =
-        missed). Shabelle catches 6 of 6 severe years (misses only 2021); Juba 4 of 8
+        with severe 1-in-5 years at the SWALIM reference gauge (blue = caught, red =
+        missed). Shabelle catches 6 of 7 severe years (misses only 2021); Juba 4 of 8
         (misses 2005, 2006, 2011, 2014 — though 2006 and 2014 are caught overall via the
         Shabelle). Neither basin activates outside the moderate set. The gauge
         restriction costs Juba severe coverage — its strongest candidates sat at
@@ -539,7 +534,7 @@ window.__data__ = function (name) {
 <div class="tablewrap">
 <table class="data">
 <thead><tr><th>level</th><th>trigger</th><th>activations (1999-2023)</th><th>RP</th></tr></thead>
-<tbody><tr><td>individual</td><td>Juba Gu action</td><td class="vswap" data-alt="2 &amp;mdash; 2018, 2020">2 &mdash; 2018, 2020</td><td class="vswap" data-alt="13.0 yr">13.0 yr</td></tr><tr><td>individual</td><td>Juba Deyr action</td><td class="vswap" data-alt="2 &amp;mdash; 2006, 2023">2 &mdash; 2006, 2023</td><td class="vswap" data-alt="13.0 yr">13.0 yr</td></tr><tr><td>individual</td><td>Shabelle Gu action</td><td class="vswap" data-alt="4 &amp;mdash; 2005, 2016, 2018, 2020">4 &mdash; 2005, 2016, 2018, 2020</td><td class="vswap" data-alt="6.5 yr">6.5 yr</td></tr><tr><td>individual</td><td>Shabelle Deyr action</td><td class="vswap" data-alt="4 &amp;mdash; 2006, 2014, 2019, 2023">4 &mdash; 2006, 2014, 2019, 2023</td><td class="vswap" data-alt="6.5 yr">6.5 yr</td></tr><tr><td>basin</td><td>Juba (Gu or Deyr)</td><td class="vswap" data-alt="4">4</td><td class="vswap" data-alt="6.5 yr">6.5 yr</td></tr><tr><td>basin</td><td>Shabelle (Gu or Deyr)</td><td class="vswap" data-alt="8">8</td><td class="vswap" data-alt="3.2 yr">3.2 yr</td></tr><tr><td>overall</td><td>action, either basin</td><td class="vswap" data-alt="8">8</td><td class="vswap" data-alt="3.2 yr">3.2 yr</td></tr></tbody>
+<tbody><tr><td>individual</td><td>Juba Gu action</td><td class="vswap" data-alt="2 &amp;mdash; 2018, 2020" data-alt2="4 &amp;mdash; 2013, 2016, 2018, 2020">2 &mdash; 2018, 2020</td><td class="vswap" data-alt="13.0 yr" data-alt2="6.5 yr">13.0 yr</td></tr><tr><td>individual</td><td>Juba Deyr action</td><td class="vswap" data-alt="2 &amp;mdash; 2006, 2023" data-alt2="2 &amp;mdash; 2006, 2023">2 &mdash; 2006, 2023</td><td class="vswap" data-alt="13.0 yr" data-alt2="13.0 yr">13.0 yr</td></tr><tr><td>individual</td><td>Shabelle Gu action</td><td class="vswap" data-alt="4 &amp;mdash; 2005, 2016, 2018, 2020" data-alt2="4 &amp;mdash; 2013, 2016, 2018, 2020">4 &mdash; 2005, 2016, 2018, 2020</td><td class="vswap" data-alt="6.5 yr" data-alt2="6.5 yr">6.5 yr</td></tr><tr><td>individual</td><td>Shabelle Deyr action</td><td class="vswap" data-alt="4 &amp;mdash; 2006, 2014, 2019, 2023" data-alt2="6 &amp;mdash; 2006, 2013, 2014, 2019, 2020, 2023">4 &mdash; 2006, 2014, 2019, 2023</td><td class="vswap" data-alt="6.5 yr" data-alt2="4.3 yr">6.5 yr</td></tr><tr><td>basin</td><td>Juba (Gu or Deyr)</td><td class="vswap" data-alt="4" data-alt2="6">4</td><td class="vswap" data-alt="6.5 yr" data-alt2="4.3 yr">6.5 yr</td></tr><tr><td>basin</td><td>Shabelle (Gu or Deyr)</td><td class="vswap" data-alt="8" data-alt2="8">8</td><td class="vswap" data-alt="3.2 yr" data-alt2="3.2 yr">3.2 yr</td></tr><tr><td>overall</td><td>action, either basin</td><td class="vswap" data-alt="8" data-alt2="8">8</td><td class="vswap" data-alt="3.2 yr" data-alt2="3.2 yr">3.2 yr</td></tr></tbody>
 </table>
 </div>
     <p>Under all-in funding, where any activation releases the full envelope, the
@@ -600,7 +595,9 @@ window.__data__ = function (name) {
       <li><strong>A season tilt is possible but costs skill.</strong> Pushing Juba's
           budget toward Deyr (its higher-impact season) forces its Deyr leg to a lower
           threshold and its Gu leg higher: the tilted variant swaps documented Gu
-          floods for extra Deyr activations, leaves the configuration unchanged: GEOGloWS and GloFAS already carry all four windows, so the envelope stays at 1-in-3.2 with the same severe-year coverage. The calibration already leans Deyr where the data
+          floods for extra Deyr activations, drops Juba's severe-year coverage from
+          0.50 to 0.38, and pushes the overall frequency to 1-in-2.9 — under the
+          ≥ 3-year specification. The calibration already leans Deyr where the data
           support it (both Deyr legs run at lower pair-RP thresholds than the Gu legs);
           forcing more requires accepting misses the gauge record says are real.</li>
     </ul>
@@ -823,6 +820,57 @@ document.querySelectorAll("article h2, article h3").forEach(function (el) {
 </script>
 </body>
 </html>
+
+<script>
+(function () {
+  // three provider sets: 0 all, 1 without Google, 2 without GEOGloWS.
+  // Every .vswap element holds the adopted text in the DOM, the no-Google text
+  // in data-alt and the no-GEOGloWS text in data-alt2; images use data-alt-src
+  // and data-alt2-src. The original is stashed on first use so switching back
+  // is exact.
+  var MODES = [
+    { btn: "vAll", cls: null,
+      note: "Adopted: one source per window" },
+    { btn: "vNog", cls: "variant",
+      note: "Without Google Flood Hub: recalibrated from scratch" },
+    { btn: "vNoGeo", cls: "variant2",
+      note: "Without GEOGloWS: every window on a product with a forecast archive" }
+  ];
+  function apply(mode) {
+    var m = MODES[mode];
+    document.body.classList.toggle("variant", m.cls === "variant");
+    document.body.classList.toggle("variant2", m.cls === "variant2");
+    var bar = document.getElementById("vbar");
+    if (bar) { bar.classList.toggle("alt", mode !== 0); }
+    MODES.forEach(function (x, i) {
+      var b = document.getElementById(x.btn);
+      if (!b) { return; }
+      b.classList.toggle("on", i === mode);
+      b.setAttribute("aria-pressed", String(i === mode));
+    });
+    var note = document.getElementById("vbarNote");
+    if (note) { note.textContent = m.note; }
+    document.querySelectorAll(".vswap").forEach(function (el) {
+      if (el.dataset.orig === undefined) { el.dataset.orig = el.innerHTML; }
+      var alt = mode === 1 ? el.dataset.alt : mode === 2 ? el.dataset.alt2 : null;
+      el.innerHTML = alt === undefined || alt === null ? el.dataset.orig : alt;
+    });
+    document.querySelectorAll("img[data-alt-src], img[data-alt2-src]").forEach(
+      function (img) {
+        if (img.dataset.origSrc === undefined) { img.dataset.origSrc = img.src; }
+        var src = mode === 1 ? img.dataset.altSrc
+                : mode === 2 ? img.dataset.alt2Src : null;
+        img.src = src || img.dataset.origSrc;
+      }
+    );
+  }
+  MODES.forEach(function (m, i) {
+    var b = document.getElementById(m.btn);
+    if (b) { b.addEventListener("click", function () { apply(i); }); }
+  });
+  apply(0);
+})();
+</script>
 
 </body>
 </html>
