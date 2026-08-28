@@ -194,7 +194,23 @@ window.__data__ = function (name) {
       detection at every gauge. Treat Juba Gu as provisional, and revisit it once two
       or three Gu seasons of GEOGloWS forecasts exist.
     </div>
-    <div class="callout warn">
+    <!-- Benchmark validation, 2026-08-28 (not shown to readers)
+     Checked the two-gauge rule against gauge availability and the EM-DAT /
+     CERF record:
+       agreement on the big years: 2006, 2018, 2019, 2020, 2023 are all severe
+       1999-2001 unassessable: Juba had 0 gauges reporting, Shabelle 1, so
+         consensus is impossible; 22 assessable years, not 25
+       2021: 400,000 affected in EM-DAT, only Bardheere and Belet Weyne
+         crossed. Belet Weyne's peak reads 8.30 m, exactly its bank-full value,
+         where the record is censored
+       2016: 3 of 4 Juba gauges and all 3 Shabelle gauges crossed in Gu, EM-DAT
+         records nobody affected
+       smaller single-gauge cases: 2013 (50,000 affected, only Jowhar and Luuq
+         crossed, one per river) and 2012 (32,200 affected, only Jowhar)
+       possible remedy for the censoring: treat a reading at bank full as a
+         crossing at any return period, since the gauge cannot report higher
+-->
+<div class="callout warn">
       <strong>What the two-gauge benchmark sees, and what it misses.</strong> A
       river-season counts as a flood only when two or more of that river's gauges cross
       their own level, which keeps one record from deciding the benchmark but has three

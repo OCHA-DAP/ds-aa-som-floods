@@ -72,6 +72,18 @@ def load(name):
 BENCH_GAUGES = 2
 
 
+# Benchmark validation, 2026-08-28. The two-gauge rule was checked against gauge
+# availability and the EM-DAT / CERF record:
+#   the five costliest years (2006, 2018, 2019, 2020, 2023) are all severe
+#   1999-2001 cannot be assessed: the Juba had no gauge reporting and the
+#     Shabelle one, so 22 of the 25 years are assessable
+#   2021 is missed although EM-DAT records 400,000 affected: only Bardheere and
+#     Belet Weyne crossed, and Belet Weyne's peak reads exactly bank full
+#     (8.30 m), where the record is censored
+#   2016 is flagged although EM-DAT records nobody affected
+#   smaller single-gauge cases: 2013 (50,000 affected) and 2012 (32,200)
+#   possible remedy for the censoring: count a reading at bank full as a
+#     crossing at any return period, since the gauge cannot read higher
 def gauge_consensus_years(lv, river, season, rp, n_req=BENCH_GAUGES):
     """Years in which at least n_req of the river's gauges crossed their own RP."""
     counts = {}
