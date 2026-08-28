@@ -7,8 +7,8 @@ roughly 1-in-1.5, which is why the per-window settings have to be searched
 against the union rather than set individually.
 
   objective   with the envelope pinned near 1-in-3, catch as many severe
-              years as possible (severe = the reference gauge recorded a
-              1-in-5 or rarer season)
+              years as possible (severe = two or more of the river's gauges
+              recorded a 1-in-5 or rarer season)
   tie-breaks  fewer activations in years with no recorded flood, then the
               lower vote requirement
   constraint  every window needs at least two gauges to agree (no single

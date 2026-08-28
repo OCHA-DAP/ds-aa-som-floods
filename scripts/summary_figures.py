@@ -374,7 +374,8 @@ def fig_grid(ctx, figdir):
                 ax.set_xlabel("station RP")
             if c == 0:
                 ax.set_ylabel("gauges required")
-    fig.suptitle("Grid search against the RP3 gauge benchmark (dark = better | "
+    fig.suptitle("Grid search against the gauge benchmark, two or more gauges "
+                 "at 1-in-3 (dark = better | "
                  "outlined cell = adopted)",
                  x=0.09, ha="left", fontweight="bold", fontsize=11.5, color=INK)
     fig.subplots_adjust(hspace=0.55, wspace=0.06, top=0.93)

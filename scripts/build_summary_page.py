@@ -982,8 +982,10 @@ HTML = f"""<!DOCTYPE html>
 
     <h2><span class="num">1</span>Key takeaways</h2>
     <ul class="takeaways">
-      <li><strong>Model performance differs by river and season.</strong> GloFAS leads
-        the Shabelle and both Deyr windows; Google leads the Juba in Gu.</li>
+      <li><strong>Model performance differs by river and season.</strong> GloFAS
+        carries three of the four windows and GEOGloWS the fourth. Google leads the Juba
+        in Gu on tracking correlation, but no Google rule reaches the 1-in-3 activation
+        rate without dropping a severe year.</li>
       <li><strong>Accuracy holds from one to seven days ahead,</strong> so a one-week
         action window is defensible. Models still miss a share of floods, so SWALIM
         guidance belongs in the trigger design.</li>
@@ -1053,6 +1055,14 @@ HTML = f"""<!DOCTYPE html>
       be sized on. As configured it would have released in {adopted['fires']} of
       {env['n_years_in_span']} years, once every {adopted['env_rp']} years, catching
       {adopted['severe_caught']} of the {len(data['severe_years'])} severe years.</p>
+    <div class="callout warn">
+      <strong>GEOGloWS carries Juba Gu, with conditions.</strong> Its forecasts run
+      below its own retrospective, so the threshold must be refitted on the forecast
+      archive rather than inherited from the retrospective, and that archive only begins
+      in July 2024, so this window cannot yet be backtested at lead time. Its per-gauge
+      detection was also the weakest of the four products, and the SFDC bias correction
+      lowers it further rather than fixing it.
+    </div>
 {figure("activation")}
 
   </article>

@@ -12,9 +12,9 @@ toggle and section order, and redoes the analysis under the conditions set on
   basis       reanalysis is the calibration basis, with a forecasts-only view;
               the two are never combined in one table
 
-Sections whose argument was specific to the pair-based selection (the seasonal
-peak and metric-plane comparisons, the impact tilt) are dropped rather than
-left in place describing a design this page does not use.
+Every section of the source document is kept. Three carry diagnostics that
+compare products rather than rules (seasonal peaks, the metric plane, each
+model against its own reanalysis); they are marked as carried over unchanged.
 
 Usage (from repo root):
     .venv/Scripts/python.exe scripts/build_multisource_variant.py
@@ -687,8 +687,20 @@ SECTIONS = {
       activates, so the union is what the 1-in-3 target applies to. As configured it would
       have released in <strong>{env['fires']} of {N_YEARS} years, once every
       {env['env_rp']} years</strong>, catching {env['severe_caught']} of the
-      {env['n_severe']} years the reference gauge recorded as 1-in-{SEVERE_RP} or rarer,
+      {env['n_severe']} years in which two or more of a river's gauges recorded a 1-in-{SEVERE_RP} or rarer season,
       and never activating in a year with no recorded flood.
+    </div>
+    <div class="callout warn">
+      <strong>GEOGloWS carries Juba Gu, with conditions.</strong> It is the only product
+      in the field that cannot be operated exactly as calibrated. Its forecasts run
+      below its own retrospective, so a threshold fitted on the retrospective sits too
+      low on the live forecast and would activate too often: the threshold has to be
+      refitted on the forecast archive before use. That archive only begins in
+      July 2024, so there is no way to backtest a GEOGloWS window at lead time yet, and
+      its per-gauge event detection was the weakest of the four products on the
+      reanalysis. Bias correcting it does not fix this: the SFDC correction lowers
+      detection at every gauge. Treat Juba Gu as provisional, and revisit it once two
+      or three Gu seasons of GEOGloWS forecasts exist.
     </div>
     <h3>What happens without Google Flood Hub</h3>
     <p>Use the provider switch above to see it. With Google removed the windows run on

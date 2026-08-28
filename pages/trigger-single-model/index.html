@@ -140,7 +140,7 @@ window.__data__ = function (name) {
         <button type="button" id="vAll" class="on" aria-pressed="true">All providers</button>
         <button type="button" id="vNog" aria-pressed="false">Without Google Flood Hub</button>
       </div>
-      <span class="vbar-note" id="vbarNote">Adopted: one source per window</span>
+      <span class="vbar-note" id="vbarNote">Adopted: one source per window. Google carries no window, so the no-Google view is identical</span>
     </div>
   </div>
 
@@ -179,11 +179,22 @@ window.__data__ = function (name) {
       <strong>The envelope.</strong> The full amount is released whenever any window
       activates, so the union is what the 1-in-3 target applies to. As configured it would
       have released in <strong>8 of 25 years, once every
-      3.2 years</strong>, catching 7 of the
-      8 years the reference gauge recorded as 1-in-5 or rarer,
+      3.2 years</strong>, catching 7 of the 8 years in which two or more of a river's gauges recorded a 1-in-5 or rarer season,
       and never activating in a year with no recorded flood.
     </div>
-    <h3>What happens without Google Flood Hub</h3>
+        <div class="callout warn">
+      <strong>GEOGloWS carries Juba Gu, with conditions.</strong> It is the only product
+      in the field that cannot be operated exactly as calibrated. Its forecasts run
+      below its own retrospective, so a threshold fitted on the retrospective sits too
+      low on the live forecast and would activate too often: the threshold has to be
+      refitted on the forecast archive before use. That archive only begins in
+      July 2024, so there is no way to backtest a GEOGloWS window at lead time yet, and
+      its per-gauge event detection was the weakest of the four products on the
+      reanalysis. Bias correcting it does not fix this: the SFDC correction lowers
+      detection at every gauge. Treat Juba Gu as provisional, and revisit it once two
+      or three Gu seasons of GEOGloWS forecasts exist.
+    </div>
+<h3>What happens without Google Flood Hub</h3>
     <p>Use the provider switch above to see it. With Google removed the windows run on
       GloFAS, the envelope sits at <strong>1-in-3.2</strong>
       (8 of 25 years) and severe-year coverage is
@@ -196,7 +207,7 @@ window.__data__ = function (name) {
     <p>One source per river and season, so four choices. Four steps:</p>
 <ol>
 <li><strong>Build the candidate rules.</strong> For a window and a candidate model, put a threshold at every one of the river's points, taken from that model's own annual maxima (1-in-3 to 1-in-6). The window activates in a year when at least N points cross in that season.</li>
-<li><strong>Score the envelope, not the window.</strong> The money is released when any of the four windows activates, so candidates are judged on that union: how often it activates, how many of the 10 severe years it catches, and how often it activates in a year with no recorded flood.</li>
+<li><strong>Score the envelope, not the window.</strong> The money is released when any of the four windows activates, so candidates are judged on that union: how often it activates, how many of the severe years it catches, and how often it activates in a year with no recorded flood.</li>
 <li><strong>Apply the constraints.</strong> Thresholds never below 1-in-3 nor above a quarter of the record; all seven points monitored; at least two must agree but never all of them; every window must activate at least twice in 25 years.</li>
 <li><strong>Pick.</strong> Nearest 1-in-3 overall with the most severe years caught. Ties break on fewer no-flood activations, then on tracking correlation.</li>
 </ol>
@@ -339,8 +350,8 @@ window.__data__ = function (name) {
     <figure>
       <img src="figs/c_backtest_strip.png" class="vswap" data-alt-src="figs/c_backtest_strip_nogoogle.png" alt="Heat strip of activation years per trigger leg, per basin versus severe years, and overall, 1999 to 2023">
       <figcaption><span class="stdonly">The calibration backtest. Basin rows compare activations (amber/blue)
-        with severe 1-in-5 years at the SWALIM reference gauge (blue = caught, red =
-        missed). Shabelle catches 6 of 7 severe years (misses only 2021); Juba 4 of 8
+        with severe 1-in-5 years, meaning two or more of that river's gauges crossed their own 1-in-5 level (blue = caught, red =
+        missed). Shabelle catches 6 of 6 severe years (misses only 2021); Juba 4 of 8
         (misses 2005, 2006, 2011, 2014 — though 2006 and 2014 are caught overall via the
         Shabelle). Neither basin activates outside the moderate set. The gauge
         restriction costs Juba severe coverage — its strongest candidates sat at
@@ -548,9 +559,7 @@ window.__data__ = function (name) {
       <li><strong>A season tilt is possible but costs skill.</strong> Pushing Juba's
           budget toward Deyr (its higher-impact season) forces its Deyr leg to a lower
           threshold and its Gu leg higher: the tilted variant swaps documented Gu
-          floods for extra Deyr activations, drops Juba's severe-year coverage from
-          0.50 to 0.38, and pushes the overall frequency to 1-in-2.9 — under the
-          ≥ 3-year specification. The calibration already leans Deyr where the data
+          floods for extra Deyr activations, leaves the configuration unchanged: GEOGloWS and GloFAS already carry all four windows, so the envelope stays at 1-in-3.2 with the same severe-year coverage. The calibration already leans Deyr where the data
           support it (both Deyr legs run at lower pair-RP thresholds than the Gu legs);
           forcing more requires accepting misses the gauge record says are real.</li>
     </ul>
