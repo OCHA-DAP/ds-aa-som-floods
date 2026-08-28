@@ -450,8 +450,13 @@ def fig_map(ctx, figdir):
     fig, ax = plt.subplots(figsize=(7.4, 8.4))
     adm.plot(ax=ax, color="#F5F7F9", edgecolor="white", linewidth=0.8)
     for river, stns in TRIGGER_STATIONS.items():
-        pts = [(STATIONS[s].lon, STATIONS[s].lat, STATIONS[s].name) for s in stns
-               if s in STATIONS]
+        # draw upstream to downstream: both rivers run north to south here, so
+        # descending latitude puts Dollow above Luuq on the Juba
+        pts = sorted(
+            ((STATIONS[s].lon, STATIONS[s].lat, STATIONS[s].name) for s in stns
+             if s in STATIONS),
+            key=lambda p: -p[1],
+        )
         ax.plot([p[0] for p in pts], [p[1] for p in pts], color=RIVER_COLOR[river],
                 linewidth=1.0, alpha=0.45, zorder=2)
         ax.scatter([p[0] for p in pts], [p[1] for p in pts], s=70,
