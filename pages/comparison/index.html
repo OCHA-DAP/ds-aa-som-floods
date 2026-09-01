@@ -232,6 +232,66 @@ table.cmp td.fireB { background:rgba(179,64,54,.30); font-weight:700; color:#7a2
       the mixing rule is free.
     </div>
 
+    <h2>How the probability is distributed &mdash; and the balanced version</h2>
+    <p>The framework was originally specified with <strong>equal probability per
+       basin</strong>. Neither design on this page meets it, and the single-model design
+       misses it by a wide margin. It is worth seeing where it went, because a fully
+       balanced configuration did exist and reached the same headline numbers.</p>
+
+    <div class="tablewrap">
+    <table class="data">
+      <tr><th>design</th><th>Juba</th><th>Shabelle</th><th>Gu</th><th>Deyr</th>
+          <th>envelope</th><th>severe</th><th>outside bench.</th><th>Juba-only years</th></tr>
+      <tr><td><strong>Balanced</strong> (25 Aug, 18 points)</td>
+          <td>1-in-4.3</td><td>1-in-4.3</td><td>1-in-6.5</td><td>1-in-6.5</td>
+          <td>1-in-3.2</td><td>7 of 7</td><td>2013</td><td>2013, 2016</td></tr>
+      <tr><td><strong>Open multi-model</strong> (5 active gauges)</td>
+          <td>1-in-5.2</td><td>1-in-4.3</td><td>1-in-6.5</td><td>1-in-6.5</td>
+          <td>1-in-3.2</td><td>7 of 7</td><td>none</td><td>2010, 2018</td></tr>
+      <tr><td><strong>One model per window</strong></td>
+          <td>1-in-4.3</td><td><strong>1-in-3.2</strong></td><td>1-in-6.5</td>
+          <td><strong>1-in-4.3</strong></td><td>1-in-3.2</td><td>7 of 7</td><td>2013</td>
+          <td><strong>none</strong></td></tr>
+    </table>
+    </div>
+
+    <div class="callout">
+      <strong>Balance was available, and it was free.</strong> The 25 August configuration
+      was exactly balanced on both axes at once &mdash; both basins at 1-in-4.3, both
+      seasons at 1-in-6.5 &mdash; while landing on the same 1-in-3.2 envelope and the same
+      full severe coverage as everything else here. Its legs were symmetric: each basin
+      carried one 1-in-6.5 window and one 1-in-13 window, mirrored across the seasons. And
+      both basins did real work, the Juba contributing 2013 and 2016 on its own and the
+      Shabelle 2014 and 2019.
+    </div>
+
+    <div class="callout warn">
+      <strong>Two things eroded it, neither of them a decision about balance.</strong>
+      Restricting the pool to the five gauges that still report (26 August) cost the exact
+      basin match, leaving 1-in-5.2 against 1-in-4.3 &mdash; though the open design still
+      holds the seasons level and keeps both basins contributing, because its calibration
+      requires the basins' activation counts to differ by at most one. The single-model
+      search dropped that constraint entirely: nothing in it scores or even reports a
+      per-basin or per-season rate, so the split is whatever optimising the union
+      produces. The result is 1-in-3.2 on the Shabelle against 1-in-4.3 on the Juba, Deyr
+      at 1-in-4.3 against Gu at 1-in-6.5, and a <strong>Juba leg that contributes no year
+      of its own at all</strong>.
+    </div>
+
+    <div class="callout warn">
+      <strong>Under the current rules it cannot be recovered.</strong> The Shabelle has
+      three gauges, and the rule that at least two must agree but never all of them forces
+      its vote count to exactly 2, leaving the threshold as the only lever. Even at its
+      tightest setting the Shabelle still fires 8 times in 25 years. The envelope is the
+      union so it can never be rarer than that, and the 1-in-3 ceiling caps it at about 8
+      &mdash; which leaves the Juba no room to contribute a year of its own. Searching the
+      whole option space, <strong>no configuration with balanced basins survives the
+      1-in-3 constraint</strong>, at any level of severe coverage: balance and that ceiling
+      are mutually exclusive here. Recovering it means relaxing the ceiling, adding a
+      fourth Shabelle gauge so a 3-of-4 rule becomes possible, or stating the imbalance as
+      an accepted choice rather than leaving it to fall out of the optimisation.
+    </div>
+
     <h2>Lead time: how much warning does each one buy?</h2>
     <p>For every window activation, the earliest date the trigger condition is met on the
        historical forecasts, against the date the reference gauge first crossed its own
