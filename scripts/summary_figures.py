@@ -269,7 +269,7 @@ def fig_skill(ctx, figdir):
     scores = pd.DataFrame(ctx["station_scores"])
     if scores.empty:
         return None
-    sources = [s for s in ["glofas_v5", "glofas_v4", "google_grrr", "geoglows"]
+    sources = [s for s in ["glofas_v5", "google_grrr"]
                if s in set(scores.source)]
     rs = rows()
     ylabels, pod, far = [], [], []
@@ -298,7 +298,7 @@ def fig_correlation(ctx, figdir):
     rho = ctx.get("rho") or {}
     if not rho:
         return None
-    sources = [s for s in ["glofas_v5", "glofas_v4", "google_grrr", "geoglows"]
+    sources = [s for s in ["glofas_v5", "google_grrr"]
                if any(k[2] == s for k in rho)]
     rs = rows()
     fig, axes = plt.subplots(1, 2, figsize=(11.6, 0.52 * len(rs) + 2.0))
