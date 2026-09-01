@@ -13,8 +13,17 @@ toggle and section order, and redoes the analysis under the conditions set on
               the two are never combined in one table
 
 Every section of the source document is kept. Three carry diagnostics that
-compare products rather than rules (seasonal peaks, the metric plane, each
+compare models rather than rules (seasonal peaks, the metric plane, each
 model against its own reanalysis); they are marked as carried over unchanged.
+
+DO NOT REGENERATE BLINDLY (2026-09-01). The published page at
+pages/trigger-single-model/index.html carries hand-applied edits this script
+does not reproduce: the review notes R1-R12 and their toggle, the two-state
+provider switch (the third state was removed, review note R3), and several
+correction passes. Rerunning this script would discard them. Treat the page as
+the current source of truth for prose; use this script's draw_* functions to
+regenerate figures (see scratchpad make_figs pattern: exec the script up to
+draw_model_choice and call the draw functions directly).
 
 Usage (from repo root):
     .venv/Scripts/python.exe scripts/build_multisource_variant.py
@@ -60,7 +69,12 @@ from src.constants import (  # noqa: E402
     WINDOW_MODEL,
 )
 from src.plots import style_ax  # noqa: E402
-from src.utils import weibull_threshold  # noqa: E402
+from src.utils import (  # noqa: E402
+    episodes,
+    hits,
+    weibull_level,
+    weibull_threshold,
+)
 
 SRC_PAGE = REPO / "pages" / "trigger" / "index.html"
 SRC_FIGS = REPO / "pages" / "trigger" / "figs"
@@ -69,6 +83,14 @@ FIGS = OUT / "figs"
 PREFIX, STAGE = "ds-aa-som-floods/processed", "dev"
 
 MODELS = ["glofas_v5", "glofas_v4", "google_grrr", "geoglows"]
+# Which models each switch state puts on display in the comparison
+# figures. GloFAS v4 is in neither (2026-08-31): v5 supersedes it on
+# magnitude and timing, and v4 survives only as the readiness reforecast.
+SET_MODELS = {
+    "base": ["glofas_v5", "google_grrr"],          # adopted set, on load
+    "all": ["glofas_v5", "google_grrr", "geoglows"],  # data-alt-src
+}
+
 FC_MODELS = ["google_grrr", "glofas_v4"]
 READINESS_MODEL = "glofas_v4"
 READINESS_LEADS = (7, 12)
@@ -240,7 +262,7 @@ action = {
     ("forecast", False): action_leg("forecast"),
     ("forecast", True): action_leg("forecast", drop_google=True),
 }
-# the third provider set: GEOGloWS out, so every window sits on a product whose
+# the third provider set: GEOGloWS out, so every window sits on a model whose
 # return periods can be fitted on a forecast archive
 action[("reanalysis", "nogeoglows")] = action_leg("reanalysis", drop_geoglows=True)
 action[("forecast", "nogeoglows")] = action_leg("forecast", drop_geoglows=True)
@@ -363,80 +385,241 @@ def as_png(svg_name, png_name):
         src.unlink()
 
 
-def draw_model_choice(path):
-    """Mean best-lag rho per window and product, with the choice ringed."""
-    fig, axes = plt.subplots(1, 4, figsize=(12.6, 3.5), sharey=True)
+OBS_SLUGS = {"belet_weyne": "beletweyne", "bulo_burti": "buloburte",
+             "luuq": "luuq", "bardheere": "bardheere"}
+
+
+def tail_ratios():
+    """{(station, source): {rp: model return level / observed return level}}."""
+    out = {}
+    for key, slug in OBS_SLUGS.items():
+        try:
+            raw = stratus.load_blob_data(
+                f"ds-aa-som-floods/raw/ef5/analysis/{slug}_real_discharge.json",
+                stage="dev")
+        except Exception as exc:  # noqa: BLE001
+            print(f"  ! observed discharge for {key}: {type(exc).__name__}")
+            continue
+        obs = pd.Series(json.loads(raw), dtype=float)
+        obs.index = pd.to_datetime(obs.index)
+        obs = obs.sort_index().dropna()
+        obs = obs[obs > 0]
+        for src in MODELS:
+            mod = dd[(dd.src == src) & (dd.station == key)].set_index("date")["discharge"]
+            j = pd.concat([mod, obs], axis=1, join="inner").dropna()
+            j.columns = ["mod", "obs"]
+            if len(j) < 500:
+                continue
+            am = j.groupby(j.index.year).max()
+            am = am[[(j.index.year == y).sum() >= 200 for y in am.index]]
+            vals = {}
+            for rp in (3, 4, 5, 6):
+                tm = weibull_threshold(am["mod"].values, rp)
+                to = weibull_threshold(am["obs"].values, rp)
+                if to and to > 0 and not np.isnan(tm):
+                    vals[rp] = tm / to
+            if vals:
+                out[(key, src)] = vals
+    return out
+
+
+def draw_tail(path, models=None):
+    """Model over observed discharge at RP3 to RP6, one panel per gauge."""
+    models = models or MODELS
+    tr = tail_ratios()
+    if not tr:
+        return None
+    stns = [s for s in OBS_SLUGS if any(k[0] == s for k in tr)]
+    fig, axes = plt.subplots(1, len(stns), figsize=(3.2 * len(stns), 3.5), sharey=True)
+    axes = np.atleast_1d(axes)
+    for ax, st in zip(axes, stns):
+        ax.axhline(1.0, color="#5C6B7A", lw=1.2, zorder=1)
+        for src in models:
+            v = tr.get((st, src))
+            if not v:
+                continue
+            xs = sorted(v)
+            ax.plot(xs, [v[x] for x in xs], marker="o", ms=4.5, lw=2,
+                    color=SOURCE_COLORS[src], label=NICE.get(src, src), zorder=3)
+        ax.set_yscale("log")
+        ax.set_xticks([3, 4, 5, 6])
+        ax.set_xlabel("return period (years)")
+        ax.set_title(st.replace("_", " ").title(), fontsize=11)
+        ax.set_yticks([0.1, 0.25, 0.5, 1, 2, 5, 10])
+        ax.set_yticklabels(["0.1x", "0.25x", "0.5x", "1x", "2x", "5x", "10x"])
+        style_ax(ax, grid="y")
+    axes[0].set_ylabel("model / observed discharge")
+    axes[-1].legend(frameon=False, fontsize=8.5, loc="upper right")
+    fig.tight_layout()
+    fig.savefig(path, dpi=170, bbox_inches="tight")
+    plt.close(fig)
+    return path.name
+
+
+def rp3_detection():
+    """[{station, source, n_events, POD, FAR}] on observed RP3 crossings."""
+    out = []
+    for river in TRIGGER_STATIONS:
+        for st in TRIGGER_STATIONS[river]:
+            obs = lv[lv.station == st].set_index("date")["level_m"].dropna().sort_index()
+            modern = obs[obs.index.year >= 2000]
+            am = modern.groupby(modern.index.year).max().dropna()
+            base = weibull_level(am.values, RP_FLOOR)
+            if np.isnan(base):
+                continue
+            for model in MODELS:
+                m = dd[(dd.src == model) & (dd.station == st)].set_index("date")["discharge"]
+                m = m[(m.index.year >= 2002) & (m.index.year <= Y1)].sort_index()
+                if len(m) < 500:
+                    continue
+                t = weibull_threshold(
+                    m.groupby(m.index.year).max().dropna().values, RP_FLOOR)
+                if np.isnan(t):
+                    continue
+                j = pd.concat([m.rename("mod"), obs.rename("obs")], axis=1,
+                              join="inner").dropna()
+                if len(j) < 500:
+                    continue
+                oe, me = episodes(j["obs"] >= base), episodes(j["mod"] >= t)
+                if not oe:
+                    continue
+                out.append({"station": st, "source": model, "n_events": len(oe),
+                            "POD": hits(oe, me) / len(oe),
+                            "FAR": (1 - hits(me, oe) / len(me)) if me else np.nan})
+    return out
+
+
+def draw_detection(path, models=None):
+    """Hit rate and false-alarm rate per gauge on RP3 events, per provider set."""
+    models = models or MODELS
+    sc = pd.DataFrame(rp3_detection())
+    if sc.empty:
+        return None
+    ylab, pod, far = [], [], []
+    for river in TRIGGER_STATIONS:
+        for st in TRIGGER_STATIONS[river]:
+            sub = sc[sc.station == st]
+            if sub.empty:
+                continue
+            ylab.append(f"{st.replace('_', ' ').title()}  n={int(sub.n_events.iloc[0])}")
+            pod.append([float(sub[sub.source == m].POD.iloc[0])
+                        if len(sub[sub.source == m]) else np.nan for m in models])
+            far.append([float(sub[sub.source == m].FAR.iloc[0])
+                        if len(sub[sub.source == m]) else np.nan for m in models])
+    fig, axes = plt.subplots(1, 2, figsize=(11.6, 0.52 * len(ylab) + 2.2))
+    summary_figures.heat(axes[0], pod, [NICE[m] for m in models], ylab)
+    axes[0].set_title("Hit rate on RP3 events at that gauge\n(dark = better)",
+                      fontsize=10.5)
+    summary_figures.heat(axes[1], far, [NICE[m] for m in models], [""] * len(ylab),
+                         reverse=True)
+    axes[1].set_title(
+        "Share of the model's own alarms that were false\n(dark = better)",
+        fontsize=10.5)
+    fig.subplots_adjust(wspace=0.06)
+    fig.savefig(path, dpi=170, bbox_inches="tight")
+    plt.close(fig)
+    return path.name
+
+
+def event_mask(station, season, pad_days=10):
+    """Days inside an observed RP3-or-rarer event at this gauge, widened by pad."""
+    obs = lv[lv.station == station].set_index("date")["level_m"].dropna().sort_index()
+    seas = obs[obs.index.month.isin(SEASONS[season])]
+    modern = seas[seas.index.year >= 2000]
+    am = modern.groupby(modern.index.year).max().dropna()
+    base = weibull_level(am.values, RP_FLOOR)
+    if np.isnan(base):
+        return None, None
+    ev = episodes(seas >= base)
+    if not ev:
+        return None, None
+    pad = pd.Timedelta(days=pad_days)
+    keep = pd.Series(False, index=obs.index)
+    for a, b in ev:
+        keep |= (obs.index >= a - pad) & (obs.index <= b + pad)
+    return obs[keep], len(ev)
+
+
+def draw_model_choice(path, models=None, chosen_from=None):
+    """Which model tracks the gauges best on RP3+ events, per river and season."""
+    models = models or MODELS
+    # "base"/"all" both adopt the same configuration; the stored action
+    # dict is keyed by the computation basis, so mark from the adopted run
+    chosen_from = "nogeoglows"
+    fig, axes = plt.subplots(1, 4, figsize=(12.6, 3.7), sharey=True)
     for ax, k in zip(axes, WINDOWS):
         river, season = k
-        ref = lv[lv.station == REFERENCE_GAUGE[river]].set_index("date")["level_m"]
-        ref = ref[ref.index.month.isin(SEASONS[season])].sort_index()
-        vals = {}
-        for m in MODELS:
-            rhos = []
+        vals, pods, n_ev = {}, {}, 0
+        for m in models:
+            rhos, hit = [], []
             for st in TRIGGER_STATIONS[river]:
-                s = model_season(m, st, SEASONS[season])
-                if len(s):
-                    rhos.append(model_selection.best_lag_rho(s, ref))
+                obs_ev, n = event_mask(st, season)
+                if obs_ev is None:
+                    continue
+                n_ev = max(n_ev, n)
+                mod = model_season(m, st, SEASONS[season])
+                if not len(mod):
+                    continue
+                sub = mod[mod.index.isin(obs_ev.index)]
+                if len(sub) >= 60:
+                    rhos.append(model_selection.best_lag_rho(sub, obs_ev))
+                # and how many of those events the model was above its own RP3 for
+                am = mod.groupby(mod.index.year).max().dropna()
+                t = weibull_threshold(am.values, RP_FLOOR)
+                if np.isnan(t):
+                    continue
+                full = lv[lv.station == st].set_index("date")["level_m"].dropna()
+                full = full[full.index.month.isin(SEASONS[season])].sort_index()
+                fam = full[full.index.year >= 2000]
+                fam = fam.groupby(fam.index.year).max().dropna()
+                base = weibull_level(fam.values, RP_FLOOR)
+                if np.isnan(base):
+                    continue
+                j = pd.concat([mod.rename("mod"), full.rename("obs")], axis=1,
+                              join="inner").dropna()
+                if len(j) < 200:
+                    continue
+                oe, me = episodes(j["obs"] >= base), episodes(j["mod"] >= t)
+                if oe:
+                    hit.append(hits(oe, me) / len(oe))
             if rhos:
                 vals[m] = float(np.mean(rhos))
-        chosen = action[("reanalysis", False)]["windows"][k]["source"]
+                pods[m] = float(np.mean(hit)) if hit else np.nan
+        if not vals:
+            continue
+        chosen = action[("reanalysis", "nogeoglows")]["windows"][k]["source"]
         names = list(vals)
         ax.bar(range(len(names)), [vals[m] for m in names],
-               color=[SOURCE_COLORS.get(m, "#1C7293") for m in names], width=0.66)
+               color=[SOURCE_COLORS.get(m, "#1C7293") for m in names], width=0.62)
         for i, m in enumerate(names):
             if m == chosen:
-                ax.plot(i, vals[m] + 0.03, marker="v", color=INK, markersize=8)
-            ax.text(i, vals[m] - 0.06, f"{vals[m]:.2f}", ha="center", fontsize=8.5,
-                    color="white")
+                ax.plot(i, vals[m] + 0.04, marker="v", color=INK, markersize=8)
+            ax.text(i, max(vals[m] - 0.07, 0.03), f"{vals[m]:.2f}", ha="center",
+                    fontsize=8.5, color="white")
+            if not np.isnan(pods.get(m, np.nan)):
+                ax.text(i, 0.03, f"hit {pods[m]:.2f}", ha="center", fontsize=7.5,
+                        color="white")
         ax.set_xticks(range(len(names)),
                       [NICE[m].replace(" ", "\n") for m in names], fontsize=8)
         ax.set_ylim(0, 1.0)
-        ax.set_title(WLABEL[k], fontsize=10.5)
+        ax.set_title(f"{WLABEL[k]}  ({n_ev} events)", fontsize=10.5)
         style_ax(ax, grid="y")
-    axes[0].set_ylabel("mean best-lag rho")
-    fig.suptitle("One model per window: mean tracking correlation across that window's "
-                 "points (marker = chosen)",
+    axes[0].set_ylabel("mean rho on RP3+ events")
+    fig.suptitle("Which model works best per river and season, judged on 1-in-3 or "
+                 "rarer events only (marker = adopted)",
                  x=0.06, ha="left", fontweight="bold", fontsize=11.5, color=INK)
-    fig.subplots_adjust(top=0.8, wspace=0.08)
+    fig.subplots_adjust(top=0.78, wspace=0.08)
     fig.savefig(path, format="png", dpi=115, bbox_inches="tight")
     plt.close(fig)
 
 
-print("figures ...")
-FIGS.mkdir(parents=True, exist_ok=True)
-figs_built = summary_figures.build(ctx_for(action[("reanalysis", BASE_SET)]), FIGS)
-figs_alt = {}
-if "error" not in action[("reanalysis", ALT_SET)]:
-    alt_dir = FIGS / "_alt"
-    figs_alt = summary_figures.build(ctx_for(action[("reanalysis", ALT_SET)]), alt_dir)
-
-# convert the SVGs this page needs into PNGs at the document's own filenames,
-# by redrawing them: matplotlib is the source, so no rasteriser is needed
-summary_figures.os.environ["SUMMARY_FIG_PNG"] = str(FIGS)
-figs_built = summary_figures.build(ctx_for(action[("reanalysis", BASE_SET)]), FIGS)
-name_map = {"map": "map_stations", "thresholds": "a2_swalim_rp",
-            "grid": "c_grid_heatmaps", "activation": "c_backtest_strip",
-            "crossings": "c_crossings"}
-for svg, png in name_map.items():
-    src = FIGS / f"{svg}.png"
-    if src.exists():
-        shutil.move(str(src), str(FIGS / f"{png}.png"))
-if figs_alt:
-    summary_figures.os.environ["SUMMARY_FIG_PNG"] = str(FIGS / "_altpng")
-    summary_figures.build(ctx_for(action[("reanalysis", ALT_SET)]), FIGS / "_alt")
-    alt = FIGS / "_altpng" / "activation.png"
-    if alt.exists():
-        shutil.move(str(alt), str(FIGS / "c_backtest_strip_all.png"))
-# and the same for the set without GEOGloWS
-_ng = action[("reanalysis", ALT2_SET)]
-if "error" not in _ng:
-    summary_figures.os.environ["SUMMARY_FIG_PNG"] = str(FIGS / "_ngpng")
-    summary_figures.build(ctx_for(_ng), FIGS / "_ng")
-    ngp = FIGS / "_ngpng" / "activation.png"
-    if ngp.exists():
-        shutil.move(str(ngp), str(FIGS / "c_backtest_strip_nogoogle.png"))
-summary_figures.os.environ.pop("SUMMARY_FIG_PNG", None)
-draw_model_choice(FIGS / "a_selection.png")
+# one copy of each comparison figure per switch state
+draw_model_choice(FIGS / "a_selection.png", SET_MODELS["base"], "base")
+draw_model_choice(FIGS / "a_selection_all.png", SET_MODELS["all"], "all")
+draw_tail(FIGS / "g_tail.png", SET_MODELS["base"])
+draw_tail(FIGS / "g_tail_all.png", SET_MODELS["all"])
+draw_detection(FIGS / "h_detection.png", SET_MODELS["base"])
+draw_detection(FIGS / "h_detection_all.png", SET_MODELS["all"])
 for stale in ["_alt", "_altpng", "_ng", "_ngpng"]:
     shutil.rmtree(FIGS / stale, ignore_errors=True)
 for svg in FIGS.glob("*.svg"):
@@ -451,7 +634,7 @@ print("  figs:", sorted(p.name for p in FIGS.glob("*.png")))
 
 # --------------------------------------------------- the JSON-driven tables
 def write_selection_detail():
-    """Per-point tracking correlation for every product, with the pick marked.
+    """Per-point tracking correlation for every model, with the pick marked.
 
     Same table the published document shows, but "selected" is now the single
     source that carries the whole window, not a per-station pick.
@@ -507,7 +690,7 @@ def write_activation_impact():
         old = json.loads(src_path.read_text(encoding="utf-8"))
         meta_note = old.get("meta", {}).get("note", "")
         for row in old.get("rows", []):
-            for river, seasons in row.get("basins", {}).items():
+            for river, seasons in row.get("rivers", {}).items():
                 for season, w in seasons.items():
                     impact[(row["year"], river, season)] = (w.get("emdat"),
                                                             w.get("cerf"))
@@ -534,7 +717,7 @@ def write_activation_impact():
     n_alt = {k: counts(alt, k) for k in WINDOWS}
     rows = []
     for year in range(Y0, Y1 + 1):
-        basins = {}
+        rivers = {}
         for river in TRIGGER_STATIONS:
             seasons = {}
             for season in SEASONS:
@@ -551,8 +734,8 @@ def write_activation_impact():
                     "emdat": em,
                     "cerf": cerf,
                 }
-            basins[river] = seasons
-        rows.append({"year": year, "basins": basins})
+            rivers[river] = seasons
+        rows.append({"year": year, "basins": rivers})
 
     def meta_for(act):
         return {
@@ -658,7 +841,7 @@ def bookkeeping_table():
         yrs_g = sorted({y for k, w in ng["windows"].items() if k[0] == river
                         for y in w["years"]}) if "error" not in ng else yrs
         rows.append(
-            f"<tr><td>basin</td><td>{river.capitalize()} (Gu or Deyr)</td>"
+            f"<tr><td>river</td><td>{river.capitalize()} (Gu or Deyr)</td>"
             + vswap(str(len(yrs)), str(len(yrs_a)), str(len(yrs_g)))
             + vswap(rp_of(len(yrs)), rp_of(len(yrs_a)), rp_of(len(yrs_g)))
             + "</tr>"
@@ -666,7 +849,7 @@ def bookkeeping_table():
     e, ea = std["envelope"], alt["envelope"]
     eg = ng["envelope"] if "error" not in ng else e
     rows.append(
-        "<tr><td>overall</td><td>action, either basin</td>"
+        "<tr><td>overall</td><td>action, either river</td>"
         + vswap(str(e["fires"]), str(ea["fires"]), str(eg["fires"]))
         + vswap(f"{e['env_rp']} yr", f"{ea['env_rp']} yr", f"{eg['env_rp']} yr")
         + "</tr>"
@@ -721,8 +904,12 @@ SECTIONS = {
     "The mechanism at a glance": f"""
     <p>Four river-season windows, each running on <strong>one</strong> forecast source
       rather than a mixture. Inside a window, every monitored point's flow is compared
-      with its own return-period threshold and the window activates when enough points cross
-      in the same season. At least two points must agree, so no single point releases the
+      with its own return-period threshold and the window activates when enough points are
+      over their thresholds <strong>on the same day</strong> - simultaneously, not merely
+      within the same season. The same-day requirement is not restrictive in practice:
+      high flows persist for weeks, and in every historical activation the points crossed
+      within 0 to 5 days of one another, in downstream order (see "How far apart do the
+      points cross?" below). At least two points must agree, so no single point releases the
       money, and never all of them, so one quiet point cannot block it.</p>
     <p>All seven reporting-era points are monitored: four on the Juba (Luuq, Dollow,
       Bardheere, Bualle) and three on the Shabelle (Belet Weyne, Bulo Burti, Jowhar). No
@@ -737,13 +924,13 @@ SECTIONS = {
       and never activating in a year with no recorded flood.
     </div>
     <div class="callout warn altonly">
-      <strong>GEOGloWS carries a window here, with conditions.</strong> It is the only product
+      <strong>GEOGloWS carries a window here, with conditions.</strong> It is the only model
       in the field that cannot be operated exactly as calibrated. Its forecasts run
       below its own retrospective, so a threshold fitted on the retrospective sits too
       low on the live forecast and would activate too often: the threshold has to be
       refitted on the forecast archive before use. That archive only begins in
       July 2024, so there is no way to backtest a GEOGloWS window at lead time yet, and
-      its per-gauge event detection was the weakest of the four products on the
+      its per-gauge event detection was the weakest of the four models on the
       reanalysis. Bias correcting it does not fix this: the SFDC correction lowers
       detection at every gauge. Treat Juba Gu as provisional, and revisit it once two
       or three Gu seasons of GEOGloWS forecasts exist.
@@ -824,7 +1011,7 @@ SECTIONS = {
       <li><strong>Impact years are still undefined.</strong> The trigger is scored
         against gauge levels, not against recorded humanitarian impact. Until impact
         years exist, severe-year coverage is a proxy.</li>
-      <li><strong>The reanalysis cannot pick the product.</strong> Many assignments tie,
+      <li><strong>The reanalysis cannot pick the model.</strong> Many assignments tie,
         so the model per window rests on lead-time skill and on operational
         considerations, not on the backtest.</li>
       <li><strong>Google cannot be calibrated on its own forecasts.</strong> Its
@@ -851,7 +1038,7 @@ CARRIED_OVER = {
 }
 CARRY_NOTE = (
     '    <p class="muted"><em>Carried over unchanged from the published '
-    "multi-source study: this diagnostic compares products, so it does not "
+    "multi-source study: this diagnostic compares models, so it does not "
     "depend on how many points vote or where the thresholds sit.</em></p>\n"
 )
 
@@ -914,13 +1101,13 @@ SECTION_EDITS = {
          "<p><strong>Why correlation is only a tie-break.</strong> Many model "
          "assignments reproduce the same activation years: with 25 years and 8 severe "
          "events, the threshold and the vote count absorb the difference between "
-         "products. Correlation decides only when the envelope cannot.</p>"),
+         "models. Correlation decides only when the envelope cannot.</p>"),
         (r"      <figcaption>The candidate pool\..*?</figcaption>",
-         "      <figcaption>Mean best-lag correlation between each product and the "
+         "      <figcaption>Mean best-lag correlation between each model and the "
          "river's reference gauge, per window, across that window's points. The marker "
          "shows the source chosen for that window.</figcaption>"),
         (r'alt="Scatter plots of correlation versus lag[^"]*"',
-         'alt="Mean best-lag correlation per window and product"'),
+         'alt="Mean best-lag correlation per window and model"'),
     ],
     "Thresholds and calibration": [
         # the backtest strip swaps by provider set: add the third source
@@ -934,7 +1121,7 @@ SECTION_EDITS = {
         (r"<p>\s*Each selected pair gets its threshold.*?</p>",
          "<p>Each monitored point gets its threshold from its own model's "
          "climatology: the Weibull plotting position of that point's seasonal "
-         "maxima, so a product is judged on timing rather than on scale. "
+         "maxima, so a model is judged on timing rather than on scale. "
          "<strong>1-in-3 is the floor and a quarter of the record is the "
          "ceiling</strong>, which on 25 years allows 1-in-3 to 1-in-6. 1-in-2 is "
          "not used anywhere, on either leg.</p>"),
@@ -1033,7 +1220,7 @@ for p in parts[1:]:
 body = head + "".join(kept)
 
 # every script is kept: both fetch-driven tables are back, and their JSON is
-# regenerated below. The product list the selection table iterates has to grow,
+# regenerated below. The model list the selection table iterates has to grow,
 # since GloFAS v4 is now part of the field.
 tail_scripts = tail_scripts.replace(
     'var SRC = ["geoglows", "glofas_v5", "google_grrr"];',
@@ -1132,13 +1319,13 @@ if "error" not in _ng:
         "      <strong>You are viewing all providers.</strong> GEOGloWS then carries a "
         "window, and its return periods cannot yet be fitted on its own forecasts: that "
         "archive begins in July 2024. Every window "
-        "then sits on a product whose return periods can be fitted on a forecast "
+        "then sits on a model whose return periods can be fitted on a forecast "
         "archive, which GEOGloWS's cannot yet be: its forecast record begins in "
         "July 2024. The whole report below is recalibrated with GEOGloWS excluded, "
         f"under the same rules. The envelope becomes 1-in-{_nge['env_rp']} "
         f"({_nge['fires']} of {N_YEARS} years), catching {_nge['severe_caught']} of the "
         f"{_nge['n_severe']} severe years"
-        + " What changes with the provider set is the configuration: the mechanism table, the return periods and the backtest. The comparison sections further down (tracking correlation, seasonal peaks, per-point detail) still show every candidate product including GEOGloWS, because they are evidence about the products rather than a statement of what was chosen."
+        + " What changes with the provider set is the configuration: the mechanism table, the return periods and the backtest. The comparison sections further down (tracking correlation, seasonal peaks, per-point detail) still show every candidate model including GEOGloWS, because they are evidence about the models rather than a statement of what was chosen."
         + (f", and it activates in {', '.join(str(y) for y in _nge['no_flood_years'])}, "
            "where two gauges did not record a flood"
            if _nge["no_flood_years"] else ", with no activation in a year that recorded "
@@ -1209,13 +1396,13 @@ stats_new = (
     '<div class="stats">\n'
     '      <div class="stat"><span class="v vswap" '
     f'data-alt="1-in-{env_alt["env_rp"]}">1-in-{env["env_rp"]}</span>'
-    '<span class="l">overall action return period (either basin)</span></div>\n'
+    '<span class="l">overall action return period (either river)</span></div>\n'
     '      <div class="stat"><span class="v vswap" '
     f'data-alt="1-in-{per_basin[("shabelle", "alt")]:.1f} / '
     f'1-in-{per_basin[("juba", "alt")]:.1f}">'
     f'1-in-{per_basin[("shabelle", "std")]:.1f} / '
     f'1-in-{per_basin[("juba", "std")]:.1f}</span>'
-    '<span class="l">per basin, Shabelle / Juba</span></div>\n'
+    '<span class="l">per river, Shabelle / Juba</span></div>\n'
     '      <div class="stat"><span class="v">'
     f'{len(TRIGGER_STATIONS["juba"])} + {len(TRIGGER_STATIONS["shabelle"])}</span>'
     '<span class="l">points monitored, Juba and Shabelle</span></div>\n'
