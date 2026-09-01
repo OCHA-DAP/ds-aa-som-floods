@@ -448,6 +448,18 @@ body.variant .carrynote { display:none; }
         the Deyr windows. The return periods were tuned for the adopted models; the other
         models are run at the same settings.</figcaption>
     </figure>
+    <p>The same test on the forecasts the trigger would actually run on, at action
+      leads of 1 to 7 days. GloFAS v5 has no reforecast, so GloFAS is represented by the
+      v4 ensemble median, its only lead-time archive; GEOGloWS has no archive before
+      July 2024 and cannot be scored:</p>
+    <figure>
+      <img src="figs/j_window_scores_fc.png?v=202609012100" alt="The window swap test on the forecast archives">
+      <figcaption>Same vote rules and return periods. Thresholds are fitted on each
+        model's own reanalysis, as the trigger operates, and the leads-1-7 forecast series
+        (ensemble median, best lead per day) is tested against them over the common years
+        2016-2023. Eight years give 1 to 3 severe events per window, so read direction,
+        not decimals. This figure does not change with the provider switch.</figcaption>
+    </figure>
     <div class="callout">
       <strong>Why Google carries Gu and GloFAS v5 carries Deyr.</strong>
       <ul>

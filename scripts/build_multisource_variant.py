@@ -602,6 +602,83 @@ def draw_window_scores(path, models=None):
     return path.name
 
 
+def draw_window_scores_fc(path):
+    """The swap test on the forecast archives, common years, action leads."""
+    if fc_action is None:
+        return None
+    fmods = [m for m in ["glofas_v4", "google_grrr"] if m in fc_action_spans]
+    span = set.intersection(*[fc_action_spans[m] for m in fmods]) & SPAN
+    if len(span) < 6:
+        return None
+    ylab, mats = [], {"POD": [], "FAR": [], "F1": []}
+    for k in WINDOWS:
+        river, season = k
+        cfg = TRIGGER_CONFIG[k]
+        floods = envelope_search.gauge_consensus_years(lv, river, season,
+                                                       RP_FLOOR) & span
+        sev = envelope_search.gauge_consensus_years(lv, river, season,
+                                                    SEVERE_RP) & span
+        if not sev:
+            continue
+        ylab.append(f"{WLABEL[k]}  {cfg['n_req']} of "
+                    f"{len(TRIGGER_STATIONS[river])}, RP{cfg['rp']}  "
+                    f"severe n={len(sev)}")
+        row = {m_: [] for m_ in mats}
+        for m in fmods:
+            cols = []
+            for st in TRIGGER_STATIONS[river]:
+                # threshold from the model's own REANALYSIS, as the trigger
+                # operates: an 8-year forecast archive cannot carry a 1-in-4
+                # to 1-in-6 fit (the page says so), so transfer is the test
+                ra = model_season(m, st, SEASONS[season])
+                if len(ra) < 100:
+                    continue
+                am = ra.groupby(ra.index.year).max().dropna()
+                t = weibull_threshold(am.values, cfg["rp"])
+                if np.isnan(t):
+                    continue
+                ser = fc_action[(fc_action.src == m)
+                                & (fc_action.station == st)].set_index("date")["discharge"]
+                ser = ser[ser.index.month.isin(SEASONS[season])]
+                ser = ser[ser.index.year.isin(span)].sort_index()
+                if len(ser) < 60:
+                    continue
+                cols.append((ser >= t).rename(st))
+            fires = set()
+            if cols:
+                mat = pd.concat(cols, axis=1).fillna(False)
+                mx = mat.sum(axis=1).groupby(mat.index.year).max()
+                fires = set(mx[mx >= cfg["n_req"]].index) & span
+            pod = len(fires & sev) / len(sev)
+            far = (len(fires - floods) / len(fires)) if fires else np.nan
+            prec = 1 - far if not np.isnan(far) else np.nan
+            f1 = (2 * pod * prec / (pod + prec)
+                  if not np.isnan(prec) and pod + prec > 0 else 0.0)
+            row["POD"].append(pod)
+            row["FAR"].append(far)
+            row["F1"].append(f1)
+        for m_ in mats:
+            mats[m_].append(row[m_])
+    labels = {"glofas_v4": "GloFAS v4" + chr(10) + "ens-median",
+              "google_grrr": "Google" + chr(10) + "GRRR"}
+    fig, axes = plt.subplots(1, 3, figsize=(11.8, 0.62 * len(ylab) + 2.4))
+    for ax, met in zip(axes, ["POD", "FAR", "F1"]):
+        summary_figures.heat(
+            ax, mats[met], [labels[m] for m in fmods],
+            ylab if met == "POD" else [""] * len(ylab),
+            reverse=(met == "FAR"))
+        ax.set_title({"POD": "POD: share of SEVERE years caught",
+                      "FAR": "FAR: activations with no RP3 flood",
+                      "F1": "F1"}[met] + "\n(dark = better)", fontsize=10)
+    fig.suptitle(f"The swap test on the forecasts, leads 1-7, {min(span)}-"
+                 f"{max(span)}: reanalysis-fitted thresholds, forecast crossings",
+                 x=0.05, ha="left", fontweight="bold", fontsize=11.5, color=INK)
+    fig.subplots_adjust(wspace=0.06, top=0.82)
+    fig.savefig(path, dpi=170, bbox_inches="tight")
+    plt.close(fig)
+    return path.name
+
+
 def event_mask(station, season, pad_days=10):
     """Days inside an observed RP3-or-rarer event at this gauge, widened by pad."""
     obs = lv[lv.station == station].set_index("date")["level_m"].dropna().sort_index()
@@ -703,6 +780,7 @@ draw_detection(FIGS / "h_detection.png", SET_MODELS["base"])
 draw_detection(FIGS / "h_detection_all.png", SET_MODELS["all"])
 draw_window_scores(FIGS / "j_window_scores.png", SET_MODELS["base"])
 draw_window_scores(FIGS / "j_window_scores_all.png", SET_MODELS["all"])
+draw_window_scores_fc(FIGS / "j_window_scores_fc.png")
 for stale in ["_alt", "_altpng", "_ng", "_ngpng"]:
     shutil.rmtree(FIGS / stale, ignore_errors=True)
 for svg in FIGS.glob("*.svg"):
