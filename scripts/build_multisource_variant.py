@@ -820,8 +820,11 @@ def write_selection_detail():
                     continue
                 best, best_lag = 0.0, 0
                 for lag in range(-10, 31):
-                    j = pd.concat([ser, ref.shift(-lag)], axis=1,
-                                  join="inner").dropna()
+                    # CORRECTION (branch fix/corrected-benchmark-and-lag): positional
+                    # shift on a season-filtered series; see model_selection.best_lag_rho.
+                    _ref = ref.copy()
+                    _ref.index = _ref.index - pd.Timedelta(days=lag)
+                    j = pd.concat([ser, _ref], axis=1, join="inner").dropna()
                     if len(j) < 60:
                         continue
                     r = j.iloc[:, 0].corr(j.iloc[:, 1], method="spearman")
