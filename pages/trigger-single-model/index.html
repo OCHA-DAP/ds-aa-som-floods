@@ -439,31 +439,31 @@ body.variant .carrynote { display:none; }
     <p>The same comparison at the level the trigger operates: each window's vote rule,
       3 of 4 points on the Juba and 2 of 3 on the Shabelle at the adopted return periods,
       with each model swapped in. POD counts <strong>severe</strong> years caught, the
-      objective the envelope is sized on; FAR counts activations with no RP3 flood at all
-      behind them:</p>
+      objective the envelope is sized on. FAR counts activations with no RP3 flood behind
+      them:</p>
     <figure>
       <img src="figs/j_window_scores.png?v=202609012030" data-alt-src="figs/j_window_scores_all.png?v=202609012030" alt="Severe-year POD, false-alarm rate and F1 of each window rule per model">
       <figcaption>Each window's rule run on each model, 1999-2023, against the two-gauge
         benchmark. Gu 2023 is missed by every candidate; the envelope catches 2023 through
-        the Deyr windows. The return periods were tuned for the adopted models, so this is
-        a swap test, not each model at its own best settings.</figcaption>
+        the Deyr windows. The return periods were tuned for the adopted models; the other
+        models are run at the same settings.</figcaption>
     </figure>
     <div class="callout">
       <strong>Why Google carries Gu and GloFAS v5 carries Deyr.</strong>
       <ul>
         <li><strong>On severe years, Gu is a tie.</strong> Both models catch 2018 and 2020
           on the Juba and 2016 and 2020 on the Shabelle, and both miss Gu 2023.</li>
-        <li><strong>Deyr on Google is strictly worse:</strong> three false activations on
-          the Juba and a missed severe year (2020) on the Shabelle. GloFAS v5's Deyr
-          record is clean, which settles Deyr.</li>
+        <li><strong>Deyr on Google is worse on both counts:</strong> three false
+          activations on the Juba and a missed severe year (2020) on the Shabelle.
+          GloFAS v5's Deyr record is clean.</li>
         <li><strong>GloFAS v5 alone cannot meet the 1-in-3 ceiling.</strong> No v5-only
-          configuration reaches 8 activations; its nearest envelope fires once every 2.9
-          years. Google has to carry windows for the design to exist, and Gu is where the
+          configuration reaches 8 activations, and its nearest envelope fires once every
+          2.9 years. Some windows therefore have to run on Google, and Gu is where the
           swap costs nothing.</li>
-        <li><strong>At forecast time, Google is the only evidenced model.</strong> Its
-          reforecast (2016-2023) shows event skill at leads 1 to 7 on the Shabelle,
-          where the only GloFAS lead-time archive (v4) scores near chance. GloFAS v5 has
-          no reforecast; it keeps Deyr because its thresholds transfer to the live v5
+        <li><strong>Google is the only model with forecast-side evidence.</strong> Its
+          reforecast (2016-2023) shows event skill at leads 1 to 7 on the Shabelle; the
+          only GloFAS lead-time archive (v4) scores near chance there. GloFAS v5 has no
+          reforecast. It keeps Deyr because its thresholds carry over to the live v5
           forecast, whose climatology matches the reanalysis they were fitted on.</li>
       </ul>
     </div>
