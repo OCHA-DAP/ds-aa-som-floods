@@ -259,16 +259,23 @@ window.__data__ = function (name) {
 <div class="rvw" id="R1"><span class="tag">Review R1</span><span class="hd">The &ldquo;7 of 8&rdquo; headline rests on a lookahead in the benchmark.</span><p>Each gauge&#39;s return level is fitted on <strong>2000&ndash;2026</strong> while crossings are counted only within 1999&ndash;2023, so three years of post-window data enter the labels. That is what makes 2008 severe: Luuq&#39;s Deyr 1-in-5 level is 5.831 m fitted through 2026 but 5.869 m fitted through 2023, and the 2008 peak is 5.840 m &mdash; a 9 mm margin on a level that moves 38 mm purely from adding future years. Fit strictly to the backtest window and the severe set is 7, not 8, and this configuration catches <strong>7 of 7</strong>. The much-discussed &ldquo;miss in 2008&rdquo; is an artifact of the asymmetry, since trigger thresholds are fitted strictly on 1999&ndash;2023.</p></div>
 
     <div class="callout warn altonly">
-      <strong>GEOGloWS carries a window here, with conditions.</strong> It is the only product
-      in the field that cannot be operated exactly as calibrated. Its forecasts run
-      below its own retrospective, so a threshold fitted on the retrospective sits too
-      low on the live forecast and would activate too often: the threshold has to be
-      refitted on the forecast archive before use. That archive only begins in
-      July 2024, so there is no way to backtest a GEOGloWS window at lead time yet, and
-      its per-gauge event detection was the weakest of the four products on the
-      reanalysis. Bias correcting it does not fix this: the SFDC correction lowers
-      detection at every gauge. Treat Juba Gu as provisional, and revisit it once two
-      or three Gu seasons of GEOGloWS forecasts exist.
+      <strong>Why GEOGloWS is not in the adopted design.</strong> Its forecasts run
+      <strong>below its own retrospective</strong> &mdash; a median ratio of 0.89 across
+      leads 1&ndash;7 &mdash; so a threshold fitted on the retrospective sits too high for
+      the live forecast ever to reach at the intended rate. Quantified across the seven
+      monitored points: a level set as <strong>1-in-5 on the retrospective behaves like a
+      median 1-in-13 on the forecast</strong>, and as rarely as 1-in-26 at Bardheere and
+      Bualle in Gu. A window built that way would mostly sit silent.
+      <br><br>
+      The obvious answer is to debias, and that is what cannot be done yet: the GEOGloWS
+      forecast archive begins in July 2024, roughly two years, which is neither enough to
+      refit thresholds on the forecast climatology (this design asks about twelve years
+      for a 1-in-3) nor enough to validate a flow-duration-curve correction against
+      anything. The team's Nepal technical note is the cautionary precedent &mdash; SFDC
+      did not rescue event detection there. The working group therefore leaned to
+      excluding GEOGloWS on 2026-08-22 and adopted that on 2026-08-28. It stays in this
+      view as a comparison, and stays a candidate for reinstatement once two or three Gu
+      and Deyr seasons of its forecasts exist.
     </div>
     <div class="callout warn">
       <strong>What the two-gauge benchmark sees, and what it misses.</strong> A
@@ -313,16 +320,34 @@ window.__data__ = function (name) {
       backtest.</p>
 <div class="rvw" id="R3"><span class="tag">Review R3</span><span class="hd">There were only ever two distinct provider sets, not three.</span><p>The &ldquo;without Google&rdquo; configuration is numerically identical to &ldquo;all providers&rdquo;, because when GEOGloWS is allowed to compete Google never wins a window. The third switch state has been removed, and the two competing switch controllers that were both live on the page (which corrupted the default view once you clicked) have been reduced to one.</p></div>
 
-<div class="rvw" id="R8"><span class="tag">Review R8</span><span class="hd">Excluding GEOGloWS is what introduces the one false activation.</span><p>The all-providers configuration activates in 8 years with <em>no</em> activation outside the benchmark. The adopted configuration activates in the same number of years but fires in 2013, a year the two-gauge benchmark does not call a flood. That false alarm is the price of the 2026-08-28 decision to exclude GEOGloWS, and it is worth stating explicitly alongside the reasons for excluding it.</p></div>
+<div class="rvw" id="R8"><span class="tag">Review R8</span><span class="hd">Excluding GEOGloWS is a working-group decision; the 2013 activation is its price.</span><p>The decision was taken by the working group (leaning this way on Friday 2026-08-22, adopted 2026-08-28) and the reasoning is sound &mdash; see the callout above for the quantified version. The cost should be recorded alongside it: the all-providers configuration activates in 8 years with <em>no</em> activation outside the benchmark, whereas the adopted one activates in the same number of years but fires in 2013, a year the two-gauge benchmark does not call a flood. Trading one false activation for a product that can actually be operated is a defensible trade; it is just better made explicitly.</p></div>
 
     <figure><img src="figs/map_stations.png" alt="The seven monitored points">
       <figcaption>The seven points the trigger watches, four on the Juba and three on
         the Shabelle.</figcaption></figure>
-<h2>How the model was chosen, one per river and season</h2>
-<div class="rvw" id="R5"><span class="tag">Review R5</span><span class="hd">The per-window search does not beat a rule with no search in it.</span><p>Applying one product, one return period and one vote count uniformly to all four windows: <code>Google GRRR, 1-in-6, 3 of 4</code> reproduces the adopted result exactly (8 activations, 1-in-3.2, 7 of 8 severe, the 2013 false alarm). <code>GloFAS v5, 1-in-5, 3 of 4</code> gives 9 activations at 1-in-2.9 with the same 7 of 8 and <em>zero</em> activations outside the benchmark. The roughly 41,000 admissible per-window combinations recover nothing a one-line rule does not. This is consistent with the page&#39;s own statement that many assignments tie, but it is stronger: the per-window freedom is not adding measurable value, so the choice should be defended on operational grounds rather than on the backtest.</p></div>
+<div class="callout">
+      <strong>Where the design constraints come from.</strong> Three of the rules below are
+      decisions rather than findings, and are recorded here so they are not mistaken for
+      results:
+      <ul>
+        <li><strong>One source per river-season window, never a mixture</strong> &mdash;
+          requested by <strong>WFP</strong>, who raised concerns about mixing models inside
+          a window. Tested against the alternative it costs nothing measurable (review note
+          R6).</li>
+        <li><strong>GEOGloWS excluded</strong> &mdash; working group, leaning that way
+          2026-08-22 and adopted 2026-08-28, because its forecasts run below its own
+          retrospective and its two-year forecast archive is too short either to refit
+          thresholds on or to validate a debias against.</li>
+        <li><strong>The envelope activates no more often than 1-in-3</strong> &mdash;
+          directive of 2026-08-27, applied to the union of the four windows rather than to
+          each window.</li>
+      </ul>
+    </div>
+    <h2>How the model was chosen, one per river and season</h2>
+<div class="rvw" id="R5"><span class="tag">Review R5</span><span class="hd">The per-window search does not beat a rule with no search in it.</span><p>Applying one product, one return period and one vote count uniformly to all four windows: <code>Google GRRR, 1-in-6, 3 of 4</code> reproduces the adopted result exactly (8 activations, 1-in-3.2, 7 of 8 severe, the 2013 false alarm). <code>GloFAS v5, 1-in-5, 3 of 4</code> gives 9 activations at 1-in-2.9 with the same 7 of 8 and <em>zero</em> activations outside the benchmark. The roughly 41,000 admissible per-window combinations recover nothing a one-line rule does not. This is consistent with the page&#39;s own statement that many assignments tie, but it is stronger: the per-window freedom is not adding measurable value. WFP&#39;s requirement settles that a window must not mix products, but it does not say <em>which</em> product each window gets, and that is still being chosen by a search the backtest cannot adjudicate. On this evidence the per-window assignment should be defended on lead-time and operational grounds &mdash; which is what the page already does for Shabelle Deyr &mdash; rather than presented as a result of the calibration.</p></div>
 
     <p>One source per river and season, so four choices. Four steps:</p>
-<div class="rvw" id="R6"><span class="tag">Review R6</span><span class="hd">One model per window is defensible &mdash; mixing gains nothing here.</span><p>Allowing every product to compete at every point inside a window (a mixed consensus over the same seven points) reaches 7 of 8 severe years at 1-in-3.7. The best single-model configuration reaches the same 7 of 8 at 1-in-3.2. Mixing buys no additional severe year on this record, so the restriction costs nothing measurable, and it buys a real operational simplification: one product per window means one threshold transfer to validate rather than several.</p></div>
+<div class="rvw" id="R6"><span class="tag">Review R6</span><span class="hd">One model per window comes from WFP, and it costs nothing measurable.</span><p>The constraint is a stakeholder requirement, not a data-driven one: <strong>WFP raised concerns about mixing models</strong> within a window. It is worth recording that it is cost-free on this record. Allowing every product to compete at every point inside a window (a mixed consensus over the same seven points) reaches 7 of 8 severe years at 1-in-3.7; the best single-model configuration reaches the same 7 of 8 at 1-in-3.2. Mixing buys no additional severe year, so the requirement can be honoured without giving anything up &mdash; and it buys a real operational simplification, since one product per window means one threshold transfer to validate rather than several.</p></div>
 
 <ol>
 <li><strong>Build the candidate rules.</strong> For a window and a candidate model, put a threshold at every one of the river's points, taken from that model's own annual maxima (1-in-3 to 1-in-6). The window activates in a year when at least N points cross in that season.</li>
