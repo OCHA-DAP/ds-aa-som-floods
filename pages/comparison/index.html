@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open multi-model vs one model per window &mdash; Somalia Riverine Flood Trigger</title>
+<meta name="description" content="What changes between the open multi-model trigger design and the one-model-per-window design: year-by-year activations per basin and season, and a lead-time comparison, both scored on a corrected benchmark.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+.hero.hero-sub { padding:40px 44px 34px; }
+.hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; }
+.crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+.crumb a:hover { text-decoration:underline; }
+article { padding:8px 44px 24px; max-width:960px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9);
+             margin:38px 0 10px; line-height:1.25; }
+article h3 { font-size:15px; color:var(--n9); margin:26px 0 8px; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; }
+article ul, article ol { padding-left:22px; }
+article strong { color:var(--n9); }
+article a { color:var(--b6); }
+article code { background:var(--n05); border:1px solid #e2e7e7; padding:1px 5px;
+               border-radius:3px; font-size:12.5px; color:var(--b7); }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+         gap:14px; margin:26px 0 6px; }
+.stat { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5);
+        border-radius:5px; padding:14px 16px 12px; }
+.stat .v { display:block; font-family:'Merriweather',Georgia,serif; font-size:25px;
+           font-weight:700; color:var(--b6); line-height:1.1; }
+.stat .l { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+           color:var(--n7); margin-top:6px; line-height:1.45; }
+.callout { margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05);
+           border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
+.callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
+.callout.fix { background:#f2f7f4; border-left-color:#2f7d5a; }
+.tablewrap { overflow-x:auto; }
+table.data { border-collapse:collapse; width:100%; margin:16px 0; font-size:13px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em;
+                color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1);
+                padding:7px 10px 6px; }
+table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8);
+                vertical-align:top; }
+table.cmp { table-layout:fixed; width:100%; border-collapse:collapse; font-size:11px;
+            font-variant-numeric:tabular-nums; }
+table.cmp th { font-size:9px; letter-spacing:.04em; padding:5px 2px; text-align:center;
+               color:var(--n7); text-transform:uppercase; font-weight:700;
+               border-bottom:2px solid var(--b1); }
+table.cmp td { padding:4px 2px; text-align:center; border-bottom:1px solid #eef1f1;
+               color:var(--n8); }
+table.cmp .gl { border-left:2px solid var(--b1); }
+table.cmp .yr { font-weight:700; color:var(--n9); }
+.fireA { background:rgba(30,121,95,.26); font-weight:700; color:#12513e; }
+.fireB { background:rgba(179,64,54,.26); font-weight:700; color:#7a241c; }
+.bsev  { background:rgba(179,64,54,.13); color:#B34036; font-weight:700; }
+.bmod  { background:rgba(244,169,59,.18); color:#8a6212; }
+.zero  { color:#c9cfd6; }
+.rowdiff td { background:#fffaf0; }
+.key { display:flex; flex-wrap:wrap; gap:14px; margin:10px 0 0; font-size:12px;
+       color:var(--n7); align-items:center; }
+.sw { display:inline-block; width:12px; height:12px; border-radius:2px; vertical-align:-2px;
+      margin-right:5px; }
+.provenance { margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7;
+              font-size:12px; color:var(--n7); line-height:1.7; }
+.provenance a { color:var(--b6); }
+@media (max-width:640px) {
+  article { padding:4px 22px 16px; }
+  .hero.hero-sub { padding:32px 22px 28px; }
+  .provenance { margin:28px 22px 32px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero hero-sub">
+    <canvas id="bg" aria-hidden="true"></canvas>
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / design comparison</p>
+      <h1>What changes between the two designs</h1>
+      <p>The open multi-model consensus against one model per river-season window, scored
+         year by year on the same corrected benchmark, plus how much warning each one
+         actually gives. August 2026.</p>
+    </div>
+  </header>
+
+  <article>
+
+    <div class="callout fix">
+      <strong>Two corrections were applied before this comparison, on the branch
+      <code>fix/corrected-benchmark-and-lag</code>.</strong> Neither design's published
+      page has been modified, and nothing on the branch has been merged. The corrections
+      are (1) the benchmark's return levels were being fitted on 2000&ndash;2026 while
+      crossings were counted only to 2023, letting three years of post-window data decide
+      the labels, and (2) the best-lag correlation search shifted the gauge series by row
+      position rather than by calendar days, which forced almost every reported lag to
+      zero. Both designs are scored here on the corrected benchmark, so the numbers below
+      differ from those on either page. The effect on the benchmark is that
+      <strong>2008 is no longer a severe year</strong>: the severe set is 2006, 2014,
+      2016, 2018, 2019, 2020 and 2023.
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span class="v">1-in-3.2</span><span class="l">envelope return period &mdash; both designs</span></div>
+      <div class="stat"><span class="v">7 of 7</span><span class="l">severe years caught &mdash; both designs</span></div>
+      <div class="stat"><span class="v">0 vs 1</span><span class="l">activations outside the benchmark (open / single)</span></div>
+      <div class="stat"><span class="v">&minus;7 vs &minus;1 d</span><span class="l">median warning at leads &le; 6 d (open / single)</span></div>
+    </div>
+
+    <h2>The headline: at envelope level, almost nothing changes</h2>
+    <p>Both designs release the money in <strong>8 of 25 years</strong>, a return period of
+       <strong>1-in-3.2</strong>, and both catch <strong>every one of the seven severe
+       years</strong> in the corrected benchmark. On the two measures the framework is
+       actually sized on &mdash; how often it pays out, and whether it pays out when the
+       rivers are at their worst &mdash; the open multi-model design and the
+       one-model-per-window design are indistinguishable.</p>
+    <p>They differ on which eighth year they spend. The open design activates in
+       <strong>2010</strong>, a year the benchmark does record as a flood. The
+       single-model design activates in <strong>2013</strong>, which it does not. So the
+       open design ends the backtest with no activation outside the benchmark at all,
+       and the single-model design with one.</p>
+
+    <h2>Year by year, per basin and season</h2>
+    <p>The number in each cell is the design's decision variable: how many of that
+       window's monitored units were over their own thresholds at once. <span
+       class="sw" style="background:rgba(30,121,95,.26)"></span><strong>Green</strong>
+       means the open design activated; <span class="sw"
+       style="background:rgba(179,64,54,.26)"></span><strong>red</strong> means the
+       single-model design did. The <em>bench</em> column is what the gauges recorded
+       that season. Rows where the two designs disagree are tinted.</p>
+
+    <div class="tablewrap">
+      <table class="cmp" id="cmpTable"><tr><td>loading&hellip;</td></tr></table>
+    </div>
+    <div class="key">
+      <span><span class="sw" style="background:rgba(30,121,95,.26)"></span>open multi-model activates</span>
+      <span><span class="sw" style="background:rgba(179,64,54,.26)"></span>one model per window activates</span>
+      <span><span class="sw" style="background:rgba(179,64,54,.13)"></span>gauges at 1-in-5 or rarer</span>
+      <span><span class="sw" style="background:rgba(244,169,59,.18)"></span>gauges at 1-in-3 to 1-in-5</span>
+    </div>
+
+    <div class="callout">
+      <strong>Reading the disagreements.</strong> The two designs put their votes in
+      different places even where the envelope agrees. The open design counts
+      <em>(station, model) pairs</em> over the five gauges that still report, so a single
+      station can vote more than once; the single-model design counts <em>points</em>
+      across all seven reporting-era gauges with one product per window. That is why the
+      pool sizes and the counts are not directly comparable cell by cell &mdash; what is
+      comparable is whether the window fired.
+    </div>
+
+    <h2>Lead time: how much warning does each one buy?</h2>
+    <p>For every window activation, the earliest date the trigger condition is met on the
+       historical forecasts, against the date the reference gauge first crossed its own
+       1-in-3 level that season. Positive means the trigger fired before the river got
+       high; negative means it fired after. Both designs are shown on a common
+       <strong>&le; 6-day</strong> band so the comparison is like for like, and the
+       single-model design is also shown on its own 1&ndash;7 day band.</p>
+
+    <div class="tablewrap">
+      <table class="data" id="leadSummary"><tr><td>loading&hellip;</td></tr></table>
+    </div>
+
+    <div class="callout warn">
+      <strong>The single-model design gives materially more warning, and both are later
+      than is comfortable.</strong> On the common &le; 6-day band its median activation
+      lands <strong>1 day after</strong> the reference gauge crosses its 1-in-3 level,
+      against <strong>7 days after</strong> for the open design, and it fires in more
+      window-events (13 against 9). But the honest headline is that neither design is
+      reliably ahead of the river: the open design is ahead of the gauge in 3 of 9 events
+      and the single-model design in 6 of 13. This is the number that should set
+      expectations with partners &mdash; the action leg is close to coincident with the
+      flood, which is what the readiness leg exists to compensate for.
+    </div>
+
+    <div class="callout warn">
+      <strong>And the comparison flatters the open design.</strong> Three of its four
+      windows include GEOGloWS units, which have no forecast archive before July 2024 and
+      are therefore evaluated on the retrospective at lead 0 &mdash; hindsight, not a
+      forecast. Juba Gu carries one such unit, Juba Deyr and Shabelle Deyr two each. Those
+      units cannot be late, so the open design's lead times are an upper bound on what it
+      would really deliver. The single-model design uses no stand-ins in the adopted
+      configuration.</p>
+    </div>
+
+    <h3>Per window, on the common &le; 6-day band</h3>
+    <div class="tablewrap">
+      <table class="data" id="leadWindow"><tr><td>loading&hellip;</td></tr></table>
+    </div>
+
+    <h2>What this means for the decision</h2>
+    <ul>
+      <li><strong>The move to one model per window costs nothing on skill.</strong> Same
+        activation rate, same severe-year coverage. Given that the constraint came from
+        WFP rather than from the data, that is the useful finding: the requirement can be
+        honoured without giving anything up.</li>
+      <li><strong>It gains on lead time.</strong> Six days of median warning, on a
+        like-for-like band, and against a stand-in-assisted competitor.</li>
+      <li><strong>It costs one false activation.</strong> 2013, a year no two gauges on
+        either river called a flood. Whether that matters depends on what a false
+        activation costs the framework, which is a working-group question rather than a
+        statistical one.</li>
+      <li><strong>Neither design is validated on lead time where it matters most.</strong>
+        Both Deyr legs rest on GloFAS v5, which has no reforecast at all, so their
+        operational behaviour is inferred from v4. That gap dominates the difference
+        between the two designs.</li>
+    </ul>
+
+  </article>
+
+  <div class="provenance">
+    <p><strong>Provenance.</strong> Activations recomputed from the processed daily
+      discharge tables and the SWALIM gauge record; lead times from the Google GRRR
+      (2016&ndash;2023) and GloFAS v4 (2003&ndash;2023) reforecast archives, with GloFAS
+      v5 units evaluated on the v4 proxy and its climatology. The open multi-model
+      configuration is the one published at
+      <a href="../trigger/">/trigger/</a>; the one-model-per-window configuration is the
+      one published at <a href="../trigger-single-model/">/trigger-single-model/</a>.
+      Corrections applied on branch <code>fix/corrected-benchmark-and-lag</code>, not
+      merged; neither published page was modified.</p>
+  </div>
+
+</div>
+
+<script src="../assets/hero.js" defer></script>
+<script>
+(function () {
+  "use strict";
+  var WIN = [["juba_gu","Juba Gu"],["juba_deyr","Juba Deyr"],
+             ["shabelle_gu","Shabelle Gu"],["shabelle_deyr","Shabelle Deyr"]];
+
+  Promise.all([
+    fetch("data.json").then(function (r) { return r.json(); }),
+    fetch("leads.json").then(function (r) { return r.json(); })
+  ]).then(function (res) {
+    var D = res[0], L = res[1];
+    var idx = {};
+    D.table.forEach(function (r) { idx[r.year + "|" + r.window] = r; });
+
+    // ---- year x window table ----
+    var h = [];
+    h.push("<colgroup><col style='width:38px'>" +
+      WIN.map(function () {
+        return "<col style='width:30px'><col style='width:30px'><col style='width:36px'>";
+      }).join("") + "</colgroup>");
+    h.push('<tr><th rowspan="2" style="vertical-align:bottom">year</th>' +
+      WIN.map(function (w) {
+        var m = D.meta[w[0]];
+        return '<th colspan="3" class="gl" title="open: ' + m.A_req + ' of ' + m.A_pool +
+               ' pairs  |  single: ' + m.B_req + ' of ' + m.B_pool + ' points">' +
+               w[1] + "</th>";
+      }).join("") + "</tr>");
+    h.push("<tr>" + WIN.map(function () {
+      return '<th class="gl" title="open multi-model">open</th>' +
+             '<th title="one model per window">1&#8209;mod</th>' +
+             '<th title="what the gauges recorded">bench</th>';
+    }).join("") + "</tr>");
+
+    D.years.slice().reverse().forEach(function (y) {
+      var cells = ['<td class="yr">' + y + "</td>"];
+      var disagree = false;
+      WIN.forEach(function (w) {
+        var r = idx[y + "|" + w[0]] || {a:0,b:0,a_fire:false,b_fire:false};
+        if (r.a_fire !== r.b_fire) { disagree = true; }
+        cells.push('<td class="gl ' + (r.a_fire ? "fireA" : "") + '">' +
+                   (r.a ? r.a : '<span class="zero">0</span>') + "</td>");
+        cells.push('<td class="' + (r.b_fire ? "fireB" : "") + '">' +
+                   (r.b ? r.b : '<span class="zero">0</span>') + "</td>");
+        var bw = D.bench[w[0]];
+        var cls = bw.sev.indexOf(y) >= 0 ? "bsev" : (bw.mod.indexOf(y) >= 0 ? "bmod" : "");
+        var txt = bw.sev.indexOf(y) >= 0 ? "5yr" : (bw.mod.indexOf(y) >= 0 ? "3yr" : "");
+        cells.push('<td class="' + cls + '">' + txt + "</td>");
+      });
+      h.push('<tr' + (disagree ? ' class="rowdiff"' : "") + ">" + cells.join("") + "</tr>");
+    });
+    document.getElementById("cmpTable").innerHTML = h.join("");
+
+    // ---- lead-time summary ----
+    function stats(design) {
+      var rows = L.filter(function (r) {
+        return r.design === design && r.anticipation_days !== null;
+      });
+      if (!rows.length) { return null; }
+      var v = rows.map(function (r) { return r.anticipation_days; }).sort(function (a, b) { return a - b; });
+      var mid = Math.floor(v.length / 2);
+      var med = v.length % 2 ? v[mid] : (v[mid - 1] + v[mid]) / 2;
+      return { n: v.length, med: med, min: v[0], max: v[v.length - 1],
+               ahead: v.filter(function (x) { return x >= 0; }).length };
+    }
+    function sgn(x) { return (x > 0 ? "+" : "") + x; }
+    var rowsDef = [
+      ["Open multi-model", "A6", "&le; 6 d", "its own band"],
+      ["One model per window", "B6", "&le; 6 d", "common band, for comparison"],
+      ["One model per window", "B", "1&ndash;7 d", "its own band, as published"]
+    ];
+    var t = ['<tr><th>design</th><th>lead band</th><th>window activations</th>' +
+             '<th>median warning</th><th>range</th><th>ahead of the gauge</th><th></th></tr>'];
+    rowsDef.forEach(function (r) {
+      var s = stats(r[1]);
+      if (!s) { return; }
+      t.push("<tr><td><strong>" + r[0] + "</strong></td><td>" + r[2] + "</td><td>" + s.n +
+             "</td><td><strong>" + sgn(s.med) + " d</strong></td><td>" + sgn(s.min) +
+             " to " + sgn(s.max) + " d</td><td>" + s.ahead + " of " + s.n +
+             "</td><td style='color:var(--n7)'>" + r[3] + "</td></tr>");
+    });
+    document.getElementById("leadSummary").innerHTML = t.join("");
+
+    // ---- per window, common band ----
+    var w = ['<tr><th>window</th><th>open &mdash; events</th><th>open &mdash; median</th>' +
+             '<th>1&#8209;model &mdash; events</th><th>1&#8209;model &mdash; median</th>' +
+             '<th>difference</th></tr>'];
+    WIN.forEach(function (win) {
+      function per(design) {
+        var v = L.filter(function (r) {
+          return r.design === design && r.window === win[0] && r.anticipation_days !== null;
+        }).map(function (r) { return r.anticipation_days; }).sort(function (a, b) { return a - b; });
+        if (!v.length) { return null; }
+        var mid = Math.floor(v.length / 2);
+        return { n: v.length, med: v.length % 2 ? v[mid] : (v[mid - 1] + v[mid]) / 2 };
+      }
+      var a = per("A6"), b = per("B6");
+      var diff = (a && b) ? (b.med - a.med) : null;
+      w.push("<tr><td><em>" + win[1] + "</em></td>" +
+        "<td>" + (a ? a.n : "&mdash;") + "</td><td>" + (a ? sgn(a.med) + " d" : "&mdash;") + "</td>" +
+        "<td>" + (b ? b.n : "&mdash;") + "</td><td>" + (b ? sgn(b.med) + " d" : "&mdash;") + "</td>" +
+        "<td>" + (diff === null ? "&mdash;" :
+          "<strong style='color:" + (diff > 0 ? "#1e795f" : "#B34036") + "'>" +
+          sgn(diff) + " d</strong>") + "</td></tr>");
+    });
+    document.getElementById("leadWindow").innerHTML = w.join("");
+  });
+})();
+</script>
+</body>
+</html>
