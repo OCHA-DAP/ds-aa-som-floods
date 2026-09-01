@@ -1,0 +1,1016 @@
+{
+ "years": [
+  1999,
+  2000,
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023
+ ],
+ "windows": [
+  "juba_gu",
+  "juba_deyr",
+  "shabelle_gu",
+  "shabelle_deyr"
+ ],
+ "meta": {
+  "juba_gu": {
+   "A_req": 3,
+   "A_pool": 5,
+   "A_label": "geoglows + glofas_v5 + google_grrr",
+   "A_rp": [
+    6
+   ],
+   "B_req": 3,
+   "B_pool": 4,
+   "B_label": "google_grrr",
+   "B_rp": 5
+  },
+  "juba_deyr": {
+   "A_req": 3,
+   "A_pool": 4,
+   "A_label": "geoglows + glofas_v5",
+   "A_rp": [
+    5
+   ],
+   "B_req": 3,
+   "B_pool": 4,
+   "B_label": "glofas_v5",
+   "B_rp": 4
+  },
+  "shabelle_gu": {
+   "A_req": 4,
+   "A_pool": 4,
+   "A_label": "glofas_v5 + google_grrr",
+   "A_rp": [
+    6
+   ],
+   "B_req": 2,
+   "B_pool": 3,
+   "B_label": "google_grrr",
+   "B_rp": 6
+  },
+  "shabelle_deyr": {
+   "A_req": 3,
+   "A_pool": 5,
+   "A_label": "geoglows + glofas_v5",
+   "A_rp": [
+    5
+   ],
+   "B_req": 2,
+   "B_pool": 3,
+   "B_label": "glofas_v5",
+   "B_rp": 4
+  }
+ },
+ "table": [
+  {
+   "year": 1999,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2000,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2001,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2002,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2003,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2004,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2005,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2006,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2007,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2008,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2009,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2010,
+   "window": "juba_gu",
+   "a": 3,
+   "a_fire": true,
+   "b": 2,
+   "b_fire": false
+  },
+  {
+   "year": 2011,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2012,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2013,
+   "window": "juba_gu",
+   "a": 2,
+   "a_fire": false,
+   "b": 4,
+   "b_fire": true
+  },
+  {
+   "year": 2014,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2015,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2016,
+   "window": "juba_gu",
+   "a": 3,
+   "a_fire": true,
+   "b": 4,
+   "b_fire": true
+  },
+  {
+   "year": 2017,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2018,
+   "window": "juba_gu",
+   "a": 4,
+   "a_fire": true,
+   "b": 4,
+   "b_fire": true
+  },
+  {
+   "year": 2019,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2020,
+   "window": "juba_gu",
+   "a": 4,
+   "a_fire": true,
+   "b": 4,
+   "b_fire": true
+  },
+  {
+   "year": 2021,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2022,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2023,
+   "window": "juba_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 1,
+   "b_fire": false
+  },
+  {
+   "year": 1999,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2000,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2001,
+   "window": "juba_deyr",
+   "a": 1,
+   "a_fire": false,
+   "b": 1,
+   "b_fire": false
+  },
+  {
+   "year": 2002,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2003,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2004,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 2,
+   "b_fire": false
+  },
+  {
+   "year": 2005,
+   "window": "juba_deyr",
+   "a": 1,
+   "a_fire": false,
+   "b": 1,
+   "b_fire": false
+  },
+  {
+   "year": 2006,
+   "window": "juba_deyr",
+   "a": 1,
+   "a_fire": false,
+   "b": 3,
+   "b_fire": true
+  },
+  {
+   "year": 2007,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2008,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2009,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2010,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2011,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 1,
+   "b_fire": false
+  },
+  {
+   "year": 2012,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2013,
+   "window": "juba_deyr",
+   "a": 2,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2014,
+   "window": "juba_deyr",
+   "a": 1,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2015,
+   "window": "juba_deyr",
+   "a": 2,
+   "a_fire": false,
+   "b": 2,
+   "b_fire": false
+  },
+  {
+   "year": 2016,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2017,
+   "window": "juba_deyr",
+   "a": 1,
+   "a_fire": false,
+   "b": 1,
+   "b_fire": false
+  },
+  {
+   "year": 2018,
+   "window": "juba_deyr",
+   "a": 1,
+   "a_fire": false,
+   "b": 2,
+   "b_fire": false
+  },
+  {
+   "year": 2019,
+   "window": "juba_deyr",
+   "a": 1,
+   "a_fire": false,
+   "b": 2,
+   "b_fire": false
+  },
+  {
+   "year": 2020,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2021,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2022,
+   "window": "juba_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2023,
+   "window": "juba_deyr",
+   "a": 4,
+   "a_fire": true,
+   "b": 4,
+   "b_fire": true
+  },
+  {
+   "year": 1999,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2000,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2001,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2002,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2003,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2004,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2005,
+   "window": "shabelle_gu",
+   "a": 1,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2006,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2007,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2008,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2009,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2010,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2011,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2012,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2013,
+   "window": "shabelle_gu",
+   "a": 3,
+   "a_fire": false,
+   "b": 3,
+   "b_fire": true
+  },
+  {
+   "year": 2014,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2015,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2016,
+   "window": "shabelle_gu",
+   "a": 4,
+   "a_fire": true,
+   "b": 3,
+   "b_fire": true
+  },
+  {
+   "year": 2017,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2018,
+   "window": "shabelle_gu",
+   "a": 3,
+   "a_fire": false,
+   "b": 3,
+   "b_fire": true
+  },
+  {
+   "year": 2019,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2020,
+   "window": "shabelle_gu",
+   "a": 4,
+   "a_fire": true,
+   "b": 3,
+   "b_fire": true
+  },
+  {
+   "year": 2021,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2022,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2023,
+   "window": "shabelle_gu",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 1999,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2000,
+   "window": "shabelle_deyr",
+   "a": 1,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2001,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2002,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2003,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2004,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2005,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2006,
+   "window": "shabelle_deyr",
+   "a": 3,
+   "a_fire": true,
+   "b": 3,
+   "b_fire": true
+  },
+  {
+   "year": 2007,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2008,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2009,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2010,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 1,
+   "b_fire": false
+  },
+  {
+   "year": 2011,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2012,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2013,
+   "window": "shabelle_deyr",
+   "a": 1,
+   "a_fire": false,
+   "b": 3,
+   "b_fire": true
+  },
+  {
+   "year": 2014,
+   "window": "shabelle_deyr",
+   "a": 3,
+   "a_fire": true,
+   "b": 3,
+   "b_fire": true
+  },
+  {
+   "year": 2015,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2016,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2017,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2018,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2019,
+   "window": "shabelle_deyr",
+   "a": 4,
+   "a_fire": true,
+   "b": 3,
+   "b_fire": true
+  },
+  {
+   "year": 2020,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 2,
+   "b_fire": true
+  },
+  {
+   "year": 2021,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2022,
+   "window": "shabelle_deyr",
+   "a": 0,
+   "a_fire": false,
+   "b": 0,
+   "b_fire": false
+  },
+  {
+   "year": 2023,
+   "window": "shabelle_deyr",
+   "a": 4,
+   "a_fire": true,
+   "b": 3,
+   "b_fire": true
+  }
+ ],
+ "bench": {
+  "juba_gu": {
+   "sev": [
+    2018,
+    2020,
+    2023
+   ],
+   "mod": [
+    2005,
+    2010,
+    2016,
+    2018,
+    2020,
+    2023
+   ]
+  },
+  "juba_deyr": {
+   "sev": [
+    2006,
+    2014,
+    2023
+   ],
+   "mod": [
+    2006,
+    2008,
+    2014,
+    2017,
+    2023
+   ]
+  },
+  "shabelle_gu": {
+   "sev": [
+    2016,
+    2020,
+    2023
+   ],
+   "mod": [
+    2003,
+    2005,
+    2010,
+    2016,
+    2018,
+    2020,
+    2023
+   ]
+  },
+  "shabelle_deyr": {
+   "sev": [
+    2006,
+    2014,
+    2019,
+    2020,
+    2023
+   ],
+   "mod": [
+    2006,
+    2008,
+    2014,
+    2019,
+    2020,
+    2023
+   ]
+  }
+ },
+ "benchmark": {
+  "severe": [
+   2006,
+   2014,
+   2016,
+   2018,
+   2019,
+   2020,
+   2023
+  ],
+  "flood": [
+   2003,
+   2005,
+   2006,
+   2008,
+   2010,
+   2014,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2023
+  ]
+ },
+ "envelope": {
+  "A": {
+   "years": [
+    2006,
+    2010,
+    2014,
+    2016,
+    2018,
+    2019,
+    2020,
+    2023
+   ],
+   "n": 8,
+   "rp": 3.2,
+   "severe_caught": 7,
+   "n_severe": 7,
+   "missed": [],
+   "false": []
+  },
+  "B": {
+   "years": [
+    2006,
+    2013,
+    2014,
+    2016,
+    2018,
+    2019,
+    2020,
+    2023
+   ],
+   "n": 8,
+   "rp": 3.2,
+   "severe_caught": 7,
+   "n_severe": 7,
+   "missed": [],
+   "false": [
+    2013
+   ]
+  }
+ }
+}
