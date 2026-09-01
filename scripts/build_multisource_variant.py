@@ -456,12 +456,20 @@ def draw_tail(path, models=None):
     return path.name
 
 
-def rp3_detection():
-    """[{station, source, n_events, POD, FAR}] on observed RP3 crossings."""
+def rp3_detection(season=None):
+    """[{station, source, n_events, POD, FAR, F1}] on observed RP3 crossings.
+
+    With `season` the record is restricted to that season's months before
+    thresholds are fitted and events counted, so Gu and Deyr are scored
+    separately. F1 combines the hit rate with precision (1 - FAR).
+    """
+    months = SEASONS[season] if season else None
     out = []
     for river in TRIGGER_STATIONS:
         for st in TRIGGER_STATIONS[river]:
             obs = lv[lv.station == st].set_index("date")["level_m"].dropna().sort_index()
+            if months:
+                obs = obs[obs.index.month.isin(months)]
             modern = obs[obs.index.year >= 2000]
             am = modern.groupby(modern.index.year).max().dropna()
             base = weibull_level(am.values, RP_FLOOR)
@@ -469,6 +477,8 @@ def rp3_detection():
                 continue
             for model in MODELS:
                 m = dd[(dd.src == model) & (dd.station == st)].set_index("date")["discharge"]
+                if months:
+                    m = m[m.index.month.isin(months)]
                 m = m[(m.index.year >= 2002) & (m.index.year <= Y1)].sort_index()
                 if len(m) < 500:
                     continue
@@ -483,9 +493,14 @@ def rp3_detection():
                 oe, me = episodes(j["obs"] >= base), episodes(j["mod"] >= t)
                 if not oe:
                     continue
+                pod = hits(oe, me) / len(oe)
+                far = (1 - hits(me, oe) / len(me)) if me else np.nan
+                prec = 1 - far if not np.isnan(far) else np.nan
+                f1 = (2 * pod * prec / (pod + prec)
+                      if pod + (prec if not np.isnan(prec) else 0) > 0
+                      and not np.isnan(prec) else np.nan)
                 out.append({"station": st, "source": model, "n_events": len(oe),
-                            "POD": hits(oe, me) / len(oe),
-                            "FAR": (1 - hits(me, oe) / len(me)) if me else np.nan})
+                            "POD": pod, "FAR": far, "F1": f1})
     return out
 
 
@@ -516,6 +531,46 @@ def draw_detection(path, models=None):
         "Share of the model's own alarms that were false\n(dark = better)",
         fontsize=10.5)
     fig.subplots_adjust(wspace=0.06)
+    fig.savefig(path, dpi=170, bbox_inches="tight")
+    plt.close(fig)
+    return path.name
+
+
+def draw_detection_seasonal(path, models=None):
+    """POD, FAR and F1 per gauge and model, one row of panels per season."""
+    models = models or MODELS
+    fig, axes = plt.subplots(2, 3, figsize=(11.8, 9.2))
+    for row, season in enumerate(["gu", "deyr"]):
+        sc = pd.DataFrame(rp3_detection(season))
+        sc = sc[sc.source.isin(models)]
+        if sc.empty:
+            continue
+        ylab, mats = [], {"POD": [], "FAR": [], "F1": []}
+        for river in TRIGGER_STATIONS:
+            for st in TRIGGER_STATIONS[river]:
+                sub = sc[sc.station == st]
+                if sub.empty:
+                    continue
+                ylab.append(f"{st.replace('_', ' ').title()}  "
+                            f"n={int(sub.n_events.iloc[0])}")
+                for met in mats:
+                    mats[met].append([
+                        float(sub[sub.source == m][met].iloc[0])
+                        if len(sub[sub.source == m]) else np.nan
+                        for m in models])
+        for col, met in enumerate(["POD", "FAR", "F1"]):
+            ax = axes[row][col]
+            summary_figures.heat(
+                ax, mats[met], [NICE[m].replace(" ", chr(10)) for m in models],
+                ylab if col == 0 else [""] * len(ylab),
+                reverse=(met == "FAR"))
+            ax.set_title(f"{season.title()} | {met}"
+                         + (" (dark = better)" if col == 0 else ""),
+                         fontsize=10, loc="left")
+    fig.suptitle("RP3-event scores per gauge, model and season "
+                 "(hit rate, false-alarm rate, F1)",
+                 x=0.05, ha="left", fontweight="bold", fontsize=11.5, color=INK)
+    fig.subplots_adjust(wspace=0.08, hspace=0.3, top=0.93)
     fig.savefig(path, dpi=170, bbox_inches="tight")
     plt.close(fig)
     return path.name
@@ -620,6 +675,8 @@ draw_tail(FIGS / "g_tail.png", SET_MODELS["base"])
 draw_tail(FIGS / "g_tail_all.png", SET_MODELS["all"])
 draw_detection(FIGS / "h_detection.png", SET_MODELS["base"])
 draw_detection(FIGS / "h_detection_all.png", SET_MODELS["all"])
+draw_detection_seasonal(FIGS / "i_detection_seasonal.png", SET_MODELS["base"])
+draw_detection_seasonal(FIGS / "i_detection_seasonal_all.png", SET_MODELS["all"])
 for stale in ["_alt", "_altpng", "_ng", "_ngpng"]:
     shutil.rmtree(FIGS / stale, ignore_errors=True)
 for svg in FIGS.glob("*.svg"):
