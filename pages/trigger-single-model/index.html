@@ -247,11 +247,11 @@ body.variant .carrynote { display:none; }
     <p>Four river-season windows, each running on <strong>one</strong> forecast source
       rather than a mixture. Inside a window, every monitored point's flow is compared
       with its own return-period threshold and the window activates when enough points are
-      over their thresholds <strong>on the same day</strong> - simultaneously, not merely
-      within the same season. The same-day requirement is not restrictive in practice:
-      high flows persist for weeks, and in every historical activation the points crossed
-      within 0 to 5 days of one another, in downstream order (see "How far apart do the
-      points cross?" below). At least two points must agree, so no single point releases the
+      over their thresholds <strong>on the same day</strong>. A season where the points
+      cross on different days does not count. This rarely matters in practice: flood flows
+      stay high for weeks, and in every past activation the points crossed within 0 to 5
+      days of each other, upstream gauges first (see "How far apart do the points cross?"
+      below). At least two points must agree, so no single point releases the
       money, and never all of them, so one quiet point cannot block it.</p>
     <p>All seven reporting-era points are monitored: four on the Juba (Luuq, Dollow,
       Bardheere, Bualle) and three on the Shabelle (Belet Weyne, Bulo Burti, Jowhar). No
@@ -375,7 +375,7 @@ body.variant .carrynote { display:none; }
 
     <figure>
       <img src="figs/a_selection.png?v=202609011455" data-alt-src="figs/a_selection_all.png?v=202609011455" alt="Best model per river and season on RP3-or-rarer events">
-      <figcaption>Which model works best for each river and season, judged only on 1-in-3-or-rarer events: the mean best-lag rank correlation between model and gauge inside observed RP3+ event windows (each widened by 10 days), averaged over that window's gauges, with the mean hit rate on the same events printed inside each bar. Only the models in the selected provider set are shown; the marker is the one adopted. The lag search shares the limitation flagged in review note R2.</figcaption>
+      <figcaption>Mean best-lag rank correlation between model and gauge inside observed RP3+ event windows (widened by 10 days), averaged over the window's gauges. The hit rate on the same events is printed in each bar. Models shown follow the provider switch; the marker is the adopted one. The lag search has the limitation flagged in review note R2.</figcaption>
     </figure>
 
     <p>The per-point tracking numbers behind the choice (&#961; and best lag of each
@@ -392,34 +392,31 @@ body.variant .carrynote { display:none; }
 
 
     <h2>Why the models perform the way they do</h2>
-    <p>The selection above is a ranking. This is the reason behind it, and it is mostly a
-      story about magnitude: every model reproduces the <em>shape</em> of the flood tail
-      reasonably well and gets its <em>size</em> wrong by a factor that barely changes with
-      severity.</p>
+    <p>The main difference between the models is magnitude. Each reproduces the shape of
+      the flood tail reasonably well, but over- or under-estimates its size by a roughly
+      constant factor.</p>
     <figure>
       <img src="figs/g_tail.png?v=202609011455" data-alt-src="figs/g_tail_all.png?v=202609011455" alt="Model over observed discharge at return periods 3 to 6">
-      <figcaption>Tail behaviour at RP3 and above: each model's own return level divided
-        by the observed return level at the same return period, at the four gauges that
-        publish real discharge. Near-flat lines mean the bias is a level shift in the tail,
-        not a divergence that grows with severity. Only the models in the selected provider
-        set are shown.</figcaption>
+      <figcaption>Each model's return level divided by the observed return level, RP3 to
+        RP6, at the four gauges with published discharge. The lines are close to flat: the
+        bias is a constant scale factor and does not grow with severity. Models shown
+        follow the provider switch.</figcaption>
     </figure>
     <ul>
       <li class="altonly"><strong>GEOGloWS runs 3.8 to 10 times too high</strong> on the
-        Shabelle and at Luuq, and the ratio barely moves from RP3 to RP6. Its ranking of
-        wet and dry years is respectable; its absolute discharge is not.</li>
+        Shabelle and at Luuq, at every return period. It ranks wet and dry years
+        reasonably well, but its absolute discharge is far off.</li>
       <li><strong>GloFAS v5 is the closest to the observations:</strong> 1.12 to 1.25 at
         Belet Weyne, 1.24 to 1.42 at Bulo Burti, 0.83 to 0.87 at Luuq. Its predecessor v4
         ran 1.7 to 3.8 times too high, and v5 improves the daily rank correlation at the
-        same time (Belet Weyne 0.65 to 0.77), so it is a real improvement rather than a
-        rescaling. v4 is therefore not shown as a candidate anywhere on this page: it
-        survives only as the readiness leg's reforecast, where it is the sole archive at
-        leads 7 to 12 days.</li>
+        same time (Belet Weyne 0.65 to 0.77), so the gain is not just a rescaling. v4 is
+        not shown as a candidate anywhere on this page. It appears only as the readiness
+        leg's reforecast, the sole archive at leads 7 to 12 days.</li>
       <li><strong>Google GRRR is close on the Shabelle</strong> (0.78 to 1.11) and runs
         about 0.4 times observed at Luuq.</li>
       <li><strong>Bardheere disagrees with everything</strong> (0.14 to 1.53 across the
-        candidates), which is evidence about that gauge's record rather than another
-        ranking.</li>
+        candidates). That points to problems with the gauge record there, not with the
+        models.</li>
     </ul>
     <div class="callout">
       <strong>One caveat on this figure.</strong> The observed rating curve caps at bank
@@ -428,12 +425,10 @@ body.variant .carrynote { display:none; }
     </div>
 
     <h3>How each model maps the RP3 events, gauge by gauge</h3>
-    <p>Magnitude is one half. The other is whether a model is above its own 1-in-3
-      threshold when the gauge was above its own, which is what the trigger actually asks
-      of it.</p>
-    <p class="muted stdonly"><em>GEOGloWS is not in the adopted set, so it is not shown
-      here. Its numbers, which are the empirical case for excluding it, appear under
-      <strong>All providers</strong>.</em></p>
+    <p>The second question is whether a model is above its own 1-in-3 threshold when the
+      gauge is above its own. That is the event the trigger has to catch.</p>
+    <p class="muted stdonly"><em>GEOGloWS is not in the adopted set and is not shown
+      here. Its numbers are under <strong>All providers</strong>.</em></p>
     <figure>
       <img src="figs/h_detection.png?v=202609011455" data-alt-src="figs/h_detection_all.png?v=202609011455" alt="Hit rate and false-alarm rate per gauge and model on RP3 events">
       <figcaption>Every observed 1-in-3 crossing at each gauge against each model's
@@ -446,38 +441,34 @@ body.variant .carrynote { display:none; }
       Luuq against 0.44 for both v5 and Google, and 0.25 at Bardheere, and it pairs those
       misses with the worst false-alarm rates on the board: 0.88 at Luuq and Bardheere,
       0.62 at Belet Weyne. It is not uniformly worst: it ties v5 at Bulo Burti (0.44) and
-      reaches 0.67 at Dollow, where every model does well. That is the empirical half of
-      the case for leaving it out of the adopted design; the calibration argument is the
-      structural half.</p>
+      reaches 0.67 at Dollow, where every model does well. These detection numbers,
+      together with the threshold problem described above, are why it is left out of the
+      adopted design.</p>
     <p><strong>GloFAS v5 is best or joint-best at six of the seven gauges</strong> and has
       the cleanest false-alarm record (0.14 at Belet Weyne, 0.40 at Dollow), which is why
-      it carries both Deyr windows. Its one failure is Bualle, where it catches 0.29
+      it carries both Deyr windows. Its weakest gauge is Bualle, where it catches 0.29
       against 0.43 for the others. <strong>Google matches v5 at Dollow (1.00), Luuq
       (0.44) and Bardheere (0.50)</strong> and is the only model with a usable forecast
       archive on the Shabelle, which is why it carries Gu.</p>
-    <p><strong>Jowhar defeats every model</strong> (0.10 to 0.20, false alarms 0.71 and
-      up). Off-take and marsh hydraulics decouple the local level from upstream discharge
-      there, so no discharge model predicts that gauge. It stays inside the Shabelle
-      consensus rather than acting alone, which is the point of requiring two gauges.</p>
+    <p><strong>No model does well at Jowhar</strong> (0.10 to 0.20, false alarms 0.71
+      and up): off-takes and marsh hydraulics decouple the local level from upstream
+      discharge. Requiring two gauges keeps it from deciding anything on its own.</p>
     <div class="callout warn">
-      <strong>Read these as a ranking, not as precision.</strong> Each gauge offers only 3
-      to 10 observed RP3 events in the scoring window, so one event moves a rate by 0.1 or
-      more. The ordering is stable across gauges; the individual values are not tight.
+      <strong>Small samples.</strong> Each gauge has only 3 to 10 observed RP3 events in
+      the scoring window, so a single event moves a rate by 0.1 or more. The ranking is
+      consistent across gauges, but the individual values are not precise.
     </div>
-    <p>Three consequences follow, and they are why the mechanism is shaped the way it is.
-      <strong>Thresholds are set on return periods, never on absolute discharge:</strong>
-      because the tail ratio is flat, matching frequency instead of magnitude is an implicit
-      bias correction, and it is what makes a model that runs ten times too wet usable at
-      all. It also means a threshold is only valid against the climatology it was fitted on,
-      which is exactly where GEOGloWS fails, its forecast climatology sitting below its
-      retrospective one. <strong>Skill is flat across leads 1 to 7 days for every
-      model,</strong> because the signal is water already in the channel rather than
-      forecast rainfall, which is what makes a one-week action window cheap in accuracy and
-      why crossings at points along one river overlap on the same day even when the first
-      crossings are days apart. <strong>And no single gauge is trusted,</strong> since
-      Jowhar defeats every model and Bardheere's record is suspect.</p>
+    <p>This shapes the mechanism in three ways. <strong>Thresholds are set on return
+      periods, not on absolute discharge:</strong> with a flat tail ratio, matching
+      frequency corrects the bias, so even a model running ten times too wet stays usable.
+      A threshold is then only valid against the climatology it was fitted on, which is
+      where GEOGloWS fails: its forecast climatology sits below its retrospective.
+      <strong>Skill is flat across leads 1 to 7 days,</strong> because the signal is water
+      already in the channel rather than forecast rainfall, so a one-week action window
+      costs little accuracy. <strong>And no single gauge decides anything:</strong> Jowhar
+      cannot be predicted from upstream discharge and Bardheere's record is suspect.</p>
 
-    <p class="muted carrynote"><em>The seasonal-peak comparison is a static figure of every candidate model, so it cannot be filtered to the selected set. Switch to <strong>All providers</strong> to open it.</em></p>
+    <p class="muted carrynote"><em>The seasonal-peak comparison is a static figure showing every candidate model. It is available under <strong>All providers</strong>.</em></p>
 <details class="supp altonly"><summary>Supporting evidence &mdash; seasonal peaks, model vs gauge</summary>
 <div class="supp-body">
     <h2>Seasonal peaks: model vs gauge</h2>
@@ -530,7 +521,7 @@ body.variant .carrynote { display:none; }
 </div></details>
 
     <h2>Thresholds and calibration</h2>
-    <p>Each monitored point gets its threshold from its own model's climatology: the Weibull plotting position of that point's seasonal maxima, so a model is judged on timing rather than on scale. <strong>1-in-3 is the floor and a quarter of the record is the ceiling</strong>, which on 25 years allows 1-in-3 to 1-in-6. 1-in-2 is not used anywhere, on either leg.</p>
+    <p>Each monitored point gets its threshold from its own model's climatology: the Weibull plotting position of that point's seasonal maxima, so a model is judged on timing rather than on scale. <strong>1-in-3 is the floor and a quarter of the record is the ceiling</strong>, which on 25 years allows 1-in-3 to 1-in-6.</p>
 
     <figure>
       <img src="figs/c_backtest_strip.png?v=202609011455" class="vswap" data-alt-src="figs/c_backtest_strip_all.png?v=202609011455" data-alt2-src="figs/c_backtest_strip_nogoogle.png?v=202609011455" alt="Heat strip of activation years per trigger leg, per river versus severe years, and overall, 1999 to 2023">
@@ -548,8 +539,8 @@ body.variant .carrynote { display:none; }
 
         <h3>How far apart do the points cross?</h3>
     <p>A window activates only when enough points are above their thresholds
-      <strong>on the same day</strong>, not merely in the same season. That is a real
-      constraint, so it is worth knowing how tight the crossings are in practice.</p>
+      <strong>on the same day</strong>, not just in the same season. How tight are the
+      crossings in practice?</p>
     <p>Across every activation, the first and last point to cross fall <strong>0 to 5
       days apart</strong>, and they cross in downstream order: Dollow, Luuq, Bardheere,
       Bualle on the Juba; Belet Weyne, Bulo Burti, Jowhar on the Shabelle. Shabelle Gu
@@ -632,7 +623,7 @@ body.variant .carrynote { display:none; }
 
 </div></details>
 
-    <p class="muted carrynote"><em>Each model's skill against its own reanalysis is a static figure of every candidate model, so it cannot be filtered to the selected set. Switch to <strong>All providers</strong> to open it.</em></p>
+    <p class="muted carrynote"><em>The forecast-vs-own-reanalysis comparison is a static figure showing every candidate model. It is available under <strong>All providers</strong>.</em></p>
 <details class="supp altonly"><summary>Supporting evidence &mdash; forecast skill against each model&#39;s own reanalysis</summary>
 <div class="supp-body">
     <h2>Forecast skill against each model's own reanalysis</h2>
@@ -696,8 +687,7 @@ body.variant .carrynote { display:none; }
     <p>Readiness runs on GloFAS v4 ensemble-median forecasts at leads 7 to
       12, the only archive covering that band, over the same full set of points, with
       thresholds refitted on that series. It releases only the mobilisation share and is
-      held to the same floor: <strong>no threshold below 1-in-3</strong>, which is the
-      change from the published mechanism, where readiness sat on 1-in-2 levels.</p>
+      held to the same floor: <strong>no threshold below 1-in-3</strong>.</p>
 <div class="tablewrap">
 <table class="data">
 <thead><tr><th>window</th><th>readiness rule</th><th>readiness years</th><th>covers action years</th></tr></thead>

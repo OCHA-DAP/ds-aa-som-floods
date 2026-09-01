@@ -905,11 +905,11 @@ SECTIONS = {
     <p>Four river-season windows, each running on <strong>one</strong> forecast source
       rather than a mixture. Inside a window, every monitored point's flow is compared
       with its own return-period threshold and the window activates when enough points are
-      over their thresholds <strong>on the same day</strong> - simultaneously, not merely
-      within the same season. The same-day requirement is not restrictive in practice:
-      high flows persist for weeks, and in every historical activation the points crossed
-      within 0 to 5 days of one another, in downstream order (see "How far apart do the
-      points cross?" below). At least two points must agree, so no single point releases the
+      over their thresholds <strong>on the same day</strong>. A season where the points
+      cross on different days does not count. This rarely matters in practice: flood flows
+      stay high for weeks, and in every past activation the points crossed within 0 to 5
+      days of each other, upstream gauges first (see "How far apart do the points cross?"
+      below). At least two points must agree, so no single point releases the
       money, and never all of them, so one quiet point cannot block it.</p>
     <p>All seven reporting-era points are monitored: four on the Juba (Luuq, Dollow,
       Bardheere, Bualle) and three on the Shabelle (Belet Weyne, Bulo Burti, Jowhar). No
@@ -1123,13 +1123,12 @@ SECTION_EDITS = {
          "climatology: the Weibull plotting position of that point's seasonal "
          "maxima, so a model is judged on timing rather than on scale. "
          "<strong>1-in-3 is the floor and a quarter of the record is the "
-         "ceiling</strong>, which on 25 years allows 1-in-3 to 1-in-6. 1-in-2 is "
-         "not used anywhere, on either leg.</p>"),
+         "ceiling</strong>, which on 25 years allows 1-in-3 to 1-in-6.</p>"),
         (r"(<h3[^>]*>\s*The tuning surface)",
          """    <h3>How far apart do the points cross?</h3>
     <p>A window activates only when enough points are above their thresholds
-      <strong>on the same day</strong>, not merely in the same season. That is a real
-      constraint, so it is worth knowing how tight the crossings are in practice.</p>
+      <strong>on the same day</strong>, not just in the same season. How tight are the
+      crossings in practice?</p>
     <p>Across every activation, the first and last point to cross fall <strong>0 to 5
       days apart</strong>, and they cross in downstream order: Dollow, Luuq, Bardheere,
       Bualle on the Juba; Belet Weyne, Bulo Burti, Jowhar on the Shabelle. Shabelle Gu
