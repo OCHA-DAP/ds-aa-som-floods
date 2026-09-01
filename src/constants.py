@@ -226,8 +226,9 @@ READINESS_MODEL = "glofas_v4"
 # notebook 09 and the summary-page generator cannot drift apart.
 # Calibrated on the ENVELOPE, not window by window (see ENVELOPE_TARGET_RP
 # above and scripts/envelope_search.py): these settings put the union at
-# 1-in-2.9 and catch 8 of the 10 severe years, with no activation in a year
-# that recorded no flood at all. Majority consensus everywhere, so no single
+# 1-in-3.2 and catch 7 of the 8 severe years, with one activation (2013) in a
+# year two gauges did not record a flood. Majority consensus everywhere, so no
+# single
 # gauge can release the money and no single quiet gauge can block it.
 # One model per WINDOW (directive 2026-08-27), chosen by
 # scripts/model_selection.py: rank the gauges by how well that model tracks the
@@ -240,12 +241,26 @@ READINESS_MODEL = "glofas_v4"
 # begins in July 2024. Google carries Gu, GloFAS v5 carries Deyr.
 #
 # Calibrated to activate no more often than 1-in-3 (directive 2026-08-27): 8
-# activations in 25 years, 1-in-3.2, catching 8 of the 10 severe years. The
-# 9-activation alternative sits at 1-in-2.9 with the same severe coverage;
-# this one drops 2010, which was not a severe year.
+# activations in 25 years, 1-in-3.2, catching 7 of the 8 severe years (2008 is
+# the miss). The 9-activation alternative sits at 1-in-2.9 with the same severe
+# coverage; this one drops 2010, which was not a severe year.
+#
+# Verified independently 2026-08-31 by recomputing from the daily series: the
+# envelope activates in 2006, 2013, 2014, 2016, 2018, 2019, 2020, 2023, and
+# within the GEOGloWS-excluded restriction this is the frontier pick at its own
+# activation rate under the two-gauge benchmark. Excluding GEOGloWS is not free:
+# with GEOGloWS allowed, 1-in-3.2 reaches 7 of 8 severe years with NO activation
+# in a no-flood year (2016 becomes the miss instead of 2008), and 1-in-2.9
+# reaches 8 of 8 with none. The cost of the exclusion is therefore the 2013
+# activation plus keeping 2008 as the miss. Every GEOGloWS-allowed best-scoring
+# tie puts GEOGloWS on Juba Gu, which is where the cost falls.
 #
 # The backtest does not identify the model on its own: 161 assignments across
-# the four windows reach the same 8-of-10 severe-year coverage near 1-in-3.
+# the four windows reach the same severe-year coverage near 1-in-3. Rechecked
+# 2026-08-31 against the two-gauge benchmark: 8,808 assignments land on 8
+# activations, 267 tie for the best score, and those 267 span only two distinct
+# activation-year sets, so the choice of product is not identified by the
+# backtest.
 # Where the envelope is indifferent, the forecast side decides, which is why
 # Shabelle Deyr runs on GloFAS: it leads the Shabelle at lead time in both
 # seasons, its thresholds come from the v5 reanalysis that matches the
