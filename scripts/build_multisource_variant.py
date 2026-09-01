@@ -555,22 +555,29 @@ def window_fires(model, river, season, rp, n_req):
 
 
 def draw_window_scores(path, models=None):
-    """POD / FAR / F1 of each window's vote rule per model, on RP3 flood years."""
+    """POD / FAR / F1 of each window's vote rule per model.
+
+    POD counts SEVERE years caught, the objective the envelope is sized on:
+    at a 1-in-3 rate the trigger cannot catch every RP3 flood, so it is
+    judged on the worst ones. FAR counts activations with no RP3 flood at
+    all behind them. F1 combines the two.
+    """
     models = models or MODELS
     ylab, mats = [], {"POD": [], "FAR": [], "F1": []}
     for k in WINDOWS:
         river, season = k
         cfg = TRIGGER_CONFIG[k]
         floods = envelope_search.gauge_consensus_years(lv, river, season, RP_FLOOR)
-        if not floods:
+        sev = envelope_search.gauge_consensus_years(lv, river, season, SEVERE_RP)
+        if not sev:
             continue
         ylab.append(f"{WLABEL[k]}  {cfg['n_req']} of "
                     f"{len(TRIGGER_STATIONS[river])}, RP{cfg['rp']}  "
-                    f"n={len(floods)}")
+                    f"severe n={len(sev)}")
         row = {m_: [] for m_ in mats}
         for m in models:
             fires = window_fires(m, river, season, cfg["rp"], cfg["n_req"])
-            pod = len(fires & floods) / len(floods)
+            pod = len(fires & sev) / len(sev)
             far = (len(fires - floods) / len(fires)) if fires else np.nan
             prec = 1 - far if not np.isnan(far) else np.nan
             f1 = (2 * pod * prec / (pod + prec)
@@ -586,8 +593,8 @@ def draw_window_scores(path, models=None):
             ax, mats[met], [NICE[m].replace(" ", chr(10)) for m in models],
             ylab if met == "POD" else [""] * len(ylab),
             reverse=(met == "FAR"))
-        ax.set_title({"POD": "POD: share of RP3 flood years caught",
-                      "FAR": "FAR: share of activations with no flood",
+        ax.set_title({"POD": "POD: share of SEVERE years caught",
+                      "FAR": "FAR: activations with no RP3 flood",
                       "F1": "F1"}[met] + "\n(dark = better)", fontsize=10)
     fig.subplots_adjust(wspace=0.06)
     fig.savefig(path, dpi=170, bbox_inches="tight")
@@ -694,6 +701,8 @@ draw_tail(FIGS / "g_tail.png", SET_MODELS["base"])
 draw_tail(FIGS / "g_tail_all.png", SET_MODELS["all"])
 draw_detection(FIGS / "h_detection.png", SET_MODELS["base"])
 draw_detection(FIGS / "h_detection_all.png", SET_MODELS["all"])
+draw_window_scores(FIGS / "j_window_scores.png", SET_MODELS["base"])
+draw_window_scores(FIGS / "j_window_scores_all.png", SET_MODELS["all"])
 for stale in ["_alt", "_altpng", "_ng", "_ngpng"]:
     shutil.rmtree(FIGS / stale, ignore_errors=True)
 for svg in FIGS.glob("*.svg"):

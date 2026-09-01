@@ -436,29 +436,18 @@ body.variant .carrynote { display:none; }
         Left: the share of observed events the model caught. Right: the share of the
         model's own crossings with no observed event behind them.</figcaption>
     </figure>
-    <p>The comparison that matters runs at the level the trigger operates and on the
-      objective it is sized for. At a 1-in-3 activation rate the envelope cannot catch
-      every RP3 flood, so windows are judged on the severe years they catch and the
-      false activations they add. Each window's vote rule, with each model swapped in:</p>
-<div class="tablewrap">
-<table class="data">
-<thead><tr><th rowspan="2">window (severe years)</th>
-<th colspan="2">severe years caught</th>
-<th colspan="2">activations outside the benchmark</th></tr>
-<tr><th style="color:#B34036">GloFAS v5</th><th style="color:#2A78D6">Google GRRR</th>
-<th style="color:#B34036">GloFAS v5</th><th style="color:#2A78D6">Google GRRR</th></tr></thead>
-<tbody>
-<tr><td>Juba Gu (2018, 2020, 2023)</td><td>2 of 3: 2018, 2020</td><td>2 of 3: 2018, 2020</td><td>none</td><td>2013</td></tr>
-<tr><td>Juba Deyr (2006, 2008, 2014, 2023)</td><td>2 of 4: 2006, 2023</td><td>2 of 4: 2006, 2023</td><td>none</td><td>2013, 2015, 2019</td></tr>
-<tr><td>Shabelle Gu (2016, 2020, 2023)</td><td>2 of 3: 2016, 2020</td><td>2 of 3: 2016, 2020</td><td>none</td><td>2013</td></tr>
-<tr><td>Shabelle Deyr (2006, 2014, 2019, 2020, 2023)</td><td><strong>5 of 5</strong></td><td>4 of 5: misses 2020</td><td>2013</td><td>2013</td></tr>
-</tbody>
-</table>
-</div>
-    <p class="muted"><em>Each cell is that window's rule (3 of 4 points on the Juba, 2 of
-      3 on the Shabelle, at the adopted return periods) run on the named model,
-      1999-2023, against the two-gauge benchmark. Gu 2023 is missed by every candidate;
-      the envelope catches 2023 through the Deyr windows.</em></p>
+    <p>The same comparison at the level the trigger operates: each window's vote rule,
+      3 of 4 points on the Juba and 2 of 3 on the Shabelle at the adopted return periods,
+      with each model swapped in. POD counts <strong>severe</strong> years caught, the
+      objective the envelope is sized on; FAR counts activations with no RP3 flood at all
+      behind them:</p>
+    <figure>
+      <img src="figs/j_window_scores.png?v=202609012030" data-alt-src="figs/j_window_scores_all.png?v=202609012030" alt="Severe-year POD, false-alarm rate and F1 of each window rule per model">
+      <figcaption>Each window's rule run on each model, 1999-2023, against the two-gauge
+        benchmark. Gu 2023 is missed by every candidate; the envelope catches 2023 through
+        the Deyr windows. The return periods were tuned for the adopted models, so this is
+        a swap test, not each model at its own best settings.</figcaption>
+    </figure>
     <div class="callout">
       <strong>Why Google carries Gu and GloFAS v5 carries Deyr.</strong>
       <ul>
