@@ -96,8 +96,13 @@ def best_lag_rho(model_series, gauge_series):
     """Strongest rank correlation over plausible travel times."""
     best = 0.0
     for lag in range(MIN_LAG, MAX_LAG + 1):
-        j = pd.concat([model_series, gauge_series.shift(-lag)], axis=1,
-                      join="inner").dropna()
+        # CORRECTION (branch fix/corrected-benchmark-and-lag): .shift(-lag) moves by
+        # ROW POSITION, and the series has already been filtered to season months, so
+        # every non-zero lag pulled rows from the adjacent year and always scored
+        # worse. That forced best-lag to 0 almost everywhere. Shift by calendar days.
+        shifted = gauge_series.copy()
+        shifted.index = shifted.index - pd.Timedelta(days=lag)
+        j = pd.concat([model_series, shifted], axis=1, join="inner").dropna()
         if len(j) < MIN_OBS:
             continue
         r = j.iloc[:, 0].corr(j.iloc[:, 1], method="spearman")

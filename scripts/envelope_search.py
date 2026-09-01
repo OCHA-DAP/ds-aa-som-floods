@@ -90,7 +90,11 @@ def gauge_consensus_years(lv, river, season, rp, n_req=BENCH_GAUGES):
     for st in TRIGGER_STATIONS[river]:
         s = lv[lv.station == st].set_index("date")["level_m"].dropna().sort_index()
         s = s[s.index.month.isin(SEASONS[season])]
-        modern = s[s.index.year >= 2000]
+        # CORRECTION (branch fix/corrected-benchmark-and-lag): the fit window was
+        # open-ended, so levels were estimated on 2000-2026 while crossings are only
+        # counted inside SPAN (1999-2023). Three years of post-window data leaked into
+        # the labels and that alone decided whether 2008 was severe.
+        modern = s[(s.index.year >= 2000) & (s.index.year <= max(SPAN))]
         am = modern.groupby(modern.index.year).max().dropna()
         if not len(am):
             continue
