@@ -32,858 +32,1566 @@
   "shabelle_gu",
   "shabelle_deyr"
  ],
- "meta": {
-  "juba_gu": {
-   "A_req": 3,
-   "A_pool": 5,
-   "A_label": "geoglows + glofas_v5 + google_grrr",
-   "A_rp": [
-    6
+ "targets": {
+  "juba_gu": [
+   2018,
+   2020,
+   2021,
+   2023
+  ],
+  "juba_deyr": [
+   2000,
+   2006,
+   2019,
+   2023
+  ],
+  "shabelle_gu": [
+   2018,
+   2020,
+   2021,
+   2023
+  ],
+  "shabelle_deyr": [
+   2006,
+   2019,
+   2023
+  ]
+ },
+ "target_rule": "CERF flood allocation, or EM-DAT >= 100,000 affected",
+ "setups": {
+  "mixed": {
+   "meta": {
+    "juba_gu": {
+     "model": "GloFAS v5 + Google GRRR",
+     "rp": 6,
+     "n_req": 3,
+     "pool": 4,
+     "years": [
+      2016,
+      2018,
+      2020
+     ],
+     "leg_rp": 8.7,
+     "vs_gauge": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 1,
+      "tpr": 0.67,
+      "ppv": 0.67,
+      "f1": 0.67
+     },
+     "vs_target": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 2,
+      "tpr": 0.5,
+      "ppv": 0.67,
+      "f1": 0.57
+     },
+     "lead_days": -12.0,
+     "lead_n": 2
+    },
+    "juba_deyr": {
+     "model": "GloFAS v5 + Google GRRR",
+     "rp": 5,
+     "n_req": 2,
+     "pool": 4,
+     "years": [
+      2006,
+      2008,
+      2019,
+      2023
+     ],
+     "leg_rp": 6.5,
+     "vs_gauge": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 1,
+      "tpr": 0.67,
+      "ppv": 0.5,
+      "f1": 0.57
+     },
+     "vs_target": {
+      "tp": 3,
+      "fp": 1,
+      "fn": 1,
+      "tpr": 0.75,
+      "ppv": 0.75,
+      "f1": 0.75
+     },
+     "lead_days": -0.2,
+     "lead_n": 4
+    },
+    "shabelle_gu": {
+     "model": "GloFAS v5 + Google GRRR",
+     "rp": 6,
+     "n_req": 4,
+     "pool": 6,
+     "years": [
+      2016,
+      2018,
+      2020
+     ],
+     "leg_rp": 8.7,
+     "vs_gauge": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 1,
+      "tpr": 0.67,
+      "ppv": 0.67,
+      "f1": 0.67
+     },
+     "vs_target": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 2,
+      "tpr": 0.5,
+      "ppv": 0.67,
+      "f1": 0.57
+     },
+     "lead_days": -6.0,
+     "lead_n": 2
+    },
+    "shabelle_deyr": {
+     "model": "GloFAS v5 + Google GRRR",
+     "rp": 3,
+     "n_req": 5,
+     "pool": 6,
+     "years": [
+      2006,
+      2014,
+      2019,
+      2023
+     ],
+     "leg_rp": 6.5,
+     "vs_gauge": {
+      "tp": 4,
+      "fp": 0,
+      "fn": 1,
+      "tpr": 0.8,
+      "ppv": 1.0,
+      "f1": 0.89
+     },
+     "vs_target": {
+      "tp": 3,
+      "fp": 1,
+      "fn": 0,
+      "tpr": 1.0,
+      "ppv": 0.75,
+      "f1": 0.86
+     },
+     "lead_days": 7.0,
+     "lead_n": 1
+    }
+   },
+   "table": [
+    {
+     "year": 1999,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2007,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "juba_gu",
+     "n": 2,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "juba_gu",
+     "n": 2,
+     "fire": false
+    },
+    {
+     "year": 2014,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "juba_gu",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2017,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "juba_gu",
+     "n": 4,
+     "fire": true
+    },
+    {
+     "year": 2019,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2020,
+     "window": "juba_gu",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2021,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 1999,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "juba_deyr",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2007,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "juba_deyr",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2009,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2014,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2017,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2019,
+     "window": "juba_deyr",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2020,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2021,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "juba_deyr",
+     "n": 4,
+     "fire": true
+    },
+    {
+     "year": 1999,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "shabelle_gu",
+     "n": 3,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2007,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "shabelle_gu",
+     "n": 3,
+     "fire": false
+    },
+    {
+     "year": 2014,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "shabelle_gu",
+     "n": 4,
+     "fire": true
+    },
+    {
+     "year": 2017,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "shabelle_gu",
+     "n": 4,
+     "fire": true
+    },
+    {
+     "year": 2019,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2020,
+     "window": "shabelle_gu",
+     "n": 6,
+     "fire": true
+    },
+    {
+     "year": 2021,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 1999,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "shabelle_deyr",
+     "n": 6,
+     "fire": true
+    },
+    {
+     "year": 2007,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": false
+    },
+    {
+     "year": 2014,
+     "window": "shabelle_deyr",
+     "n": 6,
+     "fire": true
+    },
+    {
+     "year": 2015,
+     "window": "shabelle_deyr",
+     "n": 2,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2017,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2019,
+     "window": "shabelle_deyr",
+     "n": 6,
+     "fire": true
+    },
+    {
+     "year": 2020,
+     "window": "shabelle_deyr",
+     "n": 4,
+     "fire": false
+    },
+    {
+     "year": 2021,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "shabelle_deyr",
+     "n": 6,
+     "fire": true
+    }
    ],
-   "B_req": 3,
-   "B_pool": 4,
-   "B_label": "google_grrr",
-   "B_rp": 5
+   "envelope": {
+    "years": [
+     2006,
+     2008,
+     2014,
+     2016,
+     2018,
+     2019,
+     2020,
+     2023
+    ],
+    "n": 8,
+    "rp": 3.2,
+    "vs_gauge": {
+     "tp": 7,
+     "fp": 1,
+     "fn": 0,
+     "tpr": 1.0,
+     "ppv": 0.88,
+     "f1": 0.93
+    },
+    "vs_target": {
+     "tp": 5,
+     "fp": 3,
+     "fn": 2,
+     "tpr": 0.71,
+     "ppv": 0.62,
+     "f1": 0.67
+    },
+    "lead_days": -3.3,
+    "lead_n": 9
+   },
+   "windows_counts": [
+    3,
+    4,
+    3,
+    4
+   ]
   },
-  "juba_deyr": {
-   "A_req": 3,
-   "A_pool": 4,
-   "A_label": "geoglows + glofas_v5",
-   "A_rp": [
-    5
+  "one": {
+   "meta": {
+    "juba_gu": {
+     "model": "Google GRRR",
+     "rp": 4,
+     "n_req": 2,
+     "pool": 2,
+     "years": [
+      2013,
+      2016,
+      2018,
+      2020
+     ],
+     "leg_rp": 6.5,
+     "vs_gauge": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 1,
+      "tpr": 0.67,
+      "ppv": 0.5,
+      "f1": 0.57
+     },
+     "vs_target": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 2,
+      "tpr": 0.5,
+      "ppv": 0.5,
+      "f1": 0.5
+     },
+     "lead_days": -4.0,
+     "lead_n": 3
+    },
+    "juba_deyr": {
+     "model": "Google GRRR",
+     "rp": 5,
+     "n_req": 2,
+     "pool": 2,
+     "years": [
+      2008,
+      2019,
+      2023
+     ],
+     "leg_rp": 8.7,
+     "vs_gauge": {
+      "tp": 1,
+      "fp": 2,
+      "fn": 2,
+      "tpr": 0.33,
+      "ppv": 0.33,
+      "f1": 0.33
+     },
+     "vs_target": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 2,
+      "tpr": 0.5,
+      "ppv": 0.67,
+      "f1": 0.57
+     },
+     "lead_days": null,
+     "lead_n": 0
+    },
+    "shabelle_gu": {
+     "model": "Google GRRR",
+     "rp": 6,
+     "n_req": 2,
+     "pool": 3,
+     "years": [
+      2013,
+      2016,
+      2018,
+      2020
+     ],
+     "leg_rp": 6.5,
+     "vs_gauge": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 1,
+      "tpr": 0.67,
+      "ppv": 0.5,
+      "f1": 0.57
+     },
+     "vs_target": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 2,
+      "tpr": 0.5,
+      "ppv": 0.5,
+      "f1": 0.5
+     },
+     "lead_days": 1.0,
+     "lead_n": 3
+    },
+    "shabelle_deyr": {
+     "model": "GloFAS v5",
+     "rp": 6,
+     "n_req": 3,
+     "pool": 3,
+     "years": [
+      2006,
+      2019,
+      2023
+     ],
+     "leg_rp": 8.7,
+     "vs_gauge": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 2,
+      "tpr": 0.6,
+      "ppv": 1.0,
+      "f1": 0.75
+     },
+     "vs_target": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "tpr": 1.0,
+      "ppv": 1.0,
+      "f1": 1.0
+     },
+     "lead_days": 12.0,
+     "lead_n": 1
+    }
+   },
+   "table": [
+    {
+     "year": 1999,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "juba_gu",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "juba_gu",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2007,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "juba_gu",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "juba_gu",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2014,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "juba_gu",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2017,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "juba_gu",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2019,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2020,
+     "window": "juba_gu",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2021,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "juba_gu",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 1999,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2007,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "juba_deyr",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2009,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2014,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2017,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2019,
+     "window": "juba_deyr",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2020,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2021,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "juba_deyr",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 1999,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2007,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "shabelle_gu",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2014,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "shabelle_gu",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2017,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "shabelle_gu",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2019,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2020,
+     "window": "shabelle_gu",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2021,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 1999,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2007,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2014,
+     "window": "shabelle_deyr",
+     "n": 2,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2017,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2019,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2020,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2021,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": true
+    }
    ],
-   "B_req": 3,
-   "B_pool": 4,
-   "B_label": "glofas_v5",
-   "B_rp": 4
-  },
-  "shabelle_gu": {
-   "A_req": 4,
-   "A_pool": 4,
-   "A_label": "glofas_v5 + google_grrr",
-   "A_rp": [
-    6
-   ],
-   "B_req": 2,
-   "B_pool": 3,
-   "B_label": "google_grrr",
-   "B_rp": 6
-  },
-  "shabelle_deyr": {
-   "A_req": 3,
-   "A_pool": 5,
-   "A_label": "geoglows + glofas_v5",
-   "A_rp": [
-    5
-   ],
-   "B_req": 2,
-   "B_pool": 3,
-   "B_label": "glofas_v5",
-   "B_rp": 4
+   "envelope": {
+    "years": [
+     2006,
+     2008,
+     2013,
+     2016,
+     2018,
+     2019,
+     2020,
+     2023
+    ],
+    "n": 8,
+    "rp": 3.2,
+    "vs_gauge": {
+     "tp": 6,
+     "fp": 2,
+     "fn": 1,
+     "tpr": 0.86,
+     "ppv": 0.75,
+     "f1": 0.8
+    },
+    "vs_target": {
+     "tp": 5,
+     "fp": 3,
+     "fn": 2,
+     "tpr": 0.71,
+     "ppv": 0.62,
+     "f1": 0.67
+    },
+    "lead_days": 0.4,
+    "lead_n": 7
+   },
+   "windows_counts": [
+    4,
+    3,
+    4,
+    3
+   ]
   }
  },
- "table": [
-  {
-   "year": 1999,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2000,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2001,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2002,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2003,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2004,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2005,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2006,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2007,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2008,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2009,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2010,
-   "window": "juba_gu",
-   "a": 3,
-   "a_fire": true,
-   "b": 2,
-   "b_fire": false
-  },
-  {
-   "year": 2011,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2012,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2013,
-   "window": "juba_gu",
-   "a": 2,
-   "a_fire": false,
-   "b": 4,
-   "b_fire": true
-  },
-  {
-   "year": 2014,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2015,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2016,
-   "window": "juba_gu",
-   "a": 3,
-   "a_fire": true,
-   "b": 4,
-   "b_fire": true
-  },
-  {
-   "year": 2017,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2018,
-   "window": "juba_gu",
-   "a": 4,
-   "a_fire": true,
-   "b": 4,
-   "b_fire": true
-  },
-  {
-   "year": 2019,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2020,
-   "window": "juba_gu",
-   "a": 4,
-   "a_fire": true,
-   "b": 4,
-   "b_fire": true
-  },
-  {
-   "year": 2021,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2022,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2023,
-   "window": "juba_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 1,
-   "b_fire": false
-  },
-  {
-   "year": 1999,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2000,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2001,
-   "window": "juba_deyr",
-   "a": 1,
-   "a_fire": false,
-   "b": 1,
-   "b_fire": false
-  },
-  {
-   "year": 2002,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2003,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2004,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 2,
-   "b_fire": false
-  },
-  {
-   "year": 2005,
-   "window": "juba_deyr",
-   "a": 1,
-   "a_fire": false,
-   "b": 1,
-   "b_fire": false
-  },
-  {
-   "year": 2006,
-   "window": "juba_deyr",
-   "a": 1,
-   "a_fire": false,
-   "b": 3,
-   "b_fire": true
-  },
-  {
-   "year": 2007,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2008,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2009,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2010,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2011,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 1,
-   "b_fire": false
-  },
-  {
-   "year": 2012,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2013,
-   "window": "juba_deyr",
-   "a": 2,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2014,
-   "window": "juba_deyr",
-   "a": 1,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2015,
-   "window": "juba_deyr",
-   "a": 2,
-   "a_fire": false,
-   "b": 2,
-   "b_fire": false
-  },
-  {
-   "year": 2016,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2017,
-   "window": "juba_deyr",
-   "a": 1,
-   "a_fire": false,
-   "b": 1,
-   "b_fire": false
-  },
-  {
-   "year": 2018,
-   "window": "juba_deyr",
-   "a": 1,
-   "a_fire": false,
-   "b": 2,
-   "b_fire": false
-  },
-  {
-   "year": 2019,
-   "window": "juba_deyr",
-   "a": 1,
-   "a_fire": false,
-   "b": 2,
-   "b_fire": false
-  },
-  {
-   "year": 2020,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2021,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2022,
-   "window": "juba_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2023,
-   "window": "juba_deyr",
-   "a": 4,
-   "a_fire": true,
-   "b": 4,
-   "b_fire": true
-  },
-  {
-   "year": 1999,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2000,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2001,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2002,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2003,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2004,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2005,
-   "window": "shabelle_gu",
-   "a": 1,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2006,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2007,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2008,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2009,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2010,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2011,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2012,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2013,
-   "window": "shabelle_gu",
-   "a": 3,
-   "a_fire": false,
-   "b": 3,
-   "b_fire": true
-  },
-  {
-   "year": 2014,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2015,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2016,
-   "window": "shabelle_gu",
-   "a": 4,
-   "a_fire": true,
-   "b": 3,
-   "b_fire": true
-  },
-  {
-   "year": 2017,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2018,
-   "window": "shabelle_gu",
-   "a": 3,
-   "a_fire": false,
-   "b": 3,
-   "b_fire": true
-  },
-  {
-   "year": 2019,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2020,
-   "window": "shabelle_gu",
-   "a": 4,
-   "a_fire": true,
-   "b": 3,
-   "b_fire": true
-  },
-  {
-   "year": 2021,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2022,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2023,
-   "window": "shabelle_gu",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 1999,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2000,
-   "window": "shabelle_deyr",
-   "a": 1,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2001,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2002,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2003,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2004,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2005,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2006,
-   "window": "shabelle_deyr",
-   "a": 3,
-   "a_fire": true,
-   "b": 3,
-   "b_fire": true
-  },
-  {
-   "year": 2007,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2008,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2009,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2010,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 1,
-   "b_fire": false
-  },
-  {
-   "year": 2011,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2012,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2013,
-   "window": "shabelle_deyr",
-   "a": 1,
-   "a_fire": false,
-   "b": 3,
-   "b_fire": true
-  },
-  {
-   "year": 2014,
-   "window": "shabelle_deyr",
-   "a": 3,
-   "a_fire": true,
-   "b": 3,
-   "b_fire": true
-  },
-  {
-   "year": 2015,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2016,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2017,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2018,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2019,
-   "window": "shabelle_deyr",
-   "a": 4,
-   "a_fire": true,
-   "b": 3,
-   "b_fire": true
-  },
-  {
-   "year": 2020,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 2,
-   "b_fire": true
-  },
-  {
-   "year": 2021,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2022,
-   "window": "shabelle_deyr",
-   "a": 0,
-   "a_fire": false,
-   "b": 0,
-   "b_fire": false
-  },
-  {
-   "year": 2023,
-   "window": "shabelle_deyr",
-   "a": 4,
-   "a_fire": true,
-   "b": 3,
-   "b_fire": true
-  }
- ],
  "bench": {
   "juba_gu": {
    "sev": [
@@ -945,71 +1653,6 @@
     2019,
     2020,
     2023
-   ]
-  }
- },
- "benchmark": {
-  "severe": [
-   2006,
-   2014,
-   2016,
-   2018,
-   2019,
-   2020,
-   2023
-  ],
-  "flood": [
-   2003,
-   2005,
-   2006,
-   2008,
-   2010,
-   2014,
-   2016,
-   2017,
-   2018,
-   2019,
-   2020,
-   2023
-  ]
- },
- "envelope": {
-  "A": {
-   "years": [
-    2006,
-    2010,
-    2014,
-    2016,
-    2018,
-    2019,
-    2020,
-    2023
-   ],
-   "n": 8,
-   "rp": 3.2,
-   "severe_caught": 7,
-   "n_severe": 7,
-   "missed": [],
-   "false": []
-  },
-  "B": {
-   "years": [
-    2006,
-    2013,
-    2014,
-    2016,
-    2018,
-    2019,
-    2020,
-    2023
-   ],
-   "n": 8,
-   "rp": 3.2,
-   "severe_caught": 7,
-   "n_severe": 7,
-   "missed": [],
-   "false": [
-    2013
    ]
   }
  }
