@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Open multi-model vs one model per window &mdash; Somalia Riverine Flood Trigger</title>
-<meta name="description" content="What changes between the open multi-model trigger design and the one-model-per-window design: year-by-year activations per basin and season, and a lead-time comparison, both scored on a corrected benchmark.">
+<title>Mixed models vs one model per window &mdash; Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Balanced comparison of a mixed-model consensus against one model per basin-season, both on GloFAS and Google only: historical trigger record and accuracy against gauges and against CERF/EM-DAT impact years.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -15,28 +15,27 @@
 .crumb { font-size:12px; margin:0 0 14px; }
 .crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
 .crumb a:hover { text-decoration:underline; }
-article { padding:8px 44px 24px; max-width:960px; }
+article { padding:8px 44px 24px; max-width:980px; }
 article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9);
              margin:38px 0 10px; line-height:1.25; }
 article h3 { font-size:15px; color:var(--n9); margin:26px 0 8px; }
 article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; }
-article ul, article ol { padding-left:22px; }
+article ul { padding-left:22px; }
 article strong { color:var(--n9); }
 article a { color:var(--b6); }
 article code { background:var(--n05); border:1px solid #e2e7e7; padding:1px 5px;
                border-radius:3px; font-size:12.5px; color:var(--b7); }
-.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(168px,1fr));
          gap:14px; margin:26px 0 6px; }
 .stat { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5);
         border-radius:5px; padding:14px 16px 12px; }
-.stat .v { display:block; font-family:'Merriweather',Georgia,serif; font-size:25px;
-           font-weight:700; color:var(--b6); line-height:1.1; }
+.stat .v { display:block; font-family:'Merriweather',Georgia,serif; font-size:24px;
+           font-weight:700; color:var(--b6); line-height:1.15; }
 .stat .l { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.08em;
            color:var(--n7); margin-top:6px; line-height:1.45; }
 .callout { margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05);
            border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
 .callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
-.callout.fix { background:#f2f7f4; border-left-color:#2f7d5a; }
 .tablewrap { overflow-x:auto; }
 table.data { border-collapse:collapse; width:100%; margin:16px 0; font-size:13px; }
 table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em;
@@ -44,9 +43,15 @@ table.data th { text-align:left; font-size:11px; text-transform:uppercase; lette
                 padding:7px 10px 6px; }
 table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8);
                 vertical-align:top; }
+table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
+table.data td.num, table.data th.num { text-align:right; font-variant-numeric:tabular-nums; }
+table.data tr.sep td { border-top:2px solid var(--b1); }
+/* Historical record. Cell shading is scoped to table.cmp td so that no row-level
+   rule can outrank it on specificity; there are deliberately no row background
+   rules anywhere in this stylesheet. */
 table.cmp { table-layout:fixed; width:100%; border-collapse:collapse; font-size:11px;
             font-variant-numeric:tabular-nums; }
-table.cmp th { font-size:9px; letter-spacing:.04em; padding:5px 2px; text-align:center;
+table.cmp th { font-size:9px; letter-spacing:.03em; padding:5px 2px; text-align:center;
                color:var(--n7); text-transform:uppercase; font-weight:700;
                border-bottom:2px solid var(--b1); }
 table.cmp td { padding:4px 2px; text-align:center; border-bottom:1px solid #eef1f1;
@@ -55,9 +60,10 @@ table.cmp .gl { border-left:2px solid var(--b1); }
 table.cmp .yr { font-weight:700; color:var(--n9); }
 table.cmp td.fireA { background:rgba(30,121,95,.30); font-weight:700; color:#12513e; }
 table.cmp td.fireB { background:rgba(179,64,54,.30); font-weight:700; color:#7a241c; }
-.bsev  { background:rgba(179,64,54,.13); color:#B34036; font-weight:700; }
-.bmod  { background:rgba(244,169,59,.18); color:#8a6212; }
-.zero  { color:#c9cfd6; }
+table.cmp td.tgt { background:rgba(142,95,168,.20); color:#5e3b74; font-weight:700; }
+table.cmp td.bsev { background:rgba(179,64,54,.13); color:#B34036; font-weight:700; }
+table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
+.zero { color:#c9cfd6; }
 .key { display:flex; flex-wrap:wrap; gap:14px; margin:10px 0 0; font-size:12px;
        color:var(--n7); align-items:center; }
 .sw { display:inline-block; width:12px; height:12px; border-radius:2px; vertical-align:-2px;
@@ -79,299 +85,82 @@ table.cmp td.fireB { background:rgba(179,64,54,.30); font-weight:700; color:#7a2
     <canvas id="bg" aria-hidden="true"></canvas>
     <div class="inner">
       <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / design comparison</p>
-      <h1>What changes between the two designs</h1>
-      <p>The open multi-model consensus against one model per river-season window, scored
-         year by year on the same corrected benchmark, plus how much warning each one
-         actually gives. August 2026.</p>
+      <h1>Mixed models against one model per window</h1>
+      <p>Both setups on GloFAS v5 and Google Flood Hub only, both on the five SWALIM gauges
+         that still report, and both balanced so that each basin-season carries about the
+         same probability of activating, at an overall return period of 1-in-3.2.
+         September 2026.</p>
     </div>
   </header>
 
   <article>
 
-    <div class="callout fix">
-      <strong>Two corrections were applied before this comparison, on the branch
-      <code>fix/corrected-benchmark-and-lag</code>.</strong> Neither design's published
-      page has been modified, and nothing on the branch has been merged. The corrections
-      are (1) the benchmark's return levels were being fitted on 2000&ndash;2026 while
-      crossings were counted only to 2023, letting three years of post-window data decide
-      the labels, and (2) the best-lag correlation search shifted the gauge series by row
-      position rather than by calendar days, which forced almost every reported lag to
-      zero. Both designs are scored here on the corrected benchmark, so the numbers below
-      differ from those on either page. The effect on the benchmark is that
-      <strong>2008 is no longer a severe year</strong>: the severe set is 2006, 2014,
-      2016, 2018, 2019, 2020 and 2023.
+    <div class="callout">
+      <strong>What is held constant, so that only the mixing rule differs.</strong>
+      <strong>GEOGloWS is excluded from both</strong> &mdash; its forecast archive begins
+      July 2024, too short to fit thresholds on or to validate a debias against.
+      <strong>Both use the five gauges that still report</strong> (Belet Weyne, Bulo Burti
+      and Jowhar on the Shabelle; Luuq and Dollow on the Juba), so every activation is
+      checkable against a live observation. <strong>Both are balanced</strong>: the search
+      minimises the spread of the four basin-season activation counts, subject to the
+      envelope landing between 1-in-3.0 and 1-in-3.6, and prefers non-unanimous rules
+      wherever the result ties. Both land on 8 activations in 25 years, 1-in-3.2. Scored
+      on the corrected benchmark (branch <code>fix/corrected-benchmark-and-lag</code>,
+      return levels fitted strictly inside 1999&ndash;2023).
     </div>
 
-    <div class="stats">
-      <div class="stat"><span class="v">1-in-3.2</span><span class="l">envelope return period &mdash; both designs</span></div>
-      <div class="stat"><span class="v">7 of 7</span><span class="l">severe years caught &mdash; both designs</span></div>
-      <div class="stat"><span class="v">identical</span><span class="l">activation years, once both sides drop GEOGloWS</span></div>
-      <div class="stat"><span class="v">2010 vs 2013</span><span class="l">the only two years the designs disagree</span></div>
-    </div>
+    <div class="stats" id="stats"></div>
 
-    <h2>The headline: at envelope level, almost nothing changes</h2>
-    <p>Both designs release the money in <strong>8 of 25 years</strong>, a return period of
-       <strong>1-in-3.2</strong>, and both catch <strong>every one of the seven severe
-       years</strong> in the corrected benchmark. On the two measures the framework is
-       actually sized on &mdash; how often it pays out, and whether it pays out when the
-       rivers are at their worst &mdash; the open multi-model design and the
-       one-model-per-window design are indistinguishable.</p>
-    <p>They differ on which eighth year they spend. The open design activates in
-       <strong>2010</strong>, a year the benchmark does record as a flood. The
-       single-model design activates in <strong>2013</strong>, which it does not. So the
-       open design ends the backtest with no activation outside the benchmark at all,
-       and the single-model design with one. As the next section shows, that difference
-       is <em>not</em> caused by the mixing rule &mdash; it comes entirely from GEOGloWS
-       being in one design and not the other.</p>
+    <h2>The two configurations</h2>
+    <div class="tablewrap"><table class="data" id="cfg"><tr><td>loading&hellip;</td></tr></table></div>
+    <div class="callout warn" id="unanNote"></div>
 
-    <h2>Year by year, per basin and season</h2>
-    <p>The number in each cell is the design's decision variable: how many of that
-       window's monitored units were over their own thresholds at once. <span
-       class="sw" style="background:rgba(30,121,95,.26)"></span><strong>Green</strong>
-       means the open design activated; <span class="sw"
-       style="background:rgba(179,64,54,.26)"></span><strong>red</strong> means the
-       single-model design did. The <em>bench</em> column is what the gauges recorded
-       that season. The <strong>open</strong> columns are that design as proposed, with
-       all three providers available &mdash; GEOGloWS carries units in Juba Gu, Juba Deyr
-       and Shabelle Deyr. The <strong>1-mod</strong> columns are GloFAS v5 and Google
-       only, since the working group excluded GEOGloWS from that design.</p>
-    <p>Because the framework releases whenever <em>any</em> window activates, a row with
-       any green in it is a year the open design paid out, and a row with any red is a
-       year the single-model design did. So <strong>2013 carries only red</strong> and
-       <strong>2010 only green</strong> &mdash; those are the two years the designs
-       disagree on &mdash; while every other release year carries both, because both
-       designs paid out.</p>
-    <p><strong>The activation threshold is not the same in every column.</strong> That is
-       why the same number can be shaded in one window and left plain in another:
-       Shabelle Deyr activates at 2 points under the single-model design while Juba Deyr
-       needs 3, and Shabelle Gu needs all 4 pairs under the open design. Each column
-       header now carries its own threshold &mdash; <code>open &ge;3</code>,
-       <code>1-mod &ge;2</code> and so on &mdash; so a cell is shaded exactly when it
-       reaches the number above it.</p>
-
-    <div class="tablewrap">
-      <table class="cmp" id="cmpTable"><tr><td>loading&hellip;</td></tr></table>
-    </div>
+    <h2>1. Historical trigger record</h2>
+    <p>One row per year, one block of columns per basin-season. The number is how many
+       voting units were over their own thresholds at once; a cell is shaded when it
+       reaches the threshold printed in its own column header, which is exactly when that
+       window activates. <strong>Thresholds differ by column</strong>, so the same number
+       can be shaded in one window and left plain in another.</p>
+    <div class="tablewrap"><table class="cmp" id="record"><tr><td>loading&hellip;</td></tr></table></div>
     <div class="key">
-      <span><span class="sw" style="background:rgba(30,121,95,.26)"></span>open multi-model activates</span>
-      <span><span class="sw" style="background:rgba(179,64,54,.26)"></span>one model per window activates</span>
-      <span><span class="sw" style="background:rgba(179,64,54,.13)"></span>gauges at 1-in-5 or rarer</span>
-      <span><span class="sw" style="background:rgba(244,169,59,.18)"></span>gauges at 1-in-3 to 1-in-5</span>
+      <span><span class="sw" style="background:rgba(30,121,95,.30)"></span>mixed models activates</span>
+      <span><span class="sw" style="background:rgba(179,64,54,.30)"></span>one model per window activates</span>
+      <span><span class="sw" style="background:rgba(142,95,168,.20)"></span>target year</span>
+      <span><span class="sw" style="background:rgba(179,64,54,.13)"></span>gauges 1-in-5 or rarer</span>
+      <span><span class="sw" style="background:rgba(244,169,59,.18)"></span>gauges 1-in-3 to 1-in-5</span>
     </div>
 
-    <div class="callout">
-      <strong>Reading the disagreements.</strong> The two designs put their votes in
-      different places even where the envelope agrees. The open design counts
-      <em>(station, model) pairs</em> over the five gauges that still report, so a single
-      station can vote more than once; the single-model design counts <em>points</em>
-      across all seven reporting-era gauges with one product per window. That is why the
-      pool sizes and the counts are not directly comparable cell by cell &mdash; what is
-      comparable is whether the window fired.
-    </div>
+    <h2>2. Summary statistics</h2>
+    <p>Scored two ways. Against the <strong>gauge benchmark</strong> &mdash; the years in
+       which two or more of a river's gauges reached a 1-in-5 level in that season &mdash;
+       and against a <strong>constructed target list</strong> of years the framework
+       arguably should have paid out in: <span id="tgtRule"></span>. Both are computed per
+       basin-season and then for the envelope. Lead time is the mean number of days between
+       the first forecast alert at leads 1&ndash;6 and the reference gauge crossing its own
+       1-in-3 level; negative means the trigger fired after the river was already up.</p>
+    <div class="tablewrap"><table class="data" id="summary"><tr><td>loading&hellip;</td></tr></table></div>
+    <div class="callout" id="readout"></div>
 
-    <h2>Isolating the change: it is GEOGloWS, not the mixing rule</h2>
-    <p>The comparison above moves two things at once. The open design carries GEOGloWS in
-       three of its four windows; the single-model design carries it in none, because the
-       working group excluded it. So the table is not a clean test of &ldquo;mixing models
-       versus one per window&rdquo;.</p>
-    <p>To separate them &mdash; and only to separate them, since the open design as
-       proposed keeps GEOGloWS &mdash; it was rebuilt under <em>its own</em> rules &mdash;
-       (station, model) pairs on the five still-reporting gauges, the &minus;3 day timing
-       guard, the 0.10 &#961; relative floor, joint basin calibration &mdash; but with
-       GEOGloWS excluded. The result is unambiguous:</p>
-
-    <div class="tablewrap">
-    <table class="data">
-      <tr><th>design</th><th>providers</th><th>envelope</th><th>severe</th>
-          <th>outside benchmark</th><th>median warning, &le; 6 d</th></tr>
-      <tr><td><strong>Open multi-model</strong></td><td>GloFAS + Google + GEOGloWS</td>
-          <td>8 &mdash; 1-in-3.2</td><td>7 of 7</td><td>none</td>
-          <td>&minus;7 d <span style="color:var(--n7)">(3 of 9 ahead)</span></td></tr>
-      <tr><td><strong>Open multi-model</strong></td><td>GloFAS + Google</td>
-          <td>8 &mdash; 1-in-3.2</td><td>7 of 7</td><td>2013</td>
-          <td>&minus;1 d <span style="color:var(--n7)">(5 of 11 ahead)</span></td></tr>
-      <tr><td><strong>One model per window</strong></td><td>GloFAS + Google</td>
-          <td>8 &mdash; 1-in-3.2</td><td>7 of 7</td><td>2013</td>
-          <td>&minus;1 d <span style="color:var(--n7)">(6 of 13 ahead)</span></td></tr>
-    </table>
-    </div>
-
-    <div class="callout">
-      <strong>Matched on providers, the two designs produce the same activation record.</strong>
-      Open multi-model without GEOGloWS activates in <strong>2006, 2013, 2014, 2016, 2018,
-      2019, 2020 and 2023</strong> &mdash; the same eight years as the single-model design,
-      including the same 2013 activation outside the benchmark &mdash; at the same 1-in-3.2
-      and with the same 7 of 7 severe coverage, and its median warning is the same 1 day
-      late. Whether a window mixes products or runs on one turns out to make no difference
-      at all to what the trigger does &mdash; and nor do the other structural differences
-      between them. The two are not matched on providers alone: the open design also uses
-      only the five still-reporting gauges against the single-model design's seven, and a
-      &le; 6-day band against 1&ndash;7 days. All of those were still in place in the
-      matched run and none of them moved the result. So on this record GEOGloWS is the
-      only difference that changes the outcome &mdash; a statement about 25 years of
-      backtest, not a claim that the other choices are immaterial.
-    </div>
-
-    <div class="callout warn">
-      <strong>Which puts the weight on the GEOGloWS decision, not the WFP one.</strong>
-      The no-GEOGloWS arm above exists to isolate the mixing question, not as a proposal:
-      <strong>the open design as actually put forward keeps GEOGloWS</strong>, and being
-      able to draw on all three providers is the whole point of it. With GEOGloWS in, it
-      is the only configuration here that never activates outside the benchmark &mdash;
-      that is a real property of the design, not a rounding artifact, and it is what the
-      2013 activation costs the single-model design.
-      <br><br>
-      Set against it: GEOGloWS is the one product that cannot be operated as calibrated.
-      Its forecasts run at 0.89&times; its own retrospective, so a level set as 1-in-5
-      behaves like a median 1-in-13 live, and its two-year archive is too short either to
-      refit thresholds on or to validate a correction against. Its units also cannot be
-      backtested at lead time at all, which is why the open design's lead times here are
-      an upper bound rather than a measurement. So the trade is a real one for the working
-      group &mdash; a cleaner backtest against a provider you cannot yet operate &mdash;
-      and it is not settled by this record either way. What the record does settle is that
-      the mixing rule is free.
-    </div>
-
-    <h2>How the probability is distributed &mdash; and the balanced version</h2>
-    <p>The framework was originally specified with <strong>equal probability per
-       basin</strong>. Neither design on this page meets it, and the single-model design
-       misses it by a wide margin. It is worth seeing where it went, because a fully
-       balanced configuration did exist and reached the same headline numbers.</p>
-
-    <div class="tablewrap">
-    <table class="data">
-      <tr><th>design</th><th>Juba</th><th>Shabelle</th><th>Gu</th><th>Deyr</th>
-          <th>envelope</th><th>severe</th><th>outside bench.</th><th>Juba-only years</th></tr>
-      <tr><td><strong>Balanced</strong> (25 Aug, 18 points)</td>
-          <td>1-in-4.3</td><td>1-in-4.3</td><td>1-in-6.5</td><td>1-in-6.5</td>
-          <td>1-in-3.2</td><td>7 of 7</td><td>2013</td><td>2013, 2016</td></tr>
-      <tr><td><strong>Open multi-model</strong> (5 active gauges)</td>
-          <td>1-in-5.2</td><td>1-in-4.3</td><td>1-in-6.5</td><td>1-in-6.5</td>
-          <td>1-in-3.2</td><td>7 of 7</td><td>none</td><td>2010, 2018</td></tr>
-      <tr><td><strong>One model per window</strong></td>
-          <td>1-in-4.3</td><td><strong>1-in-3.2</strong></td><td>1-in-6.5</td>
-          <td><strong>1-in-4.3</strong></td><td>1-in-3.2</td><td>7 of 7</td><td>2013</td>
-          <td><strong>none</strong></td></tr>
-    </table>
-    </div>
-
-    <div class="callout">
-      <strong>Balance was available, and it was free.</strong> The 25 August configuration
-      was exactly balanced on both axes at once &mdash; both basins at 1-in-4.3, both
-      seasons at 1-in-6.5 &mdash; while landing on the same 1-in-3.2 envelope and the same
-      full severe coverage as everything else here. Its legs were symmetric: each basin
-      carried one 1-in-6.5 window and one 1-in-13 window, mirrored across the seasons. And
-      both basins did real work, the Juba contributing 2013 and 2016 on its own and the
-      Shabelle 2014 and 2019.
-    </div>
-
-    <div class="callout warn">
-      <strong>Two things eroded it, neither of them a decision about balance.</strong>
-      Restricting the pool to the five gauges that still report (26 August) cost the exact
-      basin match, leaving 1-in-5.2 against 1-in-4.3 &mdash; though the open design still
-      holds the seasons level and keeps both basins contributing, because its calibration
-      requires the basins' activation counts to differ by at most one. The single-model
-      search dropped that constraint entirely: nothing in it scores or even reports a
-      per-basin or per-season rate, so the split is whatever optimising the union
-      produces. The result is 1-in-3.2 on the Shabelle against 1-in-4.3 on the Juba, Deyr
-      at 1-in-4.3 against Gu at 1-in-6.5, and a <strong>Juba leg that contributes no year
-      of its own at all</strong>.
-    </div>
-
-    <div class="callout warn">
-      <strong>Under the current rules it cannot be recovered.</strong> The Shabelle has
-      three gauges, and the rule that at least two must agree but never all of them forces
-      its vote count to exactly 2, leaving the threshold as the only lever. Even at its
-      tightest setting the Shabelle still fires 8 times in 25 years. The envelope is the
-      union so it can never be rarer than that, and the 1-in-3 ceiling caps it at about 8
-      &mdash; which leaves the Juba no room to contribute a year of its own. Searching the
-      whole option space, <strong>no configuration with balanced basins survives the
-      1-in-3 constraint</strong>, at any level of severe coverage: balance and that ceiling
-      are mutually exclusive here. Recovering it means relaxing the ceiling, adding a
-      fourth Shabelle gauge so a 3-of-4 rule becomes possible, or stating the imbalance as
-      an accepted choice rather than leaving it to fall out of the optimisation.
-    </div>
-
-    <h2>Lead time: how much warning does each one buy?</h2>
-    <p>For every window activation, the earliest date the trigger condition is met on the
-       historical forecasts, against the date the reference gauge first crossed its own
-       1-in-3 level that season. Positive means the trigger fired before the river got
-       high; negative means it fired after. Both designs are shown on a common
-       <strong>&le; 6-day</strong> band so the comparison is like for like, and the
-       single-model design is also shown on its own 1&ndash;7 day band.</p>
-
-    <div class="tablewrap">
-      <table class="data" id="leadSummary"><tr><td>loading&hellip;</td></tr></table>
-    </div>
-
-    <div class="callout warn">
-      <strong>Neither design is reliably ahead of the river.</strong> On the common
-      &le; 6-day band the single-model design's median activation lands <strong>1 day
-      after</strong> the reference gauge crosses its 1-in-3 level; the open design
-      without GEOGloWS lands at the same 1 day after. The apparent 7-day gap for the
-      open design <em>with</em> GEOGloWS is an artifact of its lead-0 stand-ins, not a
-      property of mixing models. The number that should set expectations with partners is
-      the one both designs share: the action leg fires at roughly the same time the river
-      gets high, ahead of the gauge in only about half of events. That is what the
-      readiness leg exists to compensate for.
-    </div>
-
-    <div class="callout warn">
-      <strong>And the comparison flatters the open design.</strong> Three of its four
-      windows include GEOGloWS units, which have no forecast archive before July 2024 and
-      are therefore evaluated on the retrospective at lead 0 &mdash; hindsight, not a
-      forecast. Juba Gu carries one such unit, Juba Deyr and Shabelle Deyr two each. Those
-      units cannot be late, so the open design's lead times are an upper bound on what it
-      would really deliver. The single-model design uses no stand-ins in the adopted
-      configuration.</p>
-    </div>
-
-    <h3>Per window, on the common &le; 6-day band</h3>
-    <div class="tablewrap">
-      <table class="data" id="leadWindow"><tr><td>loading&hellip;</td></tr></table>
-    </div>
-
-    <h2>What this means for the decision</h2>
-    <ul>
-      <li><strong>The move to one model per window costs nothing on this record.</strong>
-        Matched on providers it produces the identical activation record to the open
-        design &mdash; the same eight years, the same 1-in-3.2, the same 7 of 7 severe
-        coverage, the same median lead time &mdash; even though it also differs on station
-        set and lead band. Given the constraint came from WFP rather than from the data,
-        that is the useful finding: the requirement can be honoured with nothing given up.
-        The caveat is that 25 years and seven severe events cannot distinguish much, so
-        this is evidence that the choice is cheap, not proof that it is neutral.</li>
-      <li><strong>The real decision is GEOGloWS, and it is still open.</strong> Every
-        difference between what was originally proposed and what is now proposed traces
-        to it. Keeping it &mdash; as the open design does &mdash; is what removes the 2013
-        activation and gives the only clean backtest in the set. Dropping it buys
-        thresholds that can actually be transferred to the live forecast. That is a
-        judgement about how much weight to put on a backtest you cannot reproduce
-        operationally, which is a working-group call rather than something this record
-        decides.</li>
-      <li><strong>If GEOGloWS stays, it needs a debias plan attached.</strong> Its units
-        are currently scored on the retrospective at lead 0, so any lead-time claim that
-        depends on them is unproven. Either SFDC-map its forecasts onto the retrospective
-        climatology and validate that on the 2024+ overlap, or refit its thresholds on
-        forecast climatology once two or three more seasons exist.</li>
-      <li><strong>Neither design is validated on lead time where it matters most.</strong>
-        Both Deyr legs rest on GloFAS v5, which has no reforecast at all, so their
-        operational behaviour is inferred from v4. That gap dominates the difference
-        between the two designs.</li>
-    </ul>
+    <h3>The target years</h3>
+    <div class="tablewrap"><table class="data" id="targets"><tr><td>loading&hellip;</td></tr></table></div>
+    <p style="font-size:12.5px;color:var(--n7)">CERF allocations naming neither river are
+       counted under both basins. EM-DAT events are attributed by the river named in the
+       location text and split to seasons by start month, so a nationwide event appears
+       under both basins. This list is a proxy for &ldquo;years the framework should have
+       paid out&rdquo;, not a validated impact record: it inherits EM-DAT's entry-criteria
+       bias and the fact that a CERF allocation reflects an appeal as much as a flood.</p>
 
   </article>
 
   <div class="provenance">
-    <p><strong>Provenance.</strong> Activations recomputed from the processed daily
-      discharge tables and the SWALIM gauge record; lead times from the Google GRRR
-      (2016&ndash;2023) and GloFAS v4 (2003&ndash;2023) reforecast archives, with GloFAS
-      v5 units evaluated on the v4 proxy and its climatology. The open multi-model
-      configuration is the one published at
-      <a href="../trigger/">/trigger/</a>; the one-model-per-window configuration is the
-      one published at <a href="../trigger-single-model/">/trigger-single-model/</a>.
-      Corrections applied on branch <code>fix/corrected-benchmark-and-lag</code>, not
-      merged; neither published page was modified.</p>
+    <p><strong>Provenance.</strong> Thresholds are Weibull plotting positions on each
+      product's own seasonal maxima, 1999&ndash;2023. Lead times use the Google GRRR
+      (2016&ndash;2023) and GloFAS v4 (2003&ndash;2023) reforecast archives, GloFAS v5
+      being represented by v4 since it has no reforecast of its own. Impact records:
+      EM-DAT (CRED) and CERF OneGMS. Related: the
+      <a href="../trigger/">multi-source mechanism</a>, the
+      <a href="../trigger-single-model/">one-model-per-window mechanism</a> and the
+      <a href="../balanced/">balanced trigger</a>.</p>
   </div>
 
 </div>
@@ -382,110 +171,146 @@ table.cmp td.fireB { background:rgba(179,64,54,.30); font-weight:700; color:#7a2
   "use strict";
   var WIN = [["juba_gu","Juba Gu"],["juba_deyr","Juba Deyr"],
              ["shabelle_gu","Shabelle Gu"],["shabelle_deyr","Shabelle Deyr"]];
+  var LBL = { mixed:"Mixed models", one:"One model per window" };
 
-  Promise.all([
-    fetch("data.json").then(function (r) { return r.json(); }),
-    fetch("leads.json").then(function (r) { return r.json(); })
-  ]).then(function (res) {
-    var D = res[0], L = res[1];
-    var idx = {};
-    D.table.forEach(function (r) { idx[r.year + "|" + r.window] = r; });
+  fetch("data.json").then(function (r) { return r.json(); }).then(function (D) {
+    var A = D.setups.mixed, B = D.setups.one;
+    function sgn(x) { return (x > 0 ? "+" : "") + x; }
 
-    // ---- year x window table ----
+    document.getElementById("stats").innerHTML = [
+      ["1-in-3.2", "envelope return period, both setups"],
+      [A.envelope.vs_gauge.f1.toFixed(2) + " vs " + B.envelope.vs_gauge.f1.toFixed(2),
+       "F1 vs the gauge benchmark (mixed / one model)"],
+      [A.envelope.vs_target.f1.toFixed(2) + " vs " + B.envelope.vs_target.f1.toFixed(2),
+       "F1 vs the target years"],
+      [sgn(A.envelope.lead_days) + " vs " + sgn(B.envelope.lead_days) + " d",
+       "mean lead time against the gauge"]
+    ].map(function (s) {
+      return '<div class="stat"><span class="v">' + s[0] + '</span><span class="l">' + s[1] + "</span></div>";
+    }).join("");
+
+    // ---- configuration ----
+    var c = ['<tr><th>window</th><th>mixed models</th><th>one model per window</th>' +
+             '<th class="num">mix fires</th><th class="num">1-mod fires</th></tr>'];
+    function rule(x) {
+      return x.model + ": <strong>" + x.n_req + " of " + x.pool + "</strong> over 1-in-" + x.rp +
+             (x.n_req === x.pool ? ' <span style="color:#b3703a">(unanimous)</span>' : "");
+    }
+    WIN.forEach(function (w) {
+      var a = A.meta[w[0]], b = B.meta[w[0]];
+      c.push("<tr><td><em>" + w[1] + "</em></td><td>" + rule(a) + "</td><td>" + rule(b) +
+             '</td><td class="num">' + a.years.length + '</td><td class="num">' +
+             b.years.length + "</td></tr>");
+    });
+    c.push('<tr class="sep"><td><strong>envelope</strong></td>' +
+      '<td colspan="2">the money is released when any window activates</td>' +
+      '<td class="num"><strong>' + A.envelope.n + '</strong></td>' +
+      '<td class="num"><strong>' + B.envelope.n + "</strong></td></tr>");
+    document.getElementById("cfg").innerHTML = c.join("");
+
+    var uA = WIN.filter(function (w) { return A.meta[w[0]].n_req === A.meta[w[0]].pool; }).length;
+    var uB = WIN.filter(function (w) { return B.meta[w[0]].n_req === B.meta[w[0]].pool; }).length;
+    document.getElementById("unanNote").innerHTML =
+      "<strong>Why the pools are different sizes.</strong> Mixing lets the same gauge vote " +
+      "once per product, so the Juba's two reporting gauges yield four voting units rather " +
+      "than two. On a network this small that is decisive: with one model per window the " +
+      "Juba can only run a 2-of-2 rule, which is unanimous, so one product failing on the " +
+      "right day silences the window. " +
+      (uB > uA ? "Here the one-model setup ends with <strong>" + uB + " unanimous windows</strong> " +
+                 "against the mixed setup's " + uA + "."
+               : "Both setups end with " + uA + " unanimous windows here.") +
+      " That is forced by the gauge count rather than chosen: the search already prefers " +
+      "non-unanimous rules wherever the result ties.";
+
+    // ---- historical record ----
+    var iA = {}, iB = {};
+    A.table.forEach(function (r) { iA[r.year + "|" + r.window] = r; });
+    B.table.forEach(function (r) { iB[r.year + "|" + r.window] = r; });
     var h = [];
-    h.push("<colgroup><col style='width:38px'>" +
-      WIN.map(function () {
-        return "<col style='width:36px'><col style='width:38px'><col style='width:34px'>";
-      }).join("") + "</colgroup>");
+    h.push("<colgroup><col style='width:36px'>" + WIN.map(function () {
+      return "<col style='width:38px'><col style='width:40px'><col style='width:24px'><col style='width:28px'>";
+    }).join("") + "</colgroup>");
     h.push('<tr><th rowspan="2" style="vertical-align:bottom">year</th>' +
-      WIN.map(function (w) {
-        var m = D.meta[w[0]];
-        return '<th colspan="3" class="gl" title="open: ' + m.A_req + ' of ' + m.A_pool +
-               ' pairs  |  single: ' + m.B_req + ' of ' + m.B_pool + ' points">' +
-               w[1] + "</th>";
-      }).join("") + "</tr>");
+      WIN.map(function (w) { return '<th colspan="4" class="gl">' + w[1] + "</th>"; }).join("") + "</tr>");
     h.push("<tr>" + WIN.map(function (w) {
-      var m = D.meta[w[0]];
-      return '<th class="gl" title="open multi-model: activates at ' + m.A_req +
-             ' of ' + m.A_pool + ' pairs">open &ge;' + m.A_req + '</th>' +
-             '<th title="one model per window: activates at ' + m.B_req + ' of ' +
-             m.B_pool + ' points">1&#8209;mod &ge;' + m.B_req + '</th>' +
-             '<th title="what the gauges recorded">bench</th>';
+      return '<th class="gl" title="mixed models: activates at ' + A.meta[w[0]].n_req +
+             ' of ' + A.meta[w[0]].pool + '">mix &ge;' + A.meta[w[0]].n_req + "</th>" +
+             '<th title="one model per window: activates at ' + B.meta[w[0]].n_req +
+             ' of ' + B.meta[w[0]].pool + '">1&#8209;mod &ge;' + B.meta[w[0]].n_req + "</th>" +
+             '<th title="a target year for this window">tgt</th>' +
+             '<th title="what the gauges recorded that season">gauge</th>';
     }).join("") + "</tr>");
-
     D.years.slice().reverse().forEach(function (y) {
       var cells = ['<td class="yr">' + y + "</td>"];
       WIN.forEach(function (w) {
-        var r = idx[y + "|" + w[0]] || {a:0,b:0,a_fire:false,b_fire:false};
-        cells.push('<td class="gl ' + (r.a_fire ? "fireA" : "") + '">' +
-                   (r.a ? r.a : '<span class="zero">0</span>') + "</td>");
-        cells.push('<td class="' + (r.b_fire ? "fireB" : "") + '">' +
-                   (r.b ? r.b : '<span class="zero">0</span>') + "</td>");
-        var bw = D.bench[w[0]];
-        var cls = bw.sev.indexOf(y) >= 0 ? "bsev" : (bw.mod.indexOf(y) >= 0 ? "bmod" : "");
-        var txt = bw.sev.indexOf(y) >= 0 ? "5yr" : (bw.mod.indexOf(y) >= 0 ? "3yr" : "");
+        var a = iA[y + "|" + w[0]] || { n:0, fire:false };
+        var b = iB[y + "|" + w[0]] || { n:0, fire:false };
+        cells.push('<td class="gl' + (a.fire ? " fireA" : "") + '">' +
+                   (a.n ? a.n : '<span class="zero">0</span>') + "</td>");
+        cells.push('<td class="' + (b.fire ? "fireB" : "") + '">' +
+                   (b.n ? b.n : '<span class="zero">0</span>') + "</td>");
+        var isT = D.targets[w[0]].indexOf(y) >= 0;
+        cells.push('<td class="' + (isT ? "tgt" : "") + '">' + (isT ? "&#9679;" : "") + "</td>");
+        var bh = D.bench[w[0]];
+        var cls = bh.sev.indexOf(y) >= 0 ? "bsev" : (bh.mod.indexOf(y) >= 0 ? "bmod" : "");
+        var txt = bh.sev.indexOf(y) >= 0 ? "5yr" : (bh.mod.indexOf(y) >= 0 ? "3yr" : "");
         cells.push('<td class="' + cls + '">' + txt + "</td>");
       });
       h.push("<tr>" + cells.join("") + "</tr>");
     });
-    document.getElementById("cmpTable").innerHTML = h.join("");
+    document.getElementById("record").innerHTML = h.join("");
 
-    // ---- lead-time summary ----
-    function stats(design) {
-      var rows = L.filter(function (r) {
-        return r.design === design && r.anticipation_days !== null;
-      });
-      if (!rows.length) { return null; }
-      var v = rows.map(function (r) { return r.anticipation_days; }).sort(function (a, b) { return a - b; });
-      var mid = Math.floor(v.length / 2);
-      var med = v.length % 2 ? v[mid] : (v[mid - 1] + v[mid]) / 2;
-      return { n: v.length, med: med, min: v[0], max: v[v.length - 1],
-               ahead: v.filter(function (x) { return x >= 0; }).length };
+    // ---- summary statistics ----
+    document.getElementById("tgtRule").textContent = D.target_rule;
+    function trio(x) {
+      return '<td class="num">' + x.tpr.toFixed(2) + '</td><td class="num">' + x.ppv.toFixed(2) +
+             '</td><td class="num"><strong>' + x.f1.toFixed(2) + "</strong></td>";
     }
-    function sgn(x) { return (x > 0 ? "+" : "") + x; }
-    var rowsDef = [
-      ["Open multi-model <span style='color:var(--n7)'>(with GEOGloWS)</span>", "A6", "&le; 6 d",
-       "3 of 4 windows carry lead-0 stand-ins"],
-      ["Open multi-model <span style='color:var(--n7)'>(no GEOGloWS)</span>", "A2", "&le; 6 d",
-       "no stand-ins &mdash; real forecasts throughout"],
-      ["One model per window", "B6", "&le; 6 d", "common band, for comparison"],
-      ["One model per window", "B", "1&ndash;7 d", "its own band, as published"]
-    ];
-    var t = ['<tr><th>design</th><th>lead band</th><th>window activations</th>' +
-             '<th>median warning</th><th>range</th><th>ahead of the gauge</th><th></th></tr>'];
-    rowsDef.forEach(function (r) {
-      var s = stats(r[1]);
-      if (!s) { return; }
-      t.push("<tr><td><strong>" + r[0] + "</strong></td><td>" + r[2] + "</td><td>" + s.n +
-             "</td><td><strong>" + sgn(s.med) + " d</strong></td><td>" + sgn(s.min) +
-             " to " + sgn(s.max) + " d</td><td>" + s.ahead + " of " + s.n +
-             "</td><td style='color:var(--n7)'>" + r[3] + "</td></tr>");
+    var s = ['<tr><th rowspan="2">window</th><th rowspan="2">setup</th>' +
+             '<th colspan="3" class="num">vs gauge benchmark</th>' +
+             '<th colspan="3" class="num">vs target years</th>' +
+             '<th rowspan="2" class="num">lead (d)</th></tr>',
+             '<tr><th class="num">TPR</th><th class="num">PPV</th><th class="num">F1</th>' +
+             '<th class="num">TPR</th><th class="num">PPV</th><th class="num">F1</th></tr>'];
+    WIN.forEach(function (w) {
+      [["mixed", A], ["one", B]].forEach(function (p, i) {
+        var m = p[1].meta[w[0]];
+        s.push("<tr" + (i === 0 ? ' class="sep"' : "") + ">" +
+          (i === 0 ? '<td rowspan="2"><em>' + w[1] + "</em></td>" : "") +
+          "<td>" + LBL[p[0]] + "</td>" + trio(m.vs_gauge) + trio(m.vs_target) +
+          '<td class="num">' + (m.lead_days === null ? "&mdash;" : sgn(m.lead_days)) + "</td></tr>");
+      });
     });
-    document.getElementById("leadSummary").innerHTML = t.join("");
+    [["mixed", A], ["one", B]].forEach(function (p, i) {
+      var e = p[1].envelope;
+      s.push("<tr" + (i === 0 ? ' class="sep"' : "") + ">" +
+        (i === 0 ? '<td rowspan="2"><strong>Envelope</strong></td>' : "") +
+        "<td><strong>" + LBL[p[0]] + "</strong></td>" + trio(e.vs_gauge) + trio(e.vs_target) +
+        '<td class="num"><strong>' + sgn(e.lead_days) + "</strong></td></tr>");
+    });
+    document.getElementById("summary").innerHTML = s.join("");
 
-    // ---- per window, common band ----
-    var w = ['<tr><th>window</th><th>open &mdash; events</th><th>open &mdash; median</th>' +
-             '<th>1&#8209;model &mdash; events</th><th>1&#8209;model &mdash; median</th>' +
-             '<th>difference</th></tr>'];
-    WIN.forEach(function (win) {
-      function per(design) {
-        var v = L.filter(function (r) {
-          return r.design === design && r.window === win[0] && r.anticipation_days !== null;
-        }).map(function (r) { return r.anticipation_days; }).sort(function (a, b) { return a - b; });
-        if (!v.length) { return null; }
-        var mid = Math.floor(v.length / 2);
-        return { n: v.length, med: v.length % 2 ? v[mid] : (v[mid - 1] + v[mid]) / 2 };
-      }
-      var a = per("A6"), b = per("B6");
-      var diff = (a && b) ? (b.med - a.med) : null;
-      w.push("<tr><td><em>" + win[1] + "</em></td>" +
-        "<td>" + (a ? a.n : "&mdash;") + "</td><td>" + (a ? sgn(a.med) + " d" : "&mdash;") + "</td>" +
-        "<td>" + (b ? b.n : "&mdash;") + "</td><td>" + (b ? sgn(b.med) + " d" : "&mdash;") + "</td>" +
-        "<td>" + (diff === null ? "&mdash;" :
-          "<strong style='color:" + (diff > 0 ? "#1e795f" : "#B34036") + "'>" +
-          sgn(diff) + " d</strong>") + "</td></tr>");
+    var same = A.envelope.vs_target.f1 === B.envelope.vs_target.f1;
+    document.getElementById("readout").innerHTML =
+      "<strong>How to read it.</strong> Against the gauge benchmark the mixed setup scores " +
+      "F1 " + A.envelope.vs_gauge.f1.toFixed(2) + " against " + B.envelope.vs_gauge.f1.toFixed(2) +
+      ", catching every severe year (TPR " + A.envelope.vs_gauge.tpr.toFixed(2) + ") where the " +
+      "one-model setup misses one. Against the target years the two are " +
+      (same ? "<strong>identical</strong>" : "F1 " + A.envelope.vs_target.f1.toFixed(2) +
+       " against " + B.envelope.vs_target.f1.toFixed(2)) +
+      ", which is the more important read: on the years the framework arguably should have " +
+      "paid out in, the mixing rule makes no measurable difference. Note also how much " +
+      "lower both score against impact than against gauges &mdash; target-year TPR tops out " +
+      "at " + Math.max(A.envelope.vs_target.tpr, B.envelope.vs_target.tpr).toFixed(2) +
+      ". The gap between catching gauge floods and catching impact years is far larger than " +
+      "the gap between the two designs, and it is the one worth working on.";
+
+    var t = ['<tr><th>window</th><th>target years</th><th class="num">n</th></tr>'];
+    WIN.forEach(function (w) {
+      t.push("<tr><td><em>" + w[1] + "</em></td><td>" + D.targets[w[0]].join(", ") +
+             '</td><td class="num">' + D.targets[w[0]].length + "</td></tr>");
     });
-    document.getElementById("leadWindow").innerHTML = w.join("");
+    document.getElementById("targets").innerHTML = t.join("");
   });
 })();
 </script>
