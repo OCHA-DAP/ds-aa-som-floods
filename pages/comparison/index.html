@@ -131,7 +131,10 @@ table.cmp td.fireB { background:rgba(179,64,54,.30); font-weight:700; color:#7a2
        means the open design activated; <span class="sw"
        style="background:rgba(179,64,54,.26)"></span><strong>red</strong> means the
        single-model design did. The <em>bench</em> column is what the gauges recorded
-       that season.</p>
+       that season. The <strong>open</strong> columns are that design as proposed, with
+       all three providers available &mdash; GEOGloWS carries units in Juba Gu, Juba Deyr
+       and Shabelle Deyr. The <strong>1-mod</strong> columns are GloFAS v5 and Google
+       only, since the working group excluded GEOGloWS from that design.</p>
     <p>Because the framework releases whenever <em>any</em> window activates, a row with
        any green in it is a year the open design paid out, and a row with any red is a
        year the single-model design did. So <strong>2013 carries only red</strong> and
@@ -171,7 +174,8 @@ table.cmp td.fireB { background:rgba(179,64,54,.30); font-weight:700; color:#7a2
        three of its four windows; the single-model design carries it in none, because the
        working group excluded it. So the table is not a clean test of &ldquo;mixing models
        versus one per window&rdquo;.</p>
-    <p>To separate them, the open design was rebuilt under <em>its own</em> rules &mdash;
+    <p>To separate them &mdash; and only to separate them, since the open design as
+       proposed keeps GEOGloWS &mdash; it was rebuilt under <em>its own</em> rules &mdash;
        (station, model) pairs on the five still-reporting gauges, the &minus;3 day timing
        guard, the 0.10 &#961; relative floor, joint basin calibration &mdash; but with
        GEOGloWS excluded. The result is unambiguous:</p>
@@ -205,15 +209,22 @@ table.cmp td.fireB { background:rgba(179,64,54,.30); font-weight:700; color:#7a2
 
     <div class="callout warn">
       <strong>Which puts the weight on the GEOGloWS decision, not the WFP one.</strong>
-      Including GEOGloWS is what removes the 2013 false activation. It is also what makes
-      the open design look slow on lead time &mdash; but that reading is an artifact:
-      GEOGloWS has no forecast archive before July 2024, so those units are scored on the
-      retrospective at lead 0, and they are what the count waits for. Against the reason
-      the working group excluded it &mdash; its forecasts run at 0.89&times; its own
-      retrospective, so a level set as 1-in-5 behaves like a median 1-in-13 on the live
-      forecast, with only two years of archive to fit a correction on &mdash; one avoided
-      false activation in 25 years is a thin argument for keeping it. The exclusion looks
-      right, and the mixing rule turns out to be free either way.
+      The no-GEOGloWS arm above exists to isolate the mixing question, not as a proposal:
+      <strong>the open design as actually put forward keeps GEOGloWS</strong>, and being
+      able to draw on all three providers is the whole point of it. With GEOGloWS in, it
+      is the only configuration here that never activates outside the benchmark &mdash;
+      that is a real property of the design, not a rounding artifact, and it is what the
+      2013 activation costs the single-model design.
+      <br><br>
+      Set against it: GEOGloWS is the one product that cannot be operated as calibrated.
+      Its forecasts run at 0.89&times; its own retrospective, so a level set as 1-in-5
+      behaves like a median 1-in-13 live, and its two-year archive is too short either to
+      refit thresholds on or to validate a correction against. Its units also cannot be
+      backtested at lead time at all, which is why the open design's lead times here are
+      an upper bound rather than a measurement. So the trade is a real one for the working
+      group &mdash; a cleaner backtest against a provider you cannot yet operate &mdash;
+      and it is not settled by this record either way. What the record does settle is that
+      the mixing rule is free.
     </div>
 
     <h2>Lead time: how much warning does each one buy?</h2>
@@ -263,11 +274,19 @@ table.cmp td.fireB { background:rgba(179,64,54,.30); font-weight:700; color:#7a2
         same median lead time. Given the constraint came from WFP rather than from the
         data, that is the useful finding &mdash; the requirement can be honoured with
         nothing given up.</li>
-      <li><strong>The real decision was GEOGloWS.</strong> Every difference between what
-        was originally proposed and what is now proposed traces to excluding it. It buys
-        back one false activation in 25 years, against thresholds that cannot be
-        transferred to its live forecasts and only two years of archive to fix them with.
-        On that trade the exclusion looks right.</li>
+      <li><strong>The real decision is GEOGloWS, and it is still open.</strong> Every
+        difference between what was originally proposed and what is now proposed traces
+        to it. Keeping it &mdash; as the open design does &mdash; is what removes the 2013
+        activation and gives the only clean backtest in the set. Dropping it buys
+        thresholds that can actually be transferred to the live forecast. That is a
+        judgement about how much weight to put on a backtest you cannot reproduce
+        operationally, which is a working-group call rather than something this record
+        decides.</li>
+      <li><strong>If GEOGloWS stays, it needs a debias plan attached.</strong> Its units
+        are currently scored on the retrospective at lead 0, so any lead-time claim that
+        depends on them is unproven. Either SFDC-map its forecasts onto the retrospective
+        climatology and validate that on the 2024+ overlap, or refit its thresholds on
+        forecast climatology once two or three more seasons exist.</li>
       <li><strong>Neither design is validated on lead time where it matters most.</strong>
         Both Deyr legs rest on GloFAS v5, which has no reforecast at all, so their
         operational behaviour is inferred from v4. That gap dominates the difference
