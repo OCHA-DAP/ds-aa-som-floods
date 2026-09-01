@@ -536,41 +536,60 @@ def draw_detection(path, models=None):
     return path.name
 
 
-def draw_detection_seasonal(path, models=None):
-    """POD, FAR and F1 per gauge and model, one row of panels per season."""
-    models = models or MODELS
-    fig, axes = plt.subplots(2, 3, figsize=(11.8, 9.2))
-    for row, season in enumerate(["gu", "deyr"]):
-        sc = pd.DataFrame(rp3_detection(season))
-        sc = sc[sc.source.isin(models)]
-        if sc.empty:
+def window_fires(model, river, season, rp, n_req):
+    """Years the window rule activates for this model at (rp, n_req)."""
+    cols = []
+    for st in TRIGGER_STATIONS[river]:
+        ser = model_season(model, st, SEASONS[season])
+        if len(ser) < 100:
             continue
-        ylab, mats = [], {"POD": [], "FAR": [], "F1": []}
-        for river in TRIGGER_STATIONS:
-            for st in TRIGGER_STATIONS[river]:
-                sub = sc[sc.station == st]
-                if sub.empty:
-                    continue
-                ylab.append(f"{st.replace('_', ' ').title()}  "
-                            f"n={int(sub.n_events.iloc[0])}")
-                for met in mats:
-                    mats[met].append([
-                        float(sub[sub.source == m][met].iloc[0])
-                        if len(sub[sub.source == m]) else np.nan
-                        for m in models])
-        for col, met in enumerate(["POD", "FAR", "F1"]):
-            ax = axes[row][col]
-            summary_figures.heat(
-                ax, mats[met], [NICE[m].replace(" ", chr(10)) for m in models],
-                ylab if col == 0 else [""] * len(ylab),
-                reverse=(met == "FAR"))
-            ax.set_title(f"{season.title()} | {met}"
-                         + (" (dark = better)" if col == 0 else ""),
-                         fontsize=10, loc="left")
-    fig.suptitle("RP3-event scores per gauge, model and season "
-                 "(hit rate, false-alarm rate, F1)",
-                 x=0.05, ha="left", fontweight="bold", fontsize=11.5, color=INK)
-    fig.subplots_adjust(wspace=0.08, hspace=0.3, top=0.93)
+        am = ser.groupby(ser.index.year).max().dropna()
+        t = weibull_threshold(am.values, rp)
+        if not np.isnan(t):
+            cols.append((ser >= t).rename(st))
+    if not cols:
+        return set()
+    mat = pd.concat(cols, axis=1).fillna(False)
+    mx = mat.sum(axis=1).groupby(mat.index.year).max()
+    return set(mx[mx >= n_req].index) & SPAN
+
+
+def draw_window_scores(path, models=None):
+    """POD / FAR / F1 of each window's vote rule per model, on RP3 flood years."""
+    models = models or MODELS
+    ylab, mats = [], {"POD": [], "FAR": [], "F1": []}
+    for k in WINDOWS:
+        river, season = k
+        cfg = TRIGGER_CONFIG[k]
+        floods = envelope_search.gauge_consensus_years(lv, river, season, RP_FLOOR)
+        if not floods:
+            continue
+        ylab.append(f"{WLABEL[k]}  {cfg['n_req']} of "
+                    f"{len(TRIGGER_STATIONS[river])}, RP{cfg['rp']}  "
+                    f"n={len(floods)}")
+        row = {m_: [] for m_ in mats}
+        for m in models:
+            fires = window_fires(m, river, season, cfg["rp"], cfg["n_req"])
+            pod = len(fires & floods) / len(floods)
+            far = (len(fires - floods) / len(fires)) if fires else np.nan
+            prec = 1 - far if not np.isnan(far) else np.nan
+            f1 = (2 * pod * prec / (pod + prec)
+                  if not np.isnan(prec) and pod + prec > 0 else 0.0)
+            row["POD"].append(pod)
+            row["FAR"].append(far)
+            row["F1"].append(f1)
+        for m_ in mats:
+            mats[m_].append(row[m_])
+    fig, axes = plt.subplots(1, 3, figsize=(11.8, 0.62 * len(ylab) + 2.4))
+    for ax, met in zip(axes, ["POD", "FAR", "F1"]):
+        summary_figures.heat(
+            ax, mats[met], [NICE[m].replace(" ", chr(10)) for m in models],
+            ylab if met == "POD" else [""] * len(ylab),
+            reverse=(met == "FAR"))
+        ax.set_title({"POD": "POD: share of RP3 flood years caught",
+                      "FAR": "FAR: share of activations with no flood",
+                      "F1": "F1"}[met] + "\n(dark = better)", fontsize=10)
+    fig.subplots_adjust(wspace=0.06)
     fig.savefig(path, dpi=170, bbox_inches="tight")
     plt.close(fig)
     return path.name
@@ -675,8 +694,8 @@ draw_tail(FIGS / "g_tail.png", SET_MODELS["base"])
 draw_tail(FIGS / "g_tail_all.png", SET_MODELS["all"])
 draw_detection(FIGS / "h_detection.png", SET_MODELS["base"])
 draw_detection(FIGS / "h_detection_all.png", SET_MODELS["all"])
-draw_detection_seasonal(FIGS / "i_detection_seasonal.png", SET_MODELS["base"])
-draw_detection_seasonal(FIGS / "i_detection_seasonal_all.png", SET_MODELS["all"])
+draw_window_scores(FIGS / "j_window_scores.png", SET_MODELS["base"])
+draw_window_scores(FIGS / "j_window_scores_all.png", SET_MODELS["all"])
 for stale in ["_alt", "_altpng", "_ng", "_ngpng"]:
     shutil.rmtree(FIGS / stale, ignore_errors=True)
 for svg in FIGS.glob("*.svg"):
