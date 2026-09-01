@@ -106,8 +106,8 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
     <div class="stats">
       <div class="stat"><span class="v">1-in-3.2</span><span class="l">envelope return period &mdash; both designs</span></div>
       <div class="stat"><span class="v">7 of 7</span><span class="l">severe years caught &mdash; both designs</span></div>
-      <div class="stat"><span class="v">0 vs 1</span><span class="l">activations outside the benchmark (open / single)</span></div>
-      <div class="stat"><span class="v">&minus;7 vs &minus;1 d</span><span class="l">median warning at leads &le; 6 d (open / single)</span></div>
+      <div class="stat"><span class="v">identical</span><span class="l">activation years, once both sides drop GEOGloWS</span></div>
+      <div class="stat"><span class="v">GEOGloWS</span><span class="l">the only thing that actually separates them</span></div>
     </div>
 
     <h2>The headline: at envelope level, almost nothing changes</h2>
@@ -121,7 +121,9 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
        <strong>2010</strong>, a year the benchmark does record as a flood. The
        single-model design activates in <strong>2013</strong>, which it does not. So the
        open design ends the backtest with no activation outside the benchmark at all,
-       and the single-model design with one.</p>
+       and the single-model design with one. As the next section shows, that difference
+       is <em>not</em> caused by the mixing rule &mdash; it comes entirely from GEOGloWS
+       being in one design and not the other.</p>
 
     <h2>Year by year, per basin and season</h2>
     <p>The number in each cell is the design's decision variable: how many of that
@@ -152,6 +154,56 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
       comparable is whether the window fired.
     </div>
 
+    <h2>Isolating the change: it is GEOGloWS, not the mixing rule</h2>
+    <p>The comparison above moves two things at once. The open design carries GEOGloWS in
+       three of its four windows; the single-model design carries it in none, because the
+       working group excluded it. So the table is not a clean test of &ldquo;mixing models
+       versus one per window&rdquo;.</p>
+    <p>To separate them, the open design was rebuilt under <em>its own</em> rules &mdash;
+       (station, model) pairs on the five still-reporting gauges, the &minus;3 day timing
+       guard, the 0.10 &#961; relative floor, joint basin calibration &mdash; but with
+       GEOGloWS excluded. The result is unambiguous:</p>
+
+    <div class="tablewrap">
+    <table class="data">
+      <tr><th>design</th><th>providers</th><th>envelope</th><th>severe</th>
+          <th>outside benchmark</th><th>median warning, &le; 6 d</th></tr>
+      <tr><td><strong>Open multi-model</strong></td><td>GloFAS + Google + GEOGloWS</td>
+          <td>8 &mdash; 1-in-3.2</td><td>7 of 7</td><td>none</td>
+          <td>&minus;7 d <span style="color:var(--n7)">(3 of 9 ahead)</span></td></tr>
+      <tr><td><strong>Open multi-model</strong></td><td>GloFAS + Google</td>
+          <td>8 &mdash; 1-in-3.2</td><td>7 of 7</td><td>2013</td>
+          <td>&minus;1 d <span style="color:var(--n7)">(5 of 11 ahead)</span></td></tr>
+      <tr><td><strong>One model per window</strong></td><td>GloFAS + Google</td>
+          <td>8 &mdash; 1-in-3.2</td><td>7 of 7</td><td>2013</td>
+          <td>&minus;1 d <span style="color:var(--n7)">(6 of 13 ahead)</span></td></tr>
+    </table>
+    </div>
+
+    <div class="callout">
+      <strong>Matched on providers, the two designs produce the same activation record.</strong>
+      Open multi-model without GEOGloWS activates in <strong>2006, 2013, 2014, 2016, 2018,
+      2019, 2020 and 2023</strong> &mdash; the same eight years as the single-model design,
+      including the same 2013 activation outside the benchmark &mdash; at the same 1-in-3.2
+      and with the same 7 of 7 severe coverage, and its median warning is the same 1 day
+      late. Whether a window mixes products or runs on one turns out to make no difference
+      at all to what the trigger does. Every difference in the year-by-year table above is
+      attributable to GEOGloWS being in one design and not the other.
+    </div>
+
+    <div class="callout warn">
+      <strong>Which puts the weight on the GEOGloWS decision, not the WFP one.</strong>
+      Including GEOGloWS is what removes the 2013 false activation. It is also what makes
+      the open design look slow on lead time &mdash; but that reading is an artifact:
+      GEOGloWS has no forecast archive before July 2024, so those units are scored on the
+      retrospective at lead 0, and they are what the count waits for. Against the reason
+      the working group excluded it &mdash; its forecasts run at 0.89&times; its own
+      retrospective, so a level set as 1-in-5 behaves like a median 1-in-13 on the live
+      forecast, with only two years of archive to fit a correction on &mdash; one avoided
+      false activation in 25 years is a thin argument for keeping it. The exclusion looks
+      right, and the mixing rule turns out to be free either way.
+    </div>
+
     <h2>Lead time: how much warning does each one buy?</h2>
     <p>For every window activation, the earliest date the trigger condition is met on the
        historical forecasts, against the date the reference gauge first crossed its own
@@ -165,15 +217,15 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
     </div>
 
     <div class="callout warn">
-      <strong>The single-model design gives materially more warning, and both are later
-      than is comfortable.</strong> On the common &le; 6-day band its median activation
-      lands <strong>1 day after</strong> the reference gauge crosses its 1-in-3 level,
-      against <strong>7 days after</strong> for the open design, and it fires in more
-      window-events (13 against 9). But the honest headline is that neither design is
-      reliably ahead of the river: the open design is ahead of the gauge in 3 of 9 events
-      and the single-model design in 6 of 13. This is the number that should set
-      expectations with partners &mdash; the action leg is close to coincident with the
-      flood, which is what the readiness leg exists to compensate for.
+      <strong>Neither design is reliably ahead of the river.</strong> On the common
+      &le; 6-day band the single-model design's median activation lands <strong>1 day
+      after</strong> the reference gauge crosses its 1-in-3 level; the open design
+      without GEOGloWS lands at the same 1 day after. The apparent 7-day gap for the
+      open design <em>with</em> GEOGloWS is an artifact of its lead-0 stand-ins, not a
+      property of mixing models. The number that should set expectations with partners is
+      the one both designs share: the action leg fires at roughly the same time the river
+      gets high, ahead of the gauge in only about half of events. That is what the
+      readiness leg exists to compensate for.
     </div>
 
     <div class="callout warn">
@@ -193,16 +245,17 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
 
     <h2>What this means for the decision</h2>
     <ul>
-      <li><strong>The move to one model per window costs nothing on skill.</strong> Same
-        activation rate, same severe-year coverage. Given that the constraint came from
-        WFP rather than from the data, that is the useful finding: the requirement can be
-        honoured without giving anything up.</li>
-      <li><strong>It gains on lead time.</strong> Six days of median warning, on a
-        like-for-like band, and against a stand-in-assisted competitor.</li>
-      <li><strong>It costs one false activation.</strong> 2013, a year no two gauges on
-        either river called a flood. Whether that matters depends on what a false
-        activation costs the framework, which is a working-group question rather than a
-        statistical one.</li>
+      <li><strong>The move to one model per window costs nothing at all.</strong> Matched
+        on providers, it produces the identical activation record to the open design:
+        the same eight years, the same 1-in-3.2, the same 7 of 7 severe coverage and the
+        same median lead time. Given the constraint came from WFP rather than from the
+        data, that is the useful finding &mdash; the requirement can be honoured with
+        nothing given up.</li>
+      <li><strong>The real decision was GEOGloWS.</strong> Every difference between what
+        was originally proposed and what is now proposed traces to excluding it. It buys
+        back one false activation in 25 years, against thresholds that cannot be
+        transferred to its live forecasts and only two years of archive to fix them with.
+        On that trade the exclusion looks right.</li>
       <li><strong>Neither design is validated on lead time where it matters most.</strong>
         Both Deyr legs rest on GloFAS v5, which has no reforecast at all, so their
         operational behaviour is inferred from v4. That gap dominates the difference
@@ -292,7 +345,10 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
     }
     function sgn(x) { return (x > 0 ? "+" : "") + x; }
     var rowsDef = [
-      ["Open multi-model", "A6", "&le; 6 d", "its own band"],
+      ["Open multi-model <span style='color:var(--n7)'>(with GEOGloWS)</span>", "A6", "&le; 6 d",
+       "3 of 4 windows carry lead-0 stand-ins"],
+      ["Open multi-model <span style='color:var(--n7)'>(no GEOGloWS)</span>", "A2", "&le; 6 d",
+       "no stand-ins &mdash; real forecasts throughout"],
       ["One model per window", "B6", "&le; 6 d", "common band, for comparison"],
       ["One model per window", "B", "1&ndash;7 d", "its own band, as published"]
     ];
