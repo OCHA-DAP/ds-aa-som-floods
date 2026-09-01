@@ -53,8 +53,13 @@ table.cmp td { padding:4px 2px; text-align:center; border-bottom:1px solid #eef1
                color:var(--n8); }
 table.cmp .gl { border-left:2px solid var(--b1); }
 table.cmp .yr { font-weight:700; color:var(--n9); }
-.fireA { background:rgba(30,121,95,.26); font-weight:700; color:#12513e; }
-.fireB { background:rgba(179,64,54,.26); font-weight:700; color:#7a241c; }
+.fireA { background:rgba(30,121,95,.13); color:#12513e; font-weight:700; }
+.fireB { background:rgba(179,64,54,.13); color:#7a241c; font-weight:700; }
+.envA, .envB { font-weight:700; font-size:10px; letter-spacing:.03em; color:#fff; }
+.envA { background:#1e795f; }
+.envB { background:#b34036; }
+.envcol { border-left:2px solid var(--b1); }
+.envhead { background:var(--n05); }
 .bsev  { background:rgba(179,64,54,.13); color:#B34036; font-weight:700; }
 .bmod  { background:rgba(244,169,59,.18); color:#8a6212; }
 .zero  { color:#c9cfd6; }
@@ -133,7 +138,13 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
        style="background:rgba(179,64,54,.26)"></span><strong>red</strong> means the
        single-model design did. The <em>bench</em> column is what the gauges recorded
        that season. Rows where the two designs disagree are tinted.</p>
-    <p><strong>The activation threshold is not the same in every column.</strong> That is
+    <p>The two <strong>money released?</strong> columns are the thing to read first: they
+       mark the years each design would actually have paid out, which is the comparison
+       that matters. <strong>2010 is the open design's alone</strong> &mdash; a year the
+       gauges do record as a flood &mdash; and <strong>2013 is the single-model design's
+       alone</strong>, a year they do not. Every other release year is shared. The
+       per-window columns behind them show which window drove it.</p>
+    <p><strong>The activation threshold is not the same in every window.</strong> That is
        why the same number can be shaded in one window and left plain in another:
        Shabelle Deyr activates at 2 points under the single-model design while Juba Deyr
        needs 3, and Shabelle Gu needs all 4 pairs under the open design. Each column
@@ -145,8 +156,9 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
       <table class="cmp" id="cmpTable"><tr><td>loading&hellip;</td></tr></table>
     </div>
     <div class="key">
-      <span><span class="sw" style="background:rgba(30,121,95,.26)"></span>open multi-model activates</span>
-      <span><span class="sw" style="background:rgba(179,64,54,.26)"></span>one model per window activates</span>
+      <span><span class="sw" style="background:#1e795f"></span>open multi-model released</span>
+      <span><span class="sw" style="background:#b34036"></span>one model per window released</span>
+      <span><span class="sw" style="background:rgba(30,121,95,.13)"></span>/<span class="sw" style="background:rgba(179,64,54,.13);margin-left:3px"></span>window over its threshold</span>
       <span><span class="sw" style="background:rgba(179,64,54,.13)"></span>gauges at 1-in-5 or rarer</span>
       <span><span class="sw" style="background:rgba(244,169,59,.18)"></span>gauges at 1-in-3 to 1-in-5</span>
     </div>
@@ -303,17 +315,21 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
     // ---- year x window table ----
     var h = [];
     h.push("<colgroup><col style='width:38px'>" +
+      "<col style='width:42px'><col style='width:42px'>" +
       WIN.map(function () {
-        return "<col style='width:36px'><col style='width:38px'><col style='width:34px'>";
+        return "<col style='width:32px'><col style='width:32px'><col style='width:30px'>";
       }).join("") + "</colgroup>");
     h.push('<tr><th rowspan="2" style="vertical-align:bottom">year</th>' +
+      '<th colspan="2" class="envcol envhead" title="the framework releases when any window activates">money released?</th>' +
       WIN.map(function (w) {
         var m = D.meta[w[0]];
         return '<th colspan="3" class="gl" title="open: ' + m.A_req + ' of ' + m.A_pool +
                ' pairs  |  single: ' + m.B_req + ' of ' + m.B_pool + ' points">' +
                w[1] + "</th>";
       }).join("") + "</tr>");
-    h.push("<tr>" + WIN.map(function (w) {
+    h.push("<tr>" +
+      '<th class="envcol envhead">open</th><th class="envhead">1&#8209;mod</th>' +
+      WIN.map(function (w) {
       var m = D.meta[w[0]];
       return '<th class="gl" title="open multi-model: activates at ' + m.A_req +
              ' of ' + m.A_pool + ' pairs">open &ge;' + m.A_req + '</th>' +
@@ -323,11 +339,14 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
     }).join("") + "</tr>");
 
     D.years.slice().reverse().forEach(function (y) {
-      var cells = ['<td class="yr">' + y + "</td>"];
-      var disagree = false;
+      var envA = D.envelope.A.years.indexOf(y) >= 0;
+      var envB = D.envelope.B.years.indexOf(y) >= 0;
+      var cells = ['<td class="yr">' + y + "</td>",
+        '<td class="envcol ' + (envA ? "envA" : "") + '">' + (envA ? "YES" : "") + "</td>",
+        '<td class="' + (envB ? "envB" : "") + '">' + (envB ? "YES" : "") + "</td>"];
+      var disagree = envA !== envB;
       WIN.forEach(function (w) {
         var r = idx[y + "|" + w[0]] || {a:0,b:0,a_fire:false,b_fire:false};
-        if (r.a_fire !== r.b_fire) { disagree = true; }
         cells.push('<td class="gl ' + (r.a_fire ? "fireA" : "") + '">' +
                    (r.a ? r.a : '<span class="zero">0</span>') + "</td>");
         cells.push('<td class="' + (r.b_fire ? "fireB" : "") + '">' +
