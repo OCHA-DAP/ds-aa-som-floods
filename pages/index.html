@@ -27,24 +27,27 @@
   </header>
 
   <main>
-    <p class="label">The trigger analysis</p>
-    <div class="grid grid-one">
+    <p class="label">The proposed trigger &mdash; two candidate designs</p>
+    <div class="grid">
 
-      <a class="k k-feature" href="trigger/">
-        <span class="body">
-          <h2>The multi-source trigger mechanism</h2>
-          <p>The proposed mechanism and the evidence behind it: the five active SWALIM
-             gauges × three providers, per-pair return-period thresholds, the joint
-             basin calibration (1-in-4.3 / 5.2 per basin, 1-in-3.2 overall), the
-             SWALIM-threshold check, reforecast backtests and the impact-tilt
-             analysis.</p>
-          <span class="views">Mechanism · Selection · Calibration · Backtests ·
-             Readiness · Caveats</span>
-          <span class="foot"><em>/trigger/</em><span>August 2026</span></span>
-        </span>
-        <span class="shot">
-          <img src="trigger/figs/c_backtest_strip.png" alt="" loading="lazy">
-        </span>
+      <a class="k" href="trigger/">
+        <h2>Multi-source consensus</h2>
+        <p>Each window votes on <strong>(station, model) pairs</strong> drawn from the five
+           SWALIM gauges that still report, with all three providers competing freely and a
+           station allowed to carry more than one model. Joint basin calibration:
+           1-in-3.2 overall, 1-in-4.3 / 5.2 per basin. Includes the SWALIM-threshold check,
+           the impact tilt and a no-Google variant.</p>
+        <span class="foot"><em>/trigger/</em><span>T. Downing &middot; Aug 2026</span></span>
+      </a>
+
+      <a class="k" href="trigger-single-model/">
+        <h2>One model per window</h2>
+        <p>Each river-season window runs on a <strong>single forecast source</strong> rather
+           than a mixture, monitoring all seven reporting-era points and with no threshold
+           below 1-in-3. Google carries Gu, GloFAS v5 carries Deyr; GEOGloWS is an
+           alternative view. Same 1-in-3.2 envelope. Carries twelve open review notes
+           behind a toggle.</p>
+        <span class="foot"><em>/trigger-single-model/</em><span>P. Wairimu &middot; Aug 2026</span></span>
       </a>
 
     </div>
