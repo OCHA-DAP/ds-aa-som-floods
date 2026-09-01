@@ -61,6 +61,10 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
 table.cmp td.fireA { background:rgba(30,121,95,.30); font-weight:700; color:#12513e; }
 table.cmp td.fireB { background:rgba(179,64,54,.30); font-weight:700; color:#7a241c; }
 table.cmp td.tgt { background:rgba(142,95,168,.20); color:#5e3b74; font-weight:700; }
+table.cmp td.cerf { background:rgba(42,120,214,.16); color:#1b4f8c; font-weight:700; }
+table.cmp td.cerf.big { background:rgba(42,120,214,.30); }
+table.cmp td.emdat { background:rgba(142,95,168,.13); color:#5e3b74; }
+table.cmp td.emdat.big { background:rgba(142,95,168,.30); font-weight:700; }
 table.cmp td.bsev { background:rgba(179,64,54,.13); color:#B34036; font-weight:700; }
 table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
 .zero { color:#c9cfd6; }
@@ -120,11 +124,16 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
        voting units were over their own thresholds at once; a cell is shaded when it
        reaches the threshold printed in its own column header, which is exactly when that
        window activates. <strong>Thresholds differ by column</strong>, so the same number
-       can be shaded in one window and left plain in another.</p>
+       can be shaded in one window and left plain in another. After the two trigger columns
+       each block carries what actually happened: the gauge class, the CERF flood
+       allocation and the EM-DAT people affected attributed to that basin-season, and
+       whether the year is on the target list.</p>
     <div class="tablewrap"><table class="cmp" id="record"><tr><td>loading&hellip;</td></tr></table></div>
     <div class="key">
       <span><span class="sw" style="background:rgba(30,121,95,.30)"></span>mixed models activates</span>
       <span><span class="sw" style="background:rgba(179,64,54,.30)"></span>one model per window activates</span>
+      <span><span class="sw" style="background:rgba(42,120,214,.16)"></span>CERF allocation</span>
+      <span><span class="sw" style="background:rgba(142,95,168,.13)"></span>EM-DAT affected</span>
       <span><span class="sw" style="background:rgba(142,95,168,.20)"></span>target year</span>
       <span><span class="sw" style="background:rgba(179,64,54,.13)"></span>gauges 1-in-5 or rarer</span>
       <span><span class="sw" style="background:rgba(244,169,59,.18)"></span>gauges 1-in-3 to 1-in-5</span>
@@ -176,6 +185,8 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
   fetch("data.json").then(function (r) { return r.json(); }).then(function (D) {
     var A = D.setups.mixed, B = D.setups.one;
     function sgn(x) { return (x > 0 ? "+" : "") + x; }
+    function usd(v) { return v >= 1e6 ? (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + "M" : Math.round(v / 1e3) + "k"; }
+    function num(v) { return v >= 1e6 ? (v / 1e6).toFixed(1) + "M" : (v >= 1e3 ? Math.round(v / 1e3) + "k" : String(v)); }
 
     document.getElementById("stats").innerHTML = [
       ["1-in-3.2", "envelope return period, both setups"],
@@ -228,17 +239,20 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
     B.table.forEach(function (r) { iB[r.year + "|" + r.window] = r; });
     var h = [];
     h.push("<colgroup><col style='width:36px'>" + WIN.map(function () {
-      return "<col style='width:38px'><col style='width:40px'><col style='width:24px'><col style='width:28px'>";
+      return "<col style='width:34px'><col style='width:37px'><col style='width:27px'>" +
+             "<col style='width:29px'><col style='width:31px'><col style='width:20px'>";
     }).join("") + "</colgroup>");
     h.push('<tr><th rowspan="2" style="vertical-align:bottom">year</th>' +
-      WIN.map(function (w) { return '<th colspan="4" class="gl">' + w[1] + "</th>"; }).join("") + "</tr>");
+      WIN.map(function (w) { return '<th colspan="6" class="gl">' + w[1] + "</th>"; }).join("") + "</tr>");
     h.push("<tr>" + WIN.map(function (w) {
       return '<th class="gl" title="mixed models: activates at ' + A.meta[w[0]].n_req +
              ' of ' + A.meta[w[0]].pool + '">mix &ge;' + A.meta[w[0]].n_req + "</th>" +
              '<th title="one model per window: activates at ' + B.meta[w[0]].n_req +
              ' of ' + B.meta[w[0]].pool + '">1&#8209;mod &ge;' + B.meta[w[0]].n_req + "</th>" +
-             '<th title="a target year for this window">tgt</th>' +
-             '<th title="what the gauges recorded that season">gauge</th>';
+             '<th title="what the gauges recorded that season">gauge</th>' +
+             '<th title="CERF flood allocation attributed to this basin-season, US$">cerf</th>' +
+             '<th title="EM-DAT people affected attributed to this basin-season">emdat</th>' +
+             '<th title="a target year: CERF allocation, or EM-DAT at or above the threshold">tgt</th>';
     }).join("") + "</tr>");
     D.years.slice().reverse().forEach(function (y) {
       var cells = ['<td class="yr">' + y + "</td>"];
@@ -249,12 +263,19 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
                    (a.n ? a.n : '<span class="zero">0</span>') + "</td>");
         cells.push('<td class="' + (b.fire ? "fireB" : "") + '">' +
                    (b.n ? b.n : '<span class="zero">0</span>') + "</td>");
-        var isT = D.targets[w[0]].indexOf(y) >= 0;
-        cells.push('<td class="' + (isT ? "tgt" : "") + '">' + (isT ? "&#9679;" : "") + "</td>");
         var bh = D.bench[w[0]];
         var cls = bh.sev.indexOf(y) >= 0 ? "bsev" : (bh.mod.indexOf(y) >= 0 ? "bmod" : "");
         var txt = bh.sev.indexOf(y) >= 0 ? "5yr" : (bh.mod.indexOf(y) >= 0 ? "3yr" : "");
         cells.push('<td class="' + cls + '">' + txt + "</td>");
+        var key = w[0] + "|" + y;
+        var cu = D.impact.cerf[key] || 0;
+        cells.push('<td class="' + (cu ? "cerf" + (cu >= 8e6 ? " big" : "") : "") + '"' +
+          (cu ? ' title="US$ ' + cu.toLocaleString() + '"' : "") + ">" + (cu ? usd(cu) : "") + "</td>");
+        var af = D.impact.emdat[key] || 0;
+        cells.push('<td class="' + (af ? "emdat" + (af >= 5e5 ? " big" : "") : "") + '"' +
+          (af ? ' title="' + af.toLocaleString() + ' affected"' : "") + ">" + (af ? num(af) : "") + "</td>");
+        var isT = D.targets[w[0]].indexOf(y) >= 0;
+        cells.push('<td class="' + (isT ? "tgt" : "") + '">' + (isT ? "&#9679;" : "") + "</td>");
       });
       h.push("<tr>" + cells.join("") + "</tr>");
     });

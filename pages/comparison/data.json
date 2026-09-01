@@ -1655,5 +1655,51 @@
     2023
    ]
   }
+ },
+ "impact": {
+  "cerf": {
+   "juba_deyr|2006": 10437041,
+   "shabelle_deyr|2006": 10437041,
+   "juba_gu|2018": 5133588,
+   "shabelle_gu|2018": 5133588,
+   "juba_deyr|2019": 8000222,
+   "shabelle_deyr|2019": 8000222,
+   "shabelle_gu|2020": 7100529,
+   "juba_deyr|2023": 10000009,
+   "shabelle_deyr|2023": 10000009
+  },
+  "emdat": {
+   "juba_gu|2000": 3500,
+   "shabelle_gu|2000": 3500,
+   "juba_deyr|2000": 150000,
+   "juba_deyr|2001": 6500,
+   "juba_gu|2005": 7520,
+   "shabelle_gu|2005": 5020,
+   "shabelle_deyr|2006": 299000,
+   "juba_deyr|2006": 155500,
+   "shabelle_deyr|2007": 8000,
+   "juba_deyr|2008": 52000,
+   "juba_deyr|2009": 1750,
+   "shabelle_deyr|2009": 1750,
+   "shabelle_deyr|2011": 2800,
+   "shabelle_deyr|2012": 32200,
+   "juba_gu|2013": 50000,
+   "shabelle_gu|2013": 50000,
+   "juba_deyr|2014": 90000,
+   "shabelle_deyr|2014": 90000,
+   "shabelle_gu|2015": 16296,
+   "juba_gu|2018": 700000,
+   "shabelle_gu|2018": 700000,
+   "juba_deyr|2019": 500000,
+   "shabelle_deyr|2019": 500000,
+   "juba_gu|2020": 1191020,
+   "shabelle_gu|2020": 1191020,
+   "juba_gu|2021": 400000,
+   "shabelle_gu|2021": 400000,
+   "juba_gu|2023": 568003,
+   "shabelle_gu|2023": 568003,
+   "juba_deyr|2023": 2758000,
+   "shabelle_deyr|2023": 2758000
+  }
  }
 }
