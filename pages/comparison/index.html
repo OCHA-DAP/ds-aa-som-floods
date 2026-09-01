@@ -133,6 +133,13 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
        style="background:rgba(179,64,54,.26)"></span><strong>red</strong> means the
        single-model design did. The <em>bench</em> column is what the gauges recorded
        that season. Rows where the two designs disagree are tinted.</p>
+    <p><strong>The activation threshold is not the same in every column.</strong> That is
+       why the same number can be shaded in one window and left plain in another:
+       Shabelle Deyr activates at 2 points under the single-model design while Juba Deyr
+       needs 3, and Shabelle Gu needs all 4 pairs under the open design. Each column
+       header now carries its own threshold &mdash; <code>open &ge;3</code>,
+       <code>1-mod &ge;2</code> and so on &mdash; so a cell is shaded exactly when it
+       reaches the number above it.</p>
 
     <div class="tablewrap">
       <table class="cmp" id="cmpTable"><tr><td>loading&hellip;</td></tr></table>
@@ -297,7 +304,7 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
     var h = [];
     h.push("<colgroup><col style='width:38px'>" +
       WIN.map(function () {
-        return "<col style='width:30px'><col style='width:30px'><col style='width:36px'>";
+        return "<col style='width:36px'><col style='width:38px'><col style='width:34px'>";
       }).join("") + "</colgroup>");
     h.push('<tr><th rowspan="2" style="vertical-align:bottom">year</th>' +
       WIN.map(function (w) {
@@ -306,9 +313,12 @@ table.cmp .yr { font-weight:700; color:var(--n9); }
                ' pairs  |  single: ' + m.B_req + ' of ' + m.B_pool + ' points">' +
                w[1] + "</th>";
       }).join("") + "</tr>");
-    h.push("<tr>" + WIN.map(function () {
-      return '<th class="gl" title="open multi-model">open</th>' +
-             '<th title="one model per window">1&#8209;mod</th>' +
+    h.push("<tr>" + WIN.map(function (w) {
+      var m = D.meta[w[0]];
+      return '<th class="gl" title="open multi-model: activates at ' + m.A_req +
+             ' of ' + m.A_pool + ' pairs">open &ge;' + m.A_req + '</th>' +
+             '<th title="one model per window: activates at ' + m.B_req + ' of ' +
+             m.B_pool + ' points">1&#8209;mod &ge;' + m.B_req + '</th>' +
              '<th title="what the gauges recorded">bench</th>';
     }).join("") + "</tr>");
 
