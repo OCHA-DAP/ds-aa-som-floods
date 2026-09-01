@@ -694,8 +694,6 @@ draw_tail(FIGS / "g_tail.png", SET_MODELS["base"])
 draw_tail(FIGS / "g_tail_all.png", SET_MODELS["all"])
 draw_detection(FIGS / "h_detection.png", SET_MODELS["base"])
 draw_detection(FIGS / "h_detection_all.png", SET_MODELS["all"])
-draw_window_scores(FIGS / "j_window_scores.png", SET_MODELS["base"])
-draw_window_scores(FIGS / "j_window_scores_all.png", SET_MODELS["all"])
 for stale in ["_alt", "_altpng", "_ng", "_ngpng"]:
     shutil.rmtree(FIGS / stale, ignore_errors=True)
 for svg in FIGS.glob("*.svg"):
