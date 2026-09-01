@@ -294,7 +294,7 @@ def readiness_leg(action_ref):
             rows[k] = {"error": "too few points with a usable readiness record"}
             continue
         rp = aw["rp"] if aw["rp"] in rps else max(rps)
-        n_req = min(aw["n_req"], len(cols) - 1) or 2
+        n_req = max(2, min(aw["n_req"], len(cols) - 1))
         mat = pd.concat(cols, axis=1).fillna(False)
         mx = mat.sum(axis=1).groupby(mat.index.year).max()
         fires = sorted(set(mx[mx >= n_req].index) & span)
@@ -900,7 +900,7 @@ SECTION_EDITS = {
          "when at least N points cross in that season.</li>\n"
          "<li><strong>Score the envelope, not the window.</strong> The money is "
          "released when any of the four windows activates, so candidates are judged on "
-         "that union: how often it activates, how many of the 10 severe years it "
+         "that union: how often it activates, how many of the severe years it "
          "catches, and how often it activates in a year with no recorded flood.</li>\n"
          "<li><strong>Apply the constraints.</strong> Thresholds never below 1-in-3 nor "
          "above a quarter of the record; all seven points monitored; at least two must "
@@ -912,7 +912,7 @@ SECTION_EDITS = {
          "</ol>"),
         (r"<p>\s*<strong>Multi-model representation.*?</p>",
          "<p><strong>Why correlation is only a tie-break.</strong> Many model "
-         "assignments reproduce the same activation years: with 25 years and 10 severe "
+         "assignments reproduce the same activation years: with 25 years and 8 severe "
          "events, the threshold and the vote count absorb the difference between "
          "products. Correlation decides only when the envelope cannot.</p>"),
         (r"      <figcaption>The candidate pool\..*?</figcaption>",
@@ -1050,13 +1050,15 @@ tail_scripts = tail_scripts.replace(
     'var SRC_COLOR = { geoglows: "#8E5FA8", glofas_v5: "#B34036", '
     'glofas_v4: "#EB6834", google_grrr: "#2A78D6" };',
 )
-body += tail_scripts
-# The template's controller handles two states on data-alt. Replace it with one
-# that handles three, keeping the same ids and classes.
+# The template ships its own two-state controller. Strip it BEFORE appending,
+# otherwise both it and the controller below end up live and fight over the DOM
+# (that bug shipped: the published page carried two controllers and a stray
+# </body></html> between them).
 _sw = tail_scripts.find("// ---- provider-set switch")
 if _sw != -1:
     _last = tail_scripts.rfind("})();")
     tail_scripts = tail_scripts[:_sw] + "})();" + tail_scripts[_last + 5:]
+body += tail_scripts
 body += """
 <script>
 (function () {

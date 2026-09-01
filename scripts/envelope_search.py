@@ -193,13 +193,15 @@ def search(options, any_flood, severe, robust=True):
 def main():
     print("loading ...")
     bench = load("workflow/som_flood_benchmark_seasonal")
+    lv = load("swalim_levels")
+    lv["date"] = pd.to_datetime(lv["date"])
     models = sorted(set(WINDOW_MODEL.values()))
     dd = pd.concat([load(f"discharge_daily_{m}").assign(src=m) for m in models],
                    ignore_index=True)
     dd["date"] = pd.to_datetime(dd["date"])
 
     options = window_options(dd, bench)
-    any_flood, severe = benchmark_years(bench)
+    any_flood, severe = benchmark_years_from_gauges(lv)
     keys, best = search(options, any_flood, severe)
 
     print(f"\n{N} years ({Y0}-{Y1}) | {len(any_flood)} with a flood at RP3 or rarer "
