@@ -71,6 +71,24 @@
       2018,
       2020
      ],
+     "units": [
+      {
+       "station": "Dollow",
+       "model": "GloFAS v5"
+      },
+      {
+       "station": "Dollow",
+       "model": "Google"
+      },
+      {
+       "station": "Luuq",
+       "model": "GloFAS v5"
+      },
+      {
+       "station": "Luuq",
+       "model": "Google"
+      }
+     ],
      "leg_rp": 8.7,
      "vs_gauge": {
       "tp": 2,
@@ -102,6 +120,24 @@
       2019,
       2023
      ],
+     "units": [
+      {
+       "station": "Dollow",
+       "model": "GloFAS v5"
+      },
+      {
+       "station": "Dollow",
+       "model": "Google"
+      },
+      {
+       "station": "Luuq",
+       "model": "GloFAS v5"
+      },
+      {
+       "station": "Luuq",
+       "model": "Google"
+      }
+     ],
      "leg_rp": 6.5,
      "vs_gauge": {
       "tp": 2,
@@ -131,6 +167,32 @@
       2016,
       2018,
       2020
+     ],
+     "units": [
+      {
+       "station": "Belet Weyne",
+       "model": "GloFAS v5"
+      },
+      {
+       "station": "Belet Weyne",
+       "model": "Google"
+      },
+      {
+       "station": "Bulo Burti",
+       "model": "GloFAS v5"
+      },
+      {
+       "station": "Bulo Burti",
+       "model": "Google"
+      },
+      {
+       "station": "Jowhar",
+       "model": "GloFAS v5"
+      },
+      {
+       "station": "Jowhar",
+       "model": "Google"
+      }
      ],
      "leg_rp": 8.7,
      "vs_gauge": {
@@ -162,6 +224,32 @@
       2014,
       2019,
       2023
+     ],
+     "units": [
+      {
+       "station": "Belet Weyne",
+       "model": "GloFAS v5"
+      },
+      {
+       "station": "Belet Weyne",
+       "model": "Google"
+      },
+      {
+       "station": "Bulo Burti",
+       "model": "GloFAS v5"
+      },
+      {
+       "station": "Bulo Burti",
+       "model": "Google"
+      },
+      {
+       "station": "Jowhar",
+       "model": "GloFAS v5"
+      },
+      {
+       "station": "Jowhar",
+       "model": "Google"
+      }
      ],
      "leg_rp": 6.5,
      "vs_gauge": {
@@ -838,6 +926,16 @@
       2018,
       2020
      ],
+     "units": [
+      {
+       "station": "Dollow",
+       "model": "Google"
+      },
+      {
+       "station": "Luuq",
+       "model": "Google"
+      }
+     ],
      "leg_rp": 6.5,
      "vs_gauge": {
       "tp": 2,
@@ -867,6 +965,16 @@
       2008,
       2019,
       2023
+     ],
+     "units": [
+      {
+       "station": "Dollow",
+       "model": "Google"
+      },
+      {
+       "station": "Luuq",
+       "model": "Google"
+      }
      ],
      "leg_rp": 8.7,
      "vs_gauge": {
@@ -899,6 +1007,20 @@
       2018,
       2020
      ],
+     "units": [
+      {
+       "station": "Belet Weyne",
+       "model": "Google"
+      },
+      {
+       "station": "Bulo Burti",
+       "model": "Google"
+      },
+      {
+       "station": "Jowhar",
+       "model": "Google"
+      }
+     ],
      "leg_rp": 6.5,
      "vs_gauge": {
       "tp": 2,
@@ -928,6 +1050,20 @@
       2006,
       2019,
       2023
+     ],
+     "units": [
+      {
+       "station": "Belet Weyne",
+       "model": "GloFAS v5"
+      },
+      {
+       "station": "Bulo Burti",
+       "model": "GloFAS v5"
+      },
+      {
+       "station": "Jowhar",
+       "model": "GloFAS v5"
+      }
      ],
      "leg_rp": 8.7,
      "vs_gauge": {
