@@ -44,6 +44,11 @@ table.data th { text-align:left; font-size:11px; text-transform:uppercase; lette
 table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8);
                 vertical-align:top; }
 table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
+.units { display:block; margin-top:5px; font-size:11.5px; line-height:1.5; color:var(--n7); }
+.unit { display:inline-block; border:1px solid #e2e7e7; border-radius:3px; padding:0 5px;
+        margin:2px 3px 0 0; white-space:nowrap; background:#fbfcfc; }
+.unit b { font-weight:500; color:var(--n8); }
+.unit .m5 { color:#b34036; } .unit .mg { color:#2a78d6; }
 table.data td.num, table.data th.num { text-align:right; font-variant-numeric:tabular-nums; }
 table.data tr.sep td { border-top:2px solid var(--b1); }
 /* summary statistics: score cells carry a sequential tint (darker = better) and
@@ -120,6 +125,10 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
     <div class="stats" id="stats"></div>
 
     <h2>The two configurations</h2>
+    <p>Each window's voting units are listed under its rule: a gauge paired with the
+       product read at it. The mixed setup lets one gauge appear twice, once per product;
+       the one-model setup lists each gauge once, under the single product assigned to
+       that window.</p>
     <div class="tablewrap"><table class="data" id="cfg"><tr><td>loading&hellip;</td></tr></table></div>
     <div class="callout warn" id="unanNote"></div>
 
@@ -222,8 +231,13 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
     var c = ['<tr><th>window</th><th>mixed models</th><th>one model per window</th>' +
              '<th class="num">mix fires</th><th class="num">1-mod fires</th></tr>'];
     function rule(x) {
+      var units = '<span class="units">' + x.units.map(function (u) {
+        var cls = u.model === "GloFAS v5" ? "m5" : "mg";
+        return '<span class="unit"><b>' + u.station + '</b> &middot; <span class="' + cls +
+               '">' + u.model + "</span></span>";
+      }).join("") + "</span>";
       return x.model + ": <strong>" + x.n_req + " of " + x.pool + "</strong> over 1-in-" + x.rp +
-             (x.n_req === x.pool ? ' <span style="color:#b3703a">(unanimous)</span>' : "");
+             (x.n_req === x.pool ? ' <span style="color:#b3703a">(unanimous)</span>' : "") + units;
     }
     WIN.forEach(function (w) {
       var a = A.meta[w[0]], b = B.meta[w[0]];
