@@ -49,6 +49,7 @@ table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
         margin:2px 3px 0 0; white-space:nowrap; background:#fbfcfc; }
 .unit b { font-weight:500; color:var(--n8); }
 .unit .m5 { color:#b34036; } .unit .mg { color:#2a78d6; }
+.unit .rl { color:#8a949c; font-size:10.5px; }
 table.data td.num, table.data th.num { text-align:right; font-variant-numeric:tabular-nums; }
 table.data tr.sep td { border-top:2px solid var(--b1); }
 /* summary statistics: score cells carry a sequential tint (darker = better) and
@@ -122,13 +123,38 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
       return levels fitted strictly inside 1999&ndash;2023).
     </div>
 
+    <div class="callout">
+      <strong>The algorithm, in two stages.</strong>
+      <strong>1. Select the best station-models.</strong> A unit is dropped if its signal
+      trails the reference gauge by more than 3 days (a &le; 6-day trigger cannot spare
+      that), or if its rank correlation against the gauge falls below 0.50. What survives
+      is then cut to everything within <strong>0.10 &#961; of the window's best</strong>
+      &mdash; on a 25-year record, units that close are statistically interchangeable, so
+      they all get a vote. For the mixed setup this runs model-blind across every
+      (station, product) pair; for the one-model setup it runs within each product, so a
+      product is judged on its own best stations rather than being crowded out of a window
+      another product happens to dominate.
+      <strong>2. Calibrate the rule.</strong> Search the return-period threshold and the
+      number of units required, per window, for the balanced and most accurate combination
+      that keeps the envelope in the target band.
+    </div>
+
     <div class="stats" id="stats"></div>
 
     <h2>The two configurations</h2>
-    <p>Each window's voting units are listed under its rule: a gauge paired with the
-       product read at it. The mixed setup lets one gauge appear twice, once per product;
-       the one-model setup lists each gauge once, under the single product assigned to
-       that window.</p>
+    <p>Each window's voting units are listed under its rule &mdash; a gauge paired with
+       the product read at it, with its rank correlation against the reference gauge and
+       its best lag in days. These are what survived selection; the count of candidates
+       considered is shown beside each rule.</p>
+    <p><strong>One asymmetry worth naming.</strong> Because the relative floor runs within
+       each product for the one-model setup, that setup can reach units the mixed setup
+       rejects as unfit. It bites in exactly one window: in Shabelle Deyr, Google's three
+       gauges sit at &#961; 0.62&ndash;0.64 against GloFAS at Belet Weyne's 0.83, so the
+       mixed pool cuts all three (3 of 6 candidates) while the one-model setup is offered
+       Google as a complete three-gauge option. <em>It declined it</em> &mdash; both setups
+       adopt the same three GloFAS units there, so nothing on this page turns on the
+       choice. The absolute &#961; &ge; 0.50 floor applies either way, so the per-product
+       floor can admit a mediocre unit but never a poor one.</p>
     <div class="tablewrap"><table class="data" id="cfg"><tr><td>loading&hellip;</td></tr></table></div>
     <div class="callout warn" id="unanNote"></div>
 
@@ -234,10 +260,13 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
       var units = '<span class="units">' + x.units.map(function (u) {
         var cls = u.model === "GloFAS v5" ? "m5" : "mg";
         return '<span class="unit"><b>' + u.station + '</b> &middot; <span class="' + cls +
-               '">' + u.model + "</span></span>";
+               '">' + u.model + '</span> <span class="rl">&#961;' + u.rho.toFixed(2) +
+               " " + (u.lag > 0 ? "+" : "") + u.lag + "d</span></span>";
       }).join("") + "</span>";
       return x.model + ": <strong>" + x.n_req + " of " + x.pool + "</strong> over 1-in-" + x.rp +
-             (x.n_req === x.pool ? ' <span style="color:#b3703a">(unanimous)</span>' : "") + units;
+             (x.n_req === x.pool ? ' <span style="color:#b3703a">(unanimous)</span>' : "") +
+             ' <span style="color:var(--n7);font-size:11.5px">&mdash; ' + x.pool + " selected of " +
+             x.candidates + " candidates</span>" + units;
     }
     WIN.forEach(function (w) {
       var a = A.meta[w[0]], b = B.meta[w[0]];
@@ -254,16 +283,24 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
     var uA = WIN.filter(function (w) { return A.meta[w[0]].n_req === A.meta[w[0]].pool; }).length;
     var uB = WIN.filter(function (w) { return B.meta[w[0]].n_req === B.meta[w[0]].pool; }).length;
     document.getElementById("unanNote").innerHTML =
-      "<strong>Why the pools are different sizes.</strong> Mixing lets the same gauge vote " +
-      "once per product, so the Juba's two reporting gauges yield four voting units rather " +
-      "than two. On a network this small that is decisive: with one model per window the " +
-      "Juba can only run a 2-of-2 rule, which is unanimous, so one product failing on the " +
-      "right day silences the window. " +
-      (uB > uA ? "Here the one-model setup ends with <strong>" + uB + " unanimous windows</strong> " +
-                 "against the mixed setup's " + uA + "."
-               : "Both setups end with " + uA + " unanimous windows here.") +
-      " That is forced by the gauge count rather than chosen: the search already prefers " +
-      "non-unanimous rules wherever the result ties.";
+      "<strong>What selection does to the two setups.</strong> Once the filter is applied " +
+      "the mixed setup stops being uniformly mixed: it keeps both products only in Juba Gu " +
+      "and Shabelle Gu, while <strong>both Deyr windows come out GloFAS-only</strong> " +
+      "because Google's units there sit 0.2 rho below the best and fall outside the floor. " +
+      "So the selection stage reproduces part of the one-model assignment on its own, " +
+      "rather than it having to be imposed. In <strong>two windows the surviving units " +
+      "are identical</strong> across both setups (both Deyr windows, GloFAS at all its " +
+      "reporting gauges), and in Shabelle Deyr the whole rule matches &mdash; same units, " +
+      "same threshold, same vote count. Where the setups still differ is the " +
+      "Juba: mixing lets Dollow and Luuq each vote twice, giving a 3-of-4 rule, whereas " +
+      "one model per window leaves only a 2-of-2, which is unanimous." +
+      "<br><br><strong>Selection costs consensus depth, and it costs it from both.</strong> " +
+      "Cutting to the units within 0.10 rho of the best leaves pools of 2 to 4, and " +
+      "<strong>each setup now ends with three unanimous windows</strong> - mixed in Juba " +
+      "Deyr, Shabelle Gu and Shabelle Deyr, one-model in Juba Gu, Juba Deyr and Shabelle " +
+      "Deyr. The unfiltered version of this page showed mixing avoiding unanimity " +
+      "entirely, and that was an artifact of keeping every unit regardless of skill. On " +
+      "five gauges, the quality floor and a non-unanimous rule cannot both be had.";
 
     // ---- historical record ----
     var iA = {}, iB = {};
@@ -378,18 +415,18 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
 
     var same = A.envelope.vs_target.f1 === B.envelope.vs_target.f1;
     document.getElementById("readout").innerHTML =
-      "<strong>How to read it.</strong> Against the gauge benchmark the mixed setup scores " +
-      "F1 " + A.envelope.vs_gauge.f1.toFixed(2) + " against " + B.envelope.vs_gauge.f1.toFixed(2) +
-      ", catching every severe year (TPR " + A.envelope.vs_gauge.tpr.toFixed(2) + ") where the " +
-      "one-model setup misses one. Against the target years the two are " +
-      (same ? "<strong>identical</strong>" : "F1 " + A.envelope.vs_target.f1.toFixed(2) +
-       " against " + B.envelope.vs_target.f1.toFixed(2)) +
-      ", which is the more important read: on the years the framework arguably should have " +
-      "paid out in, the mixing rule makes no measurable difference. Note also how much " +
-      "lower both score against impact than against gauges &mdash; target-year TPR tops out " +
-      "at " + Math.max(A.envelope.vs_target.tpr, B.envelope.vs_target.tpr).toFixed(2) +
-      ". The gap between catching gauge floods and catching impact years is far larger than " +
-      "the gap between the two designs, and it is the one worth working on.";
+      "<strong>How to read it.</strong> With selection applied the two designs are " +
+      "<strong>indistinguishable on accuracy</strong>: identical F1 against the gauge " +
+      "benchmark (" + A.envelope.vs_gauge.f1.toFixed(2) + ") and identical against the " +
+      "target years (" + A.envelope.vs_target.f1.toFixed(2) + "), on the same 8 " +
+      "activations. The one place they part is lead time, where mixing is worth " +
+      (A.envelope.lead_days - B.envelope.lead_days).toFixed(1) + " days " +
+      "(" + sgn(A.envelope.lead_days) + " against " + sgn(B.envelope.lead_days) + "). " +
+      "Note also that both now fire <em>ahead</em> of the gauge on average, which the " +
+      "unfiltered version did not: the &minus;3 day timing guard is what buys that, since " +
+      "it removes exactly the units that lag the river. And both still score well below " +
+      "their gauge accuracy when measured against impact years &mdash; that gap remains " +
+      "larger than any difference between the designs.";
 
     var t = ['<tr><th>window</th><th>target years</th><th class="num">n</th></tr>'];
     WIN.forEach(function (w) {
