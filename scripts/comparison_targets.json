@@ -1,0 +1,60 @@
+{
+ "threshold": 100000,
+ "targets": {
+  "juba_gu": [
+   2018,
+   2020,
+   2021,
+   2023
+  ],
+  "juba_deyr": [
+   2000,
+   2006,
+   2019,
+   2023
+  ],
+  "shabelle_gu": [
+   2018,
+   2020,
+   2021,
+   2023
+  ],
+  "shabelle_deyr": [
+   2006,
+   2019,
+   2023
+  ]
+ },
+ "cerf": [
+  {
+   "year": 2006,
+   "season": "deyr",
+   "usd": 10437041,
+   "basins": "both (unattributed)"
+  },
+  {
+   "year": 2018,
+   "season": "gu",
+   "usd": 5133588,
+   "basins": "both (unattributed)"
+  },
+  {
+   "year": 2019,
+   "season": "deyr",
+   "usd": 8000222,
+   "basins": "JS"
+  },
+  {
+   "year": 2020,
+   "season": "gu",
+   "usd": 7100529,
+   "basins": "S"
+  },
+  {
+   "year": 2023,
+   "season": "deyr",
+   "usd": 10000009,
+   "basins": "JS"
+  }
+ ]
+}

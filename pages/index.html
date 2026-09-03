@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Somalia Riverine Flood Trigger — OCHA Centre for Humanitarian Data</title>
+<meta name="description" content="Anticipatory-action trigger design for riverine flooding on the Juba and Shabelle rivers, Somalia: multi-source forecast consensus calibrated against SWALIM river gauges.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <canvas id="bg" aria-hidden="true"></canvas>
+    <div class="inner">
+      <p class="eyebrow">OCHA Centre for Humanitarian Data</p>
+      <h1>Somalia Riverine Flood Trigger</h1>
+      <p>Trigger design for anticipatory action against riverine flooding on the Juba and
+         Shabelle rivers. Three global streamflow models — GloFAS, Google Flood Hub and
+         GEOGloWS — compete station by station against SWALIM river-gauge observations;
+         the winners form a per-basin forecast consensus with a readiness leg at 7–12 days
+         and an action leg at up to 6 days.</p>
+    </div>
+  </header>
+
+  <main>
+    <p class="label">The proposed trigger &mdash; two candidate designs</p>
+    <div class="grid">
+
+      <a class="k" href="trigger/">
+        <h2>Multi-source consensus</h2>
+        <p>Each window votes on <strong>(station, model) pairs</strong> drawn from the five
+           SWALIM gauges that still report, with all three providers competing freely and a
+           station allowed to carry more than one model. Joint basin calibration:
+           1-in-3.2 overall, 1-in-4.3 / 5.2 per basin. Includes the SWALIM-threshold check,
+           the impact tilt and a no-Google variant.</p>
+        <span class="foot"><em>/trigger/</em><span>T. Downing &middot; Aug 2026</span></span>
+      </a>
+
+      <a class="k" href="balanced/">
+        <h2>The balanced trigger</h2>
+        <p>The same open multi-model consensus on the five still-reporting gauges, but with
+           the activation probability <strong>balanced across basins and seasons as an
+           explicit constraint</strong> rather than left to fall out of the search. Seasons
+           come out exactly level; basins within one activation; 7 of 7 severe years and no
+           activation outside the benchmark.</p>
+        <span class="foot"><em>/balanced/</em><span>design variant &middot; Sep 2026</span></span>
+      </a>
+
+      <a class="k" href="trigger-single-model/">
+        <h2>One model per window</h2>
+        <p>Each river-season window runs on a <strong>single forecast source</strong> rather
+           than a mixture, monitoring all seven reporting-era points and with no threshold
+           below 1-in-3. Google carries Gu, GloFAS v5 carries Deyr; GEOGloWS is an
+           alternative view. Same 1-in-3.2 envelope. Carries twelve open review notes
+           behind a toggle.</p>
+        <span class="foot"><em>/trigger-single-model/</em><span>P. Wairimu &middot; Aug 2026</span></span>
+      </a>
+
+    </div>
+
+    <p class="label label-2">Explore the evidence</p>
+    <div class="grid grid-one">
+      <a class="k" href="comparison/">
+        <h2>Mixed models vs one model per window</h2>
+        <p>Both setups on GloFAS and Google only, both on the five reporting gauges, both
+           balanced so each basin-season carries the same activation probability at
+           1-in-3.2. Two outputs: the year-by-year trigger record, and accuracy (F1, TPR,
+           PPV, lead time) against the gauges <em>and</em> against a target list built from
+           CERF allocations and major EM-DAT years.</p>
+        <span class="foot"><em>/comparison/</em><span>design delta &middot; Sep 2026</span></span>
+      </a>
+
+
+      <a class="k" href="summary/">
+        <h2>Somalia floods analysis: data-source review</h2>
+        <p>Presentation summary of the evidence: SWALIM thresholds, events and crossings,
+           gauge events against flood exposure, model performance on hindsight and
+           forecasts, bias correction, the seven trigger gauges, the grid search, the
+           current best configuration and the envelope decision it implies.</p>
+        <span class="foot"><em>/summary/</em><span>updated as the analysis moves</span></span>
+      </a>
+
+      <a class="k" href="explorer/">
+        <h2>Indicator explorer</h2>
+        <p>Pick a basin and a year and see how each indicator behaved: the SWALIM gauge
+           record, each source's station-consensus count against its own 1-in-6 thresholds
+           (GEOGloWS included, via its retrospective), and each model's signal at the
+           reference station relative to its own climatology.</p>
+        <span class="foot"><em>/explorer/</em><span>1999–2023, daily</span></span>
+      </a>
+
+    </div>
+
+    <p class="label label-2">Source material</p>
+    <div class="grid">
+
+      <a class="k" href="https://github.com/OCHA-DAP/ds-aa-som-floods/tree/main/analysis">
+        <h2>Analysis notebooks<span class="chip chip-ext">GitHub</span></h2>
+        <p>The full evidence chain: SWALIM threshold analysis, model-vs-gauge skill,
+           lead-time skill, flood benchmarks, station selection, trigger grid search and
+           the staged-mechanism exploration (notebooks 01–10, P. Wairimu) plus the
+           multi-source mechanism itself (notebook 11).</p>
+        <span class="foot"><em>ds-aa-som-floods/analysis</em></span>
+      </a>
+
+      <a class="k" href="https://github.com/OCHA-DAP/ds-knowledge-base/blob/main/analysis/som-flooding-multisource.md">
+        <h2>Knowledge-base page<span class="chip chip-ext">GitHub</span></h2>
+        <p>The team knowledge-base landing page for this analysis: what was analysed, the
+           headline findings, data sources and how this relates to the (future) Somalia
+           flooding framework.</p>
+        <span class="foot"><em>ds-knowledge-base</em></span>
+      </a>
+
+    </div>
+  </main>
+
+  <div class="note">
+    <p><strong>Access.</strong> This repository is public (Apache-2.0), so this site and
+       the analysis behind it are openly readable. The underlying gauge, model and
+       exposure data stay on the team's storage and are not published here.</p>
+    <p><strong>Adding a page?</strong> Create a directory under <code>pages/</code> with an
+       <code>index.html</code> and add a card above; the deploy workflow publishes
+       <code>pages/</code> as the site root. Template lineage:
+       <a href="https://github.com/OCHA-DAP/ds-seas5-skill">ds-seas5-skill</a> /
+       <a href="https://github.com/OCHA-DAP/ds-geospatial-impact-estimates">ds-geospatial-impact-estimates</a>.</p>
+  </div>
+
+</div>
+
+<script src="assets/hero.js" defer></script>
+</body>
+</html>
