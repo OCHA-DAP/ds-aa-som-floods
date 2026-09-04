@@ -481,9 +481,11 @@ body.variant .carrynote { display:none; }
       <img src="figs/j_window_scores_fc.png?v=202609012100" alt="The window swap test on the forecast archives">
       <figcaption>Same vote rules and return periods. Thresholds are fitted on each
         model's own reanalysis, as the trigger operates, and the leads-1-7 forecast series
-        (ensemble median, best lead per day) is tested against them over the common years
-        2016-2023. Eight years give 1 to 3 severe events per window, so read direction,
-        not decimals. This figure does not change with the provider switch.</figcaption>
+        (ensemble median, best lead per day) is tested against them over the years both
+        archives cover in that window, shown per row: 2016-2023 for Gu, 2016-2022 for
+        Deyr, because Google's archive ends in June 2023. Seven or eight years give 1 to 3
+        severe events per window, so read direction, not decimals. This figure does not
+        change with the provider switch.</figcaption>
     </figure>
     <div class="callout">
       <strong>Why Google carries Gu and GloFAS v5 carries Deyr.</strong>
@@ -494,14 +496,16 @@ body.variant .carrynote { display:none; }
           activations on the Juba and a missed severe year (2020) on the Shabelle.
           GloFAS v5's Deyr record is clean.</li>
         <li><strong>GloFAS v5 alone cannot meet the 1-in-3 ceiling.</strong> No v5-only
-          configuration reaches 8 activations, and its nearest envelope fires once every
-          2.9 years. Some windows therefore have to run on Google, and Gu is where the
+          configuration reaches 8 activations, and its nearest envelope activates once
+          every 2.9 years. Some windows therefore have to run on Google, and Gu is where the
           swap costs nothing.</li>
         <li><strong>Google is the only model with forecast-side evidence.</strong> Its
           reforecast (2016-2023) shows event skill at leads 1 to 7 on the Shabelle; the
           only GloFAS lead-time archive (v4) scores near chance there. GloFAS v5 has no
-          reforecast. It keeps Deyr because its thresholds carry over to the live v5
-          forecast, whose climatology matches the reanalysis they were fitted on.</li>
+          reforecast. It keeps Deyr on its reanalysis record; its thresholds carry over
+          unchanged once GloFAS ships a v5 forecast, and until then the Deyr windows are
+          monitored on the v4 forecast with levels refit on v4's own climatology at the
+          same return periods.</li>
       </ul>
     </div>
     <p class="altonly"><strong>GEOGloWS maps the RP3 events least well of the models
@@ -600,8 +604,8 @@ body.variant .carrynote { display:none; }
         every year it activates, the Shabelle activates too (review note R4).</span><span
         class="altonly">The all-providers configuration, same layout, with GEOGloWS
         carrying Juba Gu: the same envelope (8 years, 1-in-3.2) and the same 7 of 8
-        severe coverage, but no activation outside the benchmark &mdash; it does not fire
-        in 2013.</span> With 25-year records, one hit moves coverage by ~12&ndash;15
+        severe coverage, but no activation outside the benchmark &mdash; it does not
+        activate in 2013.</span> With 25-year records, one hit moves coverage by ~12&ndash;15
         points &mdash; differences under ~0.15 are noise.</figcaption>
     </figure>
 
@@ -711,9 +715,10 @@ body.variant .carrynote { display:none; }
         by lead 12 (readiness band, shaded) — its 7–12-day thresholds should anticipate
         that. <strong>GEOGloWS runs 0.85–0.91× its own retrospective even at lead 1</strong>
         (ρ ~0.82), on only ~2 years of archive (2024–26) — retrospective-fitted thresholds
-        will under-fire on its live forecasts until refit on forecast climatology.
-        <strong>No GloFAS v5 reforecast exists</strong>, so the operational v5 forecast's
-        own consistency is untestable — the single most important gap.</figcaption>
+        will activate less often than intended on its live forecasts until refit on
+        forecast climatology. <strong>GloFAS v5 has no forecast yet</strong>, so its
+        consistency with the v5 reanalysis cannot be tested until one ships — the single
+        most important gap.</figcaption>
     </figure>
 
 </div></details>
@@ -734,19 +739,21 @@ body.variant .carrynote { display:none; }
     <div class="tablewrap">
 <table class="data">
 <thead><tr><th>window</th><th>calibrated on</th><th>run on</th><th>reproduces its calibration years?</th></tr></thead>
-<tbody><tr><td>Juba Gu</td><td>Google GRRR reanalysis</td><td>Google GRRR forecasts, leads 1-7</td><td>yes, same archive</td></tr><tr><td>Juba Deyr</td><td>GloFAS v5 reanalysis</td><td>GloFAS v5 operationally; lead-time evidence from GloFAS v4</td><td>cannot be shown directly: no reforecast for this version</td></tr><tr><td>Shabelle Gu</td><td>Google GRRR reanalysis</td><td>Google GRRR forecasts, leads 1-7</td><td>yes, same archive</td></tr><tr><td>Shabelle Deyr</td><td>GloFAS v5 reanalysis</td><td>GloFAS v5 operationally; lead-time evidence from GloFAS v4</td><td>cannot be shown directly: no reforecast for this version</td></tr></tbody>
+<tbody><tr><td>Juba Gu</td><td>Google GRRR reanalysis</td><td>Google GRRR forecasts, leads 1-7</td><td>yes, same archive</td></tr><tr><td>Juba Deyr</td><td>GloFAS v5 reanalysis</td><td>GloFAS v4 operationally, levels refit on v4's climatology, until a v5 forecast exists; lead-time evidence from GloFAS v4</td><td>cannot be shown directly: no reforecast for this version</td></tr><tr><td>Shabelle Gu</td><td>Google GRRR reanalysis</td><td>Google GRRR forecasts, leads 1-7</td><td>yes, same archive</td></tr><tr><td>Shabelle Deyr</td><td>GloFAS v5 reanalysis</td><td>GloFAS v4 operationally, levels refit on v4's climatology, until a v5 forecast exists; lead-time evidence from GloFAS v4</td><td>cannot be shown directly: no reforecast for this version</td></tr></tbody>
 </table>
 </div><div class="callout warn">
       <strong>The caveat that matters most.</strong> At ≤ 6-day leads the GloFAS v4
       reforecast misses Deyr 2023 on the Shabelle — the largest flood in the record — even
-      though the v5 reanalysis flags it clearly. The operational forecast has been v5 since
-      August 2026 and should behave like the v5 reanalysis here, but there is no v5
-      reforecast to prove it. Re-verifying both Deyr legs the moment EWDS publishes a v5
-      reforecast is the single most important follow-up.
+      though the v5 reanalysis flags it clearly. The operational forecast is still v4: no
+      v5 forecast exists yet. Until one does, the Deyr windows run on v4 with levels refit
+      on v4's own climatology at the same return periods, and the v5 reanalysis skill this
+      trigger is calibrated on is not yet available in live monitoring. Switching the Deyr
+      legs to the v5 forecast, and re-verifying them, the moment it is published is the
+      single most important follow-up.
     </div>
 
     <div class="callout warn">
-<strong>What the calibration cannot settle.</strong> Google's reforecast starts in 2016, so a Google window cannot be calibrated on its own forecasts at a 1-in-3 threshold, which needs about 12 years: it is calibrated on the retrospective and only checked at lead time. GloFAS v5 has no reforecast at all, so its window inherits its lead-time evidence from v4. Readiness is not tuned to precede activation, so an action trigger may fire with no readiness phase ahead of it.
+<strong>What the calibration cannot settle.</strong> Google's reforecast starts in 2016, so a Google window cannot be calibrated on its own forecasts at a 1-in-3 threshold, which needs about 12 years: it is calibrated on the retrospective and only checked at lead time. GloFAS v5 has no reforecast at all, so its window inherits its lead-time evidence from v4. Readiness is not tuned to precede activation, so an action trigger may activate with no readiness phase ahead of it.
 </div>
 
 
@@ -809,6 +816,12 @@ body.variant .carrynote { display:none; }
       both rivers and marked * (they are national riverine-flood responses). Impact
       columns are context, not a skill score: a formal skill-vs-impact statistic still
       requires choosing an impact threshold.</p>
+    <p><strong>Gu 2024, the one year outside this record,</strong> was severe at the
+      Shabelle gauges (all three over their 1-in-5) and cannot be replayed on Google,
+      whose archive ends in 2023; replayed on the operational GloFAS v4 forecasts,
+      neither river activates on either leg — the Shabelle forecast peaks in early May
+      at 75–86% of the action levels, consistent with the v4 blind spot behind the
+      missed Deyr 2023.</p>
 
 <details class="supp"><summary>Supporting analysis &mdash; should impact tilt the probabilities?</summary>
 <div class="supp-body">

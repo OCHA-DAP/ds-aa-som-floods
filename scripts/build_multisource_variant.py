@@ -607,22 +607,37 @@ def draw_window_scores_fc(path):
     if fc_action is None:
         return None
     fmods = [m for m in ["glofas_v4", "google_grrr"] if m in fc_action_spans]
-    span = set.intersection(*[fc_action_spans[m] for m in fmods]) & SPAN
-    if len(span) < 6:
-        return None
+
+    def season_cover(model, season):
+        """Years this model's action-band archive actually covers the season."""
+        d = fc_action[fc_action.src == model]
+        d = d[d.date.dt.month.isin(SEASONS[season])]
+        n = d.groupby(d.date.dt.year)["date"].nunique()
+        return set(n[n >= 40].index) & SPAN
+
     ylab, mats = [], {"POD": [], "FAR": [], "F1": []}
     for k in WINDOWS:
         river, season = k
         cfg = TRIGGER_CONFIG[k]
+        # score only years EVERY model covers in this season: Google's archive
+        # ends July 2023, so Deyr 2023 is absent from it, and counting that
+        # absence as a miss would be a coverage artifact, not skill
+        span = set.intersection(*[season_cover(m, season) for m in fmods])
+        if len(span) < 4:
+            continue
         floods = envelope_search.gauge_consensus_years(lv, river, season,
                                                        RP_FLOOR) & span
         sev = envelope_search.gauge_consensus_years(lv, river, season,
                                                     SEVERE_RP) & span
         if not sev:
+            ylab.append(f"{WLABEL[k]}  no severe year in covered span "
+                        f"{min(span)}-{max(span)}")
+            for m_ in mats:
+                mats[m_].append([np.nan] * len(fmods))
             continue
         ylab.append(f"{WLABEL[k]}  {cfg['n_req']} of "
                     f"{len(TRIGGER_STATIONS[river])}, RP{cfg['rp']}  "
-                    f"severe n={len(sev)}")
+                    f"{min(span)}-{max(span)}, severe n={len(sev)}")
         row = {m_: [] for m_ in mats}
         for m in fmods:
             cols = []
@@ -670,8 +685,8 @@ def draw_window_scores_fc(path):
         ax.set_title({"POD": "POD: share of SEVERE years caught",
                       "FAR": "FAR: activations with no RP3 flood",
                       "F1": "F1"}[met] + "\n(dark = better)", fontsize=10)
-    fig.suptitle(f"The swap test on the forecasts, leads 1-7, {min(span)}-"
-                 f"{max(span)}: reanalysis-fitted thresholds, forecast crossings",
+    fig.suptitle("The swap test on the forecasts, leads 1-7: reanalysis-fitted "
+                 "thresholds, forecast crossings, common covered years",
                  x=0.05, ha="left", fontweight="bold", fontsize=11.5, color=INK)
     fig.subplots_adjust(wspace=0.06, top=0.82)
     fig.savefig(path, dpi=170, bbox_inches="tight")
