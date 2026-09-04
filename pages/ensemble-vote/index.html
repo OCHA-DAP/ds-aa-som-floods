@@ -94,9 +94,9 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
 
     <h2>The sweep</h2>
     <figure>
-      <img src="figs/j_prob_sweep.png?v=202609041300" alt="Heatmap of severe-year F1 per window and leg across the eleven vote levels">
-      <figcaption>Severe-year F1 per window at each vote level, action leg above,
-        readiness below. The red box marks the median rule. On the action leg, three of
+      <img src="figs/j_prob_sweep.png?v=202609041500" alt="Heatmap of severe-year F1 per window and leg across the eleven vote levels">
+      <figcaption>Severe-year F1 per window at each vote level, readiness leg above,
+        action below. The red box marks the median rule. On the action leg, three of
         the four windows give the same activations, detection and false alarms at every
         level from 1 of 11 to 11 of 11. With 3 to 5 severe events per window, read
         direction, not decimals.</figcaption>
@@ -110,15 +110,15 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
           required number of points on the same day, does not reach the levels in the
           missed years. Those misses come from the model's magnitudes, and no vote level
           can recover them.</li>
+        <li><strong>At leads 7&ndash;12 the level matters, in both directions.</strong>
+          The ensemble spread is wider at readiness leads. Above the median, Juba Deyr
+          loses its 2015 activation, the one outside the benchmark, but Shabelle Deyr
+          loses 2014, a severe year. Below the median, Juba Gu adds 2010 and 2016 without
+          catching any additional severe year.</li>
         <li><strong>At leads 1&ndash;7 the level barely matters.</strong> The ensemble is
           tight at short leads: most members cross together or not at all. The one
           exception is Juba Gu, where levels above the median drop the 2016 activation, a
           flood year but not a severe one on that window.</li>
-        <li><strong>At leads 7&ndash;12 the level matters, in both directions.</strong>
-          The spread is wider there. Above the median, Juba Deyr loses its 2015
-          activation, the one outside the benchmark, but Shabelle Deyr loses 2014, a
-          severe year. Below the median, Juba Gu adds 2010 and 2016 without catching any
-          additional severe year.</li>
       </ul>
     </div>
 
