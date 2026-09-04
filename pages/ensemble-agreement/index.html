@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The ensemble vote level &mdash; Somalia Riverine Flood Trigger</title>
-<meta name="description" content="Should a trigger point vote when the ensemble median crosses its level, or at some other share of members? A sweep on the GloFAS v4 reforecast, 2003-2023.">
+<title>The ensemble agreement level &mdash; Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Should a point count toward the trigger when the ensemble median crosses its level, or at some other share of members? Every agreement level tested on the GloFAS v4 reforecast, 2003-2023.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -60,10 +60,10 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
   <header class="hero hero-sub">
     <div class="inner">
       <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / supporting analysis</p>
-      <h1>The ensemble vote level</h1>
-      <p>A trigger point votes when the ensemble median crosses its level. The median is
-         a choice: the vote could instead require 30%, 60% or 90% of the members. This
-         note tests every vote level the GloFAS v4 reforecast can resolve, on all four
+      <h1>The ensemble agreement level</h1>
+      <p>A point counts toward the trigger when the ensemble median crosses its level.
+         The median is a choice: the rule could instead require 30%, 60% or 90% of the
+         members. This note tests every agreement level the GloFAS v4 reforecast can resolve, on all four
          windows and both legs, to see whether any of them performs better than the
          median. September 2026.</p>
     </div>
@@ -73,7 +73,7 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
 
     <div class="stats">
       <div class="stat"><span class="v">1&ndash;11 of 11</span>
-        <span class="l">vote levels tested, on the 11-member v4 reforecast, 2003&ndash;2023</span></div>
+        <span class="l">agreement levels tested, on the 11-member v4 reforecast, 2003&ndash;2023</span></div>
       <div class="stat"><span class="v">3 of 4</span>
         <span class="l">windows where the action leg gives identical results at every level</span></div>
       <div class="stat"><span class="v">0</span>
@@ -83,10 +83,10 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
     </div>
 
     <h2>The setup</h2>
-    <p>Each vote level k means: a point votes on a day when <strong>at least k of the 11
+    <p>Each agreement level k means: a point counts on a day when <strong>at least k of the 11
        reforecast members</strong> put that day over the point's level, taking the most
        alarming issue per valid day, the same convention as the operational backtest.
-       Everything else stays at the adopted rules: same points, same same-day vote
+       Everything else stays at the adopted rules: same points, same same-day point
        counts, same season months, and levels fitted on the v4 reanalysis at each leg's
        return period. The median rule is k&nbsp;=&nbsp;6: the median crosses when at
        least half the members do, and half of 11 rounds up to 6. Each level is scored
@@ -94,8 +94,8 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
 
     <h2>The sweep</h2>
     <figure>
-      <img src="figs/j_prob_sweep.png?v=202609041500" alt="Heatmap of severe-year F1 per window and leg across the eleven vote levels">
-      <figcaption>Severe-year F1 per window at each vote level, readiness leg above,
+      <img src="figs/j_prob_sweep.png?v=202609041700" alt="Heatmap of severe-year F1 per window and leg across the eleven agreement levels">
+      <figcaption>Severe-year F1 per window at each agreement level, readiness leg above,
         action below. The red box marks the median rule. On the action leg, three of
         the four windows give the same activations, detection and false alarms at every
         level from 1 of 11 to 11 of 11. With 3 to 5 severe events per window, read
@@ -108,8 +108,8 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
         <li><strong>No level catches an extra severe year.</strong> Detection does not
           change with k on any leg of any window: even one member of eleven, at the
           required number of points on the same day, does not reach the levels in the
-          missed years. Those misses come from the model's magnitudes, and no vote level
-          can recover them.</li>
+          missed years. Those misses come from the model's magnitudes, and no agreement
+          level can recover them.</li>
         <li><strong>At leads 7&ndash;12 the level matters, in both directions.</strong>
           The ensemble spread is wider at readiness leads. Above the median, Juba Deyr
           loses its 2015 activation, the one outside the benchmark, but Shabelle Deyr
@@ -122,10 +122,23 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
       </ul>
     </div>
 
+    <h2>The years in detail</h2>
+    <p>Raising the agreement level can only remove crossings, never add them, so each
+       year is fully described by the highest level at which it still activates: at
+       every level means even all 11 members crossing does not remove it, and a severe
+       year marked no is not caught even at 1 of 11. Years shown are those that activate
+       at any level on either leg, plus every severe year of the archive span.</p>
+<div class="tablewrap">
+<table class="data">
+<thead><tr><th>window</th><th>year</th><th>gauge benchmark</th><th>readiness activates</th><th>action activates</th></tr></thead>
+<tbody><tr><td>Juba Gu</td><td>2005</td><td>flood (1-in-3)</td><td>no</td><td>at every level</td></tr><tr><td></td><td>2010</td><td>flood (1-in-3)</td><td>up to 1 of 11</td><td>at every level</td></tr><tr><td></td><td>2016</td><td>flood (1-in-3)</td><td>up to 3 of 11</td><td>up to 6 of 11</td></tr><tr><td></td><td>2018</td><td><em>severe (1-in-5)</em></td><td>no</td><td>at every level</td></tr><tr><td></td><td>2020</td><td><em>severe (1-in-5)</em></td><td>at every level</td><td>at every level</td></tr><tr><td></td><td>2023</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr><tr><td>Juba Deyr</td><td>2005</td><td>below 1-in-3</td><td>up to 1 of 11</td><td>at every level</td></tr><tr><td></td><td>2006</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr><tr><td></td><td>2008</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr><tr><td></td><td>2014</td><td><em>severe (1-in-5)</em></td><td>no</td><td>at every level</td></tr><tr><td></td><td>2015</td><td>below 1-in-3</td><td>up to 7 of 11</td><td>at every level</td></tr><tr><td></td><td>2017</td><td>flood (1-in-3)</td><td>up to 10 of 11</td><td>at every level</td></tr><tr><td></td><td>2023</td><td><em>severe (1-in-5)</em></td><td>at every level</td><td>at every level</td></tr><tr><td>Shabelle Gu</td><td>2005</td><td>flood (1-in-3)</td><td>at every level</td><td>at every level</td></tr><tr><td></td><td>2010</td><td>flood (1-in-3)</td><td>at every level</td><td>at every level</td></tr><tr><td></td><td>2016</td><td><em>severe (1-in-5)</em></td><td>at every level</td><td>at every level</td></tr><tr><td></td><td>2018</td><td>flood (1-in-3)</td><td>up to 1 of 11</td><td>at every level</td></tr><tr><td></td><td>2020</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr><tr><td></td><td>2023</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr><tr><td>Shabelle Deyr</td><td>2006</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr><tr><td></td><td>2007</td><td>below 1-in-3</td><td>no</td><td>at every level</td></tr><tr><td></td><td>2010</td><td>below 1-in-3</td><td>no</td><td>at every level</td></tr><tr><td></td><td>2013</td><td>below 1-in-3</td><td>at every level</td><td>at every level</td></tr><tr><td></td><td>2014</td><td><em>severe (1-in-5)</em></td><td>up to 7 of 11</td><td>at every level</td></tr><tr><td></td><td>2019</td><td><em>severe (1-in-5)</em></td><td>at every level</td><td>at every level</td></tr><tr><td></td><td>2020</td><td><em>severe (1-in-5)</em></td><td>no</td><td>at every level</td></tr><tr><td></td><td>2023</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr></tbody>
+</table>
+</div>
+
     <h2>What about Google for Gu?</h2>
     <p>The Google GRRR reforecast is a <strong>single trace per issue and lead</strong>:
-       the archive has no ensemble members, so there is no member share to choose. The Gu
-       legs vote when the forecast value crosses the level, which is what the operational
+       the archive has no ensemble members, so there is no member share to choose. The Gu legs count a point when the forecast
+       value crosses its level, which is what the operational
        check on the <a href="../trigger-single-model/">trigger page</a> replays. The live
        Flood Hub display does show uncertainty bounds, but they are not in the public
        archive; with API access they could be logged from now on, and this question asked
@@ -135,17 +148,17 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
     <h2>What this means for monitoring</h2>
     <p>Keep the median. No level performs better on any leg, and the one improvement on offer, a
        stricter Juba Deyr readiness, costs a severe year on Shabelle Deyr readiness. One
-       vote level for the whole mechanism is also easier to defend than four tuned ones.
-       The daily monitoring dashboard shows each point's member share over its level, so
-       the vote can be read straight off the bars against the 50% mark.</p>
+       agreement level for the whole mechanism is also easier to defend than four tuned
+       ones.
+       The daily monitoring dashboard shows each point's member share over its level, so the count can be read straight off the bars against the 50% mark.</p>
 
     <div class="callout warn">
-      <strong>Caveats.</strong> The reforecast has 11 members, so vote levels can only be
+      <strong>Caveats.</strong> The reforecast has 11 members, so agreement levels can only be
       tested in steps of 9%; the operational forecast has 50 members and reads finer, but
       the flatness at short leads means the finer scale has little to add. These scores
       use the full 2003&ndash;2023 archive, so they differ slightly from the trigger
       page's swap heatmap, which scores only the years Google's archive also covers. The
-      readiness rows use reanalysis-fitted levels so that every vote level is compared
+      readiness rows use reanalysis-fitted levels so that every level is compared
       within one design; the adopted readiness leg refits its levels on the 7-to-12-day
       forecast series itself, so its activation years differ from the mechanism table.
       And each window has 3 to 5 severe events: every difference on this page is a
@@ -156,7 +169,7 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
 
   <div class="provenance">
     Supporting analysis for the <a href="../trigger-single-model/">one-model-per-window
-    trigger</a>. Vote levels swept on the GloFAS v4 reforecast (1 control + 10 perturbed
+    trigger</a>. Agreement levels tested on the GloFAS v4 reforecast (1 control + 10 perturbed
     members, twice-weekly issues, leads 1&ndash;12 days, 2003&ndash;2023), levels fitted
     on the v4 reanalysis seasonal maxima (Weibull, 1999&ndash;2023) at each leg's return
     period, benchmark from SWALIM gauge levels (two-gauge consensus). Juba points
