@@ -98,8 +98,8 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
       <figcaption>Severe-year F1 per window at each agreement level, readiness leg above,
         action below. The red box marks the median rule. On the action leg, three of
         the four windows give the same activations, detection and false alarms at every
-        level from 1 of 11 to 11 of 11. With 3 to 5 severe events per window, read
-        direction, not decimals.</figcaption>
+        level from 1 of 11 to 11 of 11. With 3 to 5 severe events per window, any
+        difference between these scores amounts to one or two events.</figcaption>
     </figure>
 
     <div class="callout">
@@ -123,11 +123,14 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
     </div>
 
     <h2>The years in detail</h2>
-    <p>Raising the agreement level can only remove crossings, never add them, so each
-       year is fully described by the highest level at which it still activates: at
-       every level means even all 11 members crossing does not remove it, and a severe
-       year marked no is not caught even at 1 of 11. Years shown are those that activate
-       at any level on either leg, plus every severe year of the archive span.</p>
+    <p>The table lists every year that activates at any agreement level on either leg,
+       together with every severe year in the archive span. Raising the level can only
+       remove crossings, never add them, so each year is summarised by the highest level
+       at which it still activates: an entry of <em>at every level</em> means the
+       activation survives even all 11 members being required, and <em>no</em> against a
+       severe year means it was not caught even at 1 of 11. Most years fall at one of
+       those two extremes; the handful in between are where the level choice has any
+       effect at all.</p>
 <div class="tablewrap">
 <table class="data">
 <thead><tr><th>window</th><th>year</th><th>gauge benchmark</th><th>readiness activates</th><th>action activates</th></tr></thead>
@@ -146,11 +149,12 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
        GloFAS as a labelled stand-in, where the member share applies as above.</p>
 
     <h2>What this means for monitoring</h2>
-    <p>Keep the median. No level performs better on any leg, and the one improvement on offer, a
-       stricter Juba Deyr readiness, costs a severe year on Shabelle Deyr readiness. One
-       agreement level for the whole mechanism is also easier to defend than four tuned
-       ones.
-       The daily monitoring dashboard shows each point's member share over its level, so the count can be read straight off the bars against the 50% mark.</p>
+    <p>The median rule stands. No level performs better on any leg, and the one
+       improvement on offer, a stricter Juba Deyr readiness, costs a severe year on
+       Shabelle Deyr readiness. A single agreement level for the whole mechanism is also
+       easier to defend than four individually tuned ones. The daily monitoring dashboard
+       shows each point's member share over its level as a bar, so the operating rule
+       corresponds to the 50% mark on those bars.</p>
 
     <div class="callout warn">
       <strong>Caveats.</strong> The reforecast has 11 members, so agreement levels can only be
