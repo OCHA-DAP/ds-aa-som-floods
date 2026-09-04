@@ -60,12 +60,12 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
   <header class="hero hero-sub">
     <div class="inner">
       <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / supporting analysis</p>
-      <h1>The ensemble vote level: median or a probability?</h1>
+      <h1>The ensemble vote level</h1>
       <p>A trigger point votes when the ensemble median crosses its level. The median is
-         one setting on a dial: a point could instead vote when 30%, 50% or 80% of members
-         cross. This note sweeps that dial across every window and both legs on the only
-         ensemble lead-time archive that exists, and checks whether any setting beats the
-         median. September 2026.</p>
+         a choice: the vote could instead require 30%, 60% or 90% of the members. This
+         note tests every vote level the GloFAS v4 reforecast can resolve, on all four
+         windows and both legs, to see whether any of them beats the median.
+         September 2026.</p>
     </div>
   </header>
 
@@ -86,73 +86,68 @@ table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n
     <p>Each vote level k means: a point votes on a day when <strong>at least k of the 11
        reforecast members</strong> put that day over the point's level, taking the most
        alarming issue per valid day, the same convention as the operational backtest.
-       Everything else is held at the adopted rules: same points, same same-day vote
+       Everything else stays at the adopted rules: same points, same same-day vote
        counts, same season months, and levels fitted on the v4 reanalysis at each leg's
-       return period, so the comparison is model-consistent throughout. The median rule
-       is exactly k&nbsp;=&nbsp;6: the median crosses when at least half the members do,
-       and half of 11 rounds up to 6. Each setting is scored against the two-gauge
-       benchmark on severe years (1-in-5), 2003&ndash;2023.</p>
+       return period. The median rule is k&nbsp;=&nbsp;6: the median crosses when at
+       least half the members do, and half of 11 rounds up to 6. Each level is scored
+       against the two-gauge benchmark on severe years (1-in-5), 2003&ndash;2023.</p>
 
     <h2>The sweep</h2>
     <figure>
       <img src="figs/j_prob_sweep.png?v=202609041300" alt="Heatmap of severe-year F1 per window and leg across the eleven vote levels">
       <figcaption>Severe-year F1 per window at each vote level, action leg above,
-        readiness below. The red box marks the median rule. Rows are near-constant:
-        on the action leg three of the four windows return literally identical
-        activations, detection and false alarms at every level from 1 of 11 to 11 of 11.
-        With 3 to 5 severe events per window, read direction, not decimals.</figcaption>
+        readiness below. The red box marks the median rule. On the action leg, three of
+        the four windows give the same activations, detection and false alarms at every
+        level from 1 of 11 to 11 of 11. With 3 to 5 severe events per window, read
+        direction, not decimals.</figcaption>
     </figure>
 
     <div class="callout">
-      <strong>What moves, and what does not.</strong>
+      <strong>What the sweep shows.</strong>
       <ul style="margin:8px 0 2px">
-        <li><strong>No level catches an extra severe year, anywhere.</strong> Detection is
-          flat in k on every leg of every window: even one member of eleven, at the
+        <li><strong>No level catches an extra severe year.</strong> Detection does not
+          change with k on any leg of any window: even one member of eleven, at the
           required number of points on the same day, does not reach the levels in the
-          missed years. The misses are the model's magnitude problem, not a vote-statistic
-          problem, and no probability setting can recover them.</li>
-        <li><strong>Action leg: near-total indifference.</strong> At leads 1&ndash;7 the
-          ensemble is tight; either most members cross or almost none do. The one mover is
-          Juba Gu, where levels above the median drop the 2016 activation, a flood year
-          but not a severe one on that window.</li>
-        <li><strong>Readiness leg: the dial moves both ways.</strong> At leads 7&ndash;12
-          the spread is wider. Stricter than the median removes Juba Deyr's 2015
-          activation, the one outside the benchmark, but the same strictness on Shabelle
-          Deyr loses 2014, a severe year. More lenient than the median adds activations
-          (Juba Gu picks up 2010 and 2016) without catching a single additional severe
-          year.</li>
+          missed years. Those misses come from the model's magnitudes, and no vote level
+          can recover them.</li>
+        <li><strong>At leads 1&ndash;7 the level barely matters.</strong> The ensemble is
+          tight at short leads: most members cross together or not at all. The one
+          exception is Juba Gu, where levels above the median drop the 2016 activation, a
+          flood year but not a severe one on that window.</li>
+        <li><strong>At leads 7&ndash;12 the level matters, in both directions.</strong>
+          The spread is wider there. Above the median, Juba Deyr loses its 2015
+          activation, the one outside the benchmark, but Shabelle Deyr loses 2014, a
+          severe year. Below the median, Juba Gu adds 2010 and 2016 without catching any
+          additional severe year.</li>
       </ul>
     </div>
 
     <h2>What about Google for Gu?</h2>
-    <p>The dial does not exist there. The Google GRRR reforecast is a <strong>single
-       trace per issue and lead</strong>: the archive has no ensemble members, so there is
-       no member share to tune, and the Gu legs vote when the forecast value itself
-       crosses the level. That is exactly what the operational check on the
-       <a href="../trigger-single-model/">trigger page</a> replays. The live Flood Hub
-       display carries uncertainty bounds, but they are not in the public archive; if API
-       access materialises, logging them forward would let this question be asked of
-       Google too. Until then the Gu windows are monitored on GloFAS as a labelled
-       stand-in, where the member share applies as above.</p>
+    <p>The Google GRRR reforecast is a <strong>single trace per issue and lead</strong>:
+       the archive has no ensemble members, so there is no member share to choose. The Gu
+       legs vote when the forecast value crosses the level, which is what the operational
+       check on the <a href="../trigger-single-model/">trigger page</a> replays. The live
+       Flood Hub display does show uncertainty bounds, but they are not in the public
+       archive; with API access they could be logged from now on, and this question asked
+       of Google once a few seasons accumulate. Until then the Gu windows are monitored on
+       GloFAS as a labelled stand-in, where the member share applies as above.</p>
 
     <h2>What this means for monitoring</h2>
-    <p>Keep the median. It sits on the flat optimum of every leg of every window, and the
-       one-event improvements available elsewhere (a stricter Juba Deyr readiness) are
-       paid for by a one-event loss on another window (a severe year on Shabelle Deyr
-       readiness). A single vote level for the whole mechanism is simpler to state and to
-       defend, and 50% of members is that level. The daily monitoring dashboard already
-       shows each point's member share over its level, so the vote is readable directly
-       against the 50% mark.</p>
+    <p>Keep the median. No level beats it on any leg, and the one improvement on offer, a
+       stricter Juba Deyr readiness, costs a severe year on Shabelle Deyr readiness. One
+       vote level for the whole mechanism is also easier to defend than four tuned ones.
+       The daily monitoring dashboard shows each point's member share over its level, so
+       the vote can be read straight off the bars against the 50% mark.</p>
 
     <div class="callout warn">
-      <strong>Caveats.</strong> The reforecast has 11 members, so the sweep resolves the
-      dial only in steps of 9%; the operational forecast has 50 members and reads finer,
-      but the short-lead flatness leaves that granularity little to exploit. These scores
+      <strong>Caveats.</strong> The reforecast has 11 members, so vote levels can only be
+      tested in steps of 9%; the operational forecast has 50 members and reads finer, but
+      the flatness at short leads means the finer scale has little to add. These scores
       use the full 2003&ndash;2023 archive, so they differ slightly from the trigger
       page's swap heatmap, which scores only the years Google's archive also covers. The
-      readiness rows use reanalysis-fitted levels so every setting is compared within one
-      design; the adopted readiness leg refits its levels on the 7-to-12-day forecast
-      series itself, so its absolute activation years differ from the mechanism table.
+      readiness rows use reanalysis-fitted levels so that every vote level is compared
+      within one design; the adopted readiness leg refits its levels on the 7-to-12-day
+      forecast series itself, so its activation years differ from the mechanism table.
       And each window has 3 to 5 severe events: every difference on this page is a
       one-or-two-event difference.
     </div>
