@@ -15,3 +15,7 @@ itself was written from bulletin texts (see the page) and its generator depends 
 `somlib.py` holds the shared conventions: local parquet under `data/processed/`, the two-gauge
 benchmark as `scripts/envelope_search.py` computes it (levels fitted 2000-2023), activation dates
 by flow day and by forecast issue date. Intermediate JSON/HTML land next to the scripts.
+
+The data under `data/processed/` is not in git. When running from a worktree without it, set
+`SOM_DATA_REPO` to a checkout that has the data (the scripts read only; they write figures and
+JSON next to themselves and into `pages/trigger-single-model/`).
