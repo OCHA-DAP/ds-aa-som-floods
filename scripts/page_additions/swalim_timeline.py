@@ -14,7 +14,8 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
 S = Path(__file__).parent
-OUT = S / "wt-trigger/pages/trigger-single-model/figs/k_swalim_timeline.png"
+PAGE_DIR = Path(__file__).resolve().parents[2] / "pages" / "trigger-single-model"
+OUT = PAGE_DIR / "figs/k_swalim_timeline.png"
 
 
 def D(s):
