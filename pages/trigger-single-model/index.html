@@ -827,12 +827,15 @@ body.variant .carrynote { display:none; }
 
     <h3>SWALIM's alerts against the trigger</h3>
     <p>SWALIM issues its own flood bulletins from the gauge readings and the rainfall
-      forecast. They are an operational record that does not depend on the thresholds
-      fitted here or on the impact databases. The table compares, for each river-season
-      with a bulletin, what happened on the river, when SWALIM first flagged flood risk and
-      at what level, when the trigger activated, and the gap between the two. The trigger
-      is shown twice: the adopted record (Google reanalysis for Gu, GloFAS v5 reanalysis
-      for Deyr) and the GloFAS v4 forecast replay used for the operational checks.</p>
+      forecast, so they are a record independent of the thresholds fitted here and of the
+      impact databases. For each river-season with a bulletin the table gives what happened
+      on the river, the first bulletin in which SWALIM flagged flood risk and at what level,
+      the first day the trigger crossed, and the difference in days (positive when SWALIM
+      was earlier). The trigger date is the adopted rule on the model it was calibrated on:
+      Google's reanalysis for the Gu windows, GloFAS v5's reanalysis for the Deyr windows.
+      The last column shows whether the GloFAS v5 reanalysis alone would have crossed the
+      Deyr rule's thresholds that season, and on what day; for Deyr rows it is the trigger
+      itself.</p>
     <p>Sources: the 52 bulletins in the SWALIM archive on blob (<code>raw/swalim/alerts/</code>),
       which carry river bulletins for 2016 and 2019 to 2023, and SWALIM's Flood Watch,
       Flood Alert and Flood Update bulletins for Deyr 2006 and Deyr 2014 retrieved from
@@ -841,23 +844,23 @@ body.variant .carrynote { display:none; }
       SWALIM's first risk statement that season may have come before 31 October.</p>
 <div class="tablewrap">
 <table class="data" style="font-size:12.5px">
-<thead><tr><th>season</th><th>river</th><th>what happened</th><th>SWALIM first flagged</th><th>trigger activated</th><th>SWALIM relative to the trigger</th></tr></thead>
+<thead><tr><th>season</th><th>river</th><th>what happened</th><th>SWALIM first flagged</th><th>trigger first flagged</th><th>days SWALIM ahead</th><th>GloFAS v5 reanalysis</th></tr></thead>
 <tbody>
-<tr><td>Deyr 2006</td><td>Juba</td><td>Severe flood, 1-in-5 by 30 Oct. River over its banks from Luuq to Jamame.</td><td>31 Oct, severe risk (Flood Watch no. 8; no. 1 on 3 Oct saw no risk; nos. 2 to 7 not archived)</td><td>Adopted 29 Oct<br>v4 forecast replay: none</td><td>2 days after the adopted record</td></tr>
-<tr><td>Deyr 2006</td><td>Shabelle</td><td>Severe flood, 1-in-3 on 2 Nov, 1-in-5 on 18 Nov. Bank breakages in lower Shabelle.</td><td>31 Oct, severe risk (Flood Watch no. 8)</td><td>Adopted 2 Nov<br>Replay: none</td><td>2 days before the adopted record</td></tr>
-<tr><td>Deyr 2014</td><td>Juba</td><td>Severe flood, 1-in-3 on 22 Oct, 1-in-5 on 24 Oct. Floods at Dollow, Jilib and Jamame.</td><td>15 Oct, moderate risk (Flood Watch); high risk 21 Oct</td><td>Adopted: none<br>Replay 25 Oct</td><td>10 days before the replay; adopted record never activated</td></tr>
-<tr><td>Deyr 2014</td><td>Shabelle</td><td>Severe flood, 1-in-3 on 20 Oct, 1-in-5 on 29 Oct. Belet Weyne at flooding level 24 Oct, 8.00 m on 31 Oct.</td><td>15 Oct, moderate risk (Flood Watch); Flood Alert 20 Oct, high risk</td><td>Adopted 16 Oct<br>Replay 12 Oct</td><td>1 day before the adopted record; the alert 4 days after it. 3 days after the replay</td></tr>
-<tr><td>Gu 2016</td><td>Shabelle</td><td>Severe flood, 1-in-3 on 11 May, 1-in-5 on 18 May. Belet Weyne town flooded.</td><td>No alert in the archive, only a June flood-extent map</td><td>Adopted 12 May<br>Replay 9 May</td><td>not comparable</td></tr>
-<tr><td>Deyr 2019</td><td>Juba</td><td>No two-gauge crossing; localised flooding reported.</td><td>22 Oct, bank full (Flood Update)</td><td>None</td><td>no trigger to compare</td></tr>
-<tr><td>Deyr 2019</td><td>Shabelle</td><td>Severe flood, 1-in-3 on 14 Oct, 1-in-5 on 24 Oct. Belet Weyne town under water from 24 Oct.</td><td>22 Oct, bank full (Flood Update)</td><td>Adopted 11 Oct<br>Replay 2 Oct</td><td>11 days after the adopted record. 20 days after the replay</td></tr>
-<tr><td>Deyr 2020</td><td>Shabelle</td><td>September flood at Belet Weyne, before the Deyr window. Deyr gauges 1-in-3 on 1 Oct, 1-in-5 on 6 Oct.</td><td>8 Sep, bank full (Flood Update on the September flood)</td><td>Adopted 10 Oct<br>Replay 2 Oct</td><td>different event</td></tr>
-<tr><td>Gu 2020</td><td>Juba</td><td>Severe flood, 1-in-3 on 22 Apr, 1-in-5 on 12 May. Overflow reported 27 Apr.</td><td>27 Apr, bank full / overflow (Flood Update)</td><td>Adopted 29 Apr<br>Replay 3 May</td><td>2 days before the adopted record. 6 days before the replay</td></tr>
-<tr><td>Gu 2020</td><td>Shabelle</td><td>Severe flood, 1-in-3 on 6 May, 1-in-5 on 12 May.</td><td>27 Apr, bank full / overflow (Flood Update)</td><td>Adopted 30 Apr<br>Replay: none</td><td>3 days before the adopted record</td></tr>
-<tr><td>Gu 2021</td><td>Juba</td><td>No two-gauge crossing.</td><td>10 May, high risk (Flood Update)</td><td>None</td><td>no trigger to compare</td></tr>
-<tr><td>Gu 2021</td><td>Shabelle</td><td>Belet Weyne flooded (bank full 19 May; 400,000 affected in EM-DAT). Gauge reading censored at bank full, so no two-gauge crossing.</td><td>10 May, high risk; bank full 19 May (Flood Updates)</td><td>None</td><td>SWALIM alone called this flood</td></tr>
-<tr><td>Gu 2023</td><td>Shabelle</td><td>Severe flood, 1-in-3 on 17 Apr, 1-in-5 on 23 May. Belet Weyne at bank full 8 May.</td><td>8 May, bank full (Flood Advisory)</td><td>None (missed by every model)</td><td>SWALIM alone called this flood</td></tr>
-<tr><td>Deyr 2023</td><td>Juba</td><td>Severe flood, 1-in-3 and 1-in-5 on 25 Oct. Bank full 13 Nov.</td><td>20 Oct, moderate risk (Flood Alert, calls for anticipatory action); high risk 23 Oct</td><td>Adopted 29 Oct<br>Replay 21 Oct</td><td>9 days before the adopted record. 1 day before the replay</td></tr>
-<tr><td>Deyr 2023</td><td>Shabelle</td><td>Largest flood in the record, 1-in-3 on 7 Nov, 1-in-5 on 20 Nov. Bank full 20 Nov.</td><td>20 Oct, moderate risk (Flood Alert, calls for anticipatory action); high risk 23 Oct</td><td>Adopted 9 Nov<br>Replay: none</td><td>20 days before the adopted record. Replay never activated</td></tr>
+<tr><td>Deyr 2006</td><td>Juba</td><td>Severe flood; 1-in-5 at two gauges by 30 Oct</td><td>31 Oct, severe risk (earlier issues not archived)</td><td>29 Oct</td><td>-2</td><td>29 Oct</td></tr>
+<tr><td>Deyr 2006</td><td>Shabelle</td><td>Severe flood; 1-in-3 on 2 Nov, 1-in-5 on 18 Nov</td><td>31 Oct, severe risk</td><td>2 Nov</td><td>+2</td><td>2 Nov</td></tr>
+<tr><td>Deyr 2014</td><td>Juba</td><td>Severe flood; 1-in-3 on 22 Oct, 1-in-5 on 24 Oct</td><td>15 Oct, moderate risk; high risk 21 Oct</td><td>no activation</td><td></td><td>no</td></tr>
+<tr><td>Deyr 2014</td><td>Shabelle</td><td>Severe flood; 1-in-3 on 20 Oct, 1-in-5 on 29 Oct</td><td>15 Oct, moderate risk; Flood Alert 20 Oct</td><td>16 Oct</td><td>+1</td><td>16 Oct</td></tr>
+<tr><td>Gu 2016</td><td>Shabelle</td><td>Severe flood; 1-in-3 on 11 May, 1-in-5 on 18 May</td><td>no alert archived (June flood map only)</td><td>12 May</td><td></td><td>15 May</td></tr>
+<tr><td>Deyr 2019</td><td>Juba</td><td>No two-gauge crossing; local flooding reported</td><td>22 Oct, bank full</td><td>no activation</td><td></td><td>no</td></tr>
+<tr><td>Deyr 2019</td><td>Shabelle</td><td>Severe flood; 1-in-3 on 14 Oct, 1-in-5 on 24 Oct</td><td>22 Oct, bank full</td><td>11 Oct</td><td>-11</td><td>11 Oct</td></tr>
+<tr><td>Deyr 2020</td><td>Shabelle</td><td>1-in-3 on 1 Oct, 1-in-5 on 6 Oct (a separate flood at Belet Weyne in September)</td><td>8 Sep, bank full (the September flood)</td><td>10 Oct</td><td>n/a</td><td>10 Oct</td></tr>
+<tr><td>Gu 2020</td><td>Juba</td><td>Severe flood; 1-in-3 on 22 Apr, 1-in-5 on 12 May</td><td>27 Apr, bank full</td><td>29 Apr</td><td>+2</td><td>30 Apr</td></tr>
+<tr><td>Gu 2020</td><td>Shabelle</td><td>Severe flood; 1-in-3 on 6 May, 1-in-5 on 12 May</td><td>27 Apr, bank full</td><td>30 Apr</td><td>+3</td><td>3 May</td></tr>
+<tr><td>Gu 2021</td><td>Juba</td><td>No two-gauge crossing</td><td>10 May, high risk</td><td>no activation</td><td></td><td>no</td></tr>
+<tr><td>Gu 2021</td><td>Shabelle</td><td>Belet Weyne flooded; gauge censored at bank full, no two-gauge crossing</td><td>10 May, high risk; bank full 19 May</td><td>no activation</td><td></td><td>no</td></tr>
+<tr><td>Gu 2023</td><td>Shabelle</td><td>Severe flood; 1-in-3 on 17 Apr, 1-in-5 on 23 May</td><td>8 May, bank full</td><td>no activation</td><td></td><td>no</td></tr>
+<tr><td>Deyr 2023</td><td>Juba</td><td>Severe flood; 1-in-3 and 1-in-5 on 25 Oct</td><td>20 Oct, Flood Alert with a call for anticipatory action</td><td>29 Oct</td><td>+9</td><td>29 Oct</td></tr>
+<tr><td>Deyr 2023</td><td>Shabelle</td><td>Largest flood on record; 1-in-3 on 7 Nov, 1-in-5 on 20 Nov</td><td>20 Oct, Flood Alert with a call for anticipatory action</td><td>9 Nov</td><td>+20</td><td>9 Nov</td></tr>
 </tbody>
 </table>
 </div>
@@ -865,19 +868,20 @@ body.variant .carrynote { display:none; }
       2006 the first archived statement came two days after the Juba activation and two
       days before the Shabelle activation. In Deyr 2014 SWALIM's moderate-risk flag came one
       day before the Shabelle activation and its Flood Alert four days after; on the Juba the
-      adopted record never activated although SWALIM flagged high risk the day before the
-      gauges crossed 1-in-3. The GloFAS v4 forecast replay did not activate at all in Deyr
-      2006, on either river.</p>
+      trigger never activated although SWALIM flagged high risk the day before the gauges
+      crossed 1-in-3.</p>
     <p>From 2019 to 2021 the archived bulletins are Flood Updates written once the rivers
       were at or over bank full. They came 5 to 8 days after the gauges' 1-in-3 crossing
       (Deyr 2019, Gu 2020 on the Juba) and 2 to 15 days before the 1-in-5 crossing. The
-      adopted trigger was earlier than these bulletins in Deyr 2019 (by 11 days) and later
-      in Gu 2020 (by 2 and 3 days).</p>
+      trigger was earlier than these bulletins in Deyr 2019 (by 11 days) and later in Gu
+      2020 (by 2 and 3 days).</p>
     <p>In 2023 SWALIM issued Flood Alerts and Advisories. The 20 October alert asked for
       anticipatory action 5 days before the Juba gauges crossed 1-in-3 and 18 days before
-      the Shabelle gauges did. The adopted trigger activated 9 days after that alert on the
-      Juba and 20 days after it on the Shabelle; the v4 forecast replay activated the day
-      after the alert on the Juba and never on the Shabelle.</p>
+      the Shabelle gauges did. The trigger activated 9 days after that alert on the Juba and
+      20 days after it on the Shabelle. Run on the archived GloFAS v4 forecasts instead of
+      the reanalysis, the trigger would have activated on the Juba the day after the alert
+      and never on the Shabelle; in Deyr 2006 the same forecast replay activates on neither
+      river.</p>
     <h3>SWALIM's bulletins in seasons the gauges did not call a flood</h3>
     <p>The 24 seasons between 2006 and 2023 in which neither river crossed the two-gauge
       1-in-3 are the test of whether SWALIM raises risk for rises that come to nothing.
