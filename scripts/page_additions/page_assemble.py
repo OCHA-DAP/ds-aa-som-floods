@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 
 S = Path(__file__).parent
+PAGE_DIR = Path(__file__).resolve().parents[2] / "pages" / "trigger-single-model"
 PAGE = PAGE_DIR / "index.html"
 V = "?v=202609072"
 t = PAGE.read_text(encoding="utf-8")

@@ -13,6 +13,7 @@ import somlib as L
 from src.constants import TRIGGER_CONFIG
 
 S = Path(__file__).parent
+PAGE_DIR = Path(__file__).resolve().parents[2] / "pages" / "trigger-single-model"
 FIGS = PAGE_DIR / "figs"
 COLOR = {"google_grrr": "#1d4ed8", "glofas_v5": "#0f766e", "glofas_v4": "#9ca3af"}
 RP_GRID = np.round(np.geomspace(1.3, 12, 28), 2)

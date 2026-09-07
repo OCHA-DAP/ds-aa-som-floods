@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-REPO = Path(r"C:\Users\pauni\Desktop\Work\OCHA\GitHub\ds-aa-som-floods")
+REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
 from src.constants import (REFERENCE_GAUGE, SEASONS, SEVERE_RP, TRIGGER_CONFIG,  # noqa: E402
                            TRIGGER_STATIONS, TRIGGER_YEARS)

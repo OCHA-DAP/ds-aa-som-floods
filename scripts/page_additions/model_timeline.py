@@ -16,6 +16,7 @@ import somlib as L
 from src.constants import TRIGGER_CONFIG
 
 S = Path(__file__).parent
+PAGE_DIR = Path(__file__).resolve().parents[2] / "pages" / "trigger-single-model"
 FIGS = PAGE_DIR / "figs"
 C_G, C_V5, C_V4 = "#1d4ed8", "#0f766e", "#6b7280"
 XMIN, XMAX = -28, 21
