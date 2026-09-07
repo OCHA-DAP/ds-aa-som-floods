@@ -137,8 +137,8 @@ ownskill_block = re.sub(r"<h2(?: id=\"[^\"]*\")?>Forecast skill against each mod
 gauge_block = gauge_block.replace("<h3>How each model maps the RP3 events, gauge by gauge</h3>",
                                   "<h3>How each model maps the 1-in-3 events, gauge by gauge (event matching within 7 days)</h3>")
 station = """    <h2>Station by station</h2>
-    <p>This section gathers the station-level results. The table scores each candidate
-      model at each of the seven points, per season, on two things: how closely its daily
+    <p>This section gathers the station-level results. The table scores Google and GloFAS
+      v5 at each of the seven points, per season, on two things: how closely its daily
       series ranks the days like the gauge's level record (Spearman rank correlation at the
       best lag between minus 10 and plus 30 days, positive when the model leads the gauge),
       and whether the model's own 1-in-3 and 1-in-5 crossings in a season match the gauge's
@@ -151,9 +151,8 @@ station = """    <h2>Station by station</h2>
     <p>In Gu, Google has the highest rank correlation with the Juba gauges (0.84 to 0.88 at
       Dollow, Luuq, Bardheere and Bualle) and is level with GloFAS v5 on the Shabelle. In
       Deyr, GloFAS v5 tracks every point better (0.76 to 0.84, against 0.51 to 0.68 for
-      Google, whose best lags on the Juba are negative: it trails the gauge). GloFAS v4 in
-      Deyr matches the Shabelle gauges only at lags of 11 to 15 days, which is why its Deyr
-      crossings come late. Single-point detection is weak for every model. At 1-in-3 a point
+      Google, whose best lags on the Juba are negative: it trails the gauge). Single-point
+      detection is weak for both models. At 1-in-3 a point
       catches one to three of its gauge's events with one to five false alarms, and the
       models disagree on which years those are. This is the basis for requiring a consensus
       of points and for judging the trigger at window level.</p>
