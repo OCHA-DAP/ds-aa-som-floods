@@ -980,19 +980,14 @@ body.variant .carrynote { display:none; }
     <figure><img src="figs/k_swalim_timeline.png?v=202609071" alt="Timeline of SWALIM bulletins, trigger and GloFAS v4 forecast per flood season">
       <figcaption>Each row is one river-season. Upper track: SWALIM's first bulletin flagging
         risk (open circle) and the bulletins that first reported the moderate, high and bank
-        full steps. Lower track: the trigger's first day (diamond) and the GloFAS v4
-        forecast's first issue with enough points over (triangle). The verdict at right
-        counts days from SWALIM's first bulletin to the trigger, and in grey to the v4
+        full steps. Lower track: the first day the window's model crossed on its reanalysis
+        (diamond: GloFAS v5 in Deyr, Google in Gu) and the GloFAS v4 forecast's first issue
+        with enough points over (triangle). The text at right gives the days between
+        SWALIM's first bulletin and the model, and in grey between SWALIM and the v4
         issue. Gu 2024 is beyond the Google and v5 records, so only the v4 forecast is
         compared there. Deyr 2020's SWALIM bulletin concerned the September flood at Belet
         Weyne, before the Deyr window; Deyr 2006's SWALIM issues 2 to 7 are not on
         ReliefWeb, so its first flag may have been earlier than shown.</figcaption></figure>
-<div class="tablewrap">
-<table class="data" style="font-size:12.5px">
-<thead><tr><th>season</th><th>river</th><th>SWALIM first bulletin</th><th>trigger first day</th><th>who was first</th><th>GloFAS v4 forecast first issue</th><th>who was first</th></tr></thead>
-<tbody><tr><td>Deyr 2006</td><td>Juba</td><td>31 Oct</td><td>29 Oct</td><td>trigger first by 2 d</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Deyr 2006</td><td>Shabelle</td><td>31 Oct</td><td>2 Nov</td><td>SWALIM first by 2 d</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Deyr 2014</td><td>Juba</td><td>15 Oct</td><td>never crossed</td><td>SWALIM only; the trigger never crossed</td><td>23 Oct (for 25 Oct)</td><td>SWALIM first by 8 d</td></tr><tr><td>Deyr 2014</td><td>Shabelle</td><td>15 Oct</td><td>16 Oct</td><td>SWALIM first by 1 d</td><td>7 Oct (for 13 Oct)</td><td>v4 issue first by 8 d</td></tr><tr><td>Gu 2016</td><td>Shabelle</td><td>no bulletin</td><td>12 May</td><td>no SWALIM bulletin; trigger 12 May</td><td>8 May (for 10 May)</td><td>no SWALIM bulletin; v4 issue 8 May</td></tr><tr><td>Deyr 2019</td><td>Juba</td><td>22 Oct</td><td>never crossed</td><td>SWALIM only; the trigger never crossed</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Deyr 2019</td><td>Shabelle</td><td>22 Oct</td><td>11 Oct</td><td>trigger first by 11 d</td><td>2 Oct (for 2 Oct)</td><td>v4 issue first by 20 d</td></tr><tr><td>Deyr 2020</td><td>Shabelle</td><td>8 Sep</td><td>10 Oct</td><td>no bulletin for the October rise</td><td>2 Oct (for 2 Oct)</td><td>(September flood bulletin only)</td></tr><tr><td>Gu 2020</td><td>Juba</td><td>27 Apr</td><td>29 Apr</td><td>SWALIM first by 2 d</td><td>1 May (for 6 May)</td><td>SWALIM first by 4 d</td></tr><tr><td>Gu 2020</td><td>Shabelle</td><td>27 Apr</td><td>30 Apr</td><td>SWALIM first by 3 d</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Gu 2021</td><td>Juba</td><td>10 May</td><td>never crossed</td><td>SWALIM only; the trigger never crossed</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Gu 2021</td><td>Shabelle</td><td>10 May</td><td>never crossed</td><td>SWALIM only; the trigger never crossed</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Gu 2023</td><td>Shabelle</td><td>8 May</td><td>never crossed</td><td>SWALIM only; the trigger never crossed</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Deyr 2023</td><td>Juba</td><td>20 Oct</td><td>29 Oct</td><td>SWALIM first by 9 d</td><td>21 Oct (for 21 Oct)</td><td>SWALIM first by 1 d</td></tr><tr><td>Deyr 2023</td><td>Shabelle</td><td>21 Oct</td><td>9 Nov</td><td>SWALIM first by 19 d</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Gu 2024</td><td>Juba</td><td>9 May</td><td>record ends 2023</td><td>trigger record ends 2023</td><td>5 May (for 6 May)</td><td>v4 issue first by 4 d</td></tr><tr><td>Gu 2024</td><td>Shabelle</td><td>19 Apr</td><td>record ends 2023</td><td>trigger record ends 2023</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr></tbody>
-</table>
-</div>
     <p>The action window is 1 to 7 days before the flood and readiness 8 to 12. The chart
       below places each flag against the onset of the flood at the gauges, the day the
       two-gauge 1-in-3 level was first crossed, not the peak. The trigger's date is the day
@@ -1015,13 +1010,13 @@ body.variant .carrynote { display:none; }
       was inside the window in Deyr 2014, Deyr 2019 and Gu 2020 on the Shabelle (and a day
       before the 1-in-5 date in Deyr 2006 on the Juba) and on or after onset in six seasons,
       which is the gap a 1 to 7 day forecast has to close.</p>
-    <p>Where both flagged, SWALIM was first in six river-seasons and the trigger in two.
-      SWALIM's lead was 1 to 3 days in Deyr 2006, Deyr 2014 and Gu 2020, and 9 and 19 days
-      in Deyr 2023, when its 20 October alert asked for anticipatory action while the
-      trigger waited for the rivers themselves. The trigger led in Deyr 2019 on the
-      Shabelle by 11 days and in Deyr 2006 on the Juba by 2 days, where SWALIM's earlier
-      issues are missing. In four flood seasons SWALIM flagged and the trigger never
-      crossed: Deyr 2014 and Deyr 2019 on the Juba, Gu 2021 on both rivers and Gu 2023 on
+    <p>Where both flagged, SWALIM was first in six river-seasons and the window's model in
+      two. SWALIM's lead was 1 to 3 days in Deyr 2006, Deyr 2014 and Gu 2020, and 9 and 19
+      days in Deyr 2023, when its 20 October alert asked for anticipatory action while
+      GloFAS v5 waited for the rivers themselves. GloFAS v5 led in Deyr 2019 on the Shabelle
+      by 11 days and in Deyr 2006 on the Juba by 2 days, where SWALIM's earlier issues are
+      missing. In four flood seasons SWALIM flagged and the model never crossed: GloFAS v5 in
+      Deyr 2014 and Deyr 2019 on the Juba, Google in Gu 2021 on both rivers and Gu 2023 on
       the Shabelle. Gu 2016 has no SWALIM bulletin at all.</p>
     <p>The GloFAS v4 forecast, which is what would run live, is earlier than SWALIM where
       it crosses at all: by 8 days in Deyr 2014 and 20 days in Deyr 2019 on the Shabelle,

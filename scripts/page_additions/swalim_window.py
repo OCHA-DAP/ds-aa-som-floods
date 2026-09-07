@@ -100,7 +100,8 @@ for y, r in zip(ys, ROWS):
                 ax.annotate(f"{abs(val)} d {'before' if val > 0 else 'after'}", (x, y), xytext=(0, -13),
                             textcoords="offset points", fontsize=7.3, color=c, ha="center")
     parts = [phrase("SWALIM", ls, "no bulletin"),
-             ("trigger record ends 2023" if trig_na else phrase("trigger", lt, "never crossed")),
+             ((f"{'Google' if season.startswith('Gu') else 'GloFAS v5'} record ends 2023") if trig_na
+              else phrase("Google" if season.startswith("Gu") else "GloFAS v5", lt, "never crossed")),
              phrase("v4 issue", lv, "never crossed")]
     ax.text(XMAX + .6, y, "  |  ".join(parts), va="center", fontsize=8.6, color="#111827")
     out.append({"season": season, "river": river, "onset": onset.isoformat(), "severe": g5.isoformat() if g5 else None,
@@ -120,7 +121,7 @@ ax.spines["bottom"].set_color("#d1d5db")
 ax.tick_params(length=0)
 handles = [
     Line2D([], [], marker="o", color=C_SW, ls="none", ms=8.5, label="SWALIM: first bulletin flagging risk"),
-    Line2D([], [], marker="D", color=C_TR, ls="none", ms=7, label="trigger: first day (Google for Gu, GloFAS v5 for Deyr)"),
+    Line2D([], [], marker="D", color=C_TR, ls="none", ms=7, label="window's model on reanalysis, first day the rule crossed: GloFAS v5 (Deyr), Google (Gu)"),
     Line2D([], [], marker="^", color=C_V4, ls="none", ms=8.5, label="GloFAS v4 forecast: first issue with enough points over"),
     Line2D([], [], marker="|", color="#111827", ls="none", ms=13, mew=2.2, label="gauges cross 1-in-5"),
 ]
