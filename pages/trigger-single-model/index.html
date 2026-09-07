@@ -449,37 +449,35 @@ body.variant .carrynote { display:none; }
 
 <!-- begin skill-scores -->
     <h2 id="skill-scores-beyond-pod-far-and-f1">Skill scores beyond POD, FAR and F1</h2>
-    <p>The page scores the trigger with three numbers: POD (probability of detection, the
-      same quantity as recall), FAR (the false alarm ratio, the share of activations with
-      no flood behind them) and F1. The tables below add the rest of the contingency
-      table and the scores built on it, for each window's rule on each candidate model
-      at the adopted return period and point count, over 1999 to 2023. All 25 years are
-      counted, as on the rest of the page; the Juba gauges did not report in 1999 to 2001
-      and the Shabelle's in 1999, so those years can only count as non-flood years.</p>
+    <p>The rest of the page scores the trigger with POD (probability of detection, the
+      same quantity as recall), FAR (false alarm ratio: activations with no flood behind
+      them, as a share of all activations) and F1. The tables below give the full
+      contingency table and the scores derived from it, for each window's rule on each
+      candidate model at the adopted return period and point count, 1999 to 2023. All 25
+      years are counted, as elsewhere on the page. The Juba gauges did not report in 1999 to
+      2001 and the Shabelle gauges in 1999, so those years count as non-flood years.</p>
     <ul>
-      <li><strong>POFD</strong>, the false alarm rate: false alarms divided by the non-flood
-        years. Unlike FAR it is not inflated by a small number of activations.</li>
-      <li><strong>CSI</strong> (critical success index, threat score): hits over hits plus
-        misses plus false alarms. Correct negatives do not count, so a rare event scores low
-        unless both misses and false alarms are few.</li>
-      <li><strong>Bias</strong>: activations over flood years. Above 1 the rule activates
-        more often than floods occur.</li>
+      <li><strong>POFD</strong>, the false alarm rate: false alarms divided by non-flood
+        years. It does not depend on how many activations there were.</li>
+      <li><strong>CSI</strong> (critical success index): hits divided by hits plus misses
+        plus false alarms. Correct negatives are left out.</li>
+      <li><strong>Bias</strong>: activations divided by flood years. Above 1 the rule
+        activates more often than floods occur.</li>
       <li><strong>PSS</strong> (Peirce skill score): POD minus POFD. Zero for a rule that
-        activates at random, one for a perfect one.</li>
-      <li><strong>HSS</strong> (Heidke skill score): the share of correct calls beyond what
-        chance would give, using all four cells.</li>
-      <li><strong>AUC</strong>: the area under the ROC curve in the figure, which sweeps the
-        station return period from 1-in-1.3 to 1-in-12 at the window's point count and plots
-        POD against POFD at each setting. It scores the model's ranking of years regardless of
-        where the threshold is put; 0.5 is chance, 1 is a model that ranks every flood year
-        above every non-flood year.</li>
+        activates at random, one for a perfect rule.</li>
+      <li><strong>HSS</strong> (Heidke skill score): correct calls beyond chance, using all
+        four cells.</li>
+      <li><strong>AUC</strong>: the area under the ROC curve. The curve sweeps the station
+        return period from 1-in-1.3 to 1-in-12 at the window's point count and plots POD
+        against POFD at each setting. 0.5 is chance; 1 means every flood year ranks above
+        every non-flood year.</li>
     </ul>
     <figure><img src="figs/l_roc.png?v=202609072" alt="ROC curves per window and model, against severe and flood years">
       <figcaption>Top row against the severe years (two gauges over 1-in-5), bottom row
         against the flood years (two gauges over 1-in-3). Each curve is one model's window
         rule as its station return period is relaxed; the diamond is the adopted model at its
-        adopted return period. With three to seven positive years per window the curves are
-        coarse, so the AUC is a guide to ranking, not a precise number.</figcaption></figure>
+        adopted return period. With three to seven flood years per window the curves are
+        coarse, and the AUC ranks the models rather than measuring them precisely.</figcaption></figure>
 <p class="muted" style="margin:14px 0 4px"><em>Against the severe years: two gauges of the river over their 1-in-5 level in the season.</em></p>
 <div class="tablewrap">
 <table class="data" style="font-size:12px">
@@ -495,25 +493,24 @@ body.variant .carrynote { display:none; }
 </table>
 </div>
     <p>Against the severe years the envelope has POD 1.00, FAR 0.12 and POFD
-      0.06: seven hits, no misses and one activation outside the benchmark (2013),
-      for a CSI of 0.88, a bias of 1.14, a Peirce score of 0.94
-      and a Heidke score of 0.90. Per window the scores are weaker than the
-      envelope's, because a window is judged on its own river-season while the envelope is
-      credited for a year whichever window caught it. The AUC ranks the models the same way
-      the page's selection did: GloFAS v5 has the highest area against severe years on the
-      Shabelle in Deyr (0.99, against 0.93 for Google and 0.75 for v4), Google the highest on
-      the Juba in Gu (0.95) and a tie with v5 on the Shabelle in Gu (0.89), and on the Juba in
-      Deyr no model separates the years well (0.80 to 0.88, with v4 ahead of v5). Against the
-      broader 1-in-3 flood years GloFAS v5 and v4 rank the Gu years better than Google (0.96
-      to 0.99 against 0.92 to 0.95), which is where the single-station false alarms of the
-      Google Gu windows show up.</p>
+      0.06: seven hits, no misses, one activation outside the benchmark (2013).
+      CSI 0.88, bias 1.14, PSS 0.94, HSS 0.90. Window
+      scores are lower than the envelope's because a window is judged on its own
+      river-season, while the envelope is credited with a year whichever window caught it.
+      The AUC ranks the models as the selection did. Against severe years GloFAS v5 has the
+      largest area on the Shabelle in Deyr (0.99; Google 0.93, v4 0.75). Google has the
+      largest on the Juba in Gu (0.95) and ties with v5 on the Shabelle in Gu (0.89). On the
+      Juba in Deyr no model separates the years well (0.80 to 0.88, v4 ahead of v5). Against
+      the 1-in-3 flood years GloFAS v5 and v4 rank the Gu years better than Google (0.96 to
+      0.99 against 0.92 to 0.95); the difference is the single-station false alarms in the
+      Google Gu windows.</p>
     <div class="callout warn">
       <strong>Benchmark note.</strong> These tables use the two-gauge benchmark as the repo's
       code now computes it, with gauge levels fitted on 2000 to 2023. On that record there
-      are seven severe years (2006, 2014, 2016, 2018, 2019, 2020, 2023) and 2008 is a flood
-      year but not a severe one. Earlier sections of this page, generated before that fit
-      window was corrected, still count 2008 as the eighth severe year and the one miss. The
-      activation years are unchanged; only the label on 2008 differs.
+      are seven severe years (2006, 2014, 2016, 2018, 2019, 2020, 2023); 2008 is a flood year
+      but not a severe one. Earlier sections of this page were generated before the fit
+      window was corrected and still count 2008 as the eighth severe year and the one miss.
+      The activation years are the same in both; only the label on 2008 differs.
     </div>
 
 <!-- end skill-scores -->
@@ -632,16 +629,16 @@ body.variant .carrynote { display:none; }
 
 <!-- begin station-by-station -->
     <h2 id="station-by-station">Station by station</h2>
-    <p>Everything the page knows about the individual gauges is gathered here. The table
-      scores each candidate model at each of the seven points, per season: how well its
-      daily series ranks the days like the gauge's own level record (Spearman rank
-      correlation at the best lag between minus 10 and plus 30 days, positive when the model
-      leads the gauge), and whether the model's own 1-in-3 and 1-in-5 crossing in a season
-      coincides with the gauge's own crossing, counted by year over the years the gauge
-      reported (at least 30 readings in the season, 2000 to 2023). Gauge levels are fitted
-      on 2000 to 2023, model thresholds on 1999 to 2023, as elsewhere on the page. The
-      adopted model for the window is in bold. Bardheere's and Bualle's records are short
-      or suspect (see the tail-ratio figure above), so their rows carry less weight.</p>
+    <p>This section gathers the station-level results. The table scores each candidate
+      model at each of the seven points, per season, on two things: how closely its daily
+      series ranks the days like the gauge's level record (Spearman rank correlation at the
+      best lag between minus 10 and plus 30 days, positive when the model leads the gauge),
+      and whether the model's own 1-in-3 and 1-in-5 crossings in a season match the gauge's
+      own crossings, counted by year over the years the gauge reported (at least 30 readings
+      in the season, 2000 to 2023). Gauge levels are fitted on 2000 to 2023 and model
+      thresholds on 1999 to 2023, as elsewhere on the page. The adopted model for each window
+      is in bold. Bardheere's and Bualle's records are short or suspect (see the tail-ratio
+      figure above), so their rows carry less weight.</p>
 <h3>Juba</h3>
 <div class="tablewrap">
 <table class="data" style="font-size:12px">
@@ -656,16 +653,15 @@ body.variant .carrynote { display:none; }
 <tbody><tr style='border-top:2px solid #cbd5e1'><td>Belet Weyne</td><td>Deyr</td><td>Google</td><td>0.63</td><td>+2</td><td>22</td><td>6 of 6</td><td>1</td><td>1.00</td><td>0.14</td><td>0.86</td><td>4 of 4</td><td>1</td><td>1.00</td><td>0.20</td><td>0.80</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.82</td><td>+2</td><td>22</td><td>5 of 6</td><td>3</td><td>0.83</td><td>0.38</td><td>0.56</td><td>4 of 4</td><td>1</td><td>1.00</td><td>0.20</td><td>0.80</td></tr><tr><td></td><td></td><td>GloFAS v4</td><td>0.70</td><td>+11</td><td>22</td><td>4 of 6</td><td>4</td><td>0.67</td><td>0.50</td><td>0.40</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Belet Weyne</td><td>Gu</td><td><strong>Google</strong></td><td>0.80</td><td>+6</td><td>22</td><td>6 of 7</td><td>1</td><td>0.86</td><td>0.14</td><td>0.75</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.79</td><td>-4</td><td>22</td><td>6 of 7</td><td>1</td><td>0.86</td><td>0.14</td><td>0.75</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td>GloFAS v4</td><td>0.83</td><td>+2</td><td>22</td><td>5 of 7</td><td>3</td><td>0.71</td><td>0.38</td><td>0.50</td><td>1 of 4</td><td>4</td><td>0.25</td><td>0.80</td><td>0.12</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bulo Burti</td><td>Deyr</td><td>Google</td><td>0.55</td><td>+3</td><td>22</td><td>5 of 7</td><td>2</td><td>0.71</td><td>0.29</td><td>0.56</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.76</td><td>+2</td><td>22</td><td>6 of 7</td><td>2</td><td>0.86</td><td>0.25</td><td>0.67</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr><td></td><td></td><td>GloFAS v4</td><td>0.66</td><td>+15</td><td>22</td><td>5 of 7</td><td>3</td><td>0.71</td><td>0.38</td><td>0.50</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bulo Burti</td><td>Gu</td><td><strong>Google</strong></td><td>0.78</td><td>+3</td><td>22</td><td>6 of 7</td><td>1</td><td>0.86</td><td>0.14</td><td>0.75</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.78</td><td>-6</td><td>22</td><td>6 of 7</td><td>1</td><td>0.86</td><td>0.14</td><td>0.75</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr><td></td><td></td><td>GloFAS v4</td><td>0.83</td><td>+4</td><td>22</td><td>5 of 7</td><td>3</td><td>0.71</td><td>0.38</td><td>0.50</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Jowhar</td><td>Deyr</td><td>Google</td><td>0.57</td><td>+4</td><td>23</td><td>5 of 10</td><td>3</td><td>0.50</td><td>0.38</td><td>0.38</td><td>2 of 6</td><td>3</td><td>0.33</td><td>0.60</td><td>0.22</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.78</td><td>+0</td><td>23</td><td>3 of 10</td><td>4</td><td>0.30</td><td>0.57</td><td>0.21</td><td>2 of 6</td><td>3</td><td>0.33</td><td>0.60</td><td>0.22</td></tr><tr><td></td><td></td><td>GloFAS v4</td><td>0.73</td><td>+14</td><td>23</td><td>4 of 10</td><td>3</td><td>0.40</td><td>0.43</td><td>0.31</td><td>3 of 6</td><td>2</td><td>0.50</td><td>0.40</td><td>0.38</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Jowhar</td><td>Gu</td><td><strong>Google</strong></td><td>0.78</td><td>+3</td><td>24</td><td>3 of 8</td><td>5</td><td>0.38</td><td>0.62</td><td>0.23</td><td>3 of 7</td><td>2</td><td>0.43</td><td>0.40</td><td>0.33</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.77</td><td>-9</td><td>24</td><td>3 of 8</td><td>5</td><td>0.38</td><td>0.62</td><td>0.23</td><td>2 of 7</td><td>3</td><td>0.29</td><td>0.60</td><td>0.20</td></tr><tr><td></td><td></td><td>GloFAS v4</td><td>0.80</td><td>+3</td><td>24</td><td>3 of 8</td><td>5</td><td>0.38</td><td>0.62</td><td>0.23</td><td>1 of 7</td><td>4</td><td>0.14</td><td>0.80</td><td>0.09</td></tr></tbody>
 </table>
 </div>
-    <p>Two patterns carry over from the model choice. In Gu, Google ranks the days most like
-      the Juba gauges (0.84 to 0.88 at Dollow, Luuq, Bardheere and Bualle) and is level with
-      GloFAS v5 on the Shabelle; in Deyr, GloFAS v5 is the better tracker at every point
-      (0.76 to 0.84 against 0.51 to 0.68 for Google, whose best lags on the Juba run
-      negative, meaning it trails the gauge). GloFAS v4 in Deyr matches the Shabelle gauges
-      only at lags of 11 to 15 days, which is why its Deyr crossings arrive late. Single-point
-      detection is weak for every model: at 1-in-3 a point typically catches one to three of
-      its gauge's events with one to five false alarms, and the models disagree on which
-      years those are. That is the case for a consensus of points rather than any one of
-      them, and for judging the trigger at window level rather than station level.</p>
+    <p>In Gu, Google has the highest rank correlation with the Juba gauges (0.84 to 0.88 at
+      Dollow, Luuq, Bardheere and Bualle) and is level with GloFAS v5 on the Shabelle. In
+      Deyr, GloFAS v5 tracks every point better (0.76 to 0.84, against 0.51 to 0.68 for
+      Google, whose best lags on the Juba are negative: it trails the gauge). GloFAS v4 in
+      Deyr matches the Shabelle gauges only at lags of 11 to 15 days, which is why its Deyr
+      crossings come late. Single-point detection is weak for every model. At 1-in-3 a point
+      catches one to three of its gauge's events with one to five false alarms, and the
+      models disagree on which years those are. This is the basis for requiring a consensus
+      of points and for judging the trigger at window level.</p>
     <details class="supp"><summary>Event matching per gauge: hit and false-alarm rates on 1-in-3 crossings</summary>
     <div class="supp-body">
     <h3>How each model maps the 1-in-3 events, gauge by gauge (event matching within 7 days)</h3>
@@ -680,6 +676,7 @@ body.variant .carrynote { display:none; }
         Left: the share of observed events the model caught. Right: the share of the
         model's own crossings with no observed event behind them.</figcaption>
     </figure>
+
 
     </div></details>
     <p class="muted carrynote"><em>The seasonal-peak comparison is a static figure showing every candidate model. It is available under <strong>All providers</strong>.</em></p>
@@ -996,12 +993,11 @@ body.variant .carrynote { display:none; }
 <tbody><tr><td>Deyr 2006</td><td>Juba</td><td>31 Oct</td><td>29 Oct</td><td>trigger first by 2 d</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Deyr 2006</td><td>Shabelle</td><td>31 Oct</td><td>2 Nov</td><td>SWALIM first by 2 d</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Deyr 2014</td><td>Juba</td><td>15 Oct</td><td>never crossed</td><td>SWALIM only; the trigger never crossed</td><td>23 Oct (for 25 Oct)</td><td>SWALIM first by 8 d</td></tr><tr><td>Deyr 2014</td><td>Shabelle</td><td>15 Oct</td><td>16 Oct</td><td>SWALIM first by 1 d</td><td>7 Oct (for 13 Oct)</td><td>v4 issue first by 8 d</td></tr><tr><td>Gu 2016</td><td>Shabelle</td><td>no bulletin</td><td>12 May</td><td>no SWALIM bulletin; trigger 12 May</td><td>8 May (for 10 May)</td><td>no SWALIM bulletin; v4 issue 8 May</td></tr><tr><td>Deyr 2019</td><td>Juba</td><td>22 Oct</td><td>never crossed</td><td>SWALIM only; the trigger never crossed</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Deyr 2019</td><td>Shabelle</td><td>22 Oct</td><td>11 Oct</td><td>trigger first by 11 d</td><td>2 Oct (for 2 Oct)</td><td>v4 issue first by 20 d</td></tr><tr><td>Deyr 2020</td><td>Shabelle</td><td>8 Sep</td><td>10 Oct</td><td>no bulletin for the October rise</td><td>2 Oct (for 2 Oct)</td><td>(September flood bulletin only)</td></tr><tr><td>Gu 2020</td><td>Juba</td><td>27 Apr</td><td>29 Apr</td><td>SWALIM first by 2 d</td><td>1 May (for 6 May)</td><td>SWALIM first by 4 d</td></tr><tr><td>Gu 2020</td><td>Shabelle</td><td>27 Apr</td><td>30 Apr</td><td>SWALIM first by 3 d</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Gu 2021</td><td>Juba</td><td>10 May</td><td>never crossed</td><td>SWALIM only; the trigger never crossed</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Gu 2021</td><td>Shabelle</td><td>10 May</td><td>never crossed</td><td>SWALIM only; the trigger never crossed</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Gu 2023</td><td>Shabelle</td><td>8 May</td><td>never crossed</td><td>SWALIM only; the trigger never crossed</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Deyr 2023</td><td>Juba</td><td>20 Oct</td><td>29 Oct</td><td>SWALIM first by 9 d</td><td>21 Oct (for 21 Oct)</td><td>SWALIM first by 1 d</td></tr><tr><td>Deyr 2023</td><td>Shabelle</td><td>21 Oct</td><td>9 Nov</td><td>SWALIM first by 19 d</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr><tr><td>Gu 2024</td><td>Juba</td><td>9 May</td><td>record ends 2023</td><td>trigger record ends 2023</td><td>5 May (for 6 May)</td><td>v4 issue first by 4 d</td></tr><tr><td>Gu 2024</td><td>Shabelle</td><td>19 Apr</td><td>record ends 2023</td><td>trigger record ends 2023</td><td>no issue crossed</td><td>SWALIM only; no v4 issue crossed</td></tr></tbody>
 </table>
 </div>
-    <p>Being first is one question; being in time is another. The action window is 1 to 7
-      days before the flood and readiness 8 to 12. The chart below places each flag against the
-      onset of the flood at the gauges, the day the two-gauge 1-in-3 level was first
-      crossed, not the peak. The trigger's date is the day the modelled flow crossed, so in
-      operation the forecast would have added up to 7 days to it; the GloFAS v4 issue date
-      is the operational measure.</p>
+    <p>The action window is 1 to 7 days before the flood and readiness 8 to 12. The chart
+      below places each flag against the onset of the flood at the gauges, the day the
+      two-gauge 1-in-3 level was first crossed, not the peak. The trigger's date is the day
+      the modelled flow crossed; in operation the forecast would have added up to 7 days to
+      it. The GloFAS v4 issue date is the operational measure.</p>
     <figure><img src="figs/k_swalim_window.png?v=202609071" alt="Lead time of each flag before the gauges' 1-in-3 crossing">
       <figcaption>Days between each flag and the gauges' first two-gauge 1-in-3 crossing, one
         row per flood season with a gauge event (Deyr 2019 Juba and Gu 2021 have none). Green:
@@ -1092,13 +1088,13 @@ body.variant .carrynote { display:none; }
 
 <!-- begin model-timeline -->
     <h2 id="when-each-model-would-have-flagged-year-by-year">When each model would have flagged, year by year</h2>
-    <p>For every flood season on the two-gauge benchmark (1999 to 2023), how far ahead of
-      the gauges' 1-in-3 crossing each model would have raised a flag under the window's
-      rule, whichever model the window adopted. Two kinds of date are shown. The diamonds
-      are the first day the model's reanalysis crossed, a flow date. The triangles are the
+    <p>For every flood season on the two-gauge benchmark (1999 to 2023), the chart shows how
+      far ahead of the gauges' 1-in-3 crossing each model would have raised a flag under the
+      window's rule, whichever model the window adopted. Two kinds of date are shown.
+      Diamonds: the first day the model's reanalysis crossed, a flow date. Triangles: the
       first forecast issue that crossed at leads 1 to 7, the date the flag would have been in
-      hand: the GloFAS v4 reforecast is available from 2003 (twice weekly, so an issue can be
-      up to three days later than a daily product would be), the Google reforecast from 2016
+      hand. The GloFAS v4 reforecast exists from 2003 and is issued twice a week, so an issue
+      can be up to three days later than a daily product; the Google reforecast covers 2016
       to mid-2023. The green band is the action window, 1 to 7 days before onset.</p>
     <figure><img src="figs/l_model_timeline.png?v=202609072" alt="Lead of Google and GloFAS flags before the gauges' 1-in-3 crossing, per flood season">
       <figcaption>One row per flood season; an asterisk marks a severe year. Upper track
@@ -1111,31 +1107,30 @@ body.variant .carrynote { display:none; }
       <th>GloFAS v4 forecast issue</th><th>gauges 1-in-5</th></tr></thead>
     <tbody><tr><td>Deyr Juba</td><td>2006 *</td><td>4 d after</td><td>1 d before</td><td>no archive</td><td>never</td><td>on the day</td></tr><tr><td>Deyr Juba</td><td>2008</td><td>never</td><td>never</td><td>no archive</td><td>never</td><td>not reached</td></tr><tr><td>Deyr Juba</td><td>2014 *</td><td>never</td><td>never</td><td>no archive</td><td>1 d after</td><td>2 d after</td></tr><tr><td>Deyr Juba</td><td>2017</td><td>never</td><td>never</td><td>never</td><td>19 d before</td><td>not reached</td></tr><tr><td>Deyr Juba</td><td>2023 *</td><td>6 d after</td><td>4 d after</td><td>never</td><td>4 d before</td><td>on the day</td></tr><tr><td>Deyr Shabelle</td><td>2006 *</td><td>7 d before</td><td>on the day</td><td>no archive</td><td>never</td><td>9 d after</td></tr><tr><td>Deyr Shabelle</td><td>2008</td><td>14 d before</td><td>never</td><td>no archive</td><td>never</td><td>not reached</td></tr><tr><td>Deyr Shabelle</td><td>2014 *</td><td>11 d before</td><td>4 d before</td><td>no archive</td><td>13 d before</td><td>9 d after</td></tr><tr><td>Deyr Shabelle</td><td>2019 *</td><td>6 d before</td><td>3 d before</td><td>12 d before</td><td>12 d before</td><td>8 d after</td></tr><tr><td>Deyr Shabelle</td><td>2020 *</td><td>never</td><td>9 d after</td><td>never</td><td>1 d after</td><td>5 d after</td></tr><tr><td>Deyr Shabelle</td><td>2023 *</td><td>7 d before</td><td>3 d after</td><td>never</td><td>never</td><td>13 d after</td></tr><tr><td>Gu Juba</td><td>2005</td><td>never</td><td>never</td><td>no archive</td><td>on the day</td><td>not reached</td></tr><tr><td>Gu Juba</td><td>2010</td><td>never</td><td>17 d before</td><td>no archive</td><td>on the day</td><td>not reached</td></tr><tr><td>Gu Juba</td><td>2016</td><td>6 d after</td><td>1 d after</td><td>on the day</td><td>10 d after</td><td>not reached</td></tr><tr><td>Gu Juba</td><td>2018 *</td><td>3 d after</td><td>3 d after</td><td>2 d before</td><td>17 d after</td><td>1 d after</td></tr><tr><td>Gu Juba</td><td>2020 *</td><td>7 d after</td><td>8 d after</td><td>2 d after</td><td>9 d after</td><td>20 d after</td></tr><tr><td>Gu Juba</td><td>2023 *</td><td>never</td><td>never</td><td>never</td><td>never</td><td>34 d after</td></tr><tr><td>Gu Shabelle</td><td>2003</td><td>never</td><td>never</td><td>no archive</td><td>never</td><td>not reached</td></tr><tr><td>Gu Shabelle</td><td>2005</td><td>never</td><td>14 d after</td><td>no archive</td><td>6 d after</td><td>not reached</td></tr><tr><td>Gu Shabelle</td><td>2010</td><td>never</td><td>never</td><td>no archive</td><td>18 d before</td><td>not reached</td></tr><tr><td>Gu Shabelle</td><td>2016 *</td><td>1 d after</td><td>4 d after</td><td>11 d before</td><td>3 d before</td><td>7 d after</td></tr><tr><td>Gu Shabelle</td><td>2018</td><td>2 d before</td><td>on the day</td><td>10 d before</td><td>4 d after</td><td>not reached</td></tr><tr><td>Gu Shabelle</td><td>2020 *</td><td>5 d before</td><td>2 d before</td><td>13 d before</td><td>never</td><td>7 d after</td></tr><tr><td>Gu Shabelle</td><td>2023 *</td><td>never</td><td>never</td><td>9 d after</td><td>never</td><td>31 d after</td></tr></tbody></table></div>
     <p>On the Shabelle in Deyr, Google's reanalysis crosses 6 to 11 days before onset in
-      2006, 2014, 2019 and 2023 while GloFAS v5 crosses 0 to 4 days before (and 3 days after
-      in 2023); Google misses Deyr 2020 outright, which v5 catches 9 days late. On the Juba in
-      Deyr neither model is early: both cross after onset in 2006 and 2023 and neither crosses
-      in 2014. In Gu both models cross after onset in every Juba flood (1 to 8 days late in
-      2016, 2018 and 2020) and both miss Gu 2023 on either river; on the Shabelle in Gu 2020
-      Google is 5 days early and v5 2 days. The forecast issues are earlier than the reanalysis
-      crossings almost everywhere they exist: the Google forecast crossed 10 to 13 days before
-      onset in Gu 2016, 2018 and 2020 on the Shabelle and 12 days before in Deyr 2019, and the
-      v4 forecast 12 to 13 days before in Deyr 2014 and 2019 on the Shabelle and 4 days before
-      in Deyr 2023 on the Juba. That is the forecast running ahead of, and above, its own
-      reanalysis on the rising limb, and it is why the operational lead is better than the
-      reanalysis backtest suggests on the Shabelle and worse on the Juba in Gu, where the v4
-      issues are 9 to 17 days late.</p>
+      2006, 2014, 2019 and 2023; GloFAS v5 crosses 0 to 4 days before, and 3 days after in
+      2023. Google misses Deyr 2020, which v5 catches 9 days late. On the Juba in Deyr
+      neither model is early: both cross after onset in 2006 and 2023, and neither crosses in
+      2014. In Gu both models cross after onset in every Juba flood (1 to 8 days late in
+      2016, 2018 and 2020) and both miss Gu 2023 on both rivers. On the Shabelle in Gu 2020
+      Google is 5 days early and v5 2 days. Where forecast archives exist, the first issue
+      that crossed is almost always earlier than the reanalysis crossing. The Google forecast
+      crossed 10 to 13 days before onset in Gu 2016, 2018 and 2020 on the Shabelle and 12
+      days before in Deyr 2019; the v4 forecast 12 to 13 days before in Deyr 2014 and 2019 on
+      the Shabelle and 4 days before in Deyr 2023 on the Juba. The forecast runs ahead of,
+      and above, its own reanalysis on the rising limb. The operational lead is therefore
+      better than the reanalysis backtest suggests on the Shabelle, and worse on the Juba in
+      Gu, where the v4 issues are 9 to 17 days late.</p>
 
 <!-- end model-timeline -->
 <!-- begin obs-fallback -->
     <h2 id="an-observational-fallback-bank-full-at-the-gauges">An observational fallback: bank full at the gauges</h2>
-    <p>If every forecast window misses a flood, the gauges themselves are the last line.
-      SWALIM publishes an official bank-full level for each gauge, the reading at which the
-      river tops its banks (Juba: Dollow 6.0 m, Luuq 7.0 m, Bardheere 10.4 m, Bualle 12.0 m; Shabelle: Belet Weyne 8.3 m, Bulo Burti 8.0 m, Jowhar 5.5 m), with
-      a high-risk level below it. This section asks what an observational trigger set at
-      those levels would have done, alone and as a fallback behind the forecast trigger.
-      Two caveats frame it. The gauge record is capped at bank full, so a reading at bank
-      full means "at least bank full". And Bardheere's official bank-full level (10.4 m) is
-      above the highest reading its record holds (8.0 m), so that gauge can never fire it.</p>
+    <p>SWALIM publishes an official bank-full level for each gauge, the reading at which the
+      river tops its banks (Juba: Dollow 6.0 m, Luuq 7.0 m, Bardheere 10.4 m, Bualle 12.0 m; Shabelle: Belet Weyne 8.3 m, Bulo Burti 8.0 m, Jowhar 5.5 m), and
+      a high-risk level below it. This section scores an observational trigger set at those
+      levels, on its own and as a fallback that releases funds when no forecast window has
+      activated. Two limits apply. The gauge record is capped at bank full, so a reading at
+      bank full means at least bank full. Bardheere's official bank-full level (10.4 m) is
+      above the highest reading in its record (8.0 m), so that gauge can never reach it.</p>
     <figure><img src="figs/l_obs_fallback.png?v=202609072" alt="Years in which the gauges reached the high-risk and bank-full levels, against the benchmark and the forecast trigger">
       <figcaption>Per window and year: the benchmark (two gauges over 1-in-3, over 1-in-5),
         the adopted forecast trigger's activations, and the years in which two gauges read the
@@ -1146,37 +1141,36 @@ body.variant .carrynote { display:none; }
 <tbody><tr><td>Deyr Juba</td><td>2006</td><td>severe</td><td>30 Oct<br><span style='color:var(--n7)'>1-in-5: 30 Oct</span></td><td>29 Oct</td><td>28 Oct (Luuq, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2008</td><td>flood</td><td>15 Nov<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2011</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>2 Dec (Luuq, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2014</td><td>severe</td><td>22 Oct<br><span style='color:var(--n7)'>1-in-5: 24 Oct</span></td><td>never</td><td>24 Oct (Luuq, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2017</td><td>flood</td><td>7 Nov<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>7 Nov (Dollow, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2019</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>9 Oct (Dollow, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2022</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>30 Oct (Dollow, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2023</td><td>severe</td><td>25 Oct<br><span style='color:var(--n7)'>1-in-5: 25 Oct</span></td><td>29 Oct</td><td>22 Oct (Luuq, Bardheere)</td><td>3 Nov (Dollow, Luuq)<br><span style='color:var(--n7)'>5 d after the trigger; 9 d after 1-in-5</span></td><td>3 Nov (Dollow, Luuq)</td></tr><tr><td>Deyr Shabelle</td><td>2006</td><td>severe</td><td>2 Nov<br><span style='color:var(--n7)'>1-in-5: 11 Nov</span></td><td>2 Nov</td><td>11 Nov (Belet Weyne, Bulo Burti)</td><td>10 Nov (Belet Weyne)<br><span style='color:var(--n7)'>8 d after the trigger; 1 d before 1-in-5</span></td><td>no</td></tr><tr><td>Deyr Shabelle</td><td>2008</td><td>flood</td><td>20 Nov<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Deyr Shabelle</td><td>2013</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>17 Oct</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Deyr Shabelle</td><td>2014</td><td>severe</td><td>20 Oct<br><span style='color:var(--n7)'>1-in-5: 29 Oct</span></td><td>16 Oct</td><td>24 Oct (Belet Weyne, Jowhar)</td><td>no</td><td>no</td></tr><tr><td>Deyr Shabelle</td><td>2015</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>25 Oct (Jowhar)<br><span style='color:var(--n7)'>trigger never crossed; no 1-in-5 crossing</span></td><td>no</td></tr><tr><td>Deyr Shabelle</td><td>2019</td><td>severe</td><td>14 Oct<br><span style='color:var(--n7)'>1-in-5: 22 Oct</span></td><td>11 Oct</td><td>19 Oct (Belet Weyne, Jowhar)</td><td>25 Oct (Belet Weyne)<br><span style='color:var(--n7)'>14 d after the trigger; 3 d after 1-in-5</span></td><td>8 Nov (Belet Weyne, Bulo Burti)</td></tr><tr><td>Deyr Shabelle</td><td>2020</td><td>severe</td><td>1 Oct<br><span style='color:var(--n7)'>1-in-5: 6 Oct</span></td><td>10 Oct</td><td>1 Oct (Belet Weyne, Bulo Burti)</td><td>no</td><td>no</td></tr><tr><td>Deyr Shabelle</td><td>2023</td><td>severe</td><td>6 Nov<br><span style='color:var(--n7)'>1-in-5: 19 Nov</span></td><td>9 Nov</td><td>19 Nov (Belet Weyne, Bulo Burti)</td><td>12 Nov (Belet Weyne)<br><span style='color:var(--n7)'>3 d after the trigger; 7 d before 1-in-5</span></td><td>22 Nov (Belet Weyne, Bulo Burti)</td></tr><tr><td>Gu Juba</td><td>2005</td><td>flood</td><td>25 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Gu Juba</td><td>2010</td><td>flood</td><td>18 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Gu Juba</td><td>2013</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>12 Apr</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Gu Juba</td><td>2016</td><td>flood</td><td>1 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>7 May</td><td>7 May (Dollow, Luuq)</td><td>no</td><td>no</td></tr><tr><td>Gu Juba</td><td>2018</td><td>severe</td><td>17 Apr<br><span style='color:var(--n7)'>1-in-5: 18 Apr</span></td><td>20 Apr</td><td>18 Apr (Luuq, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Gu Juba</td><td>2020</td><td>severe</td><td>22 Apr<br><span style='color:var(--n7)'>1-in-5: 12 May</span></td><td>29 Apr</td><td>1 May (Dollow, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Gu Juba</td><td>2023</td><td>severe</td><td>25 Mar<br><span style='color:var(--n7)'>1-in-5: 28 Apr</span></td><td>never</td><td>24 Mar (Dollow, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2003</td><td>flood</td><td>11 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2005</td><td>flood</td><td>12 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>12 May (Belet Weyne, Bulo Burti)</td><td>no</td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2010</td><td>flood</td><td>29 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>12 May (Belet Weyne, Jowhar)</td><td>no</td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2013</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>6 May</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2015</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>20 Apr (Jowhar)<br><span style='color:var(--n7)'>trigger never crossed; no 1-in-5 crossing</span></td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2016</td><td>severe</td><td>11 May<br><span style='color:var(--n7)'>1-in-5: 18 May</span></td><td>12 May</td><td>10 May (Belet Weyne, Jowhar)</td><td>18 May (Belet Weyne)<br><span style='color:var(--n7)'>6 d after the trigger; same day as 1-in-5</span></td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2018</td><td>flood</td><td>7 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>5 May</td><td>9 May (Belet Weyne, Bulo Burti)</td><td>no</td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2020</td><td>severe</td><td>5 May<br><span style='color:var(--n7)'>1-in-5: 12 May</span></td><td>30 Apr</td><td>5 May (Belet Weyne, Jowhar)</td><td>12 May (Belet Weyne)<br><span style='color:var(--n7)'>12 d after the trigger; same day as 1-in-5</span></td><td>29 May (Belet Weyne, Bulo Burti)</td></tr><tr><td>Gu Shabelle</td><td>2021</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>26 May (Belet Weyne)<br><span style='color:var(--n7)'>trigger never crossed; no 1-in-5 crossing</span></td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2023</td><td>severe</td><td>17 Apr<br><span style='color:var(--n7)'>1-in-5: 18 May</span></td><td>never</td><td>23 May (Belet Weyne, Bulo Burti)</td><td>9 May (Belet Weyne)<br><span style='color:var(--n7)'>trigger never crossed; 9 d before 1-in-5</span></td><td>25 May (Belet Weyne, Bulo Burti)</td></tr></tbody>
 </table>
 </div>
-    <p><strong>Bank full is a confirmation, not a warning.</strong> Where a gauge reached bank
-      full in a benchmark flood, it did so between 9 days before and 9 days after the 1-in-5
-      crossing (Deyr Shabelle 2006, 2019 and 2023: 7 days before, 1 day before and 3 days after;
-      Gu Shabelle 2016, 2020 and 2023: 9 days before and twice on the day; Deyr Juba 2023: 9
-      days after), and in every one of those seasons the forecast trigger had already crossed,
-      2 to 19 days earlier, except Gu 2023 on the Shabelle. On the Juba in Gu no gauge has ever
-      read bank full in the record.</p>
-    <p><strong>What a bank-full fallback adds.</strong> Behind the adopted trigger it recovers
-      one benchmark season, Gu 2023 on the Shabelle (Belet Weyne at bank full on the day the
-      gauges crossed 1-in-5, 23 May), and adds three seasons the two-gauge benchmark does not
-      call floods: Deyr 2015 and Gu 2015 on the Shabelle, and Gu 2021 at Belet Weyne. None of
-      the three is a false alarm in the ordinary sense. Gu 2021 is the flood the benchmark
-      misses because the gauge is censored at bank full (SWALIM reported flooding upstream of
-      Belet Weyne and EM-DAT records 400,000 people affected), and in both 2015 seasons SWALIM
-      issued high-risk watches or a Flood Alert with floods reported at Jamame and Jilib. The
-      fallback would therefore have released funds in four seasons the forecast trigger did
-      not (Gu 2015, Deyr 2015, Gu 2021 and Gu 2023, all on the Shabelle), for floods that
-      happened, at or after the moment the river was already over its banks. Two of those
-      years, 2015 and 2021, are years in which no window activated at all, so the
-      envelope's activation rate would rise from 8 to 10 years in 25, about 1-in-2.5.</p>
-    <p><strong>The high-risk level is too loose as a standalone trigger.</strong> Two Juba
-      gauges at the high-risk level occurs in seven Deyr seasons (2006, 2011, 2014, 2017,
-      2019, 2022, 2023), four of them with no benchmark flood; two Shabelle gauges at the
-      high-risk level in Deyr matches the five severe years exactly, and in Gu adds 2005,
-      2010 and 2018 to the severe years. It is the level SWALIM's own bulletins escalate at,
-      which the SWALIM section above shows arriving 1 to 7 days before onset in most seasons.
-      A sensible fallback design is therefore: bank full at any monitored gauge releases the
-      action funds if no forecast window has activated; two gauges at the high-risk level is a
-      readiness-grade signal, not a release. The operational cost is the gauge reading itself,
-      which SWALIM publishes daily with about a day's delay, so the fallback's effective lead
-      is zero or negative: it pays for floods the models miss, not for early action.</p>
+    <p>Where a gauge reached bank full in a benchmark flood, it did so between 9 days before
+      and 9 days after the 1-in-5 crossing: Deyr Shabelle 2006, 2019 and 2023 at 7 days
+      before, 1 day before and 3 days after; Gu Shabelle 2016, 2020 and 2023 at 9 days before
+      and twice on the day; Deyr Juba 2023 at 9 days after. In every one of those seasons
+      except Gu 2023 on the Shabelle the forecast trigger had already crossed, 2 to 19 days
+      earlier. No Juba gauge has read bank full in Gu in the record. Bank full confirms a
+      flood; it does not warn of one.</p>
+    <p>Behind the adopted trigger the fallback recovers one benchmark season, Gu 2023 on the
+      Shabelle (Belet Weyne at bank full on 23 May, the day the gauges crossed 1-in-5). It
+      adds three seasons the two-gauge benchmark does not call floods: Deyr 2015 and Gu 2015
+      on the Shabelle, and Gu 2021 at Belet Weyne. All three had flooding. Gu 2021 is the
+      flood the benchmark misses because the gauge is censored at bank full; SWALIM reported
+      flooding upstream of Belet Weyne and EM-DAT records 400,000 people affected. In both
+      2015 seasons SWALIM issued high-risk watches or a Flood Alert, with floods reported at
+      Jamame and Jilib. The fallback would therefore have released funds in four seasons the
+      forecast trigger did not (Gu 2015, Deyr 2015, Gu 2021 and Gu 2023, all on the
+      Shabelle), each time at or after the point where the river was already over its banks.
+      In 2015 and 2021 no window activated at all, so the envelope's activation rate would
+      rise from 8 to 10 years in 25, about 1-in-2.5.</p>
+    <p>The high-risk level is too loose to release funds on its own. Two Juba gauges at the
+      high-risk level occurs in seven Deyr seasons (2006, 2011, 2014, 2017, 2019, 2022,
+      2023), four of them without a benchmark flood. Two Shabelle gauges at the high-risk
+      level in Deyr matches the five severe years exactly; in Gu it adds 2005, 2010 and 2018.
+      It is the level at which SWALIM's own bulletins escalate, and the SWALIM section above
+      shows that step arriving 1 to 7 days before onset in most seasons. On this record the
+      fallback would be: bank full at any monitored gauge releases the action funds when no
+      forecast window has activated, and two gauges at the high-risk level counts as a
+      readiness signal, not a release. SWALIM publishes the gauge readings daily with about
+      a day's delay, so the fallback's lead is zero or negative. It covers floods the models
+      miss; it does not add lead time.</p>
 
 <!-- end obs-fallback -->
     <h2 id="open-items-before-a-trigger-report">Open items before a trigger report</h2>
