@@ -42,7 +42,7 @@ for river in ("juba", "shabelle"):
             lev = {rp: float(weibull_level(am_g.dropna().values, rp)) if len(am_g.dropna()) else np.nan for rp in (3, 5)}
             g_years = {rp: set(am_g[am_g >= lev[rp]].index) & ok_years if not np.isnan(lev[rp]) else set() for rp in (3, 5)}
             adopted = TRIGGER_CONFIG[(river, season)]["source"]
-            for model in L.MODELS:
+            for model in ("google_grrr", "glofas_v5"):  # v4 is not a candidate on the page
                 s = L.season_series(model, st, season)
                 if len(s) < 100:
                     continue
