@@ -44,13 +44,20 @@ style = """<style id="toc-style">
 .toc a { color:var(--n8); text-decoration:none; }
 .toc a:hover { text-decoration:underline; }
 .toc li.on > a { color:var(--b6); font-weight:600; }
-/* wide screens: the .wrap is 1080px centred and the article 860px at its left, leaving a
-   220px gutter on the right for a panel that stays put while the page scrolls */
+/* wide screens: a fixed panel to the LEFT of the text block. The .wrap is 1080px centred
+   and the article 860px wide. From 1100px the article moves into the wrap's right-hand
+   gutter and the panel takes the 220px it frees on the left; from 1500px the panel sits in
+   the page margin outside the wrap and the article returns to its place. */
 @media (min-width:1100px) {
-  .toc { position:fixed; top:64px; right:calc(50% - 540px + 14px); width:190px; max-height:calc(100vh - 90px);
+  article { margin-left:220px; }
+  .toc { position:fixed; top:64px; left:calc(50% - 540px + 14px); width:190px; max-height:calc(100vh - 90px);
          overflow:auto; margin:0; padding:12px 14px; background:#fff; box-shadow:0 1px 6px rgba(26,39,51,.06); z-index:30; }
   .toc ol { columns:1; font-size:12.5px; line-height:1.55; padding-left:16px; }
   .toc li { margin:3px 0; }
+}
+@media (min-width:1500px) {
+  article { margin-left:0; }
+  .toc { left:calc(50% - 540px - 206px); }
 }
 @media print { .toc { position:static; } }
 </style>
