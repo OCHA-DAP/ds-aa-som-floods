@@ -74,7 +74,7 @@ ax.axvspan(-7.5, -0.5, color="#dcfce7", alpha=.9, zorder=0)
 ax.axvspan(-12.5, -7.5, color="#f0fdf4", alpha=.9, zorder=0)
 ax.axvline(0, color="#374151", lw=1.2, zorder=1)
 ax.text(-7.2, len(ROWS) - .35, "action window\n1 to 7 d before", ha="left", va="bottom", fontsize=8.6, color="#166534")
-ax.text(-7.9, len(ROWS) - .35, "readiness\n7 to 12 d", ha="right", va="bottom", fontsize=8.6, color="#4d7c0f")
+ax.text(-7.9, len(ROWS) - .35, "readiness\n8 to 12 d", ha="right", va="bottom", fontsize=8.6, color="#4d7c0f")
 ax.text(0.3, len(ROWS) - .35, "gauges cross\n1-in-3", ha="left", va="bottom", fontsize=8.6, color="#374151")
 out = []
 XMIN, XMAX = -23, 23
