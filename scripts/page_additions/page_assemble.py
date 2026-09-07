@@ -4,6 +4,7 @@ between HTML comment markers and is replaced on rerun; moved blocks are moved on
 Run toc_inject.py afterwards."""
 import json
 import re
+from datetime import datetime
 from pathlib import Path
 
 S = Path(__file__).parent
@@ -163,53 +164,82 @@ station = """    <h2>Station by station</h2>
 """ + peaks_block + ownskill_block
 t = replace_section(t, "station-by-station", station, "    <h2>Thresholds and calibration</h2>")
 
-# ------------------------------------------------------------------ 3. model timeline by year
-def lead_txt(n):
-    if n is None:
+# ------------------------------------------------------------------ 3. model timeline, every year
+tla = json.loads((S / "model_timeline_all.json").read_text(encoding="utf-8"))
+
+
+def dshort(iso):
+    return datetime.fromisoformat(iso).strftime("%d %b").lstrip("0") if iso else None
+
+
+def cell_date(iso, onset_iso, archive=True):
+    if not archive:
+        return "no archive"
+    if not iso:
         return "never"
-    return "on the day" if n == 0 else (f"{n} d before" if n > 0 else f"{-n} d after")
+    s = dshort(iso)
+    if onset_iso:
+        n = (datetime.fromisoformat(onset_iso) - datetime.fromisoformat(iso)).days
+        s += " (on the day)" if n == 0 else (f" ({n} d before)" if n > 0 else f" ({-n} d after)")
+    return s
 
 
 tl_rows = "".join(
     f"<tr><td>{r['window']}</td><td>{r['year']}{' *' if r['severe'] else ''}</td>"
-    f"<td>{lead_txt(r['google_rean'])}</td><td>{lead_txt(r['glofas_v5_rean'])}</td>"
-    f"<td>{lead_txt(r['google_issue']) if r['google_archive'] else 'no archive'}</td>"
-    f"<td>{lead_txt(r['glofas_v4_issue']) if r['v4_archive'] else 'no archive'}</td>"
-    f"<td>{lead_txt(r['onset5_lead']) if r['onset5_lead'] is not None else 'not reached'}</td></tr>"
-    for r in tl)
+    f"<td>{('flood' if r['gauge_flood'] else ('none' if r['gauges_reporting'] else 'not reporting'))}</td>"
+    f"<td>{dshort(r['onset3']) or ''}</td><td>{dshort(r['onset5']) or ''}</td>"
+    f"<td>{cell_date(r['google_rean'], r['onset3'])}</td><td>{cell_date(r['glofas_v5_rean'], r['onset3'])}</td>"
+    f"<td>{cell_date(r['google_issue'], r['onset3'], r['google_archive'])}</td>"
+    f"<td>{cell_date(r['glofas_v4_issue'], r['onset3'], r['v4_archive'])}</td></tr>"
+    for r in tla)
+figs_years = "".join(
+    f'    <figure><img src="figs/l_years_{s}_{rv}.png{V}" alt="{w}: when each model would have flagged, every year 1999 to 2023"></figure>\n'
+    for s, rv, w in (("deyr", "juba", "Deyr Juba"), ("deyr", "shabelle", "Deyr Shabelle"), ("gu", "juba", "Gu Juba"), ("gu", "shabelle", "Gu Shabelle")))
 timeline = f"""    <h2>When each model would have flagged, year by year</h2>
-    <p>For every flood season on the two-gauge benchmark (1999 to 2023), the chart shows how
-      far ahead of the gauges' 1-in-3 crossing each model would have raised a flag under the
-      window's rule, whichever model the window adopted. Two kinds of date are shown.
-      Diamonds: the first day the model's reanalysis crossed, a flow date. Triangles: the
-      first forecast issue that crossed at leads 1 to 7, the date the flag would have been in
-      hand. The GloFAS v4 reforecast exists from 2003 and is issued twice a week, so an issue
-      can be up to three days later than a daily product; the Google reforecast covers 2016
-      to mid-2023. The green band is the action window, 1 to 7 days before onset.</p>
-    <figure><img src="figs/l_model_timeline.png{V}" alt="Lead of Google and GloFAS flags before the gauges' 1-in-3 crossing, per flood season">
-      <figcaption>One row per flood season; an asterisk marks a severe year. Upper track
-        Google (blue), lower track GloFAS (v5 reanalysis and v4 forecast). Text at right gives
-        the leads in days. Onset is the first day two gauges of the river had crossed their
-        1-in-3 level; the black tick is the 1-in-5 crossing.</figcaption></figure>
+    <p>One timeline per window, one row per year from 1999 to 2023, on calendar dates within
+      the season. Each model runs the window's point count over 1-in-3 station levels fitted
+      on its own reanalysis, rather than the adopted 1-in-4 to 1-in-6, so this is the earliest
+      a flag could reasonably have come; the years without a gauge flood show what that
+      costs in extra flags. Diamonds are the first day the reanalysis crossed (Google in blue,
+      GloFAS v5 in teal). Triangles are the first forecast issue that crossed at leads 1 to 7:
+      the Google reforecast covers 2016 to mid-2023, the GloFAS v4 reforecast 2003 to 2023 at
+      two issues a week. The grey band runs from the gauges' two-gauge 1-in-3 crossing to
+      their 1-in-5 crossing, and an asterisk marks a severe year. The text at right gives
+      days before or after the gauges' 1-in-3 crossing, or, in years without a gauge flood,
+      which models flagged. The Juba gauges did not report in 1999 to 2001 and the Shabelle
+      gauges in 1999.</p>
+""" + figs_years + """
+    <p>On the Shabelle the models are early. In Deyr, Google crosses in five of the six flood
+      years, 7 to 16 days before onset, and misses 2020; GloFAS v5 crosses in five, between 2
+      days after and 7 days before, and misses 2008. In Gu, GloFAS v5 crosses in six of seven
+      flood years, all before onset (2 to 24 days); Google crosses in six, four of them before
+      onset (9 to 32 days) and two after. Each model flags one to three of the fifteen or
+      sixteen Shabelle years without a gauge flood. On the Juba the models are late or absent.
+      In Deyr both cross in three of the five flood years, GloFAS v5 1 to 2 days before onset
+      and Google between 4 days after and 5 days before, and each flags four of the eighteen
+      years without a gauge flood. In Gu both cross in five of six flood years but only once
+      before onset (2010); in 2016, 2018 and 2020 they cross 1 to 5 days after, and in 2023
+      Google crosses more than a month after and GloFAS v5 not at all.</p>
+    <p>The forecast issues run ahead of the reanalysis on the Shabelle: the Google forecast
+      crossed 15 to 24 days before onset in Gu 2016, 2018 and 2020 and 13 days before in Deyr
+      2019, and the GloFAS v4 forecast 12 to 13 days before in Deyr 2014 and 2019. On the Juba
+      in Gu the v4 issues come 5 to 7 days after onset in 2016, 2018 and 2020, and the Google
+      issues 1 to 4 days before. Compared with the adopted return periods used in the SWALIM
+      comparison above, 1-in-3 adds a few days of lead on the Shabelle, up to a week for
+      GloFAS v5 in Deyr, at the cost of one to three extra flags per window in years without a
+      gauge flood. On the Juba in Deyr it raises the non-flood flags to four in eighteen years
+      for each model without catching the two remaining flood years.</p>
+    <details class="supp"><summary>Every year in a table: dates and leads</summary>
+    <div class="supp-body">
+    <p>Dates are the first day the rule crossed (reanalysis) or the first issue that crossed
+      (forecast), with the lead against the gauges' two-gauge 1-in-3 crossing in brackets
+      where there was one.</p>
     <div class="tablewrap">
-    <table class="data" style="font-size:12px"><thead><tr><th>window</th><th>year</th>
-      <th>Google reanalysis</th><th>GloFAS v5 reanalysis</th><th>Google forecast issue</th>
-      <th>GloFAS v4 forecast issue</th><th>gauges 1-in-5</th></tr></thead>
-    <tbody>{tl_rows}</tbody></table></div>
-    <p>On the Shabelle in Deyr, Google's reanalysis crosses 6 to 11 days before onset in
-      2006, 2014, 2019 and 2023; GloFAS v5 crosses 0 to 4 days before, and 3 days after in
-      2023. Google misses Deyr 2020, which v5 catches 9 days late. On the Juba in Deyr
-      neither model is early: both cross after onset in 2006 and 2023, and neither crosses in
-      2014. In Gu both models cross after onset in every Juba flood (1 to 8 days late in
-      2016, 2018 and 2020) and both miss Gu 2023 on both rivers. On the Shabelle in Gu 2020
-      Google is 5 days early and v5 2 days. Where forecast archives exist, the first issue
-      that crossed is almost always earlier than the reanalysis crossing. The Google forecast
-      crossed 10 to 13 days before onset in Gu 2016, 2018 and 2020 on the Shabelle and 12
-      days before in Deyr 2019; the v4 forecast 12 to 13 days before in Deyr 2014 and 2019 on
-      the Shabelle and 4 days before in Deyr 2023 on the Juba. The forecast runs ahead of,
-      and above, its own reanalysis on the rising limb. The operational lead is therefore
-      better than the reanalysis backtest suggests on the Shabelle, and worse on the Juba in
-      Gu, where the v4 issues are 9 to 17 days late.</p>
+    <table class="data" style="font-size:12px"><thead><tr><th>window</th><th>year</th><th>gauge benchmark</th>
+      <th>gauges 1-in-3</th><th>gauges 1-in-5</th><th>Google reanalysis</th><th>GloFAS v5 reanalysis</th>
+      <th>Google forecast issue</th><th>GloFAS v4 forecast issue</th></tr></thead>
+    <tbody>""" + tl_rows + """</tbody></table></div>
+    </div></details>
 """
 t = replace_section(t, "model-timeline", timeline, "    <h2>Open items before a trigger report</h2>")
 
