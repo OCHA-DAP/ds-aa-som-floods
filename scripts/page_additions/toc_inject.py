@@ -17,9 +17,10 @@ t = t.replace('<div class="body-grid">\n', "", 1).replace("\n</div><!-- /body-gr
 
 
 def slug(s):
+    """Full slug, never truncated: a mid-word cut makes ids drift between runs and
+    breaks any link a reader has already followed or bookmarked."""
     s = H.unescape(re.sub(r"<[^>]+>", "", s)).lower()
-    s = re.sub(r"[^a-z0-9]+", "-", s).strip("-")
-    return s[:60]
+    return re.sub(r"[^a-z0-9]+", "-", s).strip("-")
 
 
 entries, seen = [], set()
@@ -119,7 +120,29 @@ nav = ('<nav class="toc" aria-label="Contents">\n  <div class="toc-in">\n'
 script = """<script id="toc-script">
 (function () {
   var links = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
-  var heads = links.map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
+  var all = Array.prototype.slice.call(document.querySelectorAll('article h2, article h3'));
+  function target(a) {
+    var el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) return el;
+    // an id that has drifted (an older cached copy of this page): fall back to the
+    // heading whose text matches the link's title, so a click is never a no-op
+    var want = (a.getAttribute('title') || a.textContent || '').trim();
+    for (var i = 0; i < all.length; i++) {
+      if (all[i].textContent.replace(/#$/, '').trim() === want) return all[i];
+    }
+    return null;
+  }
+  links.forEach(function (a) {
+    a.addEventListener('click', function (ev) {
+      var el = target(a);
+      if (!el) return;
+      if (!document.getElementById(a.getAttribute('href').slice(1))) {
+        ev.preventDefault();
+        el.scrollIntoView({ block: 'start' });
+      }
+    });
+  });
+  var heads = links.map(target);
   function update() {
     var y = window.scrollY + 90, cur = -1;
     for (var i = 0; i < heads.length; i++) { if (heads[i] && heads[i].offsetTop <= y) cur = i; }
