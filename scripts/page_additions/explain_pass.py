@@ -9,6 +9,18 @@ from pathlib import Path
 PAGE = Path(__file__).resolve().parents[2] / "pages" / "trigger-single-model" / "index.html"
 
 PAIRS = [
+    # the hero summary: one dense clause replaced by what the rule actually does
+    ("Proposed trigger for anticipatory action against riverine flooding on the Juba and Shabelle: a station consensus in which each river-season window runs on a single forecast source rather than a mixture, monitoring all seven points, with no threshold below 1-in-3. Calibrated against SWALIM river gauges. August 2026.",
+     "Proposed trigger for anticipatory action against riverine flooding on the Juba and "
+     "Shabelle. Each of the four river-season windows runs on one forecast model, not a "
+     "mixture. A window activates when enough of the seven monitored points are over their "
+     "own return-period thresholds on the same day, and no threshold sits below 1-in-3. "
+     "Calibrated against SWALIM river gauges. August 2026."),
+    # the meta description should say the same thing
+    ("Proposed anticipatory-action trigger for the Juba and Shabelle rivers: multi-model forecast consensus, calibration against SWALIM gauges, backtests and return periods.",
+     "Proposed anticipatory-action trigger for the Juba and Shabelle rivers. One forecast model "
+     "per river-season window, a consensus of monitored points crossing on the same day, "
+     "calibrated against SWALIM gauges, with backtests, skill scores and return periods."),
     # POD and FAR are first met here, before the section that defines them
     ("POD counts <strong>severe</strong> years caught, the objective the envelope is sized on. FAR counts activations with no RP3 flood behind them:",
      "POD (probability of detection) counts <strong>severe</strong> years caught, the objective "
