@@ -15,8 +15,15 @@ t = PAGE.read_text(encoding="utf-8")
 
 metrics = json.loads((S / "metrics.json").read_text(encoding="utf-8"))
 obs = json.loads((S / "obs_fallback.json").read_text(encoding="utf-8"))
-tl = json.loads((S / "model_timeline.json").read_text(encoding="utf-8"))
 metrics_tables = (S / "metrics_tables.html").read_text(encoding="utf-8")
+# the severe-year table stays visible; the wider flood-year one folds away
+_k = metrics_tables.find('<p class="muted"', metrics_tables.find('<p class="muted"') + 1)
+assert _k > 0, "expected two tables in metrics_tables.html"
+NL = chr(10)
+_fold = ('<details class="supp"><summary>The same scores against the wider flood years'
+         ' (two gauges over 1-in-3)</summary>' + NL + '<div class="supp-body">' + NL)
+metrics_tables = (metrics_tables[:_k] + _fold + metrics_tables[_k:]
+                  + NL + "</div></details>" + NL)
 station_table = (S / "station_metrics_table.html").read_text(encoding="utf-8")
 obs_table = (S / "obs_fallback_table.html").read_text(encoding="utf-8")
 
@@ -122,8 +129,11 @@ if "<!-- begin station-by-station -->" in t:
     i, j = t.find("<!-- begin station-by-station -->"), t.find("<!-- end station-by-station -->")
     old = t[i:j]
     if not gauge_block:
-        a, b = old.find("    <h3>How each model maps"), old.find("    </div></details>", old.find("    <h3>How each model maps"))
-        gauge_block = old[a:b] if a >= 0 else ""
+        # headings carry ids once toc_inject has run, so match loosely
+        mg = re.search(r"    <h3[^>]*>How each model maps", old)
+        if mg:
+            b = old.find("    </div></details>", mg.start())
+            gauge_block = old[mg.start():b] if b > mg.start() else ""
     if not peaks_block:
         m = re.search(r'    <p class="muted carrynote"><em>The seasonal-peak comparison.*?</div></details>\n', old, re.S)
         peaks_block = m.group(0) if m else ""
@@ -141,7 +151,9 @@ station = """    <h2>Station by station</h2>
     <p>This section gathers the station-level results. The table scores Google and GloFAS
       v5 at each of the seven points, per season, on two things: how closely its daily
       series ranks the days like the gauge's level record (Spearman rank correlation at the
-      best lag between minus 10 and plus 30 days, positive when the model leads the gauge),
+      best lag between minus 10 and plus 30 days, positive when the model leads the gauge;
+      the search shifts the gauge's full-year series, so it does not suffer the understated
+      lags that review note R2 flags in the selection table above),
       and whether the model's own 1-in-3 and 1-in-5 crossings in a season match the gauge's
       own crossings, counted by year over the years the gauge reported (at least 30 readings
       in the season, 2000 to 2023). Gauge levels are fitted on 2000 to 2023 and model
@@ -150,9 +162,9 @@ station = """    <h2>Station by station</h2>
       figure above), so their rows carry less weight.</p>
 """ + station_table + """
     <p>In Gu, Google has the highest rank correlation with the Juba gauges (0.84 to 0.88 at
-      Dollow, Luuq, Bardheere and Bualle) and is level with GloFAS v5 on the Shabelle. In
-      Deyr, GloFAS v5 tracks every point better (0.76 to 0.84, against 0.51 to 0.68 for
-      Google, whose best lags on the Juba are negative: it trails the gauge). Single-point
+      Dollow, Luuq, Bardheere and Bualle) and is a little ahead of GloFAS v5 on the Shabelle.
+      In Deyr, GloFAS v5 tracks every point better (0.78 to 0.85, against 0.49 to 0.66 for
+      Google, whose best lags on the Juba are negative: it trails the gauge there). Single-point
       detection is weak for both models. At 1-in-3 a point
       catches one to three of its gauge's events with one to five false alarms, and the
       models disagree on which years those are. This is the basis for requiring a consensus
@@ -258,7 +270,10 @@ fallback = f"""    <h2>An observational fallback: bank full at the gauges</h2>
       <figcaption>Per window and year: the benchmark (two gauges over 1-in-3, over 1-in-5),
         the adopted forecast trigger's activations, and the years in which two gauges read the
         high-risk level, one gauge read bank full, and two did.</figcaption></figure>
+    <details class="supp"><summary>Every season in a table: dates, stations and lags</summary>
+    <div class="supp-body">
 """ + obs_table + f"""
+    </div></details>
     <p>Where a gauge reached bank full in a benchmark flood, it did so between 9 days before
       and 9 days after the 1-in-5 crossing: Deyr Shabelle 2006, 2019 and 2023 at 7 days
       before, 1 day before and 3 days after; Gu Shabelle 2016, 2020 and 2023 at 9 days before
