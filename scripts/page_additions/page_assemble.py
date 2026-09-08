@@ -28,6 +28,20 @@ station_table = (S / "station_metrics_table.html").read_text(encoding="utf-8")
 obs_table = (S / "obs_fallback_table.html").read_text(encoding="utf-8")
 
 
+def find_anchor(t, anchor):
+    """Position of an anchor, tolerating the ids toc_inject adds to headings."""
+    k = t.find(anchor)
+    if k >= 0:
+        return k
+    m = re.match(r"(\s*)<(h[234])>(.*)</\2>", anchor, re.S)
+    if m:
+        indent, tag, text = m.groups()
+        m2 = re.search(rf'{indent}<{tag}(?: id="[^"]*")?>{re.escape(text)}</{tag}>', t)
+        if m2:
+            return m2.start()
+    return -1
+
+
 def replace_section(t, key, html, before_anchor):
     """Put html (wrapped in markers) immediately before before_anchor; replace if present."""
     start, end = f"<!-- begin {key} -->", f"<!-- end {key} -->"
@@ -35,9 +49,18 @@ def replace_section(t, key, html, before_anchor):
     if start in t:
         i, j = t.find(start), t.find(end) + len(end) + 1
         return t[:i] + block + t[j:]
-    k = t.find(before_anchor)
+    k = find_anchor(t, before_anchor)
     assert k > 0, before_anchor
     return t[:k] + block + t[k:]
+
+
+def drop_section(t, key):
+    """Remove a marked section so it can be re-inserted somewhere else."""
+    start, end = f"<!-- begin {key} -->", f"<!-- end {key} -->"
+    if start in t:
+        i, j = t.find(start), t.find(end) + len(end) + 1
+        return t[:i] + t[j:]
+    return t
 
 
 def cut(t, start_marker, end_marker, include_end=False):
@@ -66,9 +89,9 @@ def auc_line(key):
 # ------------------------------------------------------------------ 1. skill scores
 E = metrics["envelope"]["vs_severe"]
 skill = f"""    <h2>Skill scores beyond POD, FAR and F1</h2>
-    <p>The rest of the page scores the trigger with POD (probability of detection, the
-      same quantity as recall), FAR (false alarm ratio: activations with no flood behind
-      them, as a share of all activations) and F1. The tables below give the full
+    <p>The sections above score the models with POD (probability of detection, the same
+      quantity as recall), FAR (false alarm ratio: activations with no flood behind them, as
+      a share of all activations) and F1. The tables below give the full
       contingency table and the scores derived from it, for each window's rule on each
       candidate model at the adopted return period and point count, 1999 to 2023. All 25
       years are counted, as elsewhere on the page. The Juba gauges did not report in 1999 to
@@ -117,7 +140,12 @@ skill = f"""    <h2>Skill scores beyond POD, FAR and F1</h2>
       The activation years are the same in both; only the label on 2008 differs.
     </div>
 """
-t = replace_section(t, "skill-scores", skill, "    <h2>Why the models perform the way they do</h2>")
+# the scores read better once the reader knows how the models differ, so this section
+# sits after "Why the models perform the way they do" and before "Station by station"
+t = drop_section(t, "skill-scores")
+_anchor = ("<!-- begin station-by-station -->" if "<!-- begin station-by-station -->" in t
+           else "    <h2>Thresholds and calibration</h2>")
+t = replace_section(t, "skill-scores", skill, _anchor)
 
 # ------------------------------------------------------------------ 2. station by station
 t, gauge_block = cut(t, "    <h3>How each model maps the RP3 events, gauge by gauge</h3>",

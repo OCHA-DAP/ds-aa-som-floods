@@ -226,8 +226,9 @@ full_table = ('<div class="tablewrap">\n<table class="data" style="font-size:12p
               + "".join(rows) + "</tbody>\n</table>\n</div>")
 
 section = """    <h3>SWALIM's alerts against the trigger</h3>
-    <p>SWALIM issues its own flood bulletins from the gauge readings and the rainfall
-      forecast, grading river flood risk as moderate, then high, then bank full or overflow.
+    <p>SWALIM, the Somalia Water and Land Information Management project run by FAO,
+      issues its own flood bulletins from the gauge readings and the rainfall forecast,
+      grading river flood risk as moderate, then high, then bank full or overflow.
       The question here is who flagged first in each flood season, SWALIM or the trigger,
       and by how many days. Every date is the date the information was available: the issue
       date of the SWALIM bulletin, the first day the trigger crossed on its reanalysis
