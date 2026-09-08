@@ -1,7 +1,11 @@
 """Fill the explanation gaps the flow audit found: acronyms expanded at first use,
 the envelope defined where it is first met, the valid-day and issue-date distinction
 glossed where it is first used, and the GloFAS v4 contradiction resolved.
-Whitespace-tolerant and asserted; reports pairs already applied."""
+
+Whitespace-tolerant and asserted. A pair may carry a third element, an anchor: a short
+phrase that proves the edit has landed even if a later pair has since reworded the rest.
+Without it the whole replacement string has to match, which fails when two pairs touch
+the same sentence."""
 import re
 import sys
 from pathlib import Path
@@ -14,8 +18,12 @@ PAIRS = [
      "Proposed trigger for anticipatory action against riverine flooding on the Juba and "
      "Shabelle. Each of the four river-season windows runs on one forecast model, not a "
      "mixture. A window activates when enough of the seven monitored points are over their "
-     "own return-period thresholds on the same day, and no threshold sits below 1-in-3. "
-     "Calibrated against SWALIM river gauges. August 2026."),
+     "own return-period thresholds on the same day, each threshold set at 1-in-3 or rarer. "
+     "Calibrated against SWALIM river gauges. August 2026.",
+     "Each of the four river-season windows runs on one forecast model"),
+    # reframe the threshold floor as a positive statement (was: "no threshold sits below")
+    ("on the same day, and no threshold sits below 1-in-3.",
+     "on the same day, each threshold set at 1-in-3 or rarer."),
     # the meta description should say the same thing
     ("Proposed anticipatory-action trigger for the Juba and Shabelle rivers: multi-model forecast consensus, calibration against SWALIM gauges, backtests and return periods.",
      "Proposed anticipatory-action trigger for the Juba and Shabelle rivers. One forecast model "
@@ -58,12 +66,14 @@ def pattern(old):
 
 t = PAGE.read_text(encoding="utf-8")
 applied, already, missing = 0, 0, []
-for old, new in PAIRS:
+for pair in PAIRS:
+    old, new = pair[0], pair[1]
+    anchor = pair[2] if len(pair) > 2 else new
     rx = pattern(old)
     if rx.search(t):
         t = rx.sub(lambda m: new, t, count=1)
         applied += 1
-    elif pattern(new).search(t):
+    elif pattern(anchor).search(t):
         already += 1
     else:
         missing.append(old[:80])
