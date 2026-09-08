@@ -231,6 +231,27 @@ def build_reforecast():
     return pd.concat(frames, ignore_index=True)[cols]
 
 
+def build_reforecast_lead8_12():
+    """GloFAS v4 readiness-band reforecast (leads 8-12 d, extended box).
+
+    Kept out of build_reforecast: the trigger horizon there is leads <= 7
+    (MAX_LEADTIME_DAYS), while this table exists solely for the 7-12 d
+    readiness leg. Written as reforecast_glofas_v4_lead8_12.parquet.
+    """
+    gf = glofas.load_reforecast_box(dir_suffix="_lead8_12")
+    if gf is None:
+        raise FileNotFoundError(
+            "no zips in data/glofas/raw/reforecast_som_ext_lead8_12/ — restore "
+            "them first: .venv/bin/python scripts/restore_from_blob.py"
+        )
+    gf = gf.rename(columns={"valid_day": "valid_time"})
+    gf["river"] = gf["station"].map(lambda k: STATIONS[k].river)
+    gf["source"] = "glofas"
+    cols = ["station", "river", "source", "issued_time", "valid_time",
+            "leadtime_days", "member", "discharge"]
+    return gf[cols]
+
+
 def build_swalim_levels():
     frames = []
     for blob_name in swalim.list_station_blobs():

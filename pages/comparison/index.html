@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mixed models vs one model per window &mdash; Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Balanced comparison of a mixed-model consensus against one model per basin-season, both on GloFAS and Google only: historical trigger record and accuracy against gauges and against CERF/EM-DAT impact years.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+.hero.hero-sub { padding:40px 44px 34px; }
+.hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; }
+.crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+.crumb a:hover { text-decoration:underline; }
+article { padding:8px 44px 24px; max-width:980px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9);
+             margin:38px 0 10px; line-height:1.25; }
+article h3 { font-size:15px; color:var(--n9); margin:26px 0 8px; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; }
+article ul { padding-left:22px; }
+article strong { color:var(--n9); }
+article a { color:var(--b6); }
+article code { background:var(--n05); border:1px solid #e2e7e7; padding:1px 5px;
+               border-radius:3px; font-size:12.5px; color:var(--b7); }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(168px,1fr));
+         gap:14px; margin:26px 0 6px; }
+.stat { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5);
+        border-radius:5px; padding:14px 16px 12px; }
+.stat .v { display:block; font-family:'Merriweather',Georgia,serif; font-size:24px;
+           font-weight:700; color:var(--b6); line-height:1.15; }
+.stat .l { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+           color:var(--n7); margin-top:6px; line-height:1.45; }
+.callout { margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05);
+           border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
+.callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
+.tablewrap { overflow-x:auto; }
+table.data { border-collapse:collapse; width:100%; margin:16px 0; font-size:13px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em;
+                color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1);
+                padding:7px 10px 6px; }
+table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8);
+                vertical-align:top; }
+table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
+.units { display:block; margin-top:5px; font-size:11.5px; line-height:1.5; color:var(--n7); }
+.unit { display:inline-block; border:1px solid #e2e7e7; border-radius:3px; padding:0 5px;
+        margin:2px 3px 0 0; white-space:nowrap; background:#fbfcfc; }
+.unit b { font-weight:500; color:var(--n8); }
+.unit .m5 { color:#b34036; } .unit .mg { color:#2a78d6; }
+.unit .rl { color:#8a949c; font-size:10.5px; }
+table.data td.num, table.data th.num { text-align:right; font-variant-numeric:tabular-nums; }
+table.data tr.sep td { border-top:2px solid var(--b1); }
+/* summary statistics: score cells carry a sequential tint (darker = better) and
+   lead time a diverging one about zero. The number is printed in every cell, so
+   colour is never the only encoding. */
+table.data td.sc { text-align:right; font-variant-numeric:tabular-nums; }
+/* Historical record. Cell shading is scoped to table.cmp td so that no row-level
+   rule can outrank it on specificity; there are deliberately no row background
+   rules anywhere in this stylesheet. */
+table.cmp { table-layout:fixed; width:100%; border-collapse:collapse; font-size:11px;
+            font-variant-numeric:tabular-nums; }
+table.cmp th { font-size:9px; letter-spacing:.03em; padding:5px 2px; text-align:center;
+               color:var(--n7); text-transform:uppercase; font-weight:700;
+               border-bottom:2px solid var(--b1); }
+table.cmp td { padding:4px 2px; text-align:center; border-bottom:1px solid #eef1f1;
+               color:var(--n8); }
+table.cmp .gl { border-left:2px solid var(--b1); }
+table.cmp .yr { font-weight:700; color:var(--n9); }
+table.cmp td.fireA { background:rgba(30,121,95,.30); font-weight:700; color:#12513e; }
+table.cmp td.fireB { background:rgba(179,64,54,.30); font-weight:700; color:#7a241c; }
+table.cmp td.tgt { background:rgba(142,95,168,.20); color:#5e3b74; font-weight:700; }
+table.cmp td.cerf { background:rgba(42,120,214,.16); color:#1b4f8c; font-weight:700; }
+table.cmp td.cerf.big { background:rgba(42,120,214,.30); }
+table.cmp td.emdat { background:rgba(142,95,168,.13); color:#5e3b74; }
+table.cmp td.emdat.big { background:rgba(142,95,168,.30); font-weight:700; }
+table.cmp td.bsev { background:rgba(179,64,54,.13); color:#B34036; font-weight:700; }
+table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
+.zero { color:#c9cfd6; }
+.key { display:flex; flex-wrap:wrap; gap:14px; margin:10px 0 0; font-size:12px;
+       color:var(--n7); align-items:center; }
+.sw { display:inline-block; width:12px; height:12px; border-radius:2px; vertical-align:-2px;
+      margin-right:5px; }
+.provenance { margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7;
+              font-size:12px; color:var(--n7); line-height:1.7; }
+.provenance a { color:var(--b6); }
+@media (max-width:640px) {
+  article { padding:4px 22px 16px; }
+  .hero.hero-sub { padding:32px 22px 28px; }
+  .provenance { margin:28px 22px 32px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero hero-sub">
+    <canvas id="bg" aria-hidden="true"></canvas>
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / design comparison</p>
+      <h1>Mixed models against one model per window</h1>
+      <p>Both setups on GloFAS v5 and Google Flood Hub only, both on the five SWALIM gauges
+         that still report, and both balanced so that each basin-season carries about the
+         same probability of activating, at an overall return period of 1-in-3.2.
+         September 2026.</p>
+    </div>
+  </header>
+
+  <article>
+
+    <div class="callout">
+      <strong>What is held constant, so that only the mixing rule differs.</strong>
+      <strong>GEOGloWS is excluded from both</strong> &mdash; its forecast archive begins
+      July 2024, too short to fit thresholds on or to validate a debias against.
+      <strong>Both use the five gauges that still report</strong> (Belet Weyne, Bulo Burti
+      and Jowhar on the Shabelle; Luuq and Dollow on the Juba), so every activation is
+      checkable against a live observation. <strong>Both are balanced</strong>: the search
+      minimises the spread of the four basin-season activation counts, subject to the
+      envelope landing between 1-in-3.0 and 1-in-3.6, and prefers non-unanimous rules
+      wherever the result ties. Both land on 8 activations in 25 years, 1-in-3.2. Scored
+      on the corrected benchmark (branch <code>fix/corrected-benchmark-and-lag</code>,
+      return levels fitted strictly inside 1999&ndash;2023).
+    </div>
+
+    <div class="callout">
+      <strong>The algorithm, in two stages.</strong>
+      <strong>1. Select the best station-models.</strong> A unit is dropped if its signal
+      trails the reference gauge by more than 3 days (a &le; 6-day trigger cannot spare
+      that), or if its rank correlation against the gauge falls below 0.50. What survives
+      is then cut to everything within <strong>0.10 &#961; of the window's best</strong>
+      &mdash; on a 25-year record, units that close are statistically interchangeable, so
+      they all get a vote. For the mixed setup this runs model-blind across every
+      (station, product) pair; for the one-model setup it runs within each product, so a
+      product is judged on its own best stations rather than being crowded out of a window
+      another product happens to dominate.
+      <strong>2. Calibrate the rule.</strong> Search the return-period threshold and the
+      number of units required, per window, for the balanced and most accurate combination
+      that keeps the envelope in the target band.
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <h2>The two configurations</h2>
+    <p>Each window's voting units are listed under its rule &mdash; a gauge paired with
+       the product read at it, with its rank correlation against the reference gauge and
+       its best lag in days. These are what survived selection; the count of candidates
+       considered is shown beside each rule.</p>
+    <p><strong>One asymmetry worth naming.</strong> Because the relative floor runs within
+       each product for the one-model setup, that setup can reach units the mixed setup
+       rejects as unfit. It bites in exactly one window: in Shabelle Deyr, Google's three
+       gauges sit at &#961; 0.62&ndash;0.64 against GloFAS at Belet Weyne's 0.83, so the
+       mixed pool cuts all three (3 of 6 candidates) while the one-model setup is offered
+       Google as a complete three-gauge option. <em>It declined it</em> &mdash; both setups
+       adopt the same three GloFAS units there, so nothing on this page turns on the
+       choice. The absolute &#961; &ge; 0.50 floor applies either way, so the per-product
+       floor can admit a mediocre unit but never a poor one.</p>
+    <div class="tablewrap"><table class="data" id="cfg"><tr><td>loading&hellip;</td></tr></table></div>
+    <div class="callout warn" id="unanNote"></div>
+
+    <h2>1. Historical trigger record</h2>
+    <p>One row per year, one block of columns per basin-season. The number is how many
+       voting units were over their own thresholds at once; a cell is shaded when it
+       reaches the threshold printed in its own column header, which is exactly when that
+       window activates. <strong>Thresholds differ by column</strong>, so the same number
+       can be shaded in one window and left plain in another. After the two trigger columns
+       each block carries what actually happened: the gauge class, the CERF flood
+       allocation and the EM-DAT people affected attributed to that basin-season, and
+       whether the year is on the target list.</p>
+    <div class="tablewrap"><table class="cmp" id="record"><tr><td>loading&hellip;</td></tr></table></div>
+    <div class="key">
+      <span><span class="sw" style="background:rgba(30,121,95,.30)"></span>mixed models activates</span>
+      <span><span class="sw" style="background:rgba(179,64,54,.30)"></span>one model per window activates</span>
+      <span><span class="sw" style="background:rgba(42,120,214,.16)"></span>CERF allocation</span>
+      <span><span class="sw" style="background:rgba(142,95,168,.13)"></span>EM-DAT affected</span>
+      <span><span class="sw" style="background:rgba(142,95,168,.20)"></span>target year</span>
+      <span><span class="sw" style="background:rgba(179,64,54,.13)"></span>gauges 1-in-5 or rarer</span>
+      <span><span class="sw" style="background:rgba(244,169,59,.18)"></span>gauges 1-in-3 to 1-in-5</span>
+    </div>
+
+    <h2>2. Summary statistics</h2>
+    <p>Scored two ways. Against the <strong>gauge benchmark</strong> &mdash; the years in
+       which two or more of a river's gauges reached a 1-in-5 level in that season &mdash;
+       and against a <strong>constructed target list</strong> of years the framework
+       arguably should have paid out in: <span id="tgtRule"></span>. Both are computed per
+       basin-season and then for the envelope. Lead time is the mean number of days between
+       the first forecast alert at leads 1&ndash;6 and the reference gauge crossing its own
+       1-in-3 level; negative means the trigger fired after the river was already up.</p>
+    <div class="tablewrap"><table class="data" id="summary"><tr><td>loading&hellip;</td></tr></table></div>
+    <div class="key" style="margin:6px 0 0">
+      <span>score:
+        <span class="sw" style="background:#f2f7f5;margin-left:5px"></span>&lt;.40
+        <span class="sw" style="background:#d3e9e0"></span>.40
+        <span class="sw" style="background:#a3d4c1"></span>.55
+        <span class="sw" style="background:#5fb598"></span>.70
+        <span class="sw" style="background:#1e795f"></span>.85+</span>
+      <span style="margin-left:6px">lead:
+        <span class="sw" style="background:#c9762e;margin-left:5px"></span>&le;&minus;8 d
+        <span class="sw" style="background:#f0cba3"></span>&minus;8
+        <span class="sw" style="background:#f4f6f6;border:1px solid #e2e7e7"></span>0
+        <span class="sw" style="background:#a3d4c1"></span>+3
+        <span class="sw" style="background:#1e795f"></span>+8 d</span>
+    </div>
+    <div class="callout" id="readout"></div>
+
+    <h3>The target years</h3>
+    <div class="tablewrap"><table class="data" id="targets"><tr><td>loading&hellip;</td></tr></table></div>
+    <p style="font-size:12.5px;color:var(--n7)">CERF allocations naming neither river are
+       counted under both basins. EM-DAT events are attributed by the river named in the
+       location text and split to seasons by start month, so a nationwide event appears
+       under both basins. This list is a proxy for &ldquo;years the framework should have
+       paid out&rdquo;, not a validated impact record: it inherits EM-DAT's entry-criteria
+       bias and the fact that a CERF allocation reflects an appeal as much as a flood.</p>
+
+  </article>
+
+  <div class="provenance">
+    <p><strong>Provenance.</strong> Thresholds are Weibull plotting positions on each
+      product's own seasonal maxima, 1999&ndash;2023. Lead times use the Google GRRR
+      (2016&ndash;2023) and GloFAS v4 (2003&ndash;2023) reforecast archives, GloFAS v5
+      being represented by v4 since it has no reforecast of its own. Impact records:
+      EM-DAT (CRED) and CERF OneGMS. Related: the
+      <a href="../trigger/">multi-source mechanism</a>, the
+      <a href="../trigger-single-model/">one-model-per-window mechanism</a> and the
+      <a href="../balanced/">balanced trigger</a>.</p>
+  </div>
+
+</div>
+
+<script src="../assets/hero.js" defer></script>
+<script>
+(function () {
+  "use strict";
+  var WIN = [["juba_gu","Juba Gu"],["juba_deyr","Juba Deyr"],
+             ["shabelle_gu","Shabelle Gu"],["shabelle_deyr","Shabelle Deyr"]];
+  var LBL = { mixed:"Mixed models", one:"One model per window" };
+
+  fetch("data.json").then(function (r) { return r.json(); }).then(function (D) {
+    var A = D.setups.mixed, B = D.setups.one;
+    function sgn(x) { return (x > 0 ? "+" : "") + x; }
+    function usd(v) { return v >= 1e6 ? (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + "M" : Math.round(v / 1e3) + "k"; }
+    function num(v) { return v >= 1e6 ? (v / 1e6).toFixed(1) + "M" : (v >= 1e3 ? Math.round(v / 1e3) + "k" : String(v)); }
+
+    document.getElementById("stats").innerHTML = [
+      ["1-in-3.2", "envelope return period, both setups"],
+      [A.envelope.vs_gauge.f1.toFixed(2) + " vs " + B.envelope.vs_gauge.f1.toFixed(2),
+       "F1 vs the gauge benchmark (mixed / one model)"],
+      [A.envelope.vs_target.f1.toFixed(2) + " vs " + B.envelope.vs_target.f1.toFixed(2),
+       "F1 vs the target years"],
+      [sgn(A.envelope.lead_days) + " vs " + sgn(B.envelope.lead_days) + " d",
+       "mean lead time against the gauge"]
+    ].map(function (s) {
+      return '<div class="stat"><span class="v">' + s[0] + '</span><span class="l">' + s[1] + "</span></div>";
+    }).join("");
+
+    // ---- configuration ----
+    var c = ['<tr><th>window</th><th>mixed models</th><th>one model per window</th>' +
+             '<th class="num">mix fires</th><th class="num">1-mod fires</th></tr>'];
+    function rule(x) {
+      var units = '<span class="units">' + x.units.map(function (u) {
+        var cls = u.model === "GloFAS v5" ? "m5" : "mg";
+        return '<span class="unit"><b>' + u.station + '</b> &middot; <span class="' + cls +
+               '">' + u.model + '</span> <span class="rl">&#961;' + u.rho.toFixed(2) +
+               " " + (u.lag > 0 ? "+" : "") + u.lag + "d</span></span>";
+      }).join("") + "</span>";
+      return x.model + ": <strong>" + x.n_req + " of " + x.pool + "</strong> over 1-in-" + x.rp +
+             (x.n_req === x.pool ? ' <span style="color:#b3703a">(unanimous)</span>' : "") +
+             ' <span style="color:var(--n7);font-size:11.5px">&mdash; ' + x.pool + " selected of " +
+             x.candidates + " candidates</span>" + units;
+    }
+    WIN.forEach(function (w) {
+      var a = A.meta[w[0]], b = B.meta[w[0]];
+      c.push("<tr><td><em>" + w[1] + "</em></td><td>" + rule(a) + "</td><td>" + rule(b) +
+             '</td><td class="num">' + a.years.length + '</td><td class="num">' +
+             b.years.length + "</td></tr>");
+    });
+    c.push('<tr class="sep"><td><strong>envelope</strong></td>' +
+      '<td colspan="2">the money is released when any window activates</td>' +
+      '<td class="num"><strong>' + A.envelope.n + '</strong></td>' +
+      '<td class="num"><strong>' + B.envelope.n + "</strong></td></tr>");
+    document.getElementById("cfg").innerHTML = c.join("");
+
+    var uA = WIN.filter(function (w) { return A.meta[w[0]].n_req === A.meta[w[0]].pool; }).length;
+    var uB = WIN.filter(function (w) { return B.meta[w[0]].n_req === B.meta[w[0]].pool; }).length;
+    document.getElementById("unanNote").innerHTML =
+      "<strong>What selection does to the two setups.</strong> Once the filter is applied " +
+      "the mixed setup stops being uniformly mixed: it keeps both products only in Juba Gu " +
+      "and Shabelle Gu, while <strong>both Deyr windows come out GloFAS-only</strong> " +
+      "because Google's units there sit 0.2 rho below the best and fall outside the floor. " +
+      "So the selection stage reproduces part of the one-model assignment on its own, " +
+      "rather than it having to be imposed. In <strong>two windows the surviving units " +
+      "are identical</strong> across both setups (both Deyr windows, GloFAS at all its " +
+      "reporting gauges), and in Shabelle Deyr the whole rule matches &mdash; same units, " +
+      "same threshold, same vote count. Where the setups still differ is the " +
+      "Juba: mixing lets Dollow and Luuq each vote twice, giving a 3-of-4 rule, whereas " +
+      "one model per window leaves only a 2-of-2, which is unanimous." +
+      "<br><br><strong>Selection costs consensus depth, and it costs it from both.</strong> " +
+      "Cutting to the units within 0.10 rho of the best leaves pools of 2 to 4, and " +
+      "<strong>each setup now ends with three unanimous windows</strong> - mixed in Juba " +
+      "Deyr, Shabelle Gu and Shabelle Deyr, one-model in Juba Gu, Juba Deyr and Shabelle " +
+      "Deyr. The unfiltered version of this page showed mixing avoiding unanimity " +
+      "entirely, and that was an artifact of keeping every unit regardless of skill. On " +
+      "five gauges, the quality floor and a non-unanimous rule cannot both be had.";
+
+    // ---- historical record ----
+    var iA = {}, iB = {};
+    A.table.forEach(function (r) { iA[r.year + "|" + r.window] = r; });
+    B.table.forEach(function (r) { iB[r.year + "|" + r.window] = r; });
+    var h = [];
+    h.push("<colgroup><col style='width:36px'>" + WIN.map(function () {
+      return "<col style='width:34px'><col style='width:37px'><col style='width:27px'>" +
+             "<col style='width:29px'><col style='width:31px'><col style='width:20px'>";
+    }).join("") + "</colgroup>");
+    h.push('<tr><th rowspan="2" style="vertical-align:bottom">year</th>' +
+      WIN.map(function (w) { return '<th colspan="6" class="gl">' + w[1] + "</th>"; }).join("") + "</tr>");
+    h.push("<tr>" + WIN.map(function (w) {
+      return '<th class="gl" title="mixed models: activates at ' + A.meta[w[0]].n_req +
+             ' of ' + A.meta[w[0]].pool + '">mix &ge;' + A.meta[w[0]].n_req + "</th>" +
+             '<th title="one model per window: activates at ' + B.meta[w[0]].n_req +
+             ' of ' + B.meta[w[0]].pool + '">1&#8209;mod &ge;' + B.meta[w[0]].n_req + "</th>" +
+             '<th title="what the gauges recorded that season">gauge</th>' +
+             '<th title="CERF flood allocation attributed to this basin-season, US$">cerf</th>' +
+             '<th title="EM-DAT people affected attributed to this basin-season">emdat</th>' +
+             '<th title="a target year: CERF allocation, or EM-DAT at or above the threshold">tgt</th>';
+    }).join("") + "</tr>");
+    D.years.slice().reverse().forEach(function (y) {
+      var cells = ['<td class="yr">' + y + "</td>"];
+      WIN.forEach(function (w) {
+        var a = iA[y + "|" + w[0]] || { n:0, fire:false };
+        var b = iB[y + "|" + w[0]] || { n:0, fire:false };
+        cells.push('<td class="gl' + (a.fire ? " fireA" : "") + '">' +
+                   (a.n ? a.n : '<span class="zero">0</span>') + "</td>");
+        cells.push('<td class="' + (b.fire ? "fireB" : "") + '">' +
+                   (b.n ? b.n : '<span class="zero">0</span>') + "</td>");
+        var bh = D.bench[w[0]];
+        var cls = bh.sev.indexOf(y) >= 0 ? "bsev" : (bh.mod.indexOf(y) >= 0 ? "bmod" : "");
+        var txt = bh.sev.indexOf(y) >= 0 ? "5yr" : (bh.mod.indexOf(y) >= 0 ? "3yr" : "");
+        cells.push('<td class="' + cls + '">' + txt + "</td>");
+        var key = w[0] + "|" + y;
+        var cu = D.impact.cerf[key] || 0;
+        cells.push('<td class="' + (cu ? "cerf" + (cu >= 8e6 ? " big" : "") : "") + '"' +
+          (cu ? ' title="US$ ' + cu.toLocaleString() + '"' : "") + ">" + (cu ? usd(cu) : "") + "</td>");
+        var af = D.impact.emdat[key] || 0;
+        cells.push('<td class="' + (af ? "emdat" + (af >= 5e5 ? " big" : "") : "") + '"' +
+          (af ? ' title="' + af.toLocaleString() + ' affected"' : "") + ">" + (af ? num(af) : "") + "</td>");
+        var isT = D.targets[w[0]].indexOf(y) >= 0;
+        cells.push('<td class="' + (isT ? "tgt" : "") + '">' + (isT ? "&#9679;" : "") + "</td>");
+      });
+      h.push("<tr>" + cells.join("") + "</tr>");
+    });
+    document.getElementById("record").innerHTML = h.join("");
+
+    // ---- summary statistics ----
+    document.getElementById("tgtRule").textContent = D.target_rule;
+    // Sequential ramp for the 0-1 scores: one hue, five real steps rather than an
+    // alpha fade, which compressed everything into the same green. Fixed cut points
+    // so the colours mean the same thing across reruns.
+    var SEQ = [["#f2f7f5","#4a5b56"],   // < 0.40
+               ["#d3e9e0","#26443b"],   // 0.40 - 0.55
+               ["#a3d4c1","#1b3d33"],   // 0.55 - 0.70
+               ["#5fb598","#0d2f26"],   // 0.70 - 0.85
+               ["#1e795f","#ffffff"]];  // >= 0.85
+    function seqStep(v) {
+      return v < 0.40 ? 0 : v < 0.55 ? 1 : v < 0.70 ? 2 : v < 0.85 ? 3 : 4;
+    }
+    function tint(v) {
+      if (v !== v) { return ""; }
+      var c = SEQ[seqStep(v)];
+      return "background:" + c[0] + ";color:" + c[1] + ";";
+    }
+    // Diverging ramp about zero for lead days: warm where the trigger fires after
+    // the river is up, cool where it fires before, neutral in between.
+    var DIV = [["#c9762e","#ffffff"],   // <= -8
+               ["#f0cba3","#6b451a"],   // -8 .. -3
+               ["#f4f6f6","#55606d"],   // -3 .. +3
+               ["#a3d4c1","#1b3d33"],   // +3 .. +8
+               ["#1e795f","#ffffff"]];  // >= +8
+    function leadTint(v) {
+      if (v === null || v !== v) { return ""; }
+      var i = v <= -8 ? 0 : v < -3 ? 1 : v <= 3 ? 2 : v < 8 ? 3 : 4;
+      return "background:" + DIV[i][0] + ";color:" + DIV[i][1] + ";";
+    }
+    function trio(x, bold) {
+      function c(v, b) {
+        return '<td class="num sc" style="' + tint(v) + '">' +
+               (b ? "<strong>" : "") + v.toFixed(2) + (b ? "</strong>" : "") + "</td>";
+      }
+      return c(x.tpr) + c(x.ppv) + c(x.f1, true);
+    }
+    var s = ['<tr><th rowspan="2">window</th><th rowspan="2">setup</th>' +
+             '<th colspan="3" class="num">vs gauge benchmark</th>' +
+             '<th colspan="3" class="num">vs target years</th>' +
+             '<th rowspan="2" class="num">lead (d)</th></tr>',
+             '<tr><th class="num">TPR</th><th class="num">PPV</th><th class="num">F1</th>' +
+             '<th class="num">TPR</th><th class="num">PPV</th><th class="num">F1</th></tr>'];
+    WIN.forEach(function (w) {
+      [["mixed", A], ["one", B]].forEach(function (p, i) {
+        var m = p[1].meta[w[0]];
+        s.push("<tr" + (i === 0 ? ' class="sep"' : "") + ">" +
+          (i === 0 ? '<td rowspan="2"><em>' + w[1] + "</em></td>" : "") +
+          "<td>" + LBL[p[0]] + "</td>" + trio(m.vs_gauge) + trio(m.vs_target) +
+          '<td class="num sc" style="' + leadTint(m.lead_days) + '">' +
+          (m.lead_days === null ? "&mdash;" : sgn(m.lead_days)) + "</td></tr>");
+      });
+    });
+    [["mixed", A], ["one", B]].forEach(function (p, i) {
+      var e = p[1].envelope;
+      s.push("<tr" + (i === 0 ? ' class="sep"' : "") + ">" +
+        (i === 0 ? '<td rowspan="2"><strong>Envelope</strong></td>' : "") +
+        "<td><strong>" + LBL[p[0]] + "</strong></td>" + trio(e.vs_gauge) + trio(e.vs_target) +
+        '<td class="num sc" style="' + leadTint(e.lead_days) + '"><strong>' +
+        sgn(e.lead_days) + "</strong></td></tr>");
+    });
+    document.getElementById("summary").innerHTML = s.join("");
+
+    var same = A.envelope.vs_target.f1 === B.envelope.vs_target.f1;
+    document.getElementById("readout").innerHTML =
+      "<strong>How to read it.</strong> With selection applied the two designs are " +
+      "<strong>indistinguishable on accuracy</strong>: identical F1 against the gauge " +
+      "benchmark (" + A.envelope.vs_gauge.f1.toFixed(2) + ") and identical against the " +
+      "target years (" + A.envelope.vs_target.f1.toFixed(2) + "), on the same 8 " +
+      "activations. The one place they part is lead time, where mixing is worth " +
+      (A.envelope.lead_days - B.envelope.lead_days).toFixed(1) + " days " +
+      "(" + sgn(A.envelope.lead_days) + " against " + sgn(B.envelope.lead_days) + "). " +
+      "Note also that both now fire <em>ahead</em> of the gauge on average, which the " +
+      "unfiltered version did not: the &minus;3 day timing guard is what buys that, since " +
+      "it removes exactly the units that lag the river. And both still score well below " +
+      "their gauge accuracy when measured against impact years &mdash; that gap remains " +
+      "larger than any difference between the designs.";
+
+    var t = ['<tr><th>window</th><th>target years</th><th class="num">n</th></tr>'];
+    WIN.forEach(function (w) {
+      t.push("<tr><td><em>" + w[1] + "</em></td><td>" + D.targets[w[0]].join(", ") +
+             '</td><td class="num">' + D.targets[w[0]].length + "</td></tr>");
+    });
+    document.getElementById("targets").innerHTML = t.join("");
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The ensemble agreement level &mdash; Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Should a point count toward the trigger when the ensemble median crosses its level, or at some other share of members? Every agreement level tested on the GloFAS v4 reforecast, 2003-2023.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+.hero.hero-sub { padding:40px 44px 34px; }
+.hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; }
+.crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+.crumb a:hover { text-decoration:underline; }
+article { padding:8px 44px 24px; max-width:860px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9);
+             margin:38px 0 10px; line-height:1.25; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; }
+article ul { padding-left:22px; }
+article strong { color:var(--n9); }
+article a { color:var(--b6); }
+figure { margin:20px 0; }
+figure img { width:100%; height:auto; display:block; border:1px solid #e2e7e7;
+             border-radius:4px; }
+figcaption { font-size:12px; color:var(--n7); margin-top:7px; line-height:1.5; }
+table.data { border-collapse:collapse; width:100%; margin:16px 0; font-size:13px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase;
+                letter-spacing:.07em; color:var(--n7); font-weight:700;
+                border-bottom:2px solid var(--b1); padding:7px 10px 6px; }
+table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8);
+                vertical-align:top; }
+.tablewrap { overflow-x:auto; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+         gap:14px; margin:26px 0 6px; }
+.stat { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5);
+        border-radius:5px; padding:14px 16px 12px; }
+.stat .v { display:block; font-family:'Merriweather',Georgia,serif; font-size:26px;
+           font-weight:700; color:var(--b6); line-height:1.1; }
+.stat .l { font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+           color:var(--n7); margin-top:6px; line-height:1.45; }
+.callout { margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05);
+           border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8);
+           line-height:1.6; }
+.callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
+.provenance { margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7;
+              font-size:12px; color:var(--n7); line-height:1.7; }
+.provenance a { color:var(--b6); }
+@media (max-width:640px) {
+  article { padding:4px 22px 16px; }
+  .hero.hero-sub { padding:32px 22px 28px; }
+  .provenance { margin:28px 22px 34px; }
+}
+</style>
+</head>
+<body>
+
+  <header class="hero hero-sub">
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / supporting analysis</p>
+      <h1>The ensemble agreement level</h1>
+      <p>A point counts toward the trigger when the ensemble median crosses its level.
+         The median is a choice: the rule could instead require 30%, 60% or 90% of the
+         members. This note tests every agreement level the GloFAS v4 reforecast can resolve, on all four
+         windows and both legs, to see whether any of them performs better than the
+         median. September 2026.</p>
+    </div>
+  </header>
+
+  <article>
+
+    <div class="stats">
+      <div class="stat"><span class="v">1&ndash;11 of 11</span>
+        <span class="l">agreement levels tested, on the 11-member v4 reforecast, 2003&ndash;2023</span></div>
+      <div class="stat"><span class="v">3 of 4</span>
+        <span class="l">windows where the action leg gives identical results at every level</span></div>
+      <div class="stat"><span class="v">0</span>
+        <span class="l">extra severe years caught at any level, on either leg</span></div>
+      <div class="stat"><span class="v">6 of 11</span>
+        <span class="l">the median rule: 50% of members, rounded up to a whole member</span></div>
+    </div>
+
+    <h2>The setup</h2>
+    <p>Each agreement level k means: a point counts on a day when <strong>at least k of the 11
+       reforecast members</strong> put that day over the point's level, taking the most
+       alarming issue per valid day, the same convention as the operational backtest.
+       Everything else stays at the adopted rules: same points, same same-day point
+       counts, same season months, and levels fitted on the v4 reanalysis at each leg's
+       return period. The median rule is k&nbsp;=&nbsp;6: the median crosses when at
+       least half the members do, and half of 11 rounds up to 6. Each level is scored
+       against the two-gauge benchmark on severe years (1-in-5), 2003&ndash;2023.</p>
+
+    <h2>The sweep</h2>
+    <figure>
+      <img src="figs/j_prob_sweep.png?v=202609041830" alt="Heatmap of severe-year F1 per window and leg across the eleven agreement levels">
+      <figcaption>Severe-year F1 per window at each agreement level, readiness leg above,
+        action below. The red box marks the median rule. On the action leg, three of
+        the four windows give the same activations, detection and false alarms at every
+        level from 1 of 11 to 11 of 11. With 3 to 5 severe events per window, any
+        difference between these scores amounts to one or two events.</figcaption>
+    </figure>
+
+    <div class="callout">
+      <strong>What the sweep shows.</strong>
+      <ul style="margin:8px 0 2px">
+        <li><strong>No level catches an extra severe year.</strong> Detection does not
+          change with k on any leg of any window: even one member of eleven, at the
+          required number of points on the same day, does not reach the levels in the
+          missed years. Those misses come from the model's magnitudes, and no agreement
+          level can recover them.</li>
+        <li><strong>At leads 8&ndash;12 the level matters, in both directions.</strong>
+          The ensemble spread is wider at readiness leads. Above the median, Juba Deyr
+          loses its 2015 activation, the one outside the benchmark, but Shabelle Deyr
+          loses 2014, a severe year. Below the median, Juba Gu adds 2010 and 2016 without
+          catching any additional severe year.</li>
+        <li><strong>At leads 1&ndash;7 the level barely matters.</strong> The ensemble is
+          tight at short leads: most members cross together or not at all. The one
+          exception is Juba Gu, where levels above the median drop the 2016 activation, a
+          flood year but not a severe one on that window.</li>
+      </ul>
+    </div>
+
+    <h2>The years in detail</h2>
+    <p>The table lists every year that activates at any agreement level on either leg,
+       together with every severe year in the archive span. Raising the level can only
+       remove crossings, never add them, so each year is summarised by the highest level
+       at which it still activates: an entry of <em>at every level</em> means the
+       activation survives even all 11 members being required, and <em>no</em> against a
+       severe year means it was not caught even at 1 of 11. Most years fall at one of
+       those two extremes; the handful in between are where the level choice has any
+       effect at all.</p>
+<div class="tablewrap">
+<table class="data">
+<thead><tr><th>window</th><th>year</th><th>gauge benchmark</th><th>readiness activates</th><th>action activates</th></tr></thead>
+<tbody><tr><td>Juba Deyr</td><td>2005</td><td>below 1-in-3</td><td>up to 1 of 11</td><td>at every level</td></tr><tr><td></td><td>2006</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr><tr><td></td><td>2008</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr><tr><td></td><td>2014</td><td><em>severe (1-in-5)</em></td><td>no</td><td>at every level</td></tr><tr><td></td><td>2015</td><td>below 1-in-3</td><td>up to 7 of 11</td><td>at every level</td></tr><tr><td></td><td>2017</td><td>flood (1-in-3)</td><td>up to 10 of 11</td><td>at every level</td></tr><tr><td></td><td>2023</td><td><em>severe (1-in-5)</em></td><td>at every level</td><td>at every level</td></tr><tr><td>Shabelle Deyr</td><td>2006</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr><tr><td></td><td>2007</td><td>below 1-in-3</td><td>no</td><td>at every level</td></tr><tr><td></td><td>2010</td><td>below 1-in-3</td><td>no</td><td>at every level</td></tr><tr><td></td><td>2013</td><td>below 1-in-3</td><td>at every level</td><td>at every level</td></tr><tr><td></td><td>2014</td><td><em>severe (1-in-5)</em></td><td>up to 7 of 11</td><td>at every level</td></tr><tr><td></td><td>2019</td><td><em>severe (1-in-5)</em></td><td>at every level</td><td>at every level</td></tr><tr><td></td><td>2020</td><td><em>severe (1-in-5)</em></td><td>no</td><td>at every level</td></tr><tr><td></td><td>2023</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr><tr><td>Juba Gu</td><td>2005</td><td>flood (1-in-3)</td><td>no</td><td>at every level</td></tr><tr><td></td><td>2010</td><td>flood (1-in-3)</td><td>up to 1 of 11</td><td>at every level</td></tr><tr><td></td><td>2016</td><td>flood (1-in-3)</td><td>up to 3 of 11</td><td>up to 6 of 11</td></tr><tr><td></td><td>2018</td><td><em>severe (1-in-5)</em></td><td>no</td><td>at every level</td></tr><tr><td></td><td>2020</td><td><em>severe (1-in-5)</em></td><td>at every level</td><td>at every level</td></tr><tr><td></td><td>2023</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr><tr><td>Shabelle Gu</td><td>2005</td><td>flood (1-in-3)</td><td>at every level</td><td>at every level</td></tr><tr><td></td><td>2010</td><td>flood (1-in-3)</td><td>at every level</td><td>at every level</td></tr><tr><td></td><td>2016</td><td><em>severe (1-in-5)</em></td><td>at every level</td><td>at every level</td></tr><tr><td></td><td>2018</td><td>flood (1-in-3)</td><td>up to 1 of 11</td><td>at every level</td></tr><tr><td></td><td>2020</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr><tr><td></td><td>2023</td><td><em>severe (1-in-5)</em></td><td>no</td><td>no</td></tr></tbody>
+</table>
+</div>
+
+    <h2>The same question at full ensemble resolution</h2>
+    <p>The reforecast's 11 members leave an opening: a 30% rule and the median sit one
+       member apart there, and a real minority signal could hide between the steps. The
+       operational archive closes that opening for one season. Gu 2024 was severe at the
+       Shabelle gauges, all three points over their 1-in-5, and the operational v4
+       forecasts, 50 members issued daily, do not activate the window under the median
+       rule. At full resolution the miss is absolute: across every issue and lead of the
+       season, <strong>not one of the 50 members</strong> crossed the action or readiness
+       level at Belet Weyne (the single most extreme member reached 526 m&sup3;/s against
+       a 673 level) or at Bulo Burti (527 against 660). Jowhar alone shows a tail signal,
+       1 of 50 members in the action band and 4 of 50 at readiness leads on 28 April, but
+       one point cannot carry a 2-of-3 rule. An agreement level of one member in fifty
+       would still have missed Gu 2024.</p>
+    <p>Deyr 2023, the largest flood in the record and the season the trigger is most
+       often asked about, gives the same answer more sharply. The operational archive
+       covers all three Shabelle points for every issue day from 1 October to 31 December.
+       Across the whole season the highest value any of the 50 members produced at leads
+       1&ndash;7 was 766 m&sup3;/s at Belet Weyne and 764 at Bulo Burti, against 1-in-4
+       levels of 1,079; at Jowhar one member reached 1,109 against 1,122 and no other came
+       near. The member share over the level is 0% at every point on every day, on both
+       legs. The forecast envelope peaked in the first week of October and fell through
+       November while the river was reaching its highest recorded levels: SWALIM's alert
+       came on 20 October, the gauges crossed 1-in-3 on 7 November and 1-in-5 on 20
+       November, and on none of those days did a single member sit over the level. On the
+       Juba the same model had Deyr 2023 as the largest season in 25 years at all four
+       points, so the failure is specific to the Shabelle, and it is the model's, not the
+       rule's.</p>
+    <figure>
+      <img src="figs/j_deyr2023_operational.png?v=202609061000" alt="Deyr 2023: the full 50-member operational ensemble at Belet Weyne, Bulo Burti and Jowhar stays under the 1-in-4 level all season">
+      <figcaption>Deyr 2023 on the operational v4 ensemble at the three Shabelle points:
+        shaded, the full 50-member range across leads 1&ndash;7 for each valid day; line,
+        the ensemble median; dashed, the 1-in-4 level; dotted, SWALIM's alert (20 Oct)
+        and the gauge crossings of 1-in-3 (7 Nov) and 1-in-5 (20 Nov).</figcaption>
+    </figure>
+    <p>The Juba archive for the same season, complete for all four points from 1 October
+       to 31 December, shows the other side. Under the median rule the action leg activates
+       on 21 October, the day after SWALIM's alert and four days before the gauges crossed
+       1-in-3 and 1-in-5 together on 25 October, with all four points over their 1-in-4
+       levels on the same day. Every one of the 50 members was over the level at every point
+       that day, so any agreement level from 10% to 50% activates on 21 October. The
+       readiness leg (leads 8 to 12) activates on 29 October with the median and on 28
+       October at agreement levels of 10% to 30%, after the action leg rather than before
+       it. The median peaks at 268% to 329% of the levels on 21 and 22 November. On the Juba
+       the agreement level makes no difference to the date; on the Shabelle no level would
+       have produced a flag.</p>
+
+    <h2>What about Google for Gu?</h2>
+    <p>The Google GRRR reforecast is a <strong>single trace per issue and lead</strong>:
+       the archive has no ensemble members, so there is no member share to choose. The Gu legs count a point when the forecast
+       value crosses its level, which is what the operational
+       check on the <a href="../trigger-single-model/">trigger page</a> replays. The live
+       Flood Hub display does show uncertainty bounds, but they are not in the public
+       archive; with API access they could be logged from now on, and this question asked
+       of Google once a few seasons accumulate. Until then the Gu windows are monitored on
+       GloFAS as a labelled stand-in, where the member share applies as above.</p>
+
+    <h2>What this means for monitoring</h2>
+    <p>The median rule stands. No level performs better on any leg, and the one
+       improvement on offer, a stricter Juba Deyr readiness, costs a severe year on
+       Shabelle Deyr readiness. A single agreement level for the whole mechanism is also
+       easier to defend than four individually tuned ones. The daily monitoring dashboard
+       shows each point's member share over its level as a bar, so the operating rule
+       corresponds to the 50% mark on those bars.</p>
+
+    <div class="callout warn">
+      <strong>Caveats.</strong> The reforecast has 11 members, so agreement levels can only be
+      tested in steps of 9%; the operational forecast has 50 members and reads finer, but
+      the Gu 2024 and Deyr 2023 checks above reach the same conclusion at that resolution.
+      These scores
+      use the full 2003&ndash;2023 archive, so they differ slightly from the trigger
+      page's swap heatmap, which scores only the years Google's archive also covers. The
+      readiness rows use reanalysis-fitted levels so that every level is compared
+      within one design; the adopted readiness leg refits its levels on the 7-to-12-day
+      forecast series itself, so its activation years differ from the mechanism table.
+      And each window has 3 to 5 severe events: every difference on this page is a
+      one-or-two-event difference.
+    </div>
+
+  </article>
+
+  <div class="provenance">
+    Supporting analysis for the <a href="../trigger-single-model/">one-model-per-window
+    trigger</a>. Agreement levels tested on the GloFAS v4 reforecast (1 control + 10 perturbed
+    members, twice-weekly issues, leads 1&ndash;12 days, 2003&ndash;2023), levels fitted
+    on the v4 reanalysis seasonal maxima (Weibull, 1999&ndash;2023) at each leg's return
+    period, benchmark from SWALIM gauge levels (two-gauge consensus). Juba points
+    juba_07/juba_08 sit outside the reforecast box and are excluded, as in the
+    operational backtest. P.&nbsp;Wairimu &middot; September 2026.
+  </div>
+
+</body>
+</html>

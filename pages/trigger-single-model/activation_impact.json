@@ -1,0 +1,1343 @@
+{
+ "meta": {
+  "note": "n = peak simultaneous count of monitored points over their thresholds in that season, at the adopted return period; EM-DAT multi-basin events counted under both basins; CERF allocations with no basin stated shown under both, flagged",
+  "windows": {
+   "juba_gu": {
+    "label": "Google GRRR at 4 points",
+    "n_req": 3,
+    "pool": 4,
+    "rp": 5
+   },
+   "juba_deyr": {
+    "label": "GloFAS v5 at 4 points",
+    "n_req": 3,
+    "pool": 4,
+    "rp": 4
+   },
+   "shabelle_gu": {
+    "label": "Google GRRR at 3 points",
+    "n_req": 2,
+    "pool": 3,
+    "rp": 6
+   },
+   "shabelle_deyr": {
+    "label": "GloFAS v5 at 3 points",
+    "n_req": 2,
+    "pool": 3,
+    "rp": 4
+   }
+  },
+  "windows_v": {
+   "juba_gu": {
+    "label": "GEOGloWS v2 at 4 points",
+    "n_req": 2,
+    "pool": 4,
+    "rp": 5
+   },
+   "juba_deyr": {
+    "label": "GloFAS v5 at 4 points",
+    "n_req": 3,
+    "pool": 4,
+    "rp": 4
+   },
+   "shabelle_gu": {
+    "label": "GloFAS v5 at 3 points",
+    "n_req": 2,
+    "pool": 3,
+    "rp": 6
+   },
+   "shabelle_deyr": {
+    "label": "GloFAS v5 at 3 points",
+    "n_req": 2,
+    "pool": 3,
+    "rp": 5
+   }
+  }
+ },
+ "rows": [
+  {
+   "year": 1999,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2000,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 3500,
+       "deaths": 0,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 150000,
+       "deaths": 0,
+       "multi": false
+      },
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 3500,
+       "deaths": 0,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2001,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 1,
+      "nv": 1,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 6500,
+       "deaths": 0,
+       "multi": false
+      },
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2002,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2003,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 0,
+       "deaths": 0,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "moderate",
+      "emdat": {
+       "aff": 0,
+       "deaths": 0,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2004,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 2,
+      "nv": 2,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2005,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 1,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "moderate",
+      "emdat": {
+       "aff": 7520,
+       "deaths": 12,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 1,
+      "nv": 1,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 3,
+      "adopted": false,
+      "adopted_v": true,
+      "bench": "moderate",
+      "emdat": {
+       "aff": 5020,
+       "deaths": 5,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2006,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 3,
+      "nv": 3,
+      "adopted": true,
+      "adopted_v": true,
+      "bench": "severe",
+      "emdat": {
+       "aff": 155500,
+       "deaths": 35,
+       "multi": false
+      },
+      "cerf": {
+       "usd": 10437041,
+       "unattr": true
+      }
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 3,
+      "nv": 3,
+      "adopted": true,
+      "adopted_v": true,
+      "bench": "severe",
+      "emdat": {
+       "aff": 299000,
+       "deaths": 52,
+       "multi": false
+      },
+      "cerf": {
+       "usd": 10437041,
+       "unattr": true
+      }
+     }
+    }
+   }
+  },
+  {
+   "year": 2007,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 8000,
+       "deaths": 4,
+       "multi": false
+      },
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2008,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "severe",
+      "emdat": {
+       "aff": 52000,
+       "deaths": 0,
+       "multi": false
+      },
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "moderate",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2009,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 1750,
+       "deaths": 0,
+       "multi": true
+      },
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 1750,
+       "deaths": 0,
+       "multi": true
+      },
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2010,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 2,
+      "nv": 1,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "moderate",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "moderate",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 1,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2011,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 1,
+      "nv": 1,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2012,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 32200,
+       "deaths": 31,
+       "multi": false
+      },
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2013,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 4,
+      "nv": 1,
+      "adopted": true,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 50000,
+       "deaths": 7,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 3,
+      "nv": 0,
+      "adopted": true,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 50000,
+       "deaths": 7,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 3,
+      "nv": 1,
+      "adopted": true,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2014,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "severe",
+      "emdat": {
+       "aff": 90000,
+       "deaths": 0,
+       "multi": true
+      },
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 3,
+      "nv": 3,
+      "adopted": true,
+      "adopted_v": true,
+      "bench": "severe",
+      "emdat": {
+       "aff": 90000,
+       "deaths": 0,
+       "multi": true
+      },
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2015,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 2,
+      "nv": 2,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 16296,
+       "deaths": 0,
+       "multi": false
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2016,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 4,
+      "nv": 1,
+      "adopted": true,
+      "adopted_v": false,
+      "bench": "moderate",
+      "emdat": {
+       "aff": 0,
+       "deaths": 9,
+       "multi": false
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 3,
+      "nv": 3,
+      "adopted": true,
+      "adopted_v": true,
+      "bench": "severe",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2017,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 1,
+      "nv": 1,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "moderate",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2018,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 4,
+      "nv": 2,
+      "adopted": true,
+      "adopted_v": true,
+      "bench": "severe",
+      "emdat": {
+       "aff": 700000,
+       "deaths": 5,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 5133588,
+       "unattr": true
+      }
+     },
+     "deyr": {
+      "n": 2,
+      "nv": 2,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 3,
+      "nv": 3,
+      "adopted": true,
+      "adopted_v": true,
+      "bench": "moderate",
+      "emdat": {
+       "aff": 700000,
+       "deaths": 5,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 5133588,
+       "unattr": true
+      }
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2019,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 2,
+      "nv": 2,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 500000,
+       "deaths": 17,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 8000222,
+       "unattr": false
+      }
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 3,
+      "nv": 3,
+      "adopted": true,
+      "adopted_v": true,
+      "bench": "severe",
+      "emdat": {
+       "aff": 500000,
+       "deaths": 17,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 8000222,
+       "unattr": false
+      }
+     }
+    }
+   }
+  },
+  {
+   "year": 2020,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 4,
+      "nv": 3,
+      "adopted": true,
+      "adopted_v": true,
+      "bench": "severe",
+      "emdat": {
+       "aff": 1191020,
+       "deaths": 32,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 3,
+      "nv": 3,
+      "adopted": true,
+      "adopted_v": true,
+      "bench": "severe",
+      "emdat": {
+       "aff": 1191020,
+       "deaths": 32,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 7100529,
+       "unattr": false
+      }
+     },
+     "deyr": {
+      "n": 2,
+      "nv": 0,
+      "adopted": true,
+      "adopted_v": false,
+      "bench": "severe",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2021,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 400000,
+       "deaths": 25,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": {
+       "aff": 400000,
+       "deaths": 25,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2022,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     },
+     "deyr": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "",
+      "emdat": null,
+      "cerf": null
+     }
+    }
+   }
+  },
+  {
+   "year": 2023,
+   "basins": {
+    "juba": {
+     "gu": {
+      "n": 1,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "severe",
+      "emdat": {
+       "aff": 568003,
+       "deaths": 43,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 4,
+      "nv": 4,
+      "adopted": true,
+      "adopted_v": true,
+      "bench": "severe",
+      "emdat": {
+       "aff": 2758000,
+       "deaths": 122,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 10000009,
+       "unattr": false
+      }
+     }
+    },
+    "shabelle": {
+     "gu": {
+      "n": 0,
+      "nv": 0,
+      "adopted": false,
+      "adopted_v": false,
+      "bench": "severe",
+      "emdat": {
+       "aff": 568003,
+       "deaths": 43,
+       "multi": true
+      },
+      "cerf": null
+     },
+     "deyr": {
+      "n": 3,
+      "nv": 3,
+      "adopted": true,
+      "adopted_v": true,
+      "bench": "severe",
+      "emdat": {
+       "aff": 2758000,
+       "deaths": 122,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 10000009,
+       "unattr": false
+      }
+     }
+    }
+   }
+  }
+ ]
+}

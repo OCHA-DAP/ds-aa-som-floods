@@ -17,10 +17,8 @@ million-river stores.
 
 from pathlib import Path
 
-import geoglows.data
 import numpy as np
 import pandas as pd
-import zarr
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "geoglows"
 
@@ -30,6 +28,10 @@ RETURN_PERIODS_ZARR = "s3://geoglows-v2/retrospective/return-periods.zarr"
 
 
 def _open(url):
+    # imported lazily: zarr (+ s3fs) is only needed for live store reads,
+    # not for loading already-downloaded data
+    import zarr
+
     return zarr.open_group(url, mode="r", storage_options=S3_STORAGE_OPTIONS)
 
 
@@ -77,6 +79,10 @@ def download_return_periods(river_ids):
 
 def download_forecast_stats(river_id, date=None):
     """Latest (or dated) 15-day forecast stats for one river via REST."""
+    # imported lazily: the geoglows package is only needed for live REST
+    # downloads, and is not part of the project dependencies
+    import geoglows.data
+
     kwargs = {"river_id": river_id}
     if date:
         kwargs["date"] = date
@@ -85,6 +91,8 @@ def download_forecast_stats(river_id, date=None):
 
 def download_forecast_ensembles(river_id, date=None):
     """Latest (or dated) 52-member forecast ensemble for one river via REST."""
+    import geoglows.data
+
     kwargs = {"river_id": river_id}
     if date:
         kwargs["date"] = date

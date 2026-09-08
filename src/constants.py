@@ -174,6 +174,7 @@ C_BAND = "#E8E2D4"  # official Moderate-to-High band (sand)
 C_BAND_EDGE = "#B9AF9B"  # band outline
 C_REF = "#5C6B7A"  # reference marks (slate)
 C_GEOGLOWS = "#8E5FA8"  # source | GEOGloWS (purple)
+C_GEOGLOWS_SFDC = "#5B3B70"  # source | GEOGloWS, SFDC bias corrected
 C_GOOGLE = "#2A78D6"  # source | Google GRRR (blue)
 C_GLOFAS4 = "#EB6834"  # source | GloFAS v4 (orange)
 C_GLOFAS5 = "#B34036"  # source | GloFAS v5 (deep red)
@@ -181,6 +182,7 @@ C_SWALIM = INK  # benchmark | SWALIM observed levels
 C_SFED = "#0E8A7B"  # benchmark | FloodScan SFED (teal)
 SOURCE_COLORS = {
     "geoglows": C_GEOGLOWS,
+    "geoglows_sfdc": C_GEOGLOWS_SFDC,
     "google": C_GOOGLE,
     "google_grrr": C_GOOGLE,
     "glofas": C_GLOFAS4,
@@ -189,3 +191,103 @@ SOURCE_COLORS = {
     "swalim": C_SWALIM,
     "sfed": C_SFED,
 }
+
+
+# ------------------------------------------------- trigger station restriction
+# Decision 2026-08-26: the trigger is built ONLY on SWALIM gauges that are
+# still reporting, and ONE model carries each river (not one per season).
+#
+# Four gauges on the Juba and three on the Shabelle carry the trigger. Only
+# five still report daily (Luuq, Dollow, Belet Weyne, Bulo Burti, Jowhar):
+# Bardheere ends 2023-11-30 and Bualle 2024-03-14, so those two can still be
+# forecast at, but no longer verified against observations. The other
+# SWALIM stations are excluded for lack of a usable record, not for lack of
+# skill: Kaitoi, Afgoi and Audegle stop in 2008 and Mahadey Weyne in 1990,
+# while Jamaame, Mareere, Kamsuma, Mogambo and Balad have SNRFA files with no
+# readings at all.
+# Listed upstream to downstream, the direction the water travels, so tables and
+# the map read in the same order.
+TRIGGER_STATIONS = {
+    "juba": ["dollow", "luuq", "bardheere", "bualle"],
+    "shabelle": ["belet_weyne", "bulo_burti", "jowhar"],
+}
+ALL_TRIGGER_STATIONS = [s for v in TRIGGER_STATIONS.values() for s in v]
+
+RIVER_MODEL = {"juba": "google_grrr", "shabelle": "glofas_v5"}
+
+# Google's forecast horizon is 7 days, so a 7-12 day readiness leg cannot run
+# on it. Readiness therefore stays on GloFAS, whose reforecast covers those
+# leads (notebook 10).
+READINESS_MODEL = "glofas_v4"
+
+
+# The adopted trigger: (station return period, stations that must agree) per
+# river-season window, and the years the calibration runs over. Kept here so
+# notebook 09 and the summary-page generator cannot drift apart.
+# Calibrated on the ENVELOPE, not window by window (see ENVELOPE_TARGET_RP
+# above and scripts/envelope_search.py): these settings put the union at
+# 1-in-3.2 and catch 7 of the 8 severe years, with one activation (2013) in a
+# year two gauges did not record a flood. Majority consensus everywhere, so no
+# single
+# gauge can release the money and no single quiet gauge can block it.
+# One model per WINDOW (directive 2026-08-27), chosen by
+# scripts/model_selection.py: rank the gauges by how well that model tracks the
+# reference gauge, require a consensus of them over their own return-period
+# thresholds, and judge the union of the four windows. Models are never mixed
+# inside a window, so a window is one product plus one rule.
+#
+# GEOGloWS is excluded from the adopted design (directive 2026-08-28): its
+# return periods cannot yet be fitted on its own forecasts, whose archive
+# begins in July 2024. Google carries Gu, GloFAS v5 carries Deyr.
+#
+# Calibrated to activate no more often than 1-in-3 (directive 2026-08-27): 8
+# activations in 25 years, 1-in-3.2, catching 7 of the 8 severe years (2008 is
+# the miss). The 9-activation alternative sits at 1-in-2.9 with the same severe
+# coverage; this one drops 2010, which was not a severe year.
+#
+# Verified independently 2026-08-31 by recomputing from the daily series: the
+# envelope activates in 2006, 2013, 2014, 2016, 2018, 2019, 2020, 2023, and
+# within the GEOGloWS-excluded restriction this is the frontier pick at its own
+# activation rate under the two-gauge benchmark. Excluding GEOGloWS is not free:
+# with GEOGloWS allowed, 1-in-3.2 reaches 7 of 8 severe years with NO activation
+# in a no-flood year (2016 becomes the miss instead of 2008), and 1-in-2.9
+# reaches 8 of 8 with none. The cost of the exclusion is therefore the 2013
+# activation plus keeping 2008 as the miss. Every GEOGloWS-allowed best-scoring
+# tie puts GEOGloWS on Juba Gu, which is where the cost falls.
+#
+# The backtest does not identify the model on its own: 161 assignments across
+# the four windows reach the same severe-year coverage near 1-in-3. Rechecked
+# 2026-08-31 against the two-gauge benchmark: 8,808 assignments land on 8
+# activations, 267 tie for the best score, and those 267 span only two distinct
+# activation-year sets, so the choice of product is not identified by the
+# backtest.
+# Where the envelope is indifferent, the forecast side decides, which is why
+# Shabelle Deyr runs on GloFAS: it leads the Shabelle at lead time in both
+# seasons, its thresholds come from the v5 reanalysis that matches the
+# operational v5 forecast, and the v4 reforecast supplies the lead-time
+# evidence.
+TRIGGER_CONFIG = {
+    ("juba", "gu"): {"source": "google_grrr", "rp": 5, "n_req": 3},
+    ("juba", "deyr"): {"source": "glofas_v5", "rp": 4, "n_req": 3},
+    ("shabelle", "gu"): {"source": "google_grrr", "rp": 6, "n_req": 2},
+    ("shabelle", "deyr"): {"source": "glofas_v5", "rp": 4, "n_req": 2},
+}
+# The operative source per window, which is what the trigger, the envelope
+# search and the summary page all read.
+WINDOW_MODEL = {k: v["source"] for k, v in TRIGGER_CONFIG.items()}
+# The 1-in-3 target applies to the ENVELOPE, not to each window (directive
+# 2026-08-27): the full amount is released whenever any window fires, so the
+# union of the four windows is what the budget is sized on. Four windows each
+# calibrated to 1-in-3 give a union of about 1-in-1.5, so the per-window
+# settings are searched against the union instead (scripts/envelope_search.py).
+ENVELOPE_TARGET_RP = 3
+
+# A year counts as severe when the river's reference gauge recorded a 1-in-5
+# or rarer season. These are the years the envelope is judged on: at a 1-in-3
+# activation rate it cannot catch every RP3 flood, so it should catch the
+# worst ones.
+SEVERE_RP = 5
+
+TRIGGER_YEARS = (1999, 2023)
+BENCHMARK_RP = 3  # a flood year at the reference gauge
+REFERENCE_GAUGE = {"juba": "luuq", "shabelle": "belet_weyne"}

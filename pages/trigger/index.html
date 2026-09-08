@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The multi-source trigger mechanism — Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Proposed anticipatory-action trigger for the Juba and Shabelle rivers: multi-model forecast consensus, calibration against SWALIM gauges, backtests and return periods.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+/* report-page additions on top of the shared HDX v2 tokens */
+.hero.hero-sub { padding:40px 44px 34px; }
+.hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; }
+.crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+.crumb a:hover { text-decoration:underline; }
+article { padding:8px 44px 24px; max-width:860px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9);
+             margin:38px 0 10px; line-height:1.25; }
+article h3 { font-size:15px; color:var(--n9); margin:26px 0 8px; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; }
+article ul, article ol { padding-left:22px; }
+article strong { color:var(--n9); }
+article a { color:var(--b6); }
+article code { background:var(--n05); border:1px solid #e2e7e7; padding:1px 5px;
+               border-radius:3px; font-size:12.5px; color:var(--b7); }
+figure { margin:20px 0; }
+figure img { width:100%; height:auto; display:block; border:1px solid #e2e7e7;
+             border-radius:4px; }
+figcaption { font-size:12px; color:var(--n7); margin-top:7px; line-height:1.5; }
+table.data { border-collapse:collapse; width:100%; margin:16px 0; font-size:13px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase;
+                letter-spacing:.07em; color:var(--n7); font-weight:700;
+                border-bottom:2px solid var(--b1); padding:7px 10px 6px; }
+table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8);
+                vertical-align:top; }
+table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
+.tablewrap { overflow-x:auto; }
+table.compact td, table.compact th { padding:5px 7px; font-size:12px; white-space:nowrap; }
+table.ai { table-layout:fixed; width:100%; border-collapse:collapse; font-size:10.5px; }
+table.ai th { font-size:9px; letter-spacing:.04em; padding:4px 1px; text-align:center;
+              color:var(--n7); text-transform:uppercase; font-weight:700;
+              border-bottom:2px solid var(--b1); overflow:hidden; }
+table.ai td { padding:3px 1px; text-align:center; border-bottom:1px solid #eef1f1;
+              color:var(--n8); white-space:nowrap; overflow:hidden; }
+table.ai .gl { border-left:2px solid var(--b1); }
+table.ai .dot { font-size:11px; line-height:1; }
+table.ai .num { font-size:10px; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+         gap:14px; margin:26px 0 6px; }
+.stat { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5);
+        border-radius:5px; padding:14px 16px 12px; }
+.stat .v { display:block; font-family:'Merriweather',Georgia,serif; font-size:26px; font-weight:700;
+           color:var(--b6); line-height:1.1; }
+.stat .l { font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+           color:var(--n7); margin-top:6px; line-height:1.45; }
+.callout { margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05);
+           border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8);
+           line-height:1.6; }
+.callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
+.provenance { margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7;
+              font-size:12px; color:var(--n7); line-height:1.7; }
+.provenance a { color:var(--b6); }
+a.hl { margin-left:8px; color:#d4dee4; text-decoration:none; font-weight:400;
+       font-family:'Roboto',sans-serif; font-size:.85em; }
+h2:hover a.hl, h3:hover a.hl { color:var(--b5); }
+/* provider-set switch: sticky banner toggling the whole report between the
+   adopted three-provider mechanism and the GloFAS+GEOGloWS-only variant */
+.vbar { position:sticky; top:0; z-index:40; background:rgba(255,255,255,.97);
+        backdrop-filter:saturate(1.6) blur(6px);
+        border-bottom:1px solid #dfe5e5; box-shadow:0 1px 6px rgba(26,39,51,.05); }
+.vbar-in { max-width:860px; margin:0 auto; padding:9px 44px; display:flex;
+           align-items:center; gap:14px; flex-wrap:wrap; }
+.vbar-l { font-size:10.5px; text-transform:uppercase; letter-spacing:.08em;
+          color:var(--n7); font-weight:700; }
+.vseg { display:inline-flex; border:1px solid #ccd5d5; border-radius:5px;
+        overflow:hidden; background:#fff; }
+.vseg button { appearance:none; border:0; background:#fff; cursor:pointer;
+               font-family:'Roboto',sans-serif; font-size:12.5px; color:var(--n8);
+               padding:6px 13px; line-height:1.2; white-space:nowrap; }
+.vseg button + button { border-left:1px solid #ccd5d5; }
+.vseg button:hover { background:var(--n05); }
+.vseg button.on { background:var(--b6); color:#fff; font-weight:500; }
+.vbar-note { font-size:12px; color:var(--n7); }
+.vbar.alt { background:#fff9f0ee; border-bottom-color:#e6c893; }
+.vbar.alt .vbar-note { color:#8a5d1b; }
+.altonly { display:none; }
+body.variant .altonly { display:block; }
+body.variant .stdonly { display:none; }
+span.altonly, a.altonly { display:none; }
+body.variant span.altonly { display:inline; }
+body.variant span.stdonly, body.variant a.stdonly { display:none; }
+.vswap { transition:background .35s ease; }
+.vswap.flash { background:#fff4dd; }
+@media (max-width:640px) { .vbar-in { padding:8px 22px; gap:9px; } }
+@media (max-width:640px) {
+  article { padding:4px 22px 16px; }
+  .hero.hero-sub { padding:32px 22px 28px; }
+  .provenance { margin:28px 22px 32px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero hero-sub">
+    <canvas id="bg" aria-hidden="true"></canvas>
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / trigger analysis</p>
+      <h1>The multi-source trigger mechanism</h1>
+      <p>Proposed trigger for anticipatory action against riverine flooding on the Juba and
+         Shabelle: a multi-model station consensus across GloFAS, Google Flood Hub and
+         GEOGloWS, calibrated against SWALIM river gauges. August 2026.</p>
+    </div>
+  </header>
+
+  <div class="vbar" id="vbar">
+    <div class="vbar-in">
+      <span class="vbar-l">Provider set</span>
+      <div class="vseg" role="group" aria-label="Provider set">
+        <button type="button" id="vAll" class="on" aria-pressed="true">All three providers</button>
+        <button type="button" id="vNog" aria-pressed="false">Without Google Flood Hub</button>
+      </div>
+      <span class="vbar-note" id="vbarNote">Adopted mechanism — GloFAS v5 + Google GRRR + GEOGloWS</span>
+    </div>
+  </div>
+
+  <article>
+
+    <div class="callout warn altonly" style="margin-top:18px">
+      <strong>You are viewing the no-Google variant.</strong> The whole report below —
+      mechanism table, return periods, backtest and the year-by-year table — is
+      recalibrated from scratch with <strong>Google Flood Hub excluded</strong>, using
+      identical rules (active gauges, −3 d timing guard, 0.10 ρ floor, joint basin
+      calibration at ≥ 3 yr overall). This is a resilience scenario for the working
+      group, <em>not</em> the proposed mechanism. Narrative sections that do not depend
+      on the provider set (selection method, threshold philosophy, GEOGloWS debias,
+      impact records) read the same in both views.
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span class="v vswap" data-alt="1-in-3.7">1-in-3.2</span>
+        <span class="l">overall action return period (either basin)</span></div>
+      <div class="stat"><span class="v vswap" data-alt="1-in-4.3">1-in-4.3 / 5.2</span>
+        <span class="l vswap" data-alt="per basin — exactly equal here">per basin, Shabelle / Juba</span></div>
+      <div class="stat"><span class="v vswap" data-alt="2 providers">5 gauges</span>
+        <span class="l vswap" data-alt="GloFAS v5 + GEOGloWS only (Google excluded)">every forecast point sits on a live SWALIM gauge</span></div>
+      <div class="stat"><span class="v">7–12 d</span>
+        <span class="l">readiness lead time (action at ≤ 6 days)</span></div>
+    </div>
+
+    <h2>The mechanism at a glance</h2>
+    <p>The trigger is <strong>fully forecast-based</strong>. SWALIM's river-gauge record is
+       the ground truth the mechanism is calibrated and validated against — it is not a
+       trigger input. Each river basin (Juba, Shabelle) carries one <strong>specific
+       trigger per flood season</strong> (Gu, rains arriving on the rivers March–May;
+       Deyr, October–December), and each specific trigger is staged:</p>
+    <ul>
+      <li><strong>Readiness (leads 7–12 days)</strong> — GloFAS ensemble-median forecast;
+          releases only the small mobilisation share. GloFAS is the only provider whose
+          forecasts reach past 7 days with a historical archive to validate against.</li>
+      <li><strong>Action (leads ≤ 6 days)</strong> — a consensus of
+          <strong>(station, model) pairs</strong>, drawn only from the <strong>five
+          SNRFA gauges still reporting</strong> (Belet Weyne, Bulo Burti, Jowhar on the
+          Shabelle; Luuq, Dollow on the Juba — decision 2026-08-26, so every activation
+          is verifiable against a live gauge). Pairs compete freely — the same station
+          may carry <span class="vswap" data-alt="both remaining models">two or all three
+          models</span> — and the window's voting pool is every pair
+          within 0.10 ρ of its best pair (<span class="vswap" data-alt="1–5 pairs per
+          window in this variant">4–5 pairs per window</span>). Every pair has its own
+          return-period threshold; the trigger activates when at least N of the pool
+          exceed their thresholds on the same forecast valid day.</li>
+    </ul>
+
+    <div class="tablewrap">
+    <table class="data">
+      <tr><th>window</th><th>action trigger (leads ≤ 6 d)</th><th>leg RP</th>
+          <th>readiness (leads 7–12 d)</th><th>readiness RP</th></tr>
+      <tr><td><em>Juba Gu</em></td>
+          <td class="vswap" data-alt="GloFAS v5 ×2 + GEOGloWS: all 3 pairs over their 1-in-3-yr thresholds">Google GRRR ×2 + GloFAS v5 ×2 + GEOGloWS: ≥ 3 of 5 pairs over their 1-in-6-yr thresholds</td>
+          <td class="vswap" data-alt="5.2 yr">6.5 yr</td><td class="vswap" data-alt="GloFAS ens-median: ≥ 1/2 over 1-in-2-yr">GloFAS ens-median: 2/2 stations over 1-in-2-yr</td><td>3.7 yr</td></tr>
+      <tr><td><em>Juba Deyr</em></td>
+          <td class="vswap" data-alt="GloFAS v5 ×2 + GEOGloWS ×2: ≥ 3 of 4 pairs over their 1-in-5-yr thresholds (unchanged — no Google pairs)">GloFAS v5 ×2 + GEOGloWS ×2: ≥ 3 of 4 pairs over their 1-in-5-yr thresholds</td>
+          <td>26.0 yr</td><td class="vswap" data-alt="GloFAS ens-median: ≥ 1/2 over 1-in-2-yr">GloFAS ens-median: 2/2 stations over 1-in-2-yr</td><td>4.4 yr</td></tr>
+      <tr><td><em>Shabelle Gu</em></td>
+          <td class="vswap" data-alt="GloFAS v5 at Belet Weyne alone — the single pair clearing the timing guard — over its 1-in-6-yr threshold">Google GRRR ×3 + GloFAS v5: all 4 pairs over their 1-in-6-yr thresholds</td>
+          <td class="vswap" data-alt="6.5 yr">13.0 yr</td><td class="vswap" data-alt="GloFAS ens-median: 1/1 station over 1-in-3-yr">GloFAS ens-median: ≥ 2/3 stations over 1-in-3-yr</td><td>3.7 yr</td></tr>
+      <tr><td><em>Shabelle Deyr</em></td>
+          <td class="vswap" data-alt="GloFAS v5 ×3 + GEOGloWS ×2: ≥ 4 of 5 pairs over their 1-in-4-yr thresholds (same pool, retuned by the joint calibration)">GloFAS v5 ×3 + GEOGloWS ×2: ≥ 3 of 5 pairs over their 1-in-5-yr thresholds</td>
+          <td class="vswap" data-alt="13.0 yr">6.5 yr</td><td>GloFAS ens-median: 3/3 stations over 1-in-3-yr</td><td>7.3 yr</td></tr>
+    </table>
+    </div>
+
+    <p class="stdonly">Backtested on 1999–2023, the Shabelle activates 6 of 25 years (1-in-4.3) and the
+       Juba 5 (1-in-5.2) — <strong>near-equal by construction</strong> (the two basins
+       are now calibrated <em>jointly</em>: activation counts may differ by at most one,
+       and the either-basin union must stay at ≥ 3 years). At least one basin activates
+       in 8 years — <strong>overall return period 3.2 years</strong>, meeting the
+       ≥ 3-year specification. The activation years are 2006, 2010, 2014, 2016, 2018,
+       2019, 2020 and 2023 — every one at least a 1-in-3 flood year at the reference
+       gauges (zero activations outside the moderate benchmark set). Per-basin
+       thresholds are nominal; the final adjustment belongs to the framework working
+       group.</p>
+    <p class="altonly">Backtested on 1999–2023, <strong>both basins activate 6 of 25 years
+       (1-in-4.3, exactly equal)</strong> and at least one activates in 7 —
+       <strong>overall return period 3.7 years</strong>, still meeting the ≥ 3-year
+       specification with room to spare. The activation years are 2005, 2010, 2016,
+       2018, 2019, 2020 and 2023, again all within the 1-in-3 gauge benchmark set. So
+       the headline answer is <strong>yes, a workable mechanism survives without
+       Google</strong> — but see what it costs, below.</p>
+
+    <h3>What happens without Google Flood Hub</h3>
+    <p>Google Flood Hub is the only provider here without a public inter-agency
+       commitment behind it, so the working group asked what the mechanism looks like
+       if it disappears. The switch at the top of this page recalibrates the entire
+       report — <strong>not</strong> by deleting Google's votes from the adopted
+       configuration, but by re-running selection, the RP × N grid and the joint basin
+       calibration from scratch over GloFAS v5 + GEOGloWS only. Side by side:</p>
+
+    <div class="tablewrap">
+    <table class="data">
+      <tr><th></th><th>adopted (three providers)</th><th>variant (no Google)</th></tr>
+      <tr><td><em>Overall RP</em></td><td>1-in-3.2 (8 yrs)</td><td>1-in-3.7 (7 yrs) — still meets spec</td></tr>
+      <tr><td><em>Per basin</em></td><td>Shabelle 1-in-4.3, Juba 1-in-5.2</td><td>both 1-in-4.3 (exactly equal)</td></tr>
+      <tr><td><em>Severe-year coverage</em></td>
+          <td>Juba 4/8, <strong>Shabelle 6/7</strong></td>
+          <td><strong>Juba 5/8</strong>, Shabelle 4/7</td></tr>
+      <tr><td><em>False activations</em></td><td>0</td><td>0</td></tr>
+      <tr><td><em>Smallest pool</em></td><td>4 pairs (Shabelle Gu)</td>
+          <td><strong>1 pair</strong> (Shabelle Gu — no consensus at all)</td></tr>
+      <tr><td><em>Windows changed</em></td><td>—</td>
+          <td>both Gu legs rebuilt; Juba Deyr identical; Shabelle Deyr retuned
+              (same pool, new RP/N)</td></tr>
+    </table>
+    </div>
+
+    <div class="callout warn">
+      <strong>The real cost is concentration, not frequency.</strong> The variant's
+      return periods look fine — arguably tidier, since the basins come out exactly
+      equal and the Juba even gains a severe year. Two things to weigh against that.
+      (1) <strong>Shabelle Gu collapses to a single station-model</strong>: GloFAS v5 at
+      Belet Weyne, the only pair clearing the timing guard once Google is gone (every
+      GEOGloWS pair there trails the gauge by 4–10 days). A one-pair trigger has no
+      consensus protection — a single model glitch is the whole decision, and the
+      N-of-M design exists precisely to avoid that. (2) <strong>Shabelle severe
+      coverage drops from 6/7 to 4/7</strong>, losing the 2006 and 2014 Deyr floods.
+      Google's short-lead skill on the Shabelle is doing real work in the adopted
+      mechanism. Read together: the variant is a viable contingency, not an equivalent
+      design — and if it were ever adopted, Shabelle Gu would need either a relaxed
+      timing guard (accepting GEOGloWS's lag) or an explicit single-source risk
+      acceptance.
+    </div>
+
+    <figure>
+      <img src="figs/map_stations.png" alt="Two-panel map of Somalia showing the Juba and Shabelle rivers with the 18 monitoring stations, colored by the models that carry them in the Gu and Deyr windows; dual-model stations carry an outer ring">
+      <figcaption>The station network. 18 registry points (GloFAS-grid-verified
+        coordinates with per-provider ID mappings — P. Wairimu,
+        <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/src/constants.py">src/constants.py</a>)
+        on the two rivers, of which only the <strong>five with a live SNRFA gauge</strong>
+        can carry pairs; stars are the SWALIM reference gauges (Luuq, Belet Weyne) the
+        mechanism is calibrated against; numbers are each station's best selection ρ. An
+        <strong>outer ring means the station carries more than one model</strong>: in Gu,
+        Dollow (all three) and Luuq on the Juba and Belet Weyne on the Shabelle; in Deyr,
+        Dollow, Luuq, Belet Weyne and Bulo Burti (all GloFAS + GEOGloWS).</figcaption>
+    </figure>
+
+    <h2>How the pairs were chosen</h2>
+    <p>Every combination of the <strong>five active SWALIM gauges</strong> and the
+       <span class="vswap" data-alt="two remaining providers">three
+       providers</span> competes on one metric: best-lag Spearman rank correlation between the provider's
+       reanalysis/retrospective discharge and the SWALIM reference-gauge level (Belet Weyne
+       for the Shabelle, Luuq for the Juba), per river and season — the correlations
+       computed in P. Wairimu's
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/06_forecast_correlation.ipynb">notebook 06</a>,
+       against the SWALIM benchmark her
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/01_swalim_flood_threshold_exceedance.ipynb">notebook 01</a>
+       established (post-2000 record, official Moderate/High risk levels) and her
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/05_flood_benchmark.ipynb">notebook 05</a>
+       showed must be primary over FloodScan on the Shabelle.
+       <strong>Pairs compete freely</strong> (decision 2026-08-25: the goal is the best
+       forecasts on the right basin, and a station may carry two models), under three
+       rules — <strong>none of which knows what a model is</strong>:</p>
+    <ul>
+      <li><strong>Active-gauge restriction</strong> (decision 2026-08-26): candidates are
+          the SNRFA gauges still reporting — Belet Weyne, Bulo Burti and Jowhar on the
+          Shabelle, Luuq and Dollow on the Juba (Bardheere's record stops Nov 2023,
+          Bualle's Mar 2024; the rest died decades ago). Ungauged river points, several
+          of which score higher ρ, are out: an activation must be checkable against an
+          observation, live, at the point the forecast speaks for.</li>
+      <li><strong>Timing guard</strong>: pairs whose signal trails the reference gauge by
+          more than 3 days are excluded — a ≤ 6-day trigger cannot spare that
+          anticipation.</li>
+      <li><strong>Relative quality floor</strong>: the voting pool is every qualifying
+          pair within 0.10 ρ of the window's best pair. No fixed count and no diversity
+          quota — with 25-year records, pairs that close are statistically
+          interchangeable, so all of them get a vote. <span class="vswap"
+          data-alt="Without Google the pools come out at 1–5 pairs, from 10 candidates
+          (5 gauges × 2 providers) — and Shabelle Gu is left with a single pair.">Pool
+          sizes come out at 4–5 pairs per window (from 15 candidate pairs: 5 gauges × 3
+          providers).</span></li>
+    </ul>
+
+    <figure>
+      <img src="figs/a_selection.png" alt="Scatter plots of correlation versus lag for every station-model pair, by river and season; same-station models connected by grey lines, selected pairs ring-marked and labeled, timing guard shown as a dotted line">
+      <figcaption>The candidate pool. Positive lag = the model's signal precedes the
+        reference gauge; the dotted red line is the timing guard; <strong>small pale-grey
+        dots are pairs at points with no active gauge</strong> — ineligible regardless of
+        score. A grey line connects one station's three models, and ring-marked, labeled
+        dots are the pairs that clear the floor. Google dominates Gu, GloFAS v5 dominates
+        Deyr; GEOGloWS clears the floor in every window except Shabelle Gu, where it
+        trails the gauge by 4–10 days and no guard-passing pair exists.</figcaption>
+    </figure>
+
+    <p>Multi-model representation is <strong>earned, not injected</strong>: GEOGloWS
+       clears the floor in three of the four windows — Juba Deyr (Dollow ρ 0.83 at +1 d
+       and Luuq 0.82, ahead of both Google pairs), Juba Gu (Dollow 0.83, floor 0.77) and
+       Shabelle Deyr (Belet Weyne 0.75 and Bulo Burti 0.74, floor 0.73). In Shabelle Gu
+       it has no pair passing the timing guard (−4 to −10 d) and stays out — as does
+       every GloFAS pair there except Belet Weyne (−3 d, exactly on the guard), which is
+       why that window is Google-heavy. An earlier draft used an explicit diversity rule
+       to the same effect; it proved unnecessary and was dropped. The full per-station
+       numbers (greyed rows = no active gauge):</p>
+
+    <details style="margin:14px 0 22px">
+      <summary style="cursor:pointer;color:var(--b6);font-size:13.5px;font-weight:500">
+        Per-station selection detail (ρ / lag per model, all four windows)</summary>
+      <div id="selDetail" class="tablewrap" style="margin-top:10px">loading…</div>
+    </details>
+
+    <div class="callout">
+      <strong>What GEOGloWS votes can and cannot prove.</strong> GEOGloWS has no
+      historical forecast archive before July 2024, so its pairs are calibrated and
+      backtested through the <em>retrospective</em> (the agreed reanalysis-as-stand-in
+      convention) — hindsight, not lead time. Operationally its live forecasts do exist
+      (leads to 14 days), but they run below its own retrospective climatology (quantified
+      below) — so the retrospective-fitted thresholds here <strong>cannot be applied to
+      its live forecasts as-is</strong>. Two debias routes for go-live: refit thresholds
+      on its forecast climatology (needs years of archive), or map the live forecast onto
+      the retrospective climatology by flow-duration-curve quantile mapping (SFDC — the
+      GEOGloWS group's own bias-correction method, which the team already applied in the
+      <a href="https://docs.google.com/document/d/1iORZn8POkhJCNTVdCWicOdP1zfRgjHBkPNseOhuotFw">Nepal
+      technical note</a>, June 2026) fitted on the 2024+ overlap. Honest caveat from that
+      note: SFDC did not rescue GEOGloWS's event detection in Nepal, where the forecast
+      ran at ~half its retrospective — Somalia's bias is far smaller (0.85–0.91×) and
+      GEOGloWS holds minority votes here, not the trigger basis, but the mapping must be
+      validated before its votes count operationally. Until then, windows that include
+      GEOGloWS pairs carry up to that many votes of unproven lead-time skill.
+    </div>
+
+    <h2>Seasonal peaks: model vs gauge</h2>
+    <p>Daily rank correlation can flatter a model that merely tracks the seasonal cycle.
+       The sharper diagnostic is <strong>one point per season-year</strong>: the model's
+       seasonal peak against the observed seasonal peak at the reference gauge — does the
+       model rank the <em>years</em> correctly? For display each model's peak is divided by
+       its <strong>own</strong> 1-in-6 threshold (rank correlation is unaffected by the
+       normalisation), so the quadrants read directly: top-right = the model ran over its
+       own threshold in a year the gauge also ran high.</p>
+
+    <figure>
+      <img src="figs/i_peaks_reanalysis.png" alt="Scatter plots of model seasonal peaks over own threshold versus SWALIM observed seasonal peaks, by basin and season, all three providers">
+      <figcaption>Calibration record (reanalysis/retrospective, 1999–2023), at the
+        reference station. <strong>Dark-edged points are selected pairs</strong> (the
+        reference station carries two models in most windows). Vertical dashes: the
+        gauge's Moderate (amber) and High (red) levels; horizontal dash: the model at its
+        own 1-in-6 threshold.</figcaption>
+    </figure>
+
+    <div class="tablewrap">
+    <table class="data">
+      <tr><th>window</th><th colspan="3">peak Spearman ρ — reanalysis (n = 21–25)</th>
+          <th colspan="2">peak ρ — reforecast ≤ 6 d</th></tr>
+      <tr><th></th><th>GEOGloWS</th><th>GloFAS v5</th><th>Google GRRR</th>
+          <th>GloFAS v4 (proxy)</th><th>Google GRRR</th></tr>
+      <tr><td><em>Juba Gu</em></td><td>0.65</td><td>0.64</td><td><strong>0.85</strong></td>
+          <td>0.63</td><td><strong>0.98</strong></td></tr>
+      <tr><td><em>Juba Deyr</em></td><td>0.65</td><td>0.59</td><td><strong>0.74</strong></td>
+          <td>0.64</td><td><strong>0.75</strong></td></tr>
+      <tr><td><em>Shabelle Gu</em></td><td>0.68</td><td>0.80</td><td><strong>0.85</strong></td>
+          <td>0.64</td><td><strong>0.74</strong></td></tr>
+      <tr><td><em>Shabelle Deyr</em></td><td>0.49</td><td>0.77</td><td><strong>0.78</strong></td>
+          <td>0.39</td><td><strong>0.81</strong></td></tr>
+    </table>
+    </div>
+
+    <figure>
+      <img src="figs/i_peaks_reforecast.png" alt="Scatter plots of reforecast seasonal peaks versus SWALIM observed peaks, by basin and season">
+      <figcaption>Operational record: the ≤ 6-day reforecast signal's seasonal peaks,
+        normalised by a 1-in-6 threshold fitted on the reforecast's own seasonal maxima
+        (GRRR's 8-season archive makes its own threshold estimate wide — treat its vertical
+        placement, not its ranking, with caution).</figcaption>
+    </figure>
+
+    <h3>Does the selection metric matter? Daily ρ vs peak ρ vs lead time</h3>
+    <p>Nigeria's recipe: select on daily wet-season lag-optimised Spearman ρ, use
+       annual-peak ρ and peak-timing offset as post-selection <em>guards</em>, and let
+       lead time enter through the reforecast checks rather than the selection score.
+       Here the question was put to the data directly: every candidate pair scored on
+       both metrics, and the full pool → grid → basin calibration re-run under three
+       selection rules — daily-ρ floor (adopted), peak-ρ floor, and their mean, each with
+       the same timing guard.</p>
+
+    <figure>
+      <img src="figs/i_metric_plane.png" alt="Four scatter plots, one per window, of daily correlation versus seasonal-peak correlation for every candidate station-model pair; selected pairs dark-edged, timing-guard failures shown as crosses">
+      <figcaption>Every candidate pair on both metrics. The two measure different things
+        — within-window correlation between them ranges from +0.61 (Juba Gu) to −0.50
+        (Juba Deyr, where the pairs that best track daily levels are worst at ranking the
+        extreme years). Crosses fail the −3 d timing guard; dark-edged points are the
+        selected pool.</figcaption>
+    </figure>
+
+    <div class="callout">
+      <strong>Result: near-identical, with one honest wobble.</strong> Recalibrating
+      under a peak-ρ floor (or the mean of both metrics) reproduces the Shabelle
+      exactly and leaves every return period unchanged at every level — but on the
+      Juba it swaps one activation year, 2010 (daily-ρ selection) for 2013 (peak-ρ),
+      both 1-in-3 gauge years (table <code>som_ms_metric_robustness</code>). With the
+      active-gauge restriction the pools are 4–5 pairs, so a metric change that
+      reshuffles one pair can move one marginal year — under the previous 8–12-pair
+      pools the three metrics were exactly identical. Daily ρ stays as the primary
+      metric because it is the far more stable estimator (~2,000 daily observations
+      against ~22 annual peaks, where a single flood year moves peak-ρ by ~0.1);
+      peak-ρ is published per pair as a diagnostic (figure above and the
+      <code>som_ms_pair_metrics</code> table), and lead time is already in the design
+      twice — the −3-day timing guard at selection, and the reforecast backtests at
+      the operational lead bands. A composite score was considered and rejected: it
+      would add a tunable weight to arbitrate a single marginal year.
+    </div>
+
+    <div class="callout warn">
+      <strong>An honest tension the working group should see.</strong> On the peak view,
+      Google ranks seasonal peaks best in <em>all four</em> windows at the reference
+      station — including the Deyr windows its daily tracking loses (in Juba Deyr its
+      daily ρ is 0.58–0.60 against GloFAS v5's 0.85–0.87, and it misses the floor).
+      Daily correlation and peak ranking disagree there. The adopted Deyr legs rest on all-pair daily tracking plus
+      event coverage; whether a Google-heavier Deyr design would be more robust is a
+      candidate refinement for the review, not a settled question.
+    </div>
+
+    <h2>Thresholds and calibration</h2>
+    <p>Each selected pair gets its threshold from <strong>its own model's
+       climatology</strong>: the Weibull plotting position of its seasonal maxima
+       (1999–2023) at the target return period. Magnitude bias between models cancels out —
+       each pair is equally likely to exceed its threshold by construction. The same
+       principle carries into operations: <strong>we assume bias between reanalysis and
+       forecast for every source</strong> (quantified in the next section), so a threshold
+       is only ever applied to the product whose own historical values it was fitted on.
+       To inspect the indicators themselves, year by year, use the
+       <a href="../explorer/">indicator explorer</a>. The basin-level search then chooses,
+       per season, the per-pair return period and the consensus count N — with the two
+       basins picked <strong>jointly</strong>: per-basin activation counts of 4–6
+       differing by at most one (near-equal probability), the either-basin union at
+       ≥ 3 years overall (the specification, enforced rather than hoped for), maximum
+       coverage of the basins' severe (1-in-5) benchmark years, fewest activations
+       outside the moderate (1-in-3) benchmark set, and, among ties, the more frequent
+       option.</p>
+
+    <figure>
+      <img src="figs/c_backtest_strip.png" class="vswap" data-alt-src="figs/c_backtest_strip_nogoogle.png" alt="Heat strip of activation years per trigger leg, per basin versus severe years, and overall, 1999 to 2023">
+      <figcaption><span class="stdonly">The calibration backtest. Basin rows compare activations (amber/blue)
+        with severe 1-in-5 years at the SWALIM reference gauge (blue = caught, red =
+        missed). Shabelle catches 6 of 7 severe years (misses only 2021); Juba 4 of 8
+        (misses 2005, 2006, 2011, 2014 — though 2006 and 2014 are caught overall via the
+        Shabelle). Neither basin activates outside the moderate set. The gauge
+        restriction costs Juba severe coverage — its strongest candidates sat at
+        now-dead gauges (Bardheere) and ungauged points.</span><span class="altonly">The
+        no-Google variant's backtest, same layout. Juba catches 5 of 8 severe years
+        (gaining 2005 over the adopted mechanism), Shabelle 4 of 7 — losing the 2006 and
+        2014 Deyr floods. Note the Shabelle Gu row: it is now driven by one
+        station-model, so its activations and its silences are a single model's
+        judgement.</span> With 25-year records, one hit
+        moves coverage by ~12–15 points — differences under ~0.15 are noise.</figcaption>
+    </figure>
+
+    <h3>The tuning surface</h3>
+    <p>The Nigeria-style grid search (per state there; per basin × season here — the same
+       recipe as P. Wairimu's
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/08_trigger_grid.ipynb">notebook 08</a>):
+       every (per-pair RP threshold, N pairs required) cell is scored against the seasonal
+       SWALIM benchmark. The adopted cell is <em>not</em> always the best single-window
+       score — it is the best choice subject to the basin-level constraints (near-equal
+       per-basin frequency across the Gu+Deyr union, severe-coverage-first, ≥ 3-yr
+       overall enforced jointly across the basins). With 4–5-pair pools the surface is
+       small enough to read whole: the neighbors show what loosening a leg would cost in
+       false activations, or tightening one in missed severe years.</p>
+
+    <figure>
+      <img src="figs/c_grid_heatmaps.png" alt="Twelve heatmaps: for each of the four windows, POD, FAR and activation return period over the per-pair RP threshold by N-required grid, with the adopted cell outlined">
+      <figcaption>POD and FAR are vs the seasonal 1-in-3 SWALIM benchmark; black box =
+        the adopted configuration. Dark = high POD / low FAR / frequent activation.
+        With 7–8 benchmark events per window, one hit moves POD by ~12 points — broad
+        plateaus, not sharp optima, are the honest reading.</figcaption>
+    </figure>
+
+    <h3>Are SWALIM's official flood-risk levels trustworthy?</h3>
+    <p>The benchmark years above are defined by <strong>empirical return periods of the
+       gauges' own seasonal maxima</strong>, not by SWALIM's published Moderate/High
+       flood-risk levels — and the check below is why. Putting the official levels on the
+       empirical RP scale (per active gauge and season, 1999–2023) shows they imply wildly
+       inconsistent frequencies: "Moderate" ranges from a level the river reaches most
+       years (Dollow Deyr, ~1-in-1.3; Jowhar Gu, ~1-in-1.6) to a genuinely rare one (Luuq
+       Gu, ~1-in-4.6), and "High" from ~1-in-1.8 (Dollow) to ~1-in-11.5 (Luuq Gu). They
+       are engineering levels of uncertain provenance, not a consistent severity scale —
+       the same conclusion P. Wairimu's notebook 01 flagged when the published
+       <code>max_level</code> at Belet Weyne came out <em>below</em> its bank-full level.
+       Everything in this mechanism therefore runs on each gauge's own empirical RP3/RP5
+       levels (table <code>som_ms_swalim_rp</code>); the official levels remain useful
+       only as familiar reference lines for readers of SWALIM bulletins.</p>
+
+    <figure>
+      <img src="figs/a2_swalim_rp.png" alt="Five panels, one per active SWALIM gauge, of empirical return-period curves of seasonal maximum levels for Gu and Deyr, with the official moderate and high flood-risk levels as horizontal dashed lines">
+      <figcaption>Empirical Weibull curves of seasonal-maximum level (blue Gu, orange
+        Deyr) per active gauge, with the official Moderate (amber) and High (red) levels
+        as dashed lines. Where a dashed line crosses the curves far from the RP 3–5 band,
+        the official label and the observed frequency disagree. Dollow's curve rests on
+        only 8–9 seasons (gauge online 2015) — read it loosely.</figcaption>
+    </figure>
+
+    <h2>Forecast skill against each model's own reanalysis</h2>
+    <p>The assume-bias-for-all-sources rule, quantified: per model and lead time, how well
+       the forecast reproduces the model's <em>own</em> reanalysis or retrospective — rank
+       correlation (does it track itself?) and the median forecast/reanalysis ratio (is it
+       biased against its own climatology?). Computed per station on flood-season days,
+       median across the 18 stations.</p>
+
+    <figure>
+      <img src="figs/f_own_skill.png" alt="Two panels: Spearman correlation of forecast versus own reanalysis by lead time, and median forecast-to-reanalysis ratio by lead time, for the three models">
+      <figcaption>GloFAS v4 (2003–2023) and Google GRRR (2016–2023) forecasts are
+        essentially self-consistent at action leads: rank ρ ≥ 0.99, ratio ≈ 1.00 — the
+        licence for calibrating their thresholds on reanalysis. GloFAS drifts to ~0.90×
+        by lead 12 (readiness band, shaded) — its 7–12-day thresholds should anticipate
+        that. <strong>GEOGloWS runs 0.85–0.91× its own retrospective even at lead 1</strong>
+        (ρ ~0.82), on only ~2 years of archive (2024–26) — retrospective-fitted thresholds
+        will under-fire on its live forecasts until refit on forecast climatology.
+        <strong>No GloFAS v5 reforecast exists</strong>, so the operational v5 forecast's
+        own consistency is untestable — the single most important gap.</figcaption>
+    </figure>
+
+    <h2>Would it have worked operationally?</h2>
+    <p>The calibration record is reanalysis — a model's afterwards-view of its own past.
+       The operational test replays the historical forecasts: per pair and valid day, the
+       most alarming ≤ 6-day signal (max over issue dates — with mixed providers in one
+       window, a monitoring day combines each provider's latest forecast). Google pairs
+       use their own reforecast (2016–2023); GloFAS v5 pairs the v4 reforecast (2003–2023,
+       ensemble median, thresholds refit on v4's own climatology, since <strong>no v5
+       reforecast exists</strong>); GEOGloWS pairs the retrospective as a lead-0 stand-in
+       (hindsight — flagged per window). That forecast skill barely decays from lead 1 to
+       7 — initial-condition-driven on these slow rivers — is P. Wairimu's
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/03_leadtime_forecast_skill.ipynb">notebook 03</a>
+       finding, and is what makes both lead bands viable at all.</p>
+
+    <div class="tablewrap">
+    <table class="data">
+      <tr><th>window</th><th>archive</th><th>stand-in pairs</th>
+          <th>reproduces calibration years?</th><th>notes</th></tr>
+      <tr><td><em>Juba Gu</em></td><td class="vswap" data-alt="2003–2023">2016–2023</td><td>1</td>
+          <td class="vswap" data-alt="5/5 — all calibration years reproduced">2/3 — 2018, 2020; misses 2016</td>
+          <td class="vswap" data-alt="clean — the variant's strongest window">near-clean</td></tr>
+      <tr><td><em>Juba Deyr</em></td><td>2003–2023</td><td>2</td>
+          <td>1/1 — catches 2023 (25 d after the Luuq Moderate crossing)</td>
+          <td><strong>over-fires</strong>: adds 2014, 2015 (~1-in-7 vs the
+              calibration's 1-in-26) — see below</td></tr>
+      <tr><td><em>Shabelle Gu</em></td><td class="vswap" data-alt="2003–2023">2016–2023</td><td>0</td>
+          <td class="vswap" data-alt="3/4 — 2005, 2016, 2018; misses 2020, adds 2010">1/2 — catches 2016 (−3 d); misses 2020</td>
+          <td class="vswap" data-alt="single-pair window: no consensus buffer either way">
+              <strong>fragile</strong>: the all-4-pairs rule leaves no slack on
+              forecasts — see below</td></tr>
+      <tr><td><em>Shabelle Deyr</em></td><td>2003–2023</td><td>2</td>
+          <td class="vswap" data-alt="0/2 — misses both 2019 and 2023 at the variant's tighter 4-of-5 rule">1/4 — catches 2019 (+11 d); <strong>misses Deyr 2023</strong>, 2014, 2006;
+              adds 2013 (+21 d) and 2020 (−1 d)</td>
+          <td class="vswap" data-alt="the variant's weakest window — see the v5 caveat">the weak window; see the caveat below</td></tr>
+    </table>
+    </div>
+
+    <div class="callout warn">
+      <strong>The caveat that matters most.</strong> At ≤ 6-day leads the GloFAS v4
+      reforecast misses Deyr 2023 on the Shabelle — the largest flood in the record — even
+      though the v5 reanalysis flags it clearly. The operational forecast has been v5 since
+      August 2026 and should behave like the v5 reanalysis here, but there is no v5
+      reforecast to prove it. Re-verifying both Deyr legs the moment EWDS publishes a v5
+      reforecast is the single most important follow-up.
+    </div>
+
+    <div class="callout warn">
+      <strong>Two operational tuning items the calibration cannot settle.</strong>
+      (1) <em>Juba Deyr over-fires on the proxy</em>: at its 1-in-5 pair thresholds the
+      v4-reforecast evaluation activates 3 times in 21 years (~1-in-7) against the
+      calibration's single year (1-in-26) — partly the two hindsight stand-in votes,
+      partly v4-proxy threshold transfer. (2) <em>Shabelle Gu's all-4-pairs consensus is
+      fragile on forecasts</em>: one pair short on the right valid day and it stays
+      silent (it missed 2020 operationally). Both windows' N and RP deserve a
+      working-group pass with operational data before go-live — the basin-level RP
+      arithmetic leaves room to trade N against RP without moving the basin
+      frequencies.
+    </div>
+
+    <figure>
+      <img src="figs/e_anticipation.png" alt="Bar chart of days between the first alert and the SWALIM Moderate crossing, per activation event">
+      <figcaption>Per-event anticipation: days between the alert date (the N-th pair's
+        earliest alerting forecast on the first consensus day) and the season's first
+        SWALIM Moderate crossing at the reference gauge. Range −25 to +21 days.
+        Stakeholders should not expect a consistent warning window — the readiness leg
+        exists to buy mobilisation time.</figcaption>
+    </figure>
+
+    <h2>The readiness leg (7–12 days)</h2>
+    <p>GloFAS ensemble-median forecasts at leads 7–12 days (the leads-8-12 reforecast was
+       downloaded specifically for this band), over each window's distinct stations —
+       just 2 on the Juba, 3 on the Shabelle now — thresholds on GloFAS v4's own
+       climatology, at a lower bar: readiness releases only the mobilisation share and
+       may activate more often than action. It fully covers the action years for Juba Gu,
+       Juba Deyr and Shabelle Gu at 1-in-3.7–4.4 frequencies<span class="altonly"> —
+       unchanged in the no-Google variant, since readiness was
+       always GloFAS-only; only the required station counts relax (1-of-2 on the Juba,
+       1-of-1 on Shabelle Gu) to match the variant's smaller action pools</span>.
+       <strong>Shabelle Deyr readiness covers 2 of 4 action years</strong> — at 7–12 days
+       GloFAS v4 cannot see Deyr-2023-type events at all. Individually the readiness legs
+       sit at 1-in-3.7–7.3, but their union runs ~1-in-1.8 — the working group should see
+       that number explicitly when deciding the mobilisation share.</p>
+
+    <h2>Return-period bookkeeping</h2>
+    <div class="tablewrap">
+    <table class="data">
+      <tr><th>level</th><th>trigger</th><th>activations (1999–2023)</th><th>RP</th></tr>
+      <tr><td>individual</td><td>Juba Gu action</td>
+          <td class="vswap" data-alt="5 — 2005, 2010, 2016, 2018, 2020">4 — 2010, 2016, 2018, 2020</td>
+          <td class="vswap" data-alt="5.2 yr">6.5 yr</td></tr>
+      <tr><td>individual</td><td>Juba Deyr action</td><td>1 — 2023</td><td>26.0 yr</td></tr>
+      <tr><td>individual</td><td>Shabelle Gu action</td>
+          <td class="vswap" data-alt="4 — 2005, 2016, 2018, 2020">2 — 2016, 2020</td>
+          <td class="vswap" data-alt="6.5 yr">13.0 yr</td></tr>
+      <tr><td>individual</td><td>Shabelle Deyr action</td>
+          <td class="vswap" data-alt="2 — 2019, 2023">4 — 2006, 2014, 2019, 2023</td>
+          <td class="vswap" data-alt="13.0 yr">6.5 yr</td></tr>
+      <tr><td>basin</td><td>Juba (Gu or Deyr)</td>
+          <td class="vswap" data-alt="6">5</td><td><em class="vswap" data-alt="4.3 yr">5.2 yr</em></td></tr>
+      <tr><td>basin</td><td>Shabelle (Gu or Deyr)</td><td>6</td><td><em>4.3 yr</em></td></tr>
+      <tr><td>overall</td><td>action, either basin</td>
+          <td class="vswap" data-alt="7">8</td><td><em class="vswap" data-alt="3.7 yr">3.2 yr</em></td></tr>
+    </table>
+    </div>
+    <p>Under all-in funding (the full envelope on any activation, the working assumption in
+       the evidence deck) the effective RP equals the overall RP,
+       <span class="vswap" data-alt="3.7 years in this variant">3.2 years</span>. A split
+       structure would raise the effective RP above it; that is a framework-team decision.</p>
+
+    <h2>Activations, impact and response, year by year</h2>
+    <p>The two-historical-records rule: the trigger record against <em>impact</em>, not
+       just the hazard benchmark. Everything is grouped <strong>basin → season</strong>,
+       reverse-chronological. The <em>trigger</em> column is the trigger's actual
+       decision variable: <strong>the peak number of (station, model) pairs
+       simultaneously over their thresholds</strong> that season-year — the cell fills
+       <span style="color:#B34036;font-weight:700">red</span> when it meets the
+       requirement shown in the season header (= the trigger activates). <em>RP</em> is
+       the empirical return period of that season's maximum level at the
+       SWALIM reference gauge — <strong>5yr</strong> = a 1-in-5-year level or higher,
+       <strong>3yr</strong> = 1-in-3 to 1-in-5 (Weibull on the gauge's own seasonal
+       maxima, per the threshold check above — not the official flood-risk levels);
+       <span style="color:#8E5FA8;font-weight:700">EM-DAT</span> (purple) is people
+       affected and <span style="color:#2A78D6;font-weight:700">CERF</span> (blue) the
+       flood allocation (US$), shaded by magnitude, each attributed to the basin(s) named
+       in the event or allocation narrative.</p>
+    <table class="ai" id="aiTable"><tr><td>loading…</td></tr></table>
+    <p style="font-size:12px;color:var(--n7);line-height:1.6">
+      <strong>Attribution &amp; caveats.</strong> EM-DAT is a floor (entry-criteria bias),
+      split to seasons by start month (Mar–Jun → Gu, Sep–Dec → Deyr); an event naming both
+      rivers is counted under <em>both</em> basins (not split — hover for deaths and the
+      multi-basin flag); events naming neither river (mostly flash floods elsewhere) are
+      excluded. A CERF allocation naming neither river in its narrative is shown under
+      both basins and marked * (they are national riverine-flood responses). Impact
+      columns are context, not a skill score: a formal skill-vs-impact statistic still
+      requires choosing an impact threshold.</p>
+
+    <h3>Should impact tilt the probabilities?</h3>
+    <p>Near-equal per-basin probability is a design choice, not a law — a basin or
+       season carrying systematically more impact could get a lower relative threshold.
+       Aggregating the basin-attributed records (1999–2023) answers whether the data
+       call for it:</p>
+
+    <figure>
+      <img src="figs/j2_impact_shares.png" alt="Three horizontal bar panels showing each basin-season window's share of EM-DAT people affected, EM-DAT deaths, and CERF flood funding, 1999 to 2023">
+      <figcaption>Each window's share of total flood impact, per record
+        (<code>som_ms_impact_by_window</code>). Basin totals are near-equal — Juba 47%,
+        Shabelle 53% on the three-record average — but the <strong>seasons are not:
+        Deyr carries ~65% of impact</strong> (and the two largest CERF flood
+        allocations) against Gu's ~35%.</figcaption>
+    </figure>
+
+    <p>Re-running the calibration with the activation budget allocated by impact share
+       instead of equally (table <code>som_ms_impact_tilt</code>) makes the conclusion
+       concrete:</p>
+    <ul>
+      <li><strong>A basin tilt changes nothing.</strong> The 47/53 split rounds to the
+          same 5/6 activation allocation the joint calibration already adopted — the
+          adopted mechanism's slight Shabelle lean is <em>already</em>
+          impact-consistent.</li>
+      <li><strong>A season tilt is possible but costs skill.</strong> Pushing Juba's
+          budget toward Deyr (its higher-impact season) forces its Deyr leg to a lower
+          threshold and its Gu leg higher: the tilted variant swaps documented Gu
+          floods for extra Deyr activations, drops Juba's severe-year coverage from
+          0.50 to 0.38, and pushes the overall frequency to 1-in-2.9 — under the
+          ≥ 3-year specification. The calibration already leans Deyr where the data
+          support it (both Deyr legs run at lower pair-RP thresholds than the Gu legs);
+          forcing more requires accepting misses the gauge record says are real.</li>
+    </ul>
+    <p>The honest reading: at basin level the impact data <em>endorse</em> the adopted
+       near-equal split; at season level a deliberate Deyr tilt is a working-group
+       lever, quantified and ready, but it trades verified gauge-flood coverage for
+       impact-weighted frequency — a values decision, not a statistical one.</p>
+
+    <h2>Open items before a trigger report</h2>
+    <ol>
+      <li><strong>GloFAS v5 reforecast</strong> — re-verify both Deyr legs and the readiness
+          band when EWDS publishes one.</li>
+      <li><strong>Operational tuning of Juba Deyr and Shabelle Gu</strong> — the proxy
+          over-firing (and the 1-in-26 calibration leg it sits under) and the
+          all-4-pairs fragility above; trade N against RP within the basin budgets
+          using operational data.</li>
+      <li><strong>Provider-dependency decision</strong> — the no-Google variant (switch
+          at the top of this page) shows the mechanism survives Google's loss at
+          1-in-3.7 overall, but Shabelle Gu collapses to a single station-model and
+          Shabelle severe coverage falls to 4/7. If the working group wants a
+          provider-independence guarantee, that is a design constraint to set now, not
+          after a provider change.</li>
+      <li><strong>Gauge network watch</strong> — the candidate set is the five SNRFA
+          gauges still reporting. If SWALIM revives Bardheere (data stop Nov 2023) or
+          Bualle (Mar 2024), the Juba pool widens and its severe-year coverage likely
+          recovers; conversely a further gauge loss shrinks a pool that has no slack.
+          Season tilt (Deyr-ward) is quantified in <code>som_ms_impact_tilt</code> if
+          the working group wants it.</li>
+      <li><strong>GEOGloWS operational debias</strong> — before its votes count live,
+          either SFDC-map its forecasts onto the retrospective climatology (the method
+          from the team's Nepal technical note, fitted on the 2024+ overlap) or refit its
+          thresholds on forecast climatology as the archive grows; validate against
+          whichever Deyr/Gu seasons the archive then covers.</li>
+      <li><strong>Version pinning for operations</strong> — action thresholds here are
+          v5-climatology (GloFAS pairs), the readiness/backtest thresholds v4-climatology;
+          refit on one consistent operational product before go-live.</li>
+      <li><strong>Formal impact-record cross-check</strong> — the year-by-year table above
+          is descriptive; a formal statistic requires the working group to fix an impact
+          threshold ("what counts as a year that should have triggered").</li>
+      <li><strong>Final threshold adjustment</strong> to the working group's exact
+          return-period targets, and the funding-split decision.</li>
+    </ol>
+
+  </article>
+
+  <div class="provenance">
+    <p><strong>Provenance.</strong> Produced by
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/11_multisource_trigger.ipynb">notebook
+       11</a> in <a href="https://github.com/OCHA-DAP/ds-aa-som-floods">ds-aa-som-floods</a>
+       (August 2026), building directly on the evidence notebooks
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/tree/main/analysis">01–10</a>
+       by Pauline Wairimu: SWALIM thresholds and flood events (01), model-vs-gauge trust
+       (02), lead-time skill (03), GloFAS v4/v5 bias (04), flood benchmarks (05), the
+       correlation screen (06), station selection (07), trigger grids (08–09) and the
+       staged-mechanism exploration (10) — summarised in her
+       <a href="https://docs.google.com/presentation/d/12oZOg0ORddO5SJA0-TvLjVXBdm_A7zZw6d1wdD57qZc">"Somalia
+       Floods" slide deck</a> (team Drive) and the
+       <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/docs/som_flood_trigger_evidence.pptx">evidence
+       deck</a> in the repo. Ground truth: FAO SWALIM SNRFA river levels. Providers:
+       GloFAS v4/v5 (Copernicus EWDS), Google Flood Hub (GRRR), GEOGloWS v2 (ECMWF).
+       Impact records: EM-DAT (CRED), CERF OneGMS. Calibration record
+       1999–2023; all return periods are Weibull plotting positions. Configuration tables
+       live in blob under <code>ds-aa-som-floods/processed/workflow/som_ms_*</code>.</p>
+  </div>
+
+</div>
+
+<script src="../assets/hero.js" defer></script>
+<script>
+// permalink anchors on every section header
+document.querySelectorAll("article h2, article h3").forEach(function (el) {
+  var id = el.textContent.trim().toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  el.id = id;
+  var a = document.createElement("a");
+  a.href = "#" + id;
+  a.className = "hl";
+  a.textContent = "#";
+  a.setAttribute("aria-label", "link to this section");
+  el.appendChild(a);
+});
+</script>
+<script>
+(function () {
+  "use strict";
+  var SRC = ["geoglows", "glofas_v5", "google_grrr"];
+  var SRC_SHORT = { geoglows: "GEO", glofas_v5: "GLO5", google_grrr: "GOO" };
+  var SRC_COLOR = { geoglows: "#8E5FA8", glofas_v5: "#B34036", google_grrr: "#2A78D6" };
+  var SRC_TINT = { geoglows: "rgba(142,95,168,.20)", glofas_v5: "rgba(179,64,54,.18)",
+                   google_grrr: "rgba(42,120,214,.17)" };
+  var SRC_TINT = { geoglows: "rgba(142,95,168,.16)", glofas_v5: "rgba(179,64,54,.15)",
+                   google_grrr: "rgba(42,120,214,.14)" };
+
+  function fmtN(v) {
+    if (!v) return "";
+    if (v >= 1e6) return (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + "M";
+    if (v >= 1e3) return Math.round(v / 1e3) + "k";
+    return String(v);
+  }
+
+  // per-station selection detail (inside the <details> block)
+  fetch("selection_detail.json").then(function (r) { return r.json(); })
+    .then(function (D) {
+      var order = ["juba_gu", "juba_deyr", "shabelle_gu", "shabelle_deyr"];
+      var h = [];
+      order.forEach(function (w) {
+        var rows = D[w];
+        if (!rows) return;
+        var name = w.replace("_", " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+        h.push('<p style="margin:14px 0 4px;font-weight:700;font-size:12.5px;color:var(--n9)">' +
+               name + "</p>");
+        h.push('<table class="data" style="margin-top:4px"><tr><th>station</th>' +
+               SRC.map(function (s) {
+                 return '<th style="color:' + SRC_COLOR[s] + '">' + SRC_SHORT[s] + " ρ / lag</th>";
+               }).join("") + "<th>selected</th></tr>");
+        rows.forEach(function (r) {
+          var selected = r.selected || [];
+          var dead = r.gauge_active === false;
+          var cells = ["<td>" + r.station.replace("_", " ") +
+                       (dead ? "" : " ●") + "</td>"];
+          SRC.forEach(function (s) {
+            var v = r[s];
+            var txt = v ? v.rho.toFixed(2) + " / " + (v.lag > 0 ? "+" : "") + v.lag + "d" : "—";
+            cells.push("<td" + (selected.indexOf(s) >= 0 ? ' style="font-weight:700;color:' +
+                       SRC_COLOR[s] + '"' : "") + ">" + txt + "</td>");
+          });
+          cells.push(selected.length
+            ? "<td>" + selected.map(function (s) {
+                return '<b style="color:' + SRC_COLOR[s] + '">' + SRC_SHORT[s] + "</b>";
+              }).join(" + ") + "</td>"
+            : '<td style="color:#c9cfd6">' +
+              (dead ? "no active gauge" : "not selected") + "</td>");
+          h.push('<tr style="' + (dead ? "color:#b6bec7;background:#fafbfc" : "") + '">' +
+                 cells.join("") + "</tr>");
+        });
+        h.push("</table>");
+      });
+      document.getElementById("selDetail").innerHTML = h.join("");
+    });
+
+  // activation x impact table: basin -> season hierarchy, pair counts,
+  // reverse chronological
+  function emShade(v) {
+    if (!v) return "";
+    if (v >= 1e6) return "background:rgba(142,95,168,.42);";
+    if (v >= 2.5e5) return "background:rgba(142,95,168,.26);";
+    return "background:rgba(142,95,168,.13);";
+  }
+  function cerfShade(v) {
+    if (!v) return "";
+    return (v >= 8e6 ? "background:rgba(42,120,214,.30);"
+                     : "background:rgba(42,120,214,.16);");
+  }
+  var AI_DATA = null;
+  fetch("activation_impact.json").then(function (r) { return r.json(); })
+    .then(function (D) { AI_DATA = D; renderAI(); });
+  function renderAI() {
+      var D = AI_DATA;
+      if (!D) return;
+      var groups = [["juba", "gu"], ["juba", "deyr"], ["shabelle", "gu"], ["shabelle", "deyr"]];
+      var h = [];
+      h.push("<colgroup><col style='width:40px'>" +
+        groups.map(function () {
+          return "<col style='width:46px'><col style='width:32px'>" +
+                 "<col style='width:42px'><col style='width:40px'>";
+        }).join("") + "</colgroup>");
+      h.push('<tr><th rowspan="3" style="vertical-align:bottom">year</th>' +
+        ["Juba", "Shabelle"].map(function (b) {
+          return '<th colspan="8" class="gl" style="font-size:10px">' + b + "</th>";
+        }).join("") + "</tr>");
+      h.push("<tr>" + groups.map(function (g) {
+        var m = (VARIANT ? D.meta.windows_v : D.meta.windows)[g[0] + "_" + g[1]];
+        return '<th colspan="4" class="gl">' +
+               g[1].charAt(0).toUpperCase() + g[1].slice(1) +
+               " — ≥" + m.n_req + "/" + m.pool + "</th>";
+      }).join("") + "</tr>");
+      h.push("<tr>" + groups.map(function () {
+        return '<th class="gl" style="color:#B34036">trigger</th><th title="empirical RP of the season&#39;s max gauge level">RP</th>' +
+               '<th style="color:#8E5FA8">EM-DAT</th><th style="color:#2A78D6">CERF</th>';
+      }).join("") + "</tr>");
+      D.rows.slice().reverse().forEach(function (r) {
+        var cells = ["<td><b>" + r.year + "</b></td>"];
+        groups.forEach(function (g) {
+          var wRaw = r.basins[g[0]][g[1]];
+          var w = VARIANT
+            ? {n: wRaw.nv, adopted: wRaw.adopted_v, bench: wRaw.bench,
+               emdat: wRaw.emdat, cerf: wRaw.cerf}
+            : wRaw;
+          var m = (VARIANT ? D.meta.windows_v : D.meta.windows)[g[0] + "_" + g[1]];
+          if (w.adopted)
+            cells.push('<td class="gl" style="background:rgba(179,64,54,.30)" ' +
+              'title="trigger activates: ' + w.n + " of " + m.pool +
+              ' pairs over threshold (requires ' + m.n_req + ')">' +
+              '<b style="color:#7A241C">' + w.n + "</b></td>");
+          else
+            cells.push('<td class="gl"' +
+              (w.n ? ' title="' + w.n + " of " + m.pool + ' pairs over threshold"' : "") +
+              ">" + (w.n ? w.n : '<span style="color:#c9cfd6">0</span>') + "</td>");
+          if (w.bench === "severe")
+            cells.push('<td style="background:rgba(179,64,54,.14)"' +
+              ' title="seasonal max level at the reference gauge: empirical RP ≥ 5 yr">' +
+              '<span style="color:#B34036;font-weight:700">5yr</span></td>');
+          else if (w.bench === "moderate")
+            cells.push('<td style="background:rgba(244,169,59,.18)"' +
+              ' title="seasonal max level at the reference gauge: empirical RP ≥ 3 yr">' +
+              '<span style="color:#B8860B;font-weight:500">3yr</span></td>');
+          else cells.push('<td style="color:#c9cfd6"></td>');
+          var e = w.emdat;
+          cells.push('<td class="num" style="' + emShade(e && e.aff) + '"' +
+            (e ? ' title="' + fmtN(e.aff) + ' affected' +
+                 (e.deaths ? ", " + e.deaths + " deaths" : "") +
+                 (e.multi ? "; incl. multi-basin event(s) counted under both basins" : "") + '"' : "") +
+            ">" + (e ? fmtN(e.aff) : "") + "</td>");
+          var c2 = w.cerf;
+          cells.push('<td class="num" style="' + cerfShade(c2 && c2.usd) + '"' +
+            (c2 ? ' title="US$ ' + c2.usd.toLocaleString() +
+                  (c2.unattr ? "; basin not stated in the allocation narrative - shown under both" : "") + '"' : "") +
+            ">" + (c2 ? fmtN(c2.usd) + (c2.unattr ? "*" : "") : "") + "</td>");
+        });
+        h.push("<tr>" + cells.join("") + "</tr>");
+      });
+      document.getElementById("aiTable").innerHTML = h.join("");
+  }
+
+  // ---- provider-set switch -------------------------------------------
+  // Every element carrying .vswap holds the adopted text/src and its
+  // no-Google counterpart in data-alt / data-alt-src; toggling swaps the
+  // two and stashes the original so the switch is reversible.
+  var VARIANT = false;
+  function applyVariant(on) {
+    VARIANT = on;
+    document.body.classList.toggle("variant", on);
+    document.getElementById("vbar").classList.toggle("alt", on);
+    document.getElementById("vAll").classList.toggle("on", !on);
+    document.getElementById("vNog").classList.toggle("on", on);
+    document.getElementById("vAll").setAttribute("aria-pressed", String(!on));
+    document.getElementById("vNog").setAttribute("aria-pressed", String(on));
+    document.getElementById("vbarNote").textContent = on
+      ? "Resilience variant — GloFAS v5 + GEOGloWS only, recalibrated end to end"
+      : "Adopted mechanism — GloFAS v5 + Google GRRR + GEOGloWS";
+    Array.prototype.forEach.call(document.querySelectorAll(".vswap"), function (el) {
+      if (el.hasAttribute("data-alt-src")) {
+        if (!el.dataset.stdSrc) el.dataset.stdSrc = el.getAttribute("src");
+        el.setAttribute("src", on ? el.dataset.altSrc : el.dataset.stdSrc);
+        return;
+      }
+      if (!el.hasAttribute("data-alt")) return;
+      if (el.dataset.stdHtml === undefined) el.dataset.stdHtml = el.innerHTML;
+      el.innerHTML = on ? el.dataset.alt : el.dataset.stdHtml;
+      el.classList.add("flash");
+      setTimeout(function () { el.classList.remove("flash"); }, 400);
+    });
+    renderAI();
+    try { history.replaceState(null, "", on ? "#nogoogle" : location.pathname); } catch (e) {}
+  }
+  document.getElementById("vAll").addEventListener("click", function () { applyVariant(false); });
+  document.getElementById("vNog").addEventListener("click", function () { applyVariant(true); });
+  if (location.hash === "#nogoogle") applyVariant(true);
+})();
+</script>
+</body>
+</html>
