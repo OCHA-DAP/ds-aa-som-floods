@@ -39,6 +39,10 @@ t = re.sub(r'<h2(?: id="[^"]*")?([^>]*)>(.*?)</h2>', add_id, t, flags=re.S)
 
 items = "".join(f'<li><a href="#{sid}">{H.escape(txt)}</a></li>' for sid, txt in entries)
 style = """<style id="toc-style">
+/* clicking a contents entry stops below the sticky provider bar, so the heading shows */
+article h2[id] { scroll-margin-top:76px; }
+html { scroll-behavior:smooth; }
+@media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
 /* contents: inline list above the article on narrow screens */
 .toc { margin:22px 44px 0; padding:14px 18px 10px; border:1px solid #e2e7e7; border-radius:5px; background:var(--n05); }
 .toc .toc-h { margin:0 0 6px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--n7); }

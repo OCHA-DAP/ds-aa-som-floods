@@ -20,6 +20,7 @@ article { padding:8px 44px 24px; max-width:860px; }
 article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9);
              margin:38px 0 10px; line-height:1.25; }
 article h3 { font-size:15px; color:var(--n9); margin:26px 0 8px; }
+article h4 { font-size:13.5px; color:var(--n9); margin:22px 0 6px; letter-spacing:.01em; }
 article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; }
 article ul, article ol { padding-left:22px; }
 article strong { color:var(--n9); }
@@ -168,6 +169,10 @@ body.variant details.altonly { display:block; }
 body.variant .carrynote { display:none; }
 </style>
 <style id="toc-style">
+/* clicking a contents entry stops below the sticky provider bar, so the heading shows */
+article h2[id] { scroll-margin-top:76px; }
+html { scroll-behavior:smooth; }
+@media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
 /* contents: inline list above the article on narrow screens */
 .toc { margin:22px 44px 0; padding:14px 18px 10px; border:1px solid #e2e7e7; border-radius:5px; background:var(--n05); }
 .toc .toc-h { margin:0 0 6px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--n7); }
@@ -1027,6 +1032,46 @@ body.variant .carrynote { display:none; }
       Gu 2024, three seasons in which SWALIM reported bank full at Belet Weyne. Up to 2021
       SWALIM's archived bulletins are Flood Updates written once a river was already at the
       high level or bank full; the ladder-style alerts with a moderate step start in 2023.</p>
+    <h4>The same comparison station by station</h4>
+    <p>The charts above work at river level, where SWALIM's earliest flag anywhere on the
+      river meets a rule that counts points. SWALIM's bulletins name individual gauges and
+      publish their readings, so the same comparison can be made gauge by gauge. The two
+      charts below give one row per station and season: the bulletin on which SWALIM first
+      reported that gauge at each of its own official levels, that gauge's own
+      return-period crossings, and the first day each model crossed that station's own
+      threshold. A level counts as reported when the reading SWALIM published for the gauge
+      is at or above its official moderate, high or bank-full level. Hollow markers are
+      seasons where the bulletin stated a risk for the station without publishing a
+      reading, which is most of 2006 and 2019 to 2021. The 2024 weekly bulletins are read
+      from their published readings only, because their prose mixes forecasts and
+      look-backs to earlier years.</p>
+    <figure><img src="figs/k_swalim_station_shabelle.png?v=202609081" alt="Shabelle: SWALIM's reported levels at each gauge against the gauge record and the models">
+      <figcaption>Shabelle. Upper track: SWALIM's reported levels for that gauge. Lower
+        track: the models over that station's own threshold. Grey band: that gauge's own
+        1-in-3 to 1-in-5 crossings. Deyr 2020's bulletins concern the September flood at
+        Belet Weyne, before the Deyr window opens.</figcaption></figure>
+    <figure><img src="figs/k_swalim_station_juba.png?v=202609081" alt="Juba: SWALIM's reported levels at each gauge against the gauge record and the models">
+      <figcaption>Juba, same layout.</figcaption></figure>
+    <p>Of the 55 station-seasons, 39 have a bulletin naming that gauge and 21 record it at
+      bank full. Belet Weyne and Jowhar are named in 8 of their 9 seasons, Bulo Burti in 6;
+      on the Juba, Luuq in 6 of 7, Dollow and Bardheere in 4, Bualle in 3. Where the gauge
+      crossed its own 1-in-3 and no bulletin named the station, the gap falls on Bulo Burti
+      and Bardheere twice each and on Belet Weyne and Bualle once.</p>
+    <p>The station view separates two things the river view combines. SWALIM is early at
+      Belet Weyne, flagging it before or on the day the gauge crossed its own 1-in-3 in
+      seven of eight seasons and 8 days late in the eighth. It is late at Luuq in all five
+      seasons with both dates, by 1 to 16 days, and at Bulo Burti in four of six. Jowhar is
+      the exception to the whole comparison: in three of its eight flagged seasons the gauge
+      never crossed its own 1-in-3, which matches the bulletins describing flooding there
+      from breakages at Baarey, Moyko and Mandheere rather than from the river topping its
+      banks.</p>
+    <p>Against SWALIM's first flag for the same gauge, over the 34 station-seasons up to
+      2023, Google crossed that station's threshold earlier in 15, on the same day in 2,
+      later in 8 and never in 9. GloFAS v5 was earlier in 12, same day in 2, later in 13 and
+      never in 7. The GloFAS v4 forecast issue was earlier in 7, same day in 3, later in 7
+      and absent in 17. At station level the models therefore lead SWALIM about as often as
+      they trail it, and the trigger's advantage at river level comes from requiring several
+      points rather than from any one gauge being called early.</p>
     <details class="supp"><summary>Full record: the bulletins, the points over and the peaks</summary>
     <div class="supp-body">
     <p>For each river-season the table gives what happened at the gauges, the bulletin that
