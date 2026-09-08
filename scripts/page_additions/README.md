@@ -22,6 +22,8 @@ The data under `data/processed/` is not in git. When running from a worktree wit
 `SOM_DATA_REPO` to a checkout that has the data (the scripts read only; they write figures and
 JSON next to themselves and into `pages/trigger-single-model/`).
 
-`deai_pass.py`, `deai_pass2.py` and `deai_pass3.py` are one-off prose passes (em dashes to
+`explain_pass.py` fills the explanation gaps the flow audit found (acronyms expanded at
+first use, the envelope defined, issue date against valid day). `deai_pass.py`,
+`deai_pass2.py` and `deai_pass3.py` are one-off prose passes (em dashes to
 colons or commas, figurative phrasing removed). They are asserted and idempotent: rerunning
 reports every pair as already applied.
