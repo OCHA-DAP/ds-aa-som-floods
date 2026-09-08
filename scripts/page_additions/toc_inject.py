@@ -56,8 +56,29 @@ t = re.sub(r'<h2(?: id="[^"]*")?([^>]*)>(.*?)</h2>', add_id, t, flags=re.S)
 t = re.sub(r'<h3(?: id="[^"]*")?([^>]*)>(.*?)</h3>', add_id_h3, t, flags=re.S)
 entries.sort(key=lambda e: t.find(f'id="{e[0]}"'))
 
+# the rail is 220px wide, so long headings get a short label there and keep the full
+# heading in the link's title attribute
+SHORT = {
+    "How the two rivers behave together": "The two rivers together",
+    "What happens if Google Flood Hub goes away": "If Google goes away",
+    "How the model was chosen, one per river and season": "How the model was chosen",
+    "Skill scores beyond POD, FAR and F1": "Skill scores",
+    "Why the models perform the way they do": "Why the models differ",
+    "How far apart do the points cross?": "How far apart they cross",
+    "Calibrated on the reanalysis, checked on the forecasts": "Checked on the forecasts",
+    "Would it have worked operationally?": "Would it have worked?",
+    "The readiness leg (8–12 days)": "The readiness leg",
+    "Activations, impact and response, year by year": "Activations and impact",
+    "SWALIM's alerts against the trigger": "SWALIM's alerts",
+    "SWALIM's bulletins in seasons the gauges did not call a flood": "SWALIM in quiet seasons",
+    "When each model would have flagged, year by year": "When each model flagged",
+    "An observational fallback: bank full at the gauges": "Bank-full fallback",
+    "Open items before a trigger report": "Open items",
+}
 items = "".join(
-    f'<li class="lv{lvl}"><a href="#{sid}">{H.escape(txt, quote=False)}</a></li>' for sid, txt, lvl in entries)
+    f'<li class="lv{lvl}"><a href="#{sid}" title="{H.escape(txt)}">'
+    f'{H.escape(SHORT.get(txt, txt), quote=False)}</a></li>'
+    for sid, txt, lvl in entries)
 style = """<style id="toc-style">
 /* clicking a contents entry stops below the sticky provider bar, so the heading shows */
 article h2[id], article h3[id] { scroll-margin-top:76px; }
@@ -74,23 +95,27 @@ html { scroll-behavior:smooth; }
 /* wide screens: a sticky rail in a left column beside the article, starting below the
    hero and the provider bar; the hero text and the bar shift right to line up with the text */
 @media (min-width:1100px) {
-  .body-grid { display:grid; grid-template-columns:220px minmax(0,860px); align-items:start; }
+  .body-grid { display:grid; grid-template-columns:220px minmax(0,860px); }
   .hero.hero-sub .inner, .vbar-in { margin-left:220px; }
   .vbar-in { max-width:860px; }
-  .toc { position:sticky; top:54px; margin:22px 0 0 22px; padding:8px 0 8px 0; border:0; border-radius:0;
-         background:transparent; max-height:calc(100vh - 70px); overflow:auto; }
+  /* the nav fills the grid row so the inner block can stick for the whole article */
+  .toc { margin:0; padding:0; border:0; border-radius:0; background:transparent; }
+  .toc-in { position:sticky; top:54px; margin:22px 0 0 22px; padding:8px 0;
+            max-height:calc(100vh - 76px); overflow-y:auto; overflow-x:hidden; }
   .toc .toc-h { margin:0 0 8px 12px; }
-  .toc ul { columns:1; font-size:12.5px; line-height:1.4; border-left:2px solid #e2e7e7; }
+  .toc ul { columns:1; font-size:12.5px; line-height:1.35; border-left:2px solid #e2e7e7; }
   .toc li { margin:0; }
-  .toc a { display:block; padding:5px 10px 5px 12px; margin-left:-2px; border-left:2px solid transparent; color:var(--n7); }
+  .toc a { display:block; padding:5px 8px 5px 12px; margin-left:-2px; border-left:2px solid transparent;
+           color:var(--n7); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .toc a:hover { color:var(--n9); }
   .toc li.on > a { border-left-color:var(--b6); color:var(--b6); font-weight:600; }
 }
-@media print { .toc { position:static; } }
+@media print { .toc-in { position:static; max-height:none; } }
 </style>
 """
-nav = ('<nav class="toc" aria-label="Contents">\n  <p class="toc-h">Contents</p>\n'
-       '  <ul>' + items + '</ul>\n</nav>\n')
+nav = ('<nav class="toc" aria-label="Contents">\n  <div class="toc-in">\n'
+       '    <p class="toc-h">Contents</p>\n'
+       '    <ul>' + items + '</ul>\n  </div>\n</nav>\n')
 script = """<script id="toc-script">
 (function () {
   var links = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
