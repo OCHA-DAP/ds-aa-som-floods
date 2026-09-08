@@ -4,6 +4,8 @@ glossed where it is first used, and the GloFAS v4 contradiction resolved.
 
 Whitespace-tolerant and asserted. A pair may carry a third element, an anchor: a short
 phrase that proves the edit has landed even if a later pair has since reworded the rest.
+The anchor is checked first, so a replacement that contains its own search text (such as
+one that appends a sentence) cannot re-apply and duplicate itself.
 Without it the whole replacement string has to match, which fails when two pairs touch
 the same sentence."""
 import re
@@ -46,7 +48,8 @@ PAIRS = [
      "Bualle) and three on the Shabelle (Belet Weyne, Bulo Burti, Jowhar). No threshold, on either "
      "leg, sits below 1-in-3. The four windows together are called the envelope: the full amount is "
      "released whenever any one of them activates, so the envelope is what the budget is sized on "
-     "and what the 1-in-3 ceiling applies to."),
+     "and what the 1-in-3 ceiling applies to.",
+     "The four windows together are called the envelope"),
     # valid day against issue date, at first use
     ("The operational test replays the historical forecasts: per pair and valid day, the most alarming",
      "The operational test replays the historical forecasts. A forecast has two dates: the issue "
@@ -69,12 +72,13 @@ applied, already, missing = 0, 0, []
 for pair in PAIRS:
     old, new = pair[0], pair[1]
     anchor = pair[2] if len(pair) > 2 else new
+    if pattern(anchor).search(t):
+        already += 1                      # already applied: never re-apply
+        continue
     rx = pattern(old)
     if rx.search(t):
         t = rx.sub(lambda m: new, t, count=1)
         applied += 1
-    elif pattern(anchor).search(t):
-        already += 1
     else:
         missing.append(old[:80])
 PAGE.write_text(t, encoding="utf-8")
