@@ -31,16 +31,36 @@ def add_id(m):
     while sid in seen:
         sid += "-2"
     seen.add(sid)
-    entries.append((sid, H.unescape(re.sub(r"<[^>]+>", "", inner)).strip()))
+    entries.append((sid, H.unescape(re.sub(r"<[^>]+>", "", inner)).strip(), 2))
     return f'<h2 id="{sid}"{m.group(1)}>{inner}</h2>'
 
 
-t = re.sub(r'<h2(?: id="[^"]*")?([^>]*)>(.*?)</h2>', add_id, t, flags=re.S)
+def in_details(pos):
+    """True when this heading sits inside a <details> block (collapsed by default)."""
+    before = t[:pos]
+    return before.count("<details") - before.count("</details>") > 0
 
-items = "".join(f'<li><a href="#{sid}">{H.escape(txt)}</a></li>' for sid, txt in entries)
+
+def add_id_h3(m):
+    inner = m.group(2)
+    sid = slug(inner)
+    while sid in seen:
+        sid += "-2"
+    seen.add(sid)
+    if not in_details(m.start()):
+        entries.append((sid, H.unescape(re.sub(r"<[^>]+>", "", inner)).strip(), 3))
+    return f'<h3 id="{sid}"{m.group(1)}>{inner}</h3>'
+
+
+t = re.sub(r'<h2(?: id="[^"]*")?([^>]*)>(.*?)</h2>', add_id, t, flags=re.S)
+t = re.sub(r'<h3(?: id="[^"]*")?([^>]*)>(.*?)</h3>', add_id_h3, t, flags=re.S)
+entries.sort(key=lambda e: t.find(f'id="{e[0]}"'))
+
+items = "".join(
+    f'<li class="lv{lvl}"><a href="#{sid}">{H.escape(txt, quote=False)}</a></li>' for sid, txt, lvl in entries)
 style = """<style id="toc-style">
 /* clicking a contents entry stops below the sticky provider bar, so the heading shows */
-article h2[id] { scroll-margin-top:76px; }
+article h2[id], article h3[id] { scroll-margin-top:76px; }
 html { scroll-behavior:smooth; }
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
 /* contents: inline list above the article on narrow screens */
@@ -50,6 +70,7 @@ html { scroll-behavior:smooth; }
 .toc a { color:var(--n8); text-decoration:none; }
 .toc a:hover { color:var(--b6); }
 .toc li.on > a { color:var(--b6); font-weight:600; }
+.toc li.lv3 > a { padding-left:14px; font-size:12.5px; color:var(--n7); }
 /* wide screens: a sticky rail in a left column beside the article, starting below the
    hero and the provider bar; the hero text and the bar shift right to line up with the text */
 @media (min-width:1100px) {

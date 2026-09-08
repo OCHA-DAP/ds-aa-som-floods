@@ -6,6 +6,7 @@ v4 forecast / v5 reanalysis columns come from trigger_detail.json
 (trigger_detail.py) and, for Gu 2024, gu2024_issue.json (gu2024_issue.py); the
 who-was-first verdicts come from swalim_timeline.json (swalim_timeline.py)."""
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -348,9 +349,11 @@ section = """    <h3>SWALIM's alerts against the trigger</h3>
 """
 
 t = PAGE.read_text(encoding="utf-8")
-i = t.find("    <h3>SWALIM's alerts against the trigger</h3>")
-j = t.find("    <h3>SWALIM's bulletins in seasons the gauges did not call a flood</h3>", i)
-assert i > 0 and j > i
+# headings carry ids once toc_inject has run, so match loosely
+mi = re.search(r"    <h3[^>]*>SWALIM(?:'|&#x27;)s alerts against the trigger</h3>", t)
+mj = re.search(r"    <h3[^>]*>SWALIM(?:'|&#x27;)s bulletins in seasons the gauges did not call a flood</h3>", t)
+assert mi and mj and mj.start() > mi.start(), "SWALIM section boundaries not found"
+i, j = mi.start(), mj.start()
 t = t[:i] + section + t[j:]
 PAGE.write_text(t, encoding="utf-8")
 print("section rewritten:", len(rows), "rows")

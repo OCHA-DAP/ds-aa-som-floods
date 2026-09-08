@@ -129,7 +129,7 @@ def table(key, auc_key, title):
             '</tr></thead>\n<tbody>' + "".join(rows) + "</tbody>\n</table>\n</div>")
 
 
-html = (table("vs_severe", "auc_severe", "Against the severe years: two gauges of the river over their 1-in-5 level in the season.")
-        + "\n" + table("vs_flood", "auc_flood", "Against the flood years: two gauges over their 1-in-3 level in the season."))
+html = (table("vs_severe", "auc_severe", "Against the severe years: a year counts as a flood when two of the river's gauges crossed their own 1-in-5 level in that season. A hit is an activation in such a year, a miss is a severe year with no activation, a false alarm is an activation in any other year.")
+        + "\n" + table("vs_flood", "auc_flood", "The same activations, scored against the wider benchmark: two gauges over their own 1-in-3 level in that season."))
 (S / "metrics_tables.html").write_text(html, encoding="utf-8")
 print("wrote metrics_tables.html")

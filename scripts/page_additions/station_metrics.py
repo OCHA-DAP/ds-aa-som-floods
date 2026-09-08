@@ -1,5 +1,5 @@
 """Station by station: how each model tracks each gauge, per season. Rank
-correlation at the best lag against the gauge's own level record, and whether the
+correlation at the best lag against the gauge's own full-year level record, and whether the
 model's own 1-in-3 / 1-in-5 crossing reproduces the gauge's own crossing, year by
 year. Writes station_metrics.json and station_metrics_table.html."""
 import json
@@ -46,7 +46,9 @@ for river in ("juba", "shabelle"):
                 s = L.season_series(model, st, season)
                 if len(s) < 100:
                     continue
-                rho, lag = best_lag_rho(s, g)
+                # shift the FULL-YEAR gauge series: shifting a season-filtered one
+                # drops the days that move outside the window and understates the lag
+                rho, lag = best_lag_rho(s, g_all)
                 am_m = s.groupby(s.index.year).max().dropna()
                 rec = {"river": river, "station": L.NAME[st], "season": season.title(), "model": L.NICE[model],
                        "adopted": model == adopted, "rho": round(rho, 2), "lag_days": lag,
@@ -91,6 +93,6 @@ def table(river):
             + "".join(trs) + "</tbody>\n</table>\n</div>")
 
 
-html = (f'<h3>Juba</h3>\n{table("juba")}\n<h3>Shabelle</h3>\n{table("shabelle")}')
+html = (f'<h4>Juba</h4>\n{table("juba")}\n<h4>Shabelle</h4>\n{table("shabelle")}')
 (S / "station_metrics_table.html").write_text(html, encoding="utf-8")
 print("wrote station_metrics_table.html", len(out), "rows")

@@ -2,7 +2,6 @@
 benchmark, per-window activations (reanalysis flow dates and forecast issue
 dates) and gauge crossing dates. Mirrors scripts/envelope_search.py and
 scripts/model_selection.py in the repo so numbers agree with the page."""
-import os
 import sys
 from functools import lru_cache
 from pathlib import Path
@@ -11,14 +10,12 @@ import numpy as np
 import pandas as pd
 
 REPO = Path(__file__).resolve().parents[2]
-# data/processed is not in git; a worktree without it can point SOM_DATA_REPO at a checkout that has it
-DATA_REPO = Path(os.environ.get("SOM_DATA_REPO", REPO))
 sys.path.insert(0, str(REPO))
 from src.constants import (REFERENCE_GAUGE, SEASONS, SEVERE_RP, TRIGGER_CONFIG,  # noqa: E402
                            TRIGGER_STATIONS, TRIGGER_YEARS)
 from src.utils import weibull_level, weibull_threshold  # noqa: E402
 
-P = DATA_REPO / "data" / "processed"
+P = REPO / "data" / "processed"
 Y0, Y1 = TRIGGER_YEARS
 SPAN = list(range(Y0, Y1 + 1))
 WINDOWS = [("juba", "deyr"), ("shabelle", "deyr"), ("juba", "gu"), ("shabelle", "gu")]

@@ -170,7 +170,7 @@ body.variant .carrynote { display:none; }
 </style>
 <style id="toc-style">
 /* clicking a contents entry stops below the sticky provider bar, so the heading shows */
-article h2[id] { scroll-margin-top:76px; }
+article h2[id], article h3[id] { scroll-margin-top:76px; }
 html { scroll-behavior:smooth; }
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
 /* contents: inline list above the article on narrow screens */
@@ -180,6 +180,7 @@ html { scroll-behavior:smooth; }
 .toc a { color:var(--n8); text-decoration:none; }
 .toc a:hover { color:var(--b6); }
 .toc li.on > a { color:var(--b6); font-weight:600; }
+.toc li.lv3 > a { padding-left:14px; font-size:12.5px; color:var(--n7); }
 /* wide screens: a sticky rail in a left column beside the article, starting below the
    hero and the provider bar; the hero text and the bar shift right to line up with the text */
 @media (min-width:1100px) {
@@ -225,13 +226,12 @@ html { scroll-behavior:smooth; }
 <div class="body-grid">
 <nav class="toc" aria-label="Contents">
   <p class="toc-h">Contents</p>
-  <ul><li><a href="#the-mechanism-at-a-glance">The mechanism at a glance</a></li><li><a href="#how-the-model-was-chosen-one-per-river-and-season">How the model was chosen, one per river and season</a></li><li><a href="#skill-scores-beyond-pod-far-and-f1">Skill scores beyond POD, FAR and F1</a></li><li><a href="#why-the-models-perform-the-way-they-do">Why the models perform the way they do</a></li><li><a href="#station-by-station">Station by station</a></li><li><a href="#thresholds-and-calibration">Thresholds and calibration</a></li><li><a href="#would-it-have-worked-operationally">Would it have worked operationally?</a></li><li><a href="#the-readiness-leg-8-12-days">The readiness leg (8–12 days)</a></li><li><a href="#return-period-bookkeeping">Return-period bookkeeping</a></li><li><a href="#activations-impact-and-response-year-by-year">Activations, impact and response, year by year</a></li><li><a href="#when-each-model-would-have-flagged-year-by-year">When each model would have flagged, year by year</a></li><li><a href="#an-observational-fallback-bank-full-at-the-gauges">An observational fallback: bank full at the gauges</a></li><li><a href="#open-items-before-a-trigger-report">Open items before a trigger report</a></li></ul>
+  <ul><li class="lv2"><a href="#the-mechanism-at-a-glance">The mechanism at a glance</a></li><li class="lv3"><a href="#how-the-two-rivers-behave-together">How the two rivers behave together</a></li><li class="lv3"><a href="#what-happens-if-google-flood-hub-goes-away">What happens if Google Flood Hub goes away</a></li><li class="lv2"><a href="#how-the-model-was-chosen-one-per-river-and-season">How the model was chosen, one per river and season</a></li><li class="lv2"><a href="#skill-scores-beyond-pod-far-and-f1">Skill scores beyond POD, FAR and F1</a></li><li class="lv2"><a href="#why-the-models-perform-the-way-they-do">Why the models perform the way they do</a></li><li class="lv2"><a href="#station-by-station">Station by station</a></li><li class="lv2"><a href="#thresholds-and-calibration">Thresholds and calibration</a></li><li class="lv3"><a href="#how-far-apart-do-the-points-cross">How far apart do the points cross?</a></li><li class="lv3"><a href="#calibrated-on-the-reanalysis-checked-on-the-forecasts">Calibrated on the reanalysis, checked on the forecasts</a></li><li class="lv2"><a href="#would-it-have-worked-operationally">Would it have worked operationally?</a></li><li class="lv2"><a href="#the-readiness-leg-8-12-days">The readiness leg (8–12 days)</a></li><li class="lv2"><a href="#return-period-bookkeeping">Return-period bookkeeping</a></li><li class="lv2"><a href="#activations-impact-and-response-year-by-year">Activations, impact and response, year by year</a></li><li class="lv3"><a href="#swalim-s-alerts-against-the-trigger">SWALIM's alerts against the trigger</a></li><li class="lv3"><a href="#swalim-s-bulletins-in-seasons-the-gauges-did-not-call-a-floo">SWALIM's bulletins in seasons the gauges did not call a flood</a></li><li class="lv2"><a href="#when-each-model-would-have-flagged-year-by-year">When each model would have flagged, year by year</a></li><li class="lv2"><a href="#an-observational-fallback-bank-full-at-the-gauges">An observational fallback: bank full at the gauges</a></li><li class="lv2"><a href="#open-items-before-a-trigger-report">Open items before a trigger report</a></li></ul>
 </nav>
   <article>
 
     <div class="callout warn alt2only" style="margin-top:18px">
-      <strong>You are viewing the no-Google variant.</strong> The whole report below —
-      mechanism table, return periods and backtest — is
+      <strong>You are viewing the no-Google variant.</strong> The whole report below, including the mechanism table, return periods and backtest, is
       recalibrated from scratch with <strong>Google Flood Hub excluded</strong>, using identical rules (all seven points, one source per window, thresholds at or above 1-in-3, and the envelope judged jointly). This is a resilience scenario for the working
       group, <em>not</em> the proposed mechanism. Narrative sections that do not depend on the provider set (how the model is chosen, the threshold floor, the readiness band) read the same in both views.
     </div>
@@ -250,23 +250,22 @@ html { scroll-behavior:smooth; }
 
 <div class="rvw" id="rvwIndex" style="border-left-color:#7a4415;background:#fdf6ee">
   <span class="tag" style="background:#7a4415">Review</span><span class="hd">Twelve notes are open on this document.</span>
-  <p>They are anchored beside the passage each one concerns. Nothing in the trigger design has been
-  changed &mdash; the configuration, the numbers and the figures are exactly as generated. What has been
+  <p>They are anchored beside the passage each one concerns. Nothing in the trigger design has been changed: the configuration, the numbers and the figures are exactly as generated. What has been
   corrected is text that contradicted the data, plus the broken provider switch; supporting evidence
   has been folded into collapsible blocks.</p>
   <ol>
-    <li><a href="#R1">R1</a> &mdash; the &ldquo;7 of 8&rdquo; headline rests on a lookahead in the benchmark</li>
-    <li><a href="#R2">R2</a> &mdash; every published lag is wrong; correlations understated</li>
-    <li><a href="#R3">R3</a> &mdash; three provider sets were really two</li>
-    <li><a href="#R4">R4</a> &mdash; the Juba leg never decides anything</li>
-    <li><a href="#R5">R5</a> &mdash; the per-window search does not beat an un-searched rule</li>
-    <li><a href="#R6">R6</a> &mdash; one model per window is defensible; mixing gains nothing</li>
-    <li><a href="#R7">R7</a> &mdash; the seven-point set is load-bearing, and two points are unverifiable</li>
-    <li><a href="#R8">R8</a> &mdash; excluding GEOGloWS introduces the one false activation</li>
-    <li><a href="#R9">R9</a> &mdash; the two lead bands overlap at lead 7</li>
-    <li><a href="#R10">R10</a> &mdash; five of sixteen activations have no readiness phase</li>
-    <li><a href="#R11">R11</a> &mdash; 1999&ndash;2001 unassessable but still in every denominator</li>
-    <li><a href="#R12">R12</a> &mdash; some benchmark levels rest on ten annual maxima</li>
+    <li><a href="#R1">R1</a>: the &ldquo;7 of 8&rdquo; headline rests on a lookahead in the benchmark</li>
+    <li><a href="#R2">R2</a>: every published lag is wrong; correlations understated</li>
+    <li><a href="#R3">R3</a>: three provider sets were really two</li>
+    <li><a href="#R4">R4</a>: the Juba leg never decides anything</li>
+    <li><a href="#R5">R5</a>: the per-window search does not beat an un-searched rule</li>
+    <li><a href="#R6">R6</a>: one model per window is defensible; mixing gains nothing</li>
+    <li><a href="#R7">R7</a>: the seven-point set cannot be reduced, and two points are unverifiable</li>
+    <li><a href="#R8">R8</a>: excluding GEOGloWS introduces the one false activation</li>
+    <li><a href="#R9">R9</a>: the two lead bands overlap at lead 7</li>
+    <li><a href="#R10">R10</a>: five of sixteen activations have no readiness phase</li>
+    <li><a href="#R11">R11</a>: 1999&ndash;2001 unassessable but still in every denominator</li>
+    <li><a href="#R12">R12</a>: some benchmark levels rest on ten annual maxima</li>
   </ol>
 </div>
     <div class="stats">
@@ -275,6 +274,8 @@ html { scroll-behavior:smooth; }
       <div class="stat"><span class="v">4 + 3</span><span class="l">points monitored, Juba and Shabelle</span></div>
       <div class="stat"><span class="v">1&ndash;7 / 8&ndash;12 d</span><span class="l">action / readiness lead time</span></div>
     </div>
+    <p class="muted" style="margin-top:10px"><em>One label to keep in mind while reading: the benchmark that decides which years count as severe was refitted after the figures below were generated. On the current fit there are seven severe years and the trigger catches all of them; the older figures and prose count 2008 as an eighth severe year and the one miss. The activation years are identical either way. See the benchmark note under <a href="#skill-scores-beyond-pod-far-and-f1">Skill scores</a>.</em></p>
+
 
     
 <h2 id="the-mechanism-at-a-glance">The mechanism at a glance</h2>
@@ -294,7 +295,7 @@ html { scroll-behavior:smooth; }
     <p>All seven reporting-era points are monitored: four on the Juba (Luuq, Dollow,
       Bardheere, Bualle) and three on the Shabelle (Belet Weyne, Bulo Burti, Jowhar). No
       threshold, on either leg, sits below 1-in-3.</p>
-<div class="rvw" id="R7"><span class="tag">Review R7</span><span class="hd">The seven-point set is load-bearing, and two of the points can no longer be checked.</span><p>Restricting to the five gauges that still report would leave the Juba with only Luuq and Dollow, so the only available rule is 2 of 2 &mdash; unanimous, which this design&#39;s own &ldquo;never all of them&rdquo; constraint forbids &mdash; and it adds a false activation in 2015, moving the envelope to 1-in-2.9. Bardheere and Bualle are therefore what make a non-unanimous Juba rule possible. The cost is that an activation driven by those two points can never again be verified against an observation: Bardheere&#39;s record ends 2023-11-30 and Bualle&#39;s 2024-03-14.</p></div>
+<div class="rvw" id="R7"><span class="tag">Review R7</span><span class="hd">The seven-point set cannot be reduced, and two of the points can no longer be checked.</span><p>Restricting to the five gauges that still report would leave the Juba with only Luuq and Dollow, so the only available rule is 2 of 2, which is unanimous and forbidden by this design&#39;s own &ldquo;never all of them&rdquo; constraint, and it adds a false activation in 2015, moving the envelope to 1-in-2.9. Bardheere and Bualle are therefore what make a non-unanimous Juba rule possible. The cost is that an activation driven by those two points can never again be verified against an observation: Bardheere&#39;s record ends 2023-11-30 and Bualle&#39;s 2024-03-14.</p></div>
 
 <div class="tablewrap">
 <table class="data">
@@ -311,7 +312,7 @@ html { scroll-behavior:smooth; }
       It activates once, in 2013, in a year the two-gauge benchmark does not record as a
       flood.
     </div>
-    <h3>How the two rivers behave together</h3>
+    <h3 id="how-the-two-rivers-behave-together">How the two rivers behave together</h3>
     <p>The Shabelle activates more often: 8 of 25 years (1-in-3.2) against the Juba's 6
       (1-in-4.3). There is no year in which the Juba activates and the Shabelle does not;
       the Shabelle alone adds 2014 and 2019. Six activations fall in the same season on
@@ -334,12 +335,11 @@ html { scroll-behavior:smooth; }
       season it crosses first. Since either window releases the full amount, the Juba
       sets the response date in those six years; the Shabelle activates more often and
       adds the years the Juba misses.</p>
-<div class="rvw" id="R1"><span class="tag">Review R1</span><span class="hd">The &ldquo;7 of 8&rdquo; headline rests on a lookahead in the benchmark.</span><p>Each gauge&#39;s return level is fitted on <strong>2000&ndash;2026</strong> while crossings are counted only within 1999&ndash;2023, so three years of post-window data enter the labels. That is what makes 2008 severe: Luuq&#39;s Deyr 1-in-5 level is 5.831 m fitted through 2026 but 5.869 m fitted through 2023, and the 2008 peak is 5.840 m &mdash; a 9 mm margin on a level that moves 38 mm purely from adding future years. Fit strictly to the backtest window and the severe set is 7, not 8, and this configuration catches <strong>7 of 7</strong>. The much-discussed &ldquo;miss in 2008&rdquo; is an artifact of the asymmetry, since trigger thresholds are fitted strictly on 1999&ndash;2023. <strong>Corrected on branch <code>fix/corrected-benchmark-and-lag</code></strong> (not merged, and this page is unchanged); the corrected numbers are used on the <a href="../comparison/">design comparison page</a>.</p></div>
+<div class="rvw" id="R1"><span class="tag">Review R1</span><span class="hd">The &ldquo;7 of 8&rdquo; headline rests on a lookahead in the benchmark.</span><p>Each gauge&#39;s return level is fitted on <strong>2000&ndash;2026</strong> while crossings are counted only within 1999&ndash;2023, so three years of post-window data enter the labels. That is what makes 2008 severe: Luuq&#39;s Deyr 1-in-5 level is 5.831 m fitted through 2026 but 5.869 m fitted through 2023, and the 2008 peak is 5.840 m, a 9 mm margin on a level that moves 38 mm purely from adding future years. Fit strictly to the backtest window and the severe set is 7, not 8, and this configuration catches <strong>7 of 7</strong>. The much-discussed &ldquo;miss in 2008&rdquo; is an artifact of the asymmetry, since trigger thresholds are fitted strictly on 1999&ndash;2023. <strong>Corrected on branch <code>fix/corrected-benchmark-and-lag</code></strong> (not merged, and this page is unchanged); the corrected numbers are used on the <a href="../comparison/">design comparison page</a>.</p></div>
 
     <div class="callout warn altonly">
       <strong>Why GEOGloWS is not in the adopted design.</strong> Its forecasts run
-      <strong>below its own retrospective</strong> &mdash; a median ratio of 0.89 across
-      leads 1&ndash;7 &mdash; so a threshold fitted on the retrospective sits too high for
+      <strong>below its own retrospective</strong>, at a median ratio of 0.89 across leads 1 to 7, so a threshold fitted on the retrospective sits too high for
       the live forecast ever to reach at the intended rate. Quantified across the seven
       monitored points: a level set as <strong>1-in-5 on the retrospective behaves like a
       median 1-in-13 on the forecast</strong>, and as rarely as 1-in-26 at Bardheere and
@@ -349,8 +349,7 @@ html { scroll-behavior:smooth; }
       forecast archive begins in July 2024, roughly two years, which is neither enough to
       refit thresholds on the forecast climatology (this design asks about twelve years
       for a 1-in-3) nor enough to validate a flow-duration-curve correction against
-      anything. The team's Nepal technical note is the cautionary precedent &mdash; SFDC
-      did not rescue event detection there. The working group therefore leaned to
+      anything. The team's Nepal technical note records the same result: SFDC did not rescue event detection there. The working group therefore leaned to
       excluding GEOGloWS on 2026-08-22 and adopted that on 2026-08-28. It stays in this
       view as a comparison, and stays a candidate for reinstatement once two or three Gu
       and Deyr seasons of its forecasts exist.
@@ -364,8 +363,7 @@ html { scroll-behavior:smooth; }
         <li><strong>It agrees with the impact record on the big riverine years.</strong>
           2006, 2018, 2019, 2020 and 2023 are all severe under the rule. Ranked on raw
           EM-DAT totals, though, the third-costliest flood year is 2015 (916,000
-          affected), which the rule does not call a flood at all &mdash; correctly, since
-          that event was in Galgaduud, Mudug and Nugal rather than on either river. The
+          affected), which the rule does not call a flood at all, correctly, since that event was in Galgaduud, Mudug and Nugal rather than on either river. The
           agreement holds only once EM-DAT is filtered to Juba and Shabelle events.</li>
         <li><strong>1999 to 2001 cannot be assessed.</strong> The Juba had no gauge
           reporting and the Shabelle only one, so no consensus is possible and those
@@ -387,7 +385,7 @@ html { scroll-behavior:smooth; }
     </div>
 <div class="rvw" id="R12"><span class="tag">Review R12</span><span class="hd">Some benchmark levels rest on very short gauge records.</span><p>The stated ceiling of &ldquo;a quarter of the record&rdquo; is applied to the forecast thresholds but not to the benchmark. Dollow has 10 Deyr annual maxima after 2000 and is still assigned a 1-in-5 level; Bualle has 16. Since a single gauge crossing decides whether the two-gauge rule is met, a level interpolated from ten values can decide whether a year counts as a flood at all.</p></div>
 
-    <h3>What happens if Google Flood Hub goes away</h3>
+    <h3 id="what-happens-if-google-flood-hub-goes-away">What happens if Google Flood Hub goes away</h3>
     <p>Use the provider switch above. Removing Google returns the configuration to the
       all-providers one: <strong>GEOGloWS takes Juba Gu</strong> and GloFAS v5 takes the
       other three windows. The envelope stays at <strong>1-in-3.2</strong> (8 of 25
@@ -398,7 +396,7 @@ html { scroll-behavior:smooth; }
       backtest.</p>
 <div class="rvw" id="R3"><span class="tag">Review R3</span><span class="hd">There were only ever two distinct provider sets, not three.</span><p>The &ldquo;without Google&rdquo; configuration is numerically identical to &ldquo;all providers&rdquo;, because when GEOGloWS is allowed to compete Google never wins a window. The third switch state has been removed, and the two competing switch controllers that were both live on the page (which corrupted the default view once you clicked) have been reduced to one.</p></div>
 
-<div class="rvw" id="R8"><span class="tag">Review R8</span><span class="hd">Excluding GEOGloWS is a working-group decision; the 2013 activation is its price.</span><p>The decision was taken by the working group (leaning this way on Friday 2026-08-22, adopted 2026-08-28) and the reasoning is sound &mdash; see the callout above for the quantified version. The cost should be recorded alongside it: the all-providers configuration activates in 8 years with <em>no</em> activation outside the benchmark, whereas the adopted one activates in the same number of years but fires in 2013, a year the two-gauge benchmark does not call a flood. Trading one false activation for a model that can actually be operated is a defensible trade; it is just better made explicitly.</p></div>
+<div class="rvw" id="R8"><span class="tag">Review R8</span><span class="hd">Excluding GEOGloWS is a working-group decision; the 2013 activation is its price.</span><p>The decision was taken by the working group (leaning this way on Friday 2026-08-22, adopted 2026-08-28) and the reasoning is sound; the callout above gives the quantified version. The cost should be recorded alongside it: the all-providers configuration activates in 8 years with <em>no</em> activation outside the benchmark, whereas the adopted one activates in the same number of years but fires in 2013, a year the two-gauge benchmark does not call a flood. Trading one false activation for a model that can actually be operated is a defensible trade; it is just better made explicitly.</p></div>
 
     <figure><img src="figs/map_stations.png?v=202609011455" alt="The seven monitored points">
       <figcaption>The seven points the trigger watches, four on the Juba and three on
@@ -408,24 +406,22 @@ html { scroll-behavior:smooth; }
       decisions rather than findings, and are recorded here so they are not mistaken for
       results:
       <ul>
-        <li><strong>One source per river-season window, never a mixture</strong> &mdash;
-          requested by <strong>WFP</strong>, who raised concerns about mixing models inside
+        <li><strong>One source per river-season window, never a mixture</strong>: requested by <strong>WFP</strong>, who raised concerns about mixing models inside
           a window. Tested against the alternative it costs nothing measurable (review note
           R6).</li>
-        <li><strong>GEOGloWS excluded</strong> &mdash; working group, leaning that way
+        <li><strong>GEOGloWS excluded</strong>: working group decision, leaning that way
           2026-08-22 and adopted 2026-08-28, because its forecasts run below its own
           retrospective and its two-year forecast archive is too short either to refit
           thresholds on or to validate a debias against.</li>
-        <li><strong>The envelope activates no more often than 1-in-3</strong> &mdash;
-          directive of 2026-08-27, applied to the union of the four windows rather than to
+        <li><strong>The envelope activates no more often than 1-in-3</strong>: directive of 2026-08-27, applied to the union of the four windows rather than to
           each window.</li>
       </ul>
     </div>
     <h2 id="how-the-model-was-chosen-one-per-river-and-season">How the model was chosen, one per river and season</h2>
-<div class="rvw" id="R5"><span class="tag">Review R5</span><span class="hd">The per-window search does not beat a rule with no search in it &mdash; partly answered.</span><p>Applying one model, one return period and one vote count uniformly to all four windows: <code>Google GRRR, 1-in-6, 3 of 4</code> reproduces the adopted result exactly (8 activations, 1-in-3.2, 7 of 8 severe, the 2013 false alarm). <code>GloFAS v5, 1-in-5, 3 of 4</code> gives 9 activations at 1-in-2.9 with the same 7 of 8 and <em>zero</em> activations outside the benchmark. The roughly 41,000 admissible per-window combinations recover nothing a one-line rule does not. This is consistent with the page&#39;s own statement that many assignments tie, but it is stronger: the per-window freedom is not adding measurable value. <strong>Partly answered by the swap test added 1 September</strong>, which I have reproduced and which holds: at the adopted return periods and vote counts, neither model alone can carry all four windows without breaching the 1-in-3 ceiling &mdash; GloFAS v5 everywhere and Google everywhere both land at 1-in-2.6 &mdash; so the mixed assignment is doing real work, and the Deyr case for GloFAS v5 is clear (Google brings three false activations on the Juba and misses a Shabelle severe year). Those conclusions are unchanged on the corrected benchmark. What remains of this note is narrower: the swap test holds the thresholds fixed at the adopted values, so it shows the <em>assignment</em> is defensible given those settings, not that the configuration as a whole beats a simpler one. A uniform rule at different settings &mdash; Google GRRR, 1-in-6, 3 of 4 in every window &mdash; still reproduces the adopted envelope exactly. Both are true: the assignment is justified, while the tuning around it is not what earns the result.</p></div>
+<div class="rvw" id="R5"><span class="tag">Review R5</span><span class="hd">The per-window search does not beat a rule with no search in it: partly answered.</span><p>Applying one model, one return period and one vote count uniformly to all four windows: <code>Google GRRR, 1-in-6, 3 of 4</code> reproduces the adopted result exactly (8 activations, 1-in-3.2, 7 of 8 severe, the 2013 false alarm). <code>GloFAS v5, 1-in-5, 3 of 4</code> gives 9 activations at 1-in-2.9 with the same 7 of 8 and <em>zero</em> activations outside the benchmark. The roughly 41,000 admissible per-window combinations recover nothing a one-line rule does not. This is consistent with the page&#39;s own statement that many assignments tie, but it is stronger: the per-window freedom is not adding measurable value. <strong>Partly answered by the swap test added 1 September</strong>, which I have reproduced and which holds: at the adopted return periods and vote counts, neither model alone can carry all four windows without breaching the 1-in-3 ceiling, since GloFAS v5 everywhere and Google everywhere both land at 1-in-2.6, so the mixed assignment is doing real work, and the Deyr case for GloFAS v5 is clear (Google brings three false activations on the Juba and misses a Shabelle severe year). Those conclusions are unchanged on the corrected benchmark. What remains of this note is narrower: the swap test holds the thresholds fixed at the adopted values, so it shows the <em>assignment</em> is defensible given those settings, not that the configuration as a whole beats a simpler one. A uniform rule at different settings, Google GRRR at 1-in-6 with 3 of 4 in every window, still reproduces the adopted envelope exactly. Both are true: the assignment is justified, and the tuning around it is not what produces the result.</p></div>
 
     <p>One source per river and season, so four choices. Four steps:</p>
-<div class="rvw" id="R6"><span class="tag">Review R6</span><span class="hd">One model per window comes from WFP, and it costs nothing measurable.</span><p>The constraint is a stakeholder requirement, not a data-driven one: <strong>WFP raised concerns about mixing models</strong> within a window. It is worth recording that it is cost-free on this record. Allowing every model to compete at every point inside a window (a mixed consensus over the same seven points) reaches 7 of 8 severe years at 1-in-3.7; the best single-model configuration reaches the same 7 of 8 at 1-in-3.2. Mixing buys no additional severe year, so the requirement can be honoured without giving anything up &mdash; and it buys a real operational simplification, since one model per window means one threshold transfer to validate rather than several.</p></div>
+<div class="rvw" id="R6"><span class="tag">Review R6</span><span class="hd">One model per window comes from WFP, and it costs nothing measurable.</span><p>The constraint is a stakeholder requirement, not a data-driven one: <strong>WFP raised concerns about mixing models</strong> within a window. On this record it costs nothing measurable. Allowing every model to compete at every point inside a window (a mixed consensus over the same seven points) reaches 7 of 8 severe years at 1-in-3.7; the best single-model configuration reaches the same 7 of 8 at 1-in-3.2. Mixing buys no additional severe year, so the requirement can be honoured without giving anything up, and it simplifies operations, since one model per window means one threshold transfer to validate rather than several.</p></div>
 
 <ol>
 <li><strong>Build the candidate rules.</strong> For a window and a candidate model, put a threshold at every one of the river's points, taken from that model's own annual maxima (1-in-3 to 1-in-6). The window activates in a year when at least N points cross in that season.</li>
@@ -483,20 +479,24 @@ html { scroll-behavior:smooth; }
         rule as its station return period is relaxed; the diamond is the adopted model at its
         adopted return period. With three to seven flood years per window the curves are
         coarse, and the AUC ranks the models rather than measuring them precisely.</figcaption></figure>
-<p class="muted" style="margin:14px 0 4px"><em>Against the severe years: two gauges of the river over their 1-in-5 level in the season.</em></p>
+<p class="muted" style="margin:14px 0 4px"><em>Against the severe years: a year counts as a flood when two of the river's gauges crossed their own 1-in-5 level in that season. A hit is an activation in such a year, a miss is a severe year with no activation, a false alarm is an activation in any other year.</em></p>
 <div class="tablewrap">
 <table class="data" style="font-size:12px">
 <thead><tr><th>window</th><th>model</th><th>hits</th><th>misses</th><th>false alarms</th><th>correct negatives</th><th>POD</th><th>FAR</th><th>POFD</th><th>CSI</th><th>bias</th><th>PSS</th><th>HSS</th><th>F1</th><th>AUC</th></tr></thead>
 <tbody><tr><td>Deyr Juba</td><td>Google</td><td>2</td><td>1</td><td>3</td><td>19</td><td>0.67</td><td>0.60</td><td>0.14</td><td>0.33</td><td>1.67</td><td>0.53</td><td>0.41</td><td>0.50</td><td>0.84</td></tr><tr><td>Deyr Juba</td><td><strong>GloFAS v5</strong></td><td>2</td><td>1</td><td>0</td><td>22</td><td>0.67</td><td>0.00</td><td>0.00</td><td>0.67</td><td>0.67</td><td>0.67</td><td>0.78</td><td>0.80</td><td>0.80</td></tr><tr><td>Deyr Juba</td><td>GloFAS v4</td><td>2</td><td>1</td><td>4</td><td>18</td><td>0.67</td><td>0.67</td><td>0.18</td><td>0.29</td><td>2.00</td><td>0.48</td><td>0.34</td><td>0.44</td><td>0.88</td></tr><tr><td>Deyr Shabelle</td><td>Google</td><td>4</td><td>1</td><td>2</td><td>18</td><td>0.80</td><td>0.33</td><td>0.10</td><td>0.57</td><td>1.20</td><td>0.70</td><td>0.65</td><td>0.73</td><td>0.93</td></tr><tr><td>Deyr Shabelle</td><td><strong>GloFAS v5</strong></td><td>5</td><td>0</td><td>1</td><td>19</td><td>1.00</td><td>0.17</td><td>0.05</td><td>0.83</td><td>1.20</td><td>0.95</td><td>0.88</td><td>0.91</td><td>0.99</td></tr><tr><td>Deyr Shabelle</td><td>GloFAS v4</td><td>3</td><td>2</td><td>3</td><td>17</td><td>0.60</td><td>0.50</td><td>0.15</td><td>0.38</td><td>1.20</td><td>0.45</td><td>0.42</td><td>0.55</td><td>0.75</td></tr><tr><td>Gu Juba</td><td><strong>Google</strong></td><td>2</td><td>1</td><td>2</td><td>20</td><td>0.67</td><td>0.50</td><td>0.09</td><td>0.40</td><td>1.33</td><td>0.58</td><td>0.50</td><td>0.57</td><td>0.95</td></tr><tr><td>Gu Juba</td><td>GloFAS v5</td><td>2</td><td>1</td><td>2</td><td>20</td><td>0.67</td><td>0.50</td><td>0.09</td><td>0.40</td><td>1.33</td><td>0.58</td><td>0.50</td><td>0.57</td><td>0.89</td></tr><tr><td>Gu Juba</td><td>GloFAS v4</td><td>2</td><td>1</td><td>2</td><td>20</td><td>0.67</td><td>0.50</td><td>0.09</td><td>0.40</td><td>1.33</td><td>0.58</td><td>0.50</td><td>0.57</td><td>0.91</td></tr><tr><td>Gu Shabelle</td><td><strong>Google</strong></td><td>2</td><td>1</td><td>2</td><td>20</td><td>0.67</td><td>0.50</td><td>0.09</td><td>0.40</td><td>1.33</td><td>0.58</td><td>0.50</td><td>0.57</td><td>0.89</td></tr><tr><td>Gu Shabelle</td><td>GloFAS v5</td><td>2</td><td>1</td><td>2</td><td>20</td><td>0.67</td><td>0.50</td><td>0.09</td><td>0.40</td><td>1.33</td><td>0.58</td><td>0.50</td><td>0.57</td><td>0.89</td></tr><tr><td>Gu Shabelle</td><td>GloFAS v4</td><td>1</td><td>2</td><td>3</td><td>19</td><td>0.33</td><td>0.75</td><td>0.14</td><td>0.17</td><td>1.33</td><td>0.20</td><td>0.17</td><td>0.29</td><td>0.80</td></tr><tr style='border-top:2px solid #cbd5e1'><td><strong>Envelope</strong> (any window)</td><td>adopted assignment</td><td>7</td><td>0</td><td>1</td><td>17</td><td>1.00</td><td>0.12</td><td>0.06</td><td>0.88</td><td>1.14</td><td>0.94</td><td>0.90</td><td>0.93</td><td></td></tr></tbody>
 </table>
 </div>
-<p class="muted" style="margin:14px 0 4px"><em>Against the flood years: two gauges over their 1-in-3 level in the season.</em></p>
+<details class="supp"><summary>The same scores against the wider flood years (two gauges over 1-in-3)</summary>
+<div class="supp-body">
+<p class="muted" style="margin:14px 0 4px"><em>The same activations, scored against the wider benchmark: two gauges over their own 1-in-3 level in that season.</em></p>
 <div class="tablewrap">
 <table class="data" style="font-size:12px">
 <thead><tr><th>window</th><th>model</th><th>hits</th><th>misses</th><th>false alarms</th><th>correct negatives</th><th>POD</th><th>FAR</th><th>POFD</th><th>CSI</th><th>bias</th><th>PSS</th><th>HSS</th><th>F1</th><th>AUC</th></tr></thead>
 <tbody><tr><td>Deyr Juba</td><td>Google</td><td>2</td><td>3</td><td>3</td><td>17</td><td>0.40</td><td>0.60</td><td>0.15</td><td>0.25</td><td>1.00</td><td>0.25</td><td>0.25</td><td>0.40</td><td>0.82</td></tr><tr><td>Deyr Juba</td><td><strong>GloFAS v5</strong></td><td>2</td><td>3</td><td>0</td><td>20</td><td>0.40</td><td>0.00</td><td>0.00</td><td>0.40</td><td>0.40</td><td>0.40</td><td>0.52</td><td>0.57</td><td>0.75</td></tr><tr><td>Deyr Juba</td><td>GloFAS v4</td><td>3</td><td>2</td><td>3</td><td>17</td><td>0.60</td><td>0.50</td><td>0.15</td><td>0.38</td><td>1.20</td><td>0.45</td><td>0.42</td><td>0.55</td><td>0.83</td></tr><tr><td>Deyr Shabelle</td><td>Google</td><td>5</td><td>1</td><td>1</td><td>18</td><td>0.83</td><td>0.17</td><td>0.05</td><td>0.71</td><td>1.00</td><td>0.78</td><td>0.78</td><td>0.83</td><td>0.94</td></tr><tr><td>Deyr Shabelle</td><td><strong>GloFAS v5</strong></td><td>5</td><td>1</td><td>1</td><td>18</td><td>0.83</td><td>0.17</td><td>0.05</td><td>0.71</td><td>1.00</td><td>0.78</td><td>0.78</td><td>0.83</td><td>0.92</td></tr><tr><td>Deyr Shabelle</td><td>GloFAS v4</td><td>3</td><td>3</td><td>3</td><td>16</td><td>0.50</td><td>0.50</td><td>0.16</td><td>0.33</td><td>1.00</td><td>0.34</td><td>0.34</td><td>0.50</td><td>0.72</td></tr><tr><td>Gu Juba</td><td><strong>Google</strong></td><td>3</td><td>3</td><td>1</td><td>18</td><td>0.50</td><td>0.25</td><td>0.05</td><td>0.43</td><td>0.67</td><td>0.45</td><td>0.50</td><td>0.60</td><td>0.95</td></tr><tr><td>Gu Juba</td><td>GloFAS v5</td><td>4</td><td>2</td><td>0</td><td>19</td><td>0.67</td><td>0.00</td><td>0.00</td><td>0.67</td><td>0.67</td><td>0.67</td><td>0.75</td><td>0.80</td><td>0.98</td></tr><tr><td>Gu Juba</td><td>GloFAS v4</td><td>4</td><td>2</td><td>0</td><td>19</td><td>0.67</td><td>0.00</td><td>0.00</td><td>0.67</td><td>0.67</td><td>0.67</td><td>0.75</td><td>0.80</td><td>0.99</td></tr><tr><td>Gu Shabelle</td><td><strong>Google</strong></td><td>3</td><td>4</td><td>1</td><td>17</td><td>0.43</td><td>0.25</td><td>0.06</td><td>0.38</td><td>0.57</td><td>0.37</td><td>0.43</td><td>0.55</td><td>0.92</td></tr><tr><td>Gu Shabelle</td><td>GloFAS v5</td><td>4</td><td>3</td><td>0</td><td>18</td><td>0.57</td><td>0.00</td><td>0.00</td><td>0.57</td><td>0.57</td><td>0.57</td><td>0.66</td><td>0.73</td><td>0.96</td></tr><tr><td>Gu Shabelle</td><td>GloFAS v4</td><td>4</td><td>3</td><td>0</td><td>18</td><td>0.57</td><td>0.00</td><td>0.00</td><td>0.57</td><td>0.57</td><td>0.57</td><td>0.66</td><td>0.73</td><td>0.82</td></tr><tr style='border-top:2px solid #cbd5e1'><td><strong>Envelope</strong> (any window)</td><td>adopted assignment</td><td>7</td><td>5</td><td>1</td><td>12</td><td>0.58</td><td>0.12</td><td>0.08</td><td>0.54</td><td>0.67</td><td>0.51</td><td>0.51</td><td>0.70</td><td></td></tr></tbody>
 </table>
 </div>
+</div></details>
+
     <p>Against the severe years the envelope has POD 1.00, FAR 0.12 and POFD
       0.06: seven hits, no misses, one activation outside the benchmark (2013).
       CSI 0.88, bias 1.14, PSS 0.94, HSS 0.90. Window
@@ -637,38 +637,40 @@ html { scroll-behavior:smooth; }
     <p>This section gathers the station-level results. The table scores Google and GloFAS
       v5 at each of the seven points, per season, on two things: how closely its daily
       series ranks the days like the gauge's level record (Spearman rank correlation at the
-      best lag between minus 10 and plus 30 days, positive when the model leads the gauge),
+      best lag between minus 10 and plus 30 days, positive when the model leads the gauge;
+      the search shifts the gauge's full-year series, so it does not suffer the understated
+      lags that review note R2 flags in the selection table above),
       and whether the model's own 1-in-3 and 1-in-5 crossings in a season match the gauge's
       own crossings, counted by year over the years the gauge reported (at least 30 readings
       in the season, 2000 to 2023). Gauge levels are fitted on 2000 to 2023 and model
       thresholds on 1999 to 2023, as elsewhere on the page. The adopted model for each window
       is in bold. Bardheere's and Bualle's records are short or suspect (see the tail-ratio
       figure above), so their rows carry less weight.</p>
-<h3>Juba</h3>
+<h4>Juba</h4>
 <div class="tablewrap">
 <table class="data" style="font-size:12px">
 <thead><tr><th rowspan="2">station</th><th rowspan="2">season</th><th rowspan="2">model</th><th rowspan="2">rank corr. (best lag)</th><th rowspan="2">lag, days</th><th rowspan="2">gauge years</th><th colspan="5">gauge 1-in-3 crossings</th><th colspan="5">gauge 1-in-5 crossings</th></tr><tr><th>caught</th><th>false alarms</th><th>POD</th><th>FAR</th><th>CSI</th><th>caught</th><th>false alarms</th><th>POD</th><th>FAR</th><th>CSI</th></tr></thead>
-<tbody><tr style='border-top:2px solid #cbd5e1'><td>Dollow</td><td>Deyr</td><td>Google</td><td>0.60</td><td>-6</td><td>8</td><td>1 of 2</td><td>2</td><td>0.50</td><td>0.67</td><td>0.25</td><td>1 of 1</td><td>2</td><td>1.00</td><td>0.67</td><td>0.33</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.83</td><td>+1</td><td>8</td><td>2 of 2</td><td>1</td><td>1.00</td><td>0.33</td><td>0.67</td><td>1 of 1</td><td>2</td><td>1.00</td><td>0.67</td><td>0.33</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Dollow</td><td>Gu</td><td><strong>Google</strong></td><td>0.84</td><td>+1</td><td>9</td><td>3 of 3</td><td>1</td><td>1.00</td><td>0.25</td><td>0.75</td><td>2 of 2</td><td>2</td><td>1.00</td><td>0.50</td><td>0.50</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.79</td><td>-2</td><td>9</td><td>3 of 3</td><td>1</td><td>1.00</td><td>0.25</td><td>0.75</td><td>2 of 2</td><td>1</td><td>1.00</td><td>0.33</td><td>0.67</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Luuq</td><td>Deyr</td><td>Google</td><td>0.60</td><td>-6</td><td>23</td><td>6 of 8</td><td>2</td><td>0.75</td><td>0.25</td><td>0.60</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.84</td><td>+1</td><td>23</td><td>4 of 8</td><td>4</td><td>0.50</td><td>0.50</td><td>0.33</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Luuq</td><td>Gu</td><td><strong>Google</strong></td><td>0.87</td><td>+0</td><td>22</td><td>6 of 7</td><td>2</td><td>0.86</td><td>0.25</td><td>0.67</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.85</td><td>+0</td><td>22</td><td>6 of 7</td><td>2</td><td>0.86</td><td>0.25</td><td>0.67</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bardheere</td><td>Deyr</td><td>Google</td><td>0.51</td><td>-9</td><td>23</td><td>3 of 4</td><td>5</td><td>0.75</td><td>0.62</td><td>0.33</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.77</td><td>+2</td><td>23</td><td>2 of 4</td><td>6</td><td>0.50</td><td>0.75</td><td>0.20</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bardheere</td><td>Gu</td><td><strong>Google</strong></td><td>0.86</td><td>+1</td><td>22</td><td>5 of 7</td><td>3</td><td>0.71</td><td>0.38</td><td>0.50</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.85</td><td>-1</td><td>22</td><td>5 of 7</td><td>3</td><td>0.71</td><td>0.38</td><td>0.50</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bualle</td><td>Deyr</td><td>Google</td><td>0.68</td><td>-8</td><td>16</td><td>2 of 5</td><td>3</td><td>0.40</td><td>0.60</td><td>0.25</td><td>1 of 3</td><td>2</td><td>0.33</td><td>0.67</td><td>0.20</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.83</td><td>+2</td><td>16</td><td>3 of 5</td><td>3</td><td>0.60</td><td>0.50</td><td>0.38</td><td>1 of 3</td><td>2</td><td>0.33</td><td>0.67</td><td>0.20</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bualle</td><td>Gu</td><td><strong>Google</strong></td><td>0.88</td><td>+4</td><td>16</td><td>5 of 5</td><td>1</td><td>1.00</td><td>0.17</td><td>0.83</td><td>2 of 3</td><td>3</td><td>0.67</td><td>0.60</td><td>0.33</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.84</td><td>-4</td><td>16</td><td>4 of 5</td><td>2</td><td>0.80</td><td>0.33</td><td>0.57</td><td>2 of 3</td><td>3</td><td>0.67</td><td>0.60</td><td>0.33</td></tr></tbody>
+<tbody><tr style='border-top:2px solid #cbd5e1'><td>Dollow</td><td>Deyr</td><td>Google</td><td>0.59</td><td>-1</td><td>8</td><td>1 of 2</td><td>2</td><td>0.50</td><td>0.67</td><td>0.25</td><td>1 of 1</td><td>2</td><td>1.00</td><td>0.67</td><td>0.33</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.84</td><td>+2</td><td>8</td><td>2 of 2</td><td>1</td><td>1.00</td><td>0.33</td><td>0.67</td><td>1 of 1</td><td>2</td><td>1.00</td><td>0.67</td><td>0.33</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Dollow</td><td>Gu</td><td><strong>Google</strong></td><td>0.84</td><td>+1</td><td>9</td><td>3 of 3</td><td>1</td><td>1.00</td><td>0.25</td><td>0.75</td><td>2 of 2</td><td>2</td><td>1.00</td><td>0.50</td><td>0.50</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.79</td><td>-1</td><td>9</td><td>3 of 3</td><td>1</td><td>1.00</td><td>0.25</td><td>0.75</td><td>2 of 2</td><td>1</td><td>1.00</td><td>0.33</td><td>0.67</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Luuq</td><td>Deyr</td><td>Google</td><td>0.58</td><td>-5</td><td>23</td><td>6 of 8</td><td>2</td><td>0.75</td><td>0.25</td><td>0.60</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.85</td><td>+3</td><td>23</td><td>4 of 8</td><td>4</td><td>0.50</td><td>0.50</td><td>0.33</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Luuq</td><td>Gu</td><td><strong>Google</strong></td><td>0.87</td><td>+0</td><td>22</td><td>6 of 7</td><td>2</td><td>0.86</td><td>0.25</td><td>0.67</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.85</td><td>+0</td><td>22</td><td>6 of 7</td><td>2</td><td>0.86</td><td>0.25</td><td>0.67</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bardheere</td><td>Deyr</td><td>Google</td><td>0.49</td><td>-7</td><td>23</td><td>3 of 4</td><td>5</td><td>0.75</td><td>0.62</td><td>0.33</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.78</td><td>+4</td><td>23</td><td>2 of 4</td><td>6</td><td>0.50</td><td>0.75</td><td>0.20</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bardheere</td><td>Gu</td><td><strong>Google</strong></td><td>0.86</td><td>+1</td><td>22</td><td>5 of 7</td><td>3</td><td>0.71</td><td>0.38</td><td>0.50</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.85</td><td>-1</td><td>22</td><td>5 of 7</td><td>3</td><td>0.71</td><td>0.38</td><td>0.50</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bualle</td><td>Deyr</td><td>Google</td><td>0.66</td><td>-5</td><td>16</td><td>2 of 5</td><td>3</td><td>0.40</td><td>0.60</td><td>0.25</td><td>1 of 3</td><td>2</td><td>0.33</td><td>0.67</td><td>0.20</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.83</td><td>+3</td><td>16</td><td>3 of 5</td><td>3</td><td>0.60</td><td>0.50</td><td>0.38</td><td>1 of 3</td><td>2</td><td>0.33</td><td>0.67</td><td>0.20</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bualle</td><td>Gu</td><td><strong>Google</strong></td><td>0.88</td><td>+4</td><td>16</td><td>5 of 5</td><td>1</td><td>1.00</td><td>0.17</td><td>0.83</td><td>2 of 3</td><td>3</td><td>0.67</td><td>0.60</td><td>0.33</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.84</td><td>-4</td><td>16</td><td>4 of 5</td><td>2</td><td>0.80</td><td>0.33</td><td>0.57</td><td>2 of 3</td><td>3</td><td>0.67</td><td>0.60</td><td>0.33</td></tr></tbody>
 </table>
 </div>
-<h3>Shabelle</h3>
+<h4>Shabelle</h4>
 <div class="tablewrap">
 <table class="data" style="font-size:12px">
 <thead><tr><th rowspan="2">station</th><th rowspan="2">season</th><th rowspan="2">model</th><th rowspan="2">rank corr. (best lag)</th><th rowspan="2">lag, days</th><th rowspan="2">gauge years</th><th colspan="5">gauge 1-in-3 crossings</th><th colspan="5">gauge 1-in-5 crossings</th></tr><tr><th>caught</th><th>false alarms</th><th>POD</th><th>FAR</th><th>CSI</th><th>caught</th><th>false alarms</th><th>POD</th><th>FAR</th><th>CSI</th></tr></thead>
-<tbody><tr style='border-top:2px solid #cbd5e1'><td>Belet Weyne</td><td>Deyr</td><td>Google</td><td>0.63</td><td>+2</td><td>22</td><td>6 of 6</td><td>1</td><td>1.00</td><td>0.14</td><td>0.86</td><td>4 of 4</td><td>1</td><td>1.00</td><td>0.20</td><td>0.80</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.82</td><td>+2</td><td>22</td><td>5 of 6</td><td>3</td><td>0.83</td><td>0.38</td><td>0.56</td><td>4 of 4</td><td>1</td><td>1.00</td><td>0.20</td><td>0.80</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Belet Weyne</td><td>Gu</td><td><strong>Google</strong></td><td>0.80</td><td>+6</td><td>22</td><td>6 of 7</td><td>1</td><td>0.86</td><td>0.14</td><td>0.75</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.79</td><td>-4</td><td>22</td><td>6 of 7</td><td>1</td><td>0.86</td><td>0.14</td><td>0.75</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bulo Burti</td><td>Deyr</td><td>Google</td><td>0.55</td><td>+3</td><td>22</td><td>5 of 7</td><td>2</td><td>0.71</td><td>0.29</td><td>0.56</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.76</td><td>+2</td><td>22</td><td>6 of 7</td><td>2</td><td>0.86</td><td>0.25</td><td>0.67</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bulo Burti</td><td>Gu</td><td><strong>Google</strong></td><td>0.78</td><td>+3</td><td>22</td><td>6 of 7</td><td>1</td><td>0.86</td><td>0.14</td><td>0.75</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.78</td><td>-6</td><td>22</td><td>6 of 7</td><td>1</td><td>0.86</td><td>0.14</td><td>0.75</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Jowhar</td><td>Deyr</td><td>Google</td><td>0.57</td><td>+4</td><td>23</td><td>5 of 10</td><td>3</td><td>0.50</td><td>0.38</td><td>0.38</td><td>2 of 6</td><td>3</td><td>0.33</td><td>0.60</td><td>0.22</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.78</td><td>+0</td><td>23</td><td>3 of 10</td><td>4</td><td>0.30</td><td>0.57</td><td>0.21</td><td>2 of 6</td><td>3</td><td>0.33</td><td>0.60</td><td>0.22</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Jowhar</td><td>Gu</td><td><strong>Google</strong></td><td>0.78</td><td>+3</td><td>24</td><td>3 of 8</td><td>5</td><td>0.38</td><td>0.62</td><td>0.23</td><td>3 of 7</td><td>2</td><td>0.43</td><td>0.40</td><td>0.33</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.77</td><td>-9</td><td>24</td><td>3 of 8</td><td>5</td><td>0.38</td><td>0.62</td><td>0.23</td><td>2 of 7</td><td>3</td><td>0.29</td><td>0.60</td><td>0.20</td></tr></tbody>
+<tbody><tr style='border-top:2px solid #cbd5e1'><td>Belet Weyne</td><td>Deyr</td><td>Google</td><td>0.63</td><td>+4</td><td>22</td><td>6 of 6</td><td>1</td><td>1.00</td><td>0.14</td><td>0.86</td><td>4 of 4</td><td>1</td><td>1.00</td><td>0.20</td><td>0.80</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.83</td><td>+4</td><td>22</td><td>5 of 6</td><td>3</td><td>0.83</td><td>0.38</td><td>0.56</td><td>4 of 4</td><td>1</td><td>1.00</td><td>0.20</td><td>0.80</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Belet Weyne</td><td>Gu</td><td><strong>Google</strong></td><td>0.81</td><td>+6</td><td>22</td><td>6 of 7</td><td>1</td><td>0.86</td><td>0.14</td><td>0.75</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.78</td><td>-3</td><td>22</td><td>6 of 7</td><td>1</td><td>0.86</td><td>0.14</td><td>0.75</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bulo Burti</td><td>Deyr</td><td>Google</td><td>0.55</td><td>+5</td><td>22</td><td>5 of 7</td><td>2</td><td>0.71</td><td>0.29</td><td>0.56</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.78</td><td>+6</td><td>22</td><td>6 of 7</td><td>2</td><td>0.86</td><td>0.25</td><td>0.67</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Bulo Burti</td><td>Gu</td><td><strong>Google</strong></td><td>0.79</td><td>+5</td><td>22</td><td>6 of 7</td><td>1</td><td>0.86</td><td>0.14</td><td>0.75</td><td>2 of 4</td><td>3</td><td>0.50</td><td>0.60</td><td>0.29</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.77</td><td>-6</td><td>22</td><td>6 of 7</td><td>1</td><td>0.86</td><td>0.14</td><td>0.75</td><td>3 of 4</td><td>2</td><td>0.75</td><td>0.40</td><td>0.50</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Jowhar</td><td>Deyr</td><td>Google</td><td>0.58</td><td>+5</td><td>23</td><td>5 of 10</td><td>3</td><td>0.50</td><td>0.38</td><td>0.38</td><td>2 of 6</td><td>3</td><td>0.33</td><td>0.60</td><td>0.22</td></tr><tr><td></td><td></td><td><strong>GloFAS v5</strong></td><td>0.80</td><td>+7</td><td>23</td><td>3 of 10</td><td>4</td><td>0.30</td><td>0.57</td><td>0.21</td><td>2 of 6</td><td>3</td><td>0.33</td><td>0.60</td><td>0.22</td></tr><tr style='border-top:2px solid #cbd5e1'><td>Jowhar</td><td>Gu</td><td><strong>Google</strong></td><td>0.78</td><td>+4</td><td>24</td><td>3 of 8</td><td>5</td><td>0.38</td><td>0.62</td><td>0.23</td><td>3 of 7</td><td>2</td><td>0.43</td><td>0.40</td><td>0.33</td></tr><tr><td></td><td></td><td>GloFAS v5</td><td>0.75</td><td>-9</td><td>24</td><td>3 of 8</td><td>5</td><td>0.38</td><td>0.62</td><td>0.23</td><td>2 of 7</td><td>3</td><td>0.29</td><td>0.60</td><td>0.20</td></tr></tbody>
 </table>
 </div>
     <p>In Gu, Google has the highest rank correlation with the Juba gauges (0.84 to 0.88 at
-      Dollow, Luuq, Bardheere and Bualle) and is level with GloFAS v5 on the Shabelle. In
-      Deyr, GloFAS v5 tracks every point better (0.76 to 0.84, against 0.51 to 0.68 for
-      Google, whose best lags on the Juba are negative: it trails the gauge). Single-point
+      Dollow, Luuq, Bardheere and Bualle) and is a little ahead of GloFAS v5 on the Shabelle.
+      In Deyr, GloFAS v5 tracks every point better (0.78 to 0.85, against 0.49 to 0.66 for
+      Google, whose best lags on the Juba are negative: it trails the gauge there). Single-point
       detection is weak for both models. At 1-in-3 a point
       catches one to three of its gauge's events with one to five false alarms, and the
       models disagree on which years those are. This is the basis for requiring a consensus
       of points and for judging the trigger at window level.</p>
     <details class="supp"><summary>Event matching per gauge: hit and false-alarm rates on 1-in-3 crossings</summary>
     <div class="supp-body">
-    <h3>How each model maps the 1-in-3 events, gauge by gauge (event matching within 7 days)</h3>
+    <h3 id="how-each-model-maps-the-1-in-3-events-gauge-by-gauge-event-m">How each model maps the 1-in-3 events, gauge by gauge (event matching within 7 days)</h3>
     <p>The second question is whether a model is above its own 1-in-3 threshold when the
       gauge is above its own. That is the event the trigger has to catch.</p>
     <p class="muted stdonly"><em>GEOGloWS is not in the adopted set and is not shown
@@ -684,17 +686,19 @@ html { scroll-behavior:smooth; }
 
 
 
+
+
+
     </div></details>
     <p class="muted carrynote"><em>The seasonal-peak comparison is a static figure showing every candidate model. It is available under <strong>All providers</strong>.</em></p>
-<details class="supp altonly"><summary>Supporting evidence &mdash; seasonal peaks, model vs gauge</summary>
+<details class="supp altonly"><summary>Supporting evidence: seasonal peaks, model vs gauge</summary>
 <div class="supp-body">
-    <h3>Seasonal peaks: model vs gauge</h3>
+    <h3 id="seasonal-peaks-model-vs-gauge">Seasonal peaks: model vs gauge</h3>
     <p class="muted"><em>Carried over unchanged from the published multi-source study: this diagnostic compares models, so it does not depend on how many points vote or where the thresholds sit.</em></p>
 
     <p>Daily rank correlation can flatter a model that merely tracks the seasonal cycle.
        The sharper diagnostic is <strong>one point per season-year</strong>: the model's
-       seasonal peak against the observed seasonal peak at the reference gauge — does the
-       model rank the <em>years</em> correctly? For display each model's peak is divided by
+       seasonal peak against the observed seasonal peak at the reference gauge, which shows whether the model ranks the <em>years</em> in the right order. For display each model's peak is divided by
        its <strong>own</strong> 1-in-6 threshold (rank correlation is unaffected by the
        normalisation), so the quadrants read directly: top-right = the model ran over its
        own threshold in a year the gauge also ran high.</p>
@@ -710,8 +714,8 @@ html { scroll-behavior:smooth; }
 
     <div class="tablewrap">
     <table class="data">
-      <tr><th>window</th><th colspan="3">peak Spearman ρ — reanalysis (n = 21–25)</th>
-          <th colspan="2">peak ρ — reforecast ≤ 6 d</th></tr>
+      <tr><th>window</th><th colspan="3">peak Spearman ρ, reanalysis (n = 21–25)</th>
+          <th colspan="2">peak ρ, reforecast ≤ 6 d</th></tr>
       <tr><th></th><th>GEOGloWS</th><th>GloFAS v5</th><th>Google GRRR</th>
           <th>GloFAS v4 (proxy)</th><th>Google GRRR</th></tr>
       <tr><td><em>Juba Gu</em></td><td>0.65</td><td>0.64</td><td><strong>0.85</strong></td>
@@ -729,37 +733,31 @@ html { scroll-behavior:smooth; }
       <img src="figs/i_peaks_reforecast.png?v=202609011455" alt="Scatter plots of reforecast seasonal peaks versus SWALIM observed peaks, by river and season">
       <figcaption>Operational record: the ≤ 6-day reforecast signal's seasonal peaks,
         normalised by a 1-in-6 threshold fitted on the reforecast's own seasonal maxima
-        (GRRR's 8-season archive makes its own threshold estimate wide — treat its vertical
-        placement, not its ranking, with caution).</figcaption>
+        (GRRR's 8-season archive makes its own threshold estimate wide, so treat its vertical placement with caution rather than its ranking).</figcaption>
     </figure>
 
 
 
 </div></details>
     <p class="muted carrynote"><em>The forecast-vs-own-reanalysis comparison is a static figure showing every candidate model. It is available under <strong>All providers</strong>.</em></p>
-<details class="supp altonly"><summary>Supporting evidence &mdash; forecast skill against each model&#39;s own reanalysis</summary>
+<details class="supp altonly"><summary>Supporting evidence: forecast skill against each model&#39;s own reanalysis</summary>
 <div class="supp-body">
-    <h3>Forecast skill against each model's own reanalysis</h3>
+    <h3 id="forecast-skill-against-each-model-s-own-reanalysis">Forecast skill against each model's own reanalysis</h3>
     <p class="muted"><em>Carried over unchanged from the published multi-source study: this diagnostic compares models, so it does not depend on how many points vote or where the thresholds sit.</em></p>
 
     <p>The assume-bias-for-all-sources rule, quantified: per model and lead time, how well
-       the forecast reproduces the model's <em>own</em> reanalysis or retrospective — rank
-       correlation (does it track itself?) and the median forecast/reanalysis ratio (is it
-       biased against its own climatology?). Computed per station on flood-season days,
+       the forecast reproduces the model's <em>own</em> reanalysis or retrospective, by rank correlation (whether it tracks itself) and the median forecast/reanalysis ratio (whether it is biased against its own climatology). Computed per station on flood-season days,
        median across the 18 stations.</p>
 
     <figure>
       <img src="figs/f_own_skill.png?v=202609011455" alt="Two panels: Spearman correlation of forecast versus own reanalysis by lead time, and median forecast-to-reanalysis ratio by lead time, for the three models">
       <figcaption>GloFAS v4 (2003–2023) and Google GRRR (2016–2023) forecasts are
-        essentially self-consistent at action leads: rank ρ ≥ 0.99, ratio ≈ 1.00 — the
-        licence for calibrating their thresholds on reanalysis. GloFAS drifts to ~0.90×
-        by lead 12 (readiness band, shaded) — its 7–12-day thresholds should anticipate
-        that. <strong>GEOGloWS runs 0.85–0.91× its own retrospective even at lead 1</strong>
-        (ρ ~0.82), on only ~2 years of archive (2024–26) — retrospective-fitted thresholds
+        essentially self-consistent at action leads: rank ρ ≥ 0.99, ratio about 1.00, which is what licenses calibrating their thresholds on reanalysis. GloFAS drifts to ~0.90×
+        by lead 12 (readiness band, shaded), so its 8-to-12-day thresholds should anticipate that. <strong>GEOGloWS runs 0.85–0.91× its own retrospective even at lead 1</strong>
+        (ρ ~0.82), on only ~2 years of archive (2024 to 2026), so retrospective-fitted thresholds
         will activate less often than intended on its live forecasts until refit on
         forecast climatology. <strong>GloFAS v5 has no forecast yet</strong>, so its
-        consistency with the v5 reanalysis cannot be tested until one ships — the single
-        most important gap.</figcaption>
+        consistency with the v5 reanalysis cannot be tested until one ships, which is the largest remaining gap.</figcaption>
     </figure>
 
 </div></details>
@@ -777,15 +775,12 @@ html { scroll-behavior:smooth; }
         every year it activates, the Shabelle activates too (review note R4).</span><span
         class="altonly">The all-providers configuration, same layout, with GEOGloWS
         carrying Juba Gu: the same envelope (8 years, 1-in-3.2) and the same 7 of 8
-        severe coverage, but no activation outside the benchmark &mdash; it does not
-        activate in 2013.</span> With 25-year records, one hit moves coverage by ~12&ndash;15
-        points &mdash; differences under ~0.15 are noise.</figcaption>
+        severe coverage, but no activation outside the benchmark: it does not activate in 2013.</span> With 25-year records, one hit moves coverage by about 12 to 15 points, so differences under about 0.15 are noise.</figcaption>
     </figure>
 
-        <h3>How far apart do the points cross?</h3>
+        <h3 id="how-far-apart-do-the-points-cross">How far apart do the points cross?</h3>
     <p>A window activates only when enough points are above their thresholds
-      <strong>on the same day</strong>, not just in the same season. How tight are the
-      crossings in practice?</p>
+      <strong>on the same day</strong>, not just in the same season. The crossings are tight.</p>
     <p>Across every activation, the first and last point to cross fall <strong>0 to 5
       days apart</strong>, and they cross in downstream order: Dollow, Luuq, Bardheere,
       Bualle on the Juba; Belet Weyne, Bulo Burti, Jowhar on the Shabelle. Shabelle Gu
@@ -793,7 +788,7 @@ html { scroll-behavior:smooth; }
       Because high flows persist for weeks, same-day overlap is reached even where the
       first crossings are a week or more apart, as in Juba Deyr 2023 (11 days between
       Dollow and Bualle, yet four points above at once).</p>
-    <p>The exception is instructive. Juba Deyr 2015 had Dollow crossing on 24 October and
+    <p>One season breaks the pattern. Juba Deyr 2015 had Dollow crossing on 24 October and
       the other three between 10 and 13 November, 20 days later: two separate pulses
       rather than one flood wave. Same-day overlap never reached three, so the window did
       not activate, which is the behaviour we want.</p>
@@ -809,22 +804,20 @@ html { scroll-behavior:smooth; }
       apart. The same-day rule is therefore kept, and a tolerance is a lever for later if
       the activation rate is allowed to rise.
     </div>
-<h3>Calibrated on the reanalysis, checked on the forecasts</h3>
+<h3 id="calibrated-on-the-reanalysis-checked-on-the-forecasts">Calibrated on the reanalysis, checked on the forecasts</h3>
 <p>Refitting the same rule on the forecast archives themselves, 2003&ndash;2023, thresholds from 1-in-3 to 1-in-5. Out of the field: Google GRRR, whose archive is too short to carry a 1-in-3 threshold, so it can only be calibrated on the retrospective.</p><div class="tablewrap">
 <table class="data">
 <thead><tr><th>window</th><th>source</th><th>gauge threshold</th><th>points that must agree</th><th>would have activated in</th></tr></thead>
 <tbody><tr><td>Juba Gu</td><td>GloFAS v4</td><td>1-in-3</td><td>2 of 4</td><td>2005, 2010, 2013, 2016, 2018, 2020, 2023</td></tr><tr><td>Juba Deyr</td><td>GloFAS v4</td><td>1-in-5</td><td>3 of 4</td><td>2015, 2017, 2023</td></tr><tr><td>Shabelle Gu</td><td>GloFAS v4</td><td>1-in-4</td><td>2 of 3</td><td>2005, 2010, 2016, 2018</td></tr><tr><td>Shabelle Deyr</td><td>GloFAS v4</td><td>1-in-5</td><td>2 of 3</td><td>2010, 2013, 2019, 2020</td></tr></tbody>
 </table>
 </div><p><strong>Envelope 1-in-2.2</strong> (10 of 21 years), catching 5 of the 8 severe years. This is the closest rate the forecast record supports; nothing lands on 1-in-3.</p>
-<details class="supp"><summary>Supporting evidence &mdash; the tuning surface</summary>
+<details class="supp"><summary>Supporting evidence: the tuning surface</summary>
 <div class="supp-body">
-<h3>The tuning surface</h3>
-    <p>The Nigeria-style grid search (per state there; per river × season here — the same
-       recipe as P. Wairimu's
+<h3 id="the-tuning-surface">The tuning surface</h3>
+    <p>The Nigeria-style grid search (per state there; per river and season here, the same recipe as P. Wairimu's
        <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/08_trigger_grid.ipynb">notebook 08</a>):
        every (per-pair RP threshold, N pairs required) cell is scored against the seasonal
-       SWALIM benchmark. The adopted cell is <em>not</em> always the best single-window
-       score — it is the best choice subject to the river-level constraints (near-equal
+       SWALIM benchmark. The adopted cell is <em>not</em> always the best single-window score: it is the best choice subject to the river-level constraints (near-equal
        per-river frequency across the Gu+Deyr union, severe-coverage-first, ≥ 3-yr
        overall enforced jointly across the rivers). With 4–5-pair pools the surface is
        small enough to read whole: the neighbors show what loosening a leg would cost in
@@ -834,24 +827,22 @@ html { scroll-behavior:smooth; }
       <img src="figs/c_grid_heatmaps.png?v=202609011455" alt="Twelve heatmaps: for each of the four windows, POD, FAR and activation return period over the per-pair RP threshold by N-required grid, with the adopted cell outlined">
       <figcaption>POD and FAR are vs the seasonal 1-in-3 SWALIM benchmark; black box =
         the adopted configuration. Dark = high POD / low FAR / frequent activation.
-        With 7–8 benchmark events per window, one hit moves POD by ~12 points — broad
-        plateaus, not sharp optima, are the honest reading.</figcaption>
+        With 7–8 benchmark events per window, one hit moves POD by about 12 points, so the surface shows broad plateaus rather than sharp optima.</figcaption>
     </figure>
 
 </div></details>
 
-<details class="supp"><summary>Supporting evidence &mdash; official SWALIM levels vs the fitted ones</summary>
+<details class="supp"><summary>Supporting evidence: official SWALIM levels vs the fitted ones</summary>
 <div class="supp-body">
-    <h3>How the official SWALIM levels compare with the fitted ones</h3>
+    <h3 id="how-the-official-swalim-levels-compare-with-the-fitted-ones">How the official SWALIM levels compare with the fitted ones</h3>
     <p>The benchmark years above are defined by <strong>empirical return periods of the
        gauges' own seasonal maxima</strong>, not by SWALIM's published Moderate/High
-       flood-risk levels — and the check below is why. Putting the official levels on the
+       flood-risk levels. The check below is why. Putting the official levels on the
        empirical RP scale (per active gauge and season, 1999–2023) shows they imply wildly
        inconsistent frequencies: "Moderate" ranges from a level the river reaches most
        years (Dollow Deyr, ~1-in-1.3; Jowhar Gu, ~1-in-1.6) to a genuinely rare one (Luuq
        Gu, ~1-in-4.6), and "High" from ~1-in-1.8 (Dollow) to ~1-in-11.5 (Luuq Gu). They
-       are engineering levels of uncertain provenance, not a consistent severity scale —
-       the same conclusion P. Wairimu's notebook 01 flagged when the published
+       are engineering levels of uncertain provenance rather than a consistent severity scale, the same conclusion P. Wairimu's notebook 01 flagged when the published
        <code>max_level</code> at Belet Weyne came out <em>below</em> its bank-full level.
        Everything in this mechanism therefore runs on each gauge's own empirical RP3/RP5
        levels (table <code>som_ms_swalim_rp</code>); the official levels remain useful
@@ -863,22 +854,19 @@ html { scroll-behavior:smooth; }
         Deyr) per active gauge, with the official Moderate (amber) and High (red) levels
         as dashed lines. Where a dashed line crosses the curves far from the RP 3–5 band,
         the official label and the observed frequency disagree. Dollow's curve rests on
-        only 8–9 seasons (gauge online 2015) — read it loosely.</figcaption>
+        only eight or nine seasons (gauge online 2015), so read it loosely.</figcaption>
     </figure>
 
 </div></details>
 
 
     <h2 id="would-it-have-worked-operationally">Would it have worked operationally?</h2>
-    <p>The calibration record is reanalysis — a model's afterwards-view of its own past.
+    <p>The calibration record is reanalysis, a model's afterwards-view of its own past.
        The operational test replays the historical forecasts: per pair and valid day, the
-       most alarming ≤ 6-day signal (max over issue dates — with mixed providers in one
-       window, a monitoring day combines each provider's latest forecast). Google pairs
+       most alarming ≤ 6-day signal (max over issue dates; with mixed providers in one window, a monitoring day combines each provider's latest forecast). Google pairs
        use their own reforecast (2016–2023); GloFAS v5 pairs the v4 reforecast (2003–2023,
        ensemble median, thresholds refit on v4's own climatology, since <strong>no v5
-       reforecast exists</strong>); GEOGloWS pairs the retrospective as a lead-0 stand-in
-       (hindsight — flagged per window). That forecast skill barely decays from lead 1 to
-       7 — initial-condition-driven on these slow rivers — is P. Wairimu's
+       reforecast exists</strong>); GEOGloWS pairs the retrospective as a lead-0 stand-in (hindsight, flagged per window). That forecast skill barely decays from lead 1 to 7 on these slow rivers, where the flow is driven by initial conditions, is P. Wairimu's
        <a href="https://github.com/OCHA-DAP/ds-aa-som-floods/blob/main/analysis/03_leadtime_forecast_skill.ipynb">notebook 03</a>
        finding, and is what makes both lead bands viable at all.</p>
 
@@ -889,13 +877,11 @@ html { scroll-behavior:smooth; }
 </table>
 </div><div class="callout warn">
       <strong>The caveat that matters most.</strong> At ≤ 6-day leads the GloFAS v4
-      reforecast misses Deyr 2023 on the Shabelle — the largest flood in the record — even
-      though the v5 reanalysis flags it clearly. The operational forecast is still v4: no
+      reforecast misses Deyr 2023 on the Shabelle, the largest flood in the record, even though the v5 reanalysis flags it clearly. The operational forecast is still v4: no
       v5 forecast exists yet. Until one does, the Deyr windows run on v4 with levels refit
       on v4's own climatology at the same return periods, and the v5 reanalysis skill this
       trigger is calibrated on is not yet available in live monitoring. Switching the Deyr
-      legs to the v5 forecast, and re-verifying them, the moment it is published is the
-      single most important follow-up.
+      legs to the v5 forecast, and re-verifying them, the moment it is published is the most important follow-up.
     </div>
 
     <div class="callout warn">
@@ -930,7 +916,7 @@ html { scroll-behavior:smooth; }
 <div class="tablewrap">
 <table class="data">
 <thead><tr><th>level</th><th>trigger</th><th>activations (1999-2023)</th><th>RP</th></tr></thead>
-<tbody><tr><td>individual</td><td>Juba Gu action</td><td class="vswap" data-alt="2 &amp;mdash; 2018, 2020" data-alt2="2 &amp;mdash; 2018, 2020">4 &mdash; 2013, 2016, 2018, 2020</td><td class="vswap" data-alt="13.0 yr" data-alt2="13.0 yr">6.5 yr</td></tr><tr><td>individual</td><td>Juba Deyr action</td><td class="vswap" data-alt="2 &amp;mdash; 2006, 2023" data-alt2="2 &amp;mdash; 2006, 2023">2 &mdash; 2006, 2023</td><td class="vswap" data-alt="13.0 yr" data-alt2="13.0 yr">13.0 yr</td></tr><tr><td>individual</td><td>Shabelle Gu action</td><td class="vswap" data-alt="4 &amp;mdash; 2005, 2016, 2018, 2020" data-alt2="4 &amp;mdash; 2005, 2016, 2018, 2020">4 &mdash; 2013, 2016, 2018, 2020</td><td class="vswap" data-alt="6.5 yr" data-alt2="6.5 yr">6.5 yr</td></tr><tr><td>individual</td><td>Shabelle Deyr action</td><td class="vswap" data-alt="4 &amp;mdash; 2006, 2014, 2019, 2023" data-alt2="4 &amp;mdash; 2006, 2014, 2019, 2023">6 &mdash; 2006, 2013, 2014, 2019, 2020, 2023</td><td class="vswap" data-alt="6.5 yr" data-alt2="6.5 yr">4.3 yr</td></tr><tr><td>river</td><td>Juba (Gu or Deyr)</td><td class="vswap" data-alt="4" data-alt2="4">6</td><td class="vswap" data-alt="6.5 yr" data-alt2="6.5 yr">4.3 yr</td></tr><tr><td>river</td><td>Shabelle (Gu or Deyr)</td><td class="vswap" data-alt="8" data-alt2="8">8</td><td class="vswap" data-alt="3.2 yr" data-alt2="3.2 yr">3.2 yr</td></tr><tr><td>overall</td><td>action, either river</td><td class="vswap" data-alt="8" data-alt2="8">8</td><td class="vswap" data-alt="3.2 yr" data-alt2="3.2 yr">3.2 yr</td></tr></tbody>
+<tbody><tr><td>individual</td><td>Juba Gu action</td><td class="vswap" data-alt="2: 2018, 2020" data-alt2="2: 2018, 2020">4: 2013, 2016, 2018, 2020</td><td class="vswap" data-alt="13.0 yr" data-alt2="13.0 yr">6.5 yr</td></tr><tr><td>individual</td><td>Juba Deyr action</td><td class="vswap" data-alt="2: 2006, 2023" data-alt2="2: 2006, 2023">2: 2006, 2023</td><td class="vswap" data-alt="13.0 yr" data-alt2="13.0 yr">13.0 yr</td></tr><tr><td>individual</td><td>Shabelle Gu action</td><td class="vswap" data-alt="4: 2005, 2016, 2018, 2020" data-alt2="4: 2005, 2016, 2018, 2020">4: 2013, 2016, 2018, 2020</td><td class="vswap" data-alt="6.5 yr" data-alt2="6.5 yr">6.5 yr</td></tr><tr><td>individual</td><td>Shabelle Deyr action</td><td class="vswap" data-alt="4: 2006, 2014, 2019, 2023" data-alt2="4: 2006, 2014, 2019, 2023">6: 2006, 2013, 2014, 2019, 2020, 2023</td><td class="vswap" data-alt="6.5 yr" data-alt2="6.5 yr">4.3 yr</td></tr><tr><td>river</td><td>Juba (Gu or Deyr)</td><td class="vswap" data-alt="4" data-alt2="4">6</td><td class="vswap" data-alt="6.5 yr" data-alt2="6.5 yr">4.3 yr</td></tr><tr><td>river</td><td>Shabelle (Gu or Deyr)</td><td class="vswap" data-alt="8" data-alt2="8">8</td><td class="vswap" data-alt="3.2 yr" data-alt2="3.2 yr">3.2 yr</td></tr><tr><td>overall</td><td>action, either river</td><td class="vswap" data-alt="8" data-alt2="8">8</td><td class="vswap" data-alt="3.2 yr" data-alt2="3.2 yr">3.2 yr</td></tr></tbody>
 </table>
 </div>
     <p>Under all-in funding, where any activation releases the full envelope, the
@@ -943,13 +929,13 @@ html { scroll-behavior:smooth; }
        just the hazard benchmark. Everything is grouped <strong>river → season</strong>,
        reverse-chronological. The <em>trigger</em> column is the trigger's actual
        decision variable: <strong>the peak number of monitored points
-       simultaneously over their thresholds</strong> that season-year — the cell fills
+       simultaneously over their thresholds</strong> that season-year. The cell fills
        <span style="color:#B34036;font-weight:700">red</span> when it meets the
        requirement shown in the season header (= the trigger activates). <em>RP</em> is
        the empirical return period of that season's maximum level at the
-       SWALIM reference gauge — <strong>5yr</strong> = a 1-in-5-year level or higher,
+       SWALIM reference gauge: <strong>5yr</strong> = a 1-in-5-year level or higher,
        <strong>3yr</strong> = 1-in-3 to 1-in-5 (Weibull on the gauge's own seasonal
-       maxima, per the threshold check above — not the official flood-risk levels);
+       maxima, per the threshold check above, not the official flood-risk levels);
        <span style="color:#8E5FA8;font-weight:700">EM-DAT</span> (purple) is people
        affected and <span style="color:#2A78D6;font-weight:700">CERF</span> (blue) the
        flood allocation (US$), shaded by magnitude, each attributed to the river(s) named
@@ -958,8 +944,7 @@ html { scroll-behavior:smooth; }
     <p style="font-size:12px;color:var(--n7);line-height:1.6">
       <strong>Attribution &amp; caveats.</strong> EM-DAT is a floor (entry-criteria bias),
       split to seasons by start month (Mar–Jun → Gu, Sep–Dec → Deyr); an event naming both
-      rivers is counted under <em>both</em> rivers (not split — hover for deaths and the
-      multi-river flag); events naming neither river (mostly flash floods elsewhere) are
+      rivers is counted under <em>both</em> rivers (not split; hover for deaths and the multi-river flag); events naming neither river (mostly flash floods elsewhere) are
       excluded. A CERF allocation naming neither river in its narrative is shown under
       both rivers and marked * (they are national riverine-flood responses). Impact
       columns are context, not a skill score: a formal skill-vs-impact statistic still
@@ -973,7 +958,7 @@ html { scroll-behavior:smooth; }
       either leg, its forecast peaks in early May reaching only 75–86% of the action
       levels, consistent with the v4 blind spot behind the missed Deyr 2023.</p>
 
-    <h3>SWALIM's alerts against the trigger</h3>
+    <h3 id="swalim-s-alerts-against-the-trigger">SWALIM's alerts against the trigger</h3>
     <p>SWALIM issues its own flood bulletins from the gauge readings and the rainfall
       forecast, grading river flood risk as moderate, then high, then bank full or overflow.
       The question here is who flagged first in each flood season, SWALIM or the trigger,
@@ -1099,18 +1084,21 @@ html { scroll-behavior:smooth; }
 </table>
 </div>
     </div></details>
-    <h3>SWALIM's bulletins in seasons the gauges did not call a flood</h3>
+    <h3 id="swalim-s-bulletins-in-seasons-the-gauges-did-not-call-a-floo">SWALIM's bulletins in seasons the gauges did not call a flood</h3>
     <p>The 24 seasons between 2006 and 2023 in which neither river crossed the two-gauge
       1-in-3 are the test of whether SWALIM raises risk for rises that come to nothing.
       ReliefWeb holds SWALIM bulletins for 15 of them. For each, the table shows the highest
       level SWALIM reached, what it reported, and what the impact and trigger records hold
       for the same season.</p>
+    <details class="supp"><summary>All 24 seasons: what SWALIM issued and what was reported</summary>
+    <div class="supp-body">
 <div class="tablewrap">
 <table class="data" style="font-size:12.5px">
 <thead><tr><th>season</th><th>bulletins</th><th>highest level SWALIM reached</th><th>when</th><th>what SWALIM reported</th><th>other records</th></tr></thead>
 <tbody><tr><td>Gu 2006</td><td>0</td><td>no bulletins found</td><td></td><td></td><td></td></tr><tr><td>Gu 2007</td><td>6</td><td>moderate risk</td><td>24 Apr-30 May</td><td>30 May: bank breakage at Marerey (Jowhar) closed, Madera breakage still open</td><td></td></tr><tr><td>Deyr 2007</td><td>10</td><td>high risk or alert</td><td>23 Oct (lower Juba)</td><td>OCHA sitreps: three bank breakages at Belet Weyne (28 Sep), Shabelle at 5.2 m with overflow expected at 5.25 m that did not occur (5 Oct); no villages inundated (12 Oct)</td><td>EM-DAT 8,000 affected (Shabelle)</td></tr><tr><td>Gu 2008</td><td>0</td><td>no bulletins found</td><td></td><td></td><td></td></tr><tr><td>Gu 2009</td><td>8</td><td>none above minimal</td><td></td><td>eight weekly watches, no risk statement above minimal</td><td></td></tr><tr><td>Deyr 2009</td><td>10</td><td>moderate risk</td><td>27 Oct; 3 Nov</td><td>moderate risk lower Shabelle (27 Oct) then lower reaches of both rivers (3 Nov); none in the other 8 watches</td><td>EM-DAT 1,750 affected</td></tr><tr><td>Deyr 2010</td><td>2</td><td>high risk or alert</td><td>28 Sep; 3 Nov</td><td>28 Sep: river 76 cm above the high-risk flood level; 3 Nov: 3.5 cm above the high-risk level</td><td></td></tr><tr><td>Gu 2011</td><td>0</td><td>no bulletins found</td><td></td><td></td><td></td></tr><tr><td>Deyr 2011</td><td>12</td><td>moderate risk</td><td>17 Oct-1 Nov; 6 Dec</td><td>5 Dec flash flood update: Luuq 5.90 m, 40 cm above the critical level of flooding</td><td></td></tr><tr><td>Gu 2012</td><td>4</td><td>none above minimal</td><td></td><td>watches 8 May-5 Jun: minimal or no risk</td><td></td></tr><tr><td>Deyr 2012</td><td>5</td><td>moderate risk</td><td>23 Oct-13 Nov</td><td>28 Sep Flood Alert: 188 mm rain at Belet Weyne, river at bank full 8.30 m (flash flood, before the Deyr window)</td><td>EM-DAT 32,200 affected</td></tr><tr><td>Gu 2013</td><td>8</td><td>high risk or alert</td><td>10 Apr-6 May</td><td>OCHA flood infographic 30 Apr: flooding reported in the south; 20 May watch: breakages in the lower Shabelle not yet closed</td><td>EM-DAT 50,000 affected; adopted trigger activated on both rivers</td></tr><tr><td>Deyr 2013</td><td>8</td><td>high risk or alert</td><td>29 Oct-27 Nov</td><td>7 Nov Flood Alert: river breakages at Luuq, farmland inundated</td><td>adopted trigger activated on the Shabelle</td></tr><tr><td>Gu 2014</td><td>5</td><td>none above minimal</td><td></td><td>four watches 6 May-3 Jun, no risk statement above minimal</td><td></td></tr><tr><td>Gu 2015</td><td>10</td><td>high risk or alert</td><td>28 Apr-12 May</td><td>high risk middle and lower Shabelle for three weekly watches; back to moderate 20 May and minimal 2 Jun; benchmark and adopted trigger: nothing</td><td>EM-DAT 16,296 affected (Shabelle)</td></tr><tr><td>Deyr 2015</td><td>12</td><td>high risk or alert</td><td>6 Nov-13 Nov (OCHA flash updates quoting SWALIM); Shabelle River Flood Alert 23 Oct</td><td>floods reported in Jamame and Jilib in October; Bulo Burti over its moderate-risk level 4 Nov (5.38 m vs 5.00); breakages at Balcad, Jowhar, Mahaday</td><td></td></tr><tr><td>Deyr 2016</td><td>0</td><td>no bulletins found</td><td></td><td></td><td></td></tr><tr><td>Gu 2017</td><td>3</td><td>high risk or alert</td><td>10-17 May</td><td>river levels rose significantly on both rivers after the rains, high risk stated in two watches; no benchmark crossing, no activation, no</td><td></td></tr><tr><td>Deyr 2018</td><td>0</td><td>no bulletins found</td><td></td><td>adopted record had 2 Juba points over (3 needed)</td><td>adopted record: 2 Juba points over, 3 needed</td></tr><tr><td>Gu 2019</td><td>0</td><td>no bulletins found</td><td></td><td></td><td></td></tr><tr><td>Gu 2021</td><td>5</td><td>high risk or alert</td><td>19-25 May</td><td>19 May: flooding reported upstream of Belet Weyne (Bacaad, Qooqane, Laffole, Grash, Nimcan, Leboow, Shinile); 25 May: Belet Weyne 8.25 m, about to reach bank full</td><td>EM-DAT 400,000 affected</td></tr><tr><td>Deyr 2021</td><td>0</td><td>no bulletins found</td><td></td><td></td><td></td></tr><tr><td>Gu 2022</td><td>0</td><td>no bulletins found</td><td></td><td></td><td></td></tr><tr><td>Deyr 2022</td><td>0</td><td>no bulletins found</td><td></td><td></td><td></td></tr></tbody>
 </table>
 </div>
+    </div></details>
     <p>SWALIM stayed at minimal risk in 3 of the 15 seasons, went to moderate in 4, and to
       high risk or an alert in 8. In six of the eight there is flooding on record elsewhere.
       EM-DAT counts people affected in Gu 2013 (50,000), Gu 2015 (16,000), Gu 2021 (400,000)
@@ -1192,12 +1180,15 @@ html { scroll-behavior:smooth; }
       <figcaption>Per window and year: the benchmark (two gauges over 1-in-3, over 1-in-5),
         the adopted forecast trigger's activations, and the years in which two gauges read the
         high-risk level, one gauge read bank full, and two did.</figcaption></figure>
+    <details class="supp"><summary>Every season in a table: dates, stations and lags</summary>
+    <div class="supp-body">
 <div class="tablewrap">
 <table class="data" style="font-size:12px">
 <thead><tr><th>window</th><th>year</th><th>benchmark</th><th>gauges: two over 1-in-3</th><th>forecast trigger first day</th><th>two gauges at the high-risk level</th><th>first gauge at bank full</th><th>two gauges at bank full</th></tr></thead>
 <tbody><tr><td>Deyr Juba</td><td>2006</td><td>severe</td><td>30 Oct<br><span style='color:var(--n7)'>1-in-5: 30 Oct</span></td><td>29 Oct</td><td>28 Oct (Luuq, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2008</td><td>flood</td><td>15 Nov<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2011</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>2 Dec (Luuq, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2014</td><td>severe</td><td>22 Oct<br><span style='color:var(--n7)'>1-in-5: 24 Oct</span></td><td>never</td><td>24 Oct (Luuq, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2017</td><td>flood</td><td>7 Nov<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>7 Nov (Dollow, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2019</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>9 Oct (Dollow, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2022</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>30 Oct (Dollow, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Deyr Juba</td><td>2023</td><td>severe</td><td>25 Oct<br><span style='color:var(--n7)'>1-in-5: 25 Oct</span></td><td>29 Oct</td><td>22 Oct (Luuq, Bardheere)</td><td>3 Nov (Dollow, Luuq)<br><span style='color:var(--n7)'>5 d after the trigger; 9 d after 1-in-5</span></td><td>3 Nov (Dollow, Luuq)</td></tr><tr><td>Deyr Shabelle</td><td>2006</td><td>severe</td><td>2 Nov<br><span style='color:var(--n7)'>1-in-5: 11 Nov</span></td><td>2 Nov</td><td>11 Nov (Belet Weyne, Bulo Burti)</td><td>10 Nov (Belet Weyne)<br><span style='color:var(--n7)'>8 d after the trigger; 1 d before 1-in-5</span></td><td>no</td></tr><tr><td>Deyr Shabelle</td><td>2008</td><td>flood</td><td>20 Nov<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Deyr Shabelle</td><td>2013</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>17 Oct</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Deyr Shabelle</td><td>2014</td><td>severe</td><td>20 Oct<br><span style='color:var(--n7)'>1-in-5: 29 Oct</span></td><td>16 Oct</td><td>24 Oct (Belet Weyne, Jowhar)</td><td>no</td><td>no</td></tr><tr><td>Deyr Shabelle</td><td>2015</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>25 Oct (Jowhar)<br><span style='color:var(--n7)'>trigger never crossed; no 1-in-5 crossing</span></td><td>no</td></tr><tr><td>Deyr Shabelle</td><td>2019</td><td>severe</td><td>14 Oct<br><span style='color:var(--n7)'>1-in-5: 22 Oct</span></td><td>11 Oct</td><td>19 Oct (Belet Weyne, Jowhar)</td><td>25 Oct (Belet Weyne)<br><span style='color:var(--n7)'>14 d after the trigger; 3 d after 1-in-5</span></td><td>8 Nov (Belet Weyne, Bulo Burti)</td></tr><tr><td>Deyr Shabelle</td><td>2020</td><td>severe</td><td>1 Oct<br><span style='color:var(--n7)'>1-in-5: 6 Oct</span></td><td>10 Oct</td><td>1 Oct (Belet Weyne, Bulo Burti)</td><td>no</td><td>no</td></tr><tr><td>Deyr Shabelle</td><td>2023</td><td>severe</td><td>6 Nov<br><span style='color:var(--n7)'>1-in-5: 19 Nov</span></td><td>9 Nov</td><td>19 Nov (Belet Weyne, Bulo Burti)</td><td>12 Nov (Belet Weyne)<br><span style='color:var(--n7)'>3 d after the trigger; 7 d before 1-in-5</span></td><td>22 Nov (Belet Weyne, Bulo Burti)</td></tr><tr><td>Gu Juba</td><td>2005</td><td>flood</td><td>25 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Gu Juba</td><td>2010</td><td>flood</td><td>18 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Gu Juba</td><td>2013</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>12 Apr</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Gu Juba</td><td>2016</td><td>flood</td><td>1 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>7 May</td><td>7 May (Dollow, Luuq)</td><td>no</td><td>no</td></tr><tr><td>Gu Juba</td><td>2018</td><td>severe</td><td>17 Apr<br><span style='color:var(--n7)'>1-in-5: 18 Apr</span></td><td>20 Apr</td><td>18 Apr (Luuq, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Gu Juba</td><td>2020</td><td>severe</td><td>22 Apr<br><span style='color:var(--n7)'>1-in-5: 12 May</span></td><td>29 Apr</td><td>1 May (Dollow, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Gu Juba</td><td>2023</td><td>severe</td><td>25 Mar<br><span style='color:var(--n7)'>1-in-5: 28 Apr</span></td><td>never</td><td>24 Mar (Dollow, Bardheere)</td><td>no</td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2003</td><td>flood</td><td>11 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2005</td><td>flood</td><td>12 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>12 May (Belet Weyne, Bulo Burti)</td><td>no</td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2010</td><td>flood</td><td>29 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>12 May (Belet Weyne, Jowhar)</td><td>no</td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2013</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>6 May</td><td>no</td><td>no</td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2015</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>20 Apr (Jowhar)<br><span style='color:var(--n7)'>trigger never crossed; no 1-in-5 crossing</span></td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2016</td><td>severe</td><td>11 May<br><span style='color:var(--n7)'>1-in-5: 18 May</span></td><td>12 May</td><td>10 May (Belet Weyne, Jowhar)</td><td>18 May (Belet Weyne)<br><span style='color:var(--n7)'>6 d after the trigger; same day as 1-in-5</span></td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2018</td><td>flood</td><td>7 May<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>5 May</td><td>9 May (Belet Weyne, Bulo Burti)</td><td>no</td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2020</td><td>severe</td><td>5 May<br><span style='color:var(--n7)'>1-in-5: 12 May</span></td><td>30 Apr</td><td>5 May (Belet Weyne, Jowhar)</td><td>12 May (Belet Weyne)<br><span style='color:var(--n7)'>12 d after the trigger; same day as 1-in-5</span></td><td>29 May (Belet Weyne, Bulo Burti)</td></tr><tr><td>Gu Shabelle</td><td>2021</td><td>none</td><td>no<br><span style='color:var(--n7)'>1-in-5: no</span></td><td>never</td><td>no</td><td>26 May (Belet Weyne)<br><span style='color:var(--n7)'>trigger never crossed; no 1-in-5 crossing</span></td><td>no</td></tr><tr><td>Gu Shabelle</td><td>2023</td><td>severe</td><td>17 Apr<br><span style='color:var(--n7)'>1-in-5: 18 May</span></td><td>never</td><td>23 May (Belet Weyne, Bulo Burti)</td><td>9 May (Belet Weyne)<br><span style='color:var(--n7)'>trigger never crossed; 9 d before 1-in-5</span></td><td>25 May (Belet Weyne, Bulo Burti)</td></tr></tbody>
 </table>
 </div>
+    </div></details>
     <p>Where a gauge reached bank full in a benchmark flood, it did so between 9 days before
       and 9 days after the 1-in-5 crossing: Deyr Shabelle 2006, 2019 and 2023 at 7 days
       before, 1 day before and 3 days after; Gu Shabelle 2016, 2020 and 2023 at 9 days before
@@ -1359,7 +1350,7 @@ document.querySelectorAll("article h2, article h3").forEach(function (el) {
         var m = (VARIANT ? D.meta.windows_v : D.meta.windows)[g[0] + "_" + g[1]];
         return '<th colspan="4" class="gl">' +
                g[1].charAt(0).toUpperCase() + g[1].slice(1) +
-               " — ≥" + m.n_req + "/" + m.pool + "</th>";
+               ": ≥" + m.n_req + "/" + m.pool + "</th>";
       }).join("") + "</tr>");
       h.push("<tr>" + groups.map(function () {
         return '<th class="gl" style="color:#B34036">trigger</th><th title="empirical RP of the season&#39;s max gauge level">RP</th>' +
