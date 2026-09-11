@@ -13,8 +13,7 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
 S = Path(__file__).parent
-PAGE_DIR = Path(__file__).resolve().parents[2] / "pages" / "trigger-single-model"
-OUT = PAGE_DIR / "figs/k_swalim_window.png"
+OUT = S / "wt-trigger/pages/trigger-single-model/figs/k_swalim_window.png"
 
 
 def D(s):
@@ -83,7 +82,9 @@ for y, r in zip(ys, ROWS):
     onset, g5, sw, v4 = D(onset), D(g5), D(sw), D(v4)
     trig_na = trig == "n/a"
     trig = None if trig_na else D(trig)
-    ls, lt, lv = (lead(onset, sw) if sw else None), (lead(onset, trig) if trig else None), (lead(onset, v4) if v4 else None)
+    deyr = season.startswith("Deyr")
+    ls, lt = (lead(onset, sw) if sw else None), (lead(onset, trig) if trig else None)
+    lv = (lead(onset, v4) if (v4 and deyr) else None)    # v4 shown for Deyr only: it is not the Gu model
     if g5 and g5 != onset:
         xg = -lead(onset, g5)
         if xg > XMAX - .4:
@@ -102,7 +103,7 @@ for y, r in zip(ys, ROWS):
     parts = [phrase("SWALIM", ls, "no bulletin"),
              ((f"{'Google' if season.startswith('Gu') else 'GloFAS v5'} record ends 2023") if trig_na
               else phrase("Google" if season.startswith("Gu") else "GloFAS v5", lt, "never crossed")),
-             phrase("v4 issue", lv, "never crossed")]
+             *([phrase("v4 issue", lv, "never crossed")] if deyr else [])]
     ax.text(XMAX + .6, y, "  |  ".join(parts), va="center", fontsize=8.6, color="#111827")
     out.append({"season": season, "river": river, "onset": onset.isoformat(), "severe": g5.isoformat() if g5 else None,
                 "swalim_lead": ls, "trigger_lead": lt, "v4_lead": lv,
@@ -122,7 +123,7 @@ ax.tick_params(length=0)
 handles = [
     Line2D([], [], marker="o", color=C_SW, ls="none", ms=8.5, label="SWALIM: first bulletin flagging risk"),
     Line2D([], [], marker="D", color=C_TR, ls="none", ms=7, label="window's model on reanalysis, first day the rule crossed: GloFAS v5 (Deyr), Google (Gu)"),
-    Line2D([], [], marker="^", color=C_V4, ls="none", ms=8.5, label="GloFAS v4 forecast: first issue with enough points over"),
+    Line2D([], [], marker="^", color=C_V4, ls="none", ms=8.5, label="GloFAS v4 forecast, Deyr only (live stand-in for v5): first issue over"),
     Line2D([], [], marker="|", color="#111827", ls="none", ms=13, mew=2.2, label="gauges cross 1-in-5"),
 ]
 fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(.15, .995), ncol=2, frameon=False, fontsize=8.8)

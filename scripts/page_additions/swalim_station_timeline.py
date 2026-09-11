@@ -18,8 +18,7 @@ import somlib as L
 from src.constants import TRIGGER_CONFIG
 
 S = Path(__file__).parent
-PAGE_DIR = Path(__file__).resolve().parents[2] / "pages" / "trigger-single-model"
-FIGS = PAGE_DIR / "figs"
+FIGS = S / "wt-trigger/pages/trigger-single-model/figs"
 REC = pd.read_csv(S / "swalim_station_records.csv", parse_dates=["date"])
 REC["season"] = REC.date.dt.month.map(lambda m: "gu" if m in (3, 4, 5, 6) else ("deyr" if m in (9, 10, 11, 12) else None))
 REC["year"] = REC.date.dt.year
@@ -152,7 +151,9 @@ for river in ("juba", "shabelle"):
                     mk, ms, col = {1: ("o", 5.5, C_SW), 2: ("o", 7.5, C_SW), 3: ("s", 7.5, C_SWD)}[lvl]
                     ax.plot(doy(d), y + .2, marker=mk, ms=ms, mfc=(col if from_read else "white"),
                             mec=col, mew=1.3, alpha=(.7 if lvl == 1 else 1), zorder=5)
-            for k2, c, mk, ms in (("google", C_G, "D", 6.5), ("glofas_v5", C_V5, "D", 6.5), ("v4_issue", C_V4, "^", 8)):
+            shown = ((("google", C_G, "D", 6.5),) if season == "gu"
+                     else (("glofas_v5", C_V5, "D", 6.5), ("v4_issue", C_V4, "^", 8)))
+            for k2, c, mk, ms in shown:
                 d = r[k2]
                 if d is not None:
                     ax.plot([doy(d)], [y - .2], marker=mk, color=c, ms=ms, mec="white", mew=.7, zorder=5)
@@ -169,8 +170,11 @@ for river in ("juba", "shabelle"):
             else:
                 t1 = "no station bulletin" + ("" if g3 is None else f"; gauge 1-in-3 {fmt(g3)}")
             miss = "no record" if no_record else "never"
-            t2 = (f"Google {fmt(r['google']) or miss} | GloFAS v5 {fmt(r['glofas_v5']) or miss} "
-                  f"| v4 issue {fmt(r['v4_issue']) or ('no archive' if no_record else 'never')}")
+            if season == "gu":
+                t2 = f"Google {fmt(r['google']) or miss}"
+            else:
+                t2 = (f"GloFAS v5 {fmt(r['glofas_v5']) or miss} "
+                      f"| v4 issue {fmt(r['v4_issue']) or ('no archive' if no_record else 'never')}")
             ax.text(x1 + 1.2, y + .18, t1, va="center", fontsize=8.4, color="#111827")
             ax.text(x1 + 1.2, y - .2, t2, va="center", fontsize=7.8, color="#6b7280")
         ax.set_yticks(ys)
@@ -194,9 +198,9 @@ for river in ("juba", "shabelle"):
         Line2D([], [], marker="o", color=C_SW, ls="none", ms=7.5, label="SWALIM: at its high level"),
         Line2D([], [], marker="s", color=C_SWD, ls="none", ms=7.5, label="SWALIM: at bank full or overflowing"),
         Line2D([], [], marker="o", mfc="white", mec=C_SW, color="none", ms=7.5, mew=1.3, label="hollow: risk stated, no reading published"),
-        Line2D([], [], marker="D", color=C_G, ls="none", ms=6.5, label="Google reanalysis over this station's threshold"),
-        Line2D([], [], marker="D", color=C_V5, ls="none", ms=6.5, label="GloFAS v5 reanalysis over it"),
-        Line2D([], [], marker="^", color=C_V4, ls="none", ms=8, label="GloFAS v4 forecast: first issue over it"),
+        Line2D([], [], marker="D", color=C_G, ls="none", ms=6.5, label="Google reanalysis over this station's threshold (Gu: the window's model)"),
+        Line2D([], [], marker="D", color=C_V5, ls="none", ms=6.5, label="GloFAS v5 reanalysis over it (Deyr: the window's model)"),
+        Line2D([], [], marker="^", color=C_V4, ls="none", ms=8, label="GloFAS v4 forecast, Deyr only (the live stand-in for v5): first issue over it"),
         Patch(color=C_GAUGE, alpha=.45, label="this gauge: its own 1-in-3 (thin tick) to 1-in-5 (thick tick)"),
     ]
     fig.suptitle(f"{river.title()}: SWALIM's reported levels against the models, station by station",

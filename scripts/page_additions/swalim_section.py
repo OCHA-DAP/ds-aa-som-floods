@@ -11,8 +11,7 @@ from datetime import datetime
 from pathlib import Path
 
 S = Path(__file__).parent
-PAGE_DIR = Path(__file__).resolve().parents[2] / "pages" / "trigger-single-model"
-PAGE = PAGE_DIR / "index.html"
+PAGE = S / "wt-trigger/pages/trigger-single-model/index.html"
 DET = {(d["river"], d["season"], d["year"]): d
        for d in json.loads((S / "trigger_detail.json").read_text(encoding="utf-8"))}
 G24 = json.loads((S / "gu2024_issue.json").read_text(encoding="utf-8"))
@@ -191,14 +190,17 @@ for key in ORDER:
     trig = d["trigger"][0]
     trig_txt = "record ends 2023" if trig == NA else ("never crossed" if trig is None else d0(trig))
     v4 = d["v4_fc_issue"][0]
-    v4_txt = "no issue crossed" if v4 is None else f"{d0(v4)} (for {d0(d['v4_fc_issue'][1])})"
+    if key[1] == "gu":
+        v4_txt = "not the Gu model"                       # v4 is the Deyr stand-in only
+    else:
+        v4_txt = "no issue crossed" if v4 is None else f"{d0(v4)} (for {d0(d['v4_fc_issue'][1])})"
     sw = iso_short(t["swalim_first"]) or "no bulletin"
     short_rows.append(f"<tr><td>{season}</td><td>{key[0].title()}</td><td>{sw}</td>"
                       f"<td>{trig_txt}</td><td>{t['vs_trigger']}</td>"
                       f"<td>{v4_txt}</td><td>{t['vs_v4']}</td></tr>")
 short_table = ('<div class="tablewrap">\n<table class="data" style="font-size:12.5px">\n<thead><tr>'
                '<th>season</th><th>river</th><th>SWALIM first bulletin</th><th>model first day (GloFAS v5 in Deyr, Google in Gu)</th>'
-               '<th>who was first</th><th>GloFAS v4 forecast first issue</th><th>who was first</th>'
+               '<th>who was first</th><th>GloFAS v4 forecast first issue (Deyr only)</th><th>who was first</th>'
                '</tr></thead>\n<tbody>' + "".join(short_rows) + "</tbody>\n</table>\n</div>")
 
 # ---- the full record --------------------------------------------------------
@@ -214,14 +216,14 @@ for key in ORDER:
                 f"<td>{mod}</td><td>{high}</td><td>{bank}</td>"
                 + cell(trig, d["n_points"])
                 + f"<td>{lag(first_iso, trig[0], key[2])}</td>"
-                + cell_issue(v4i, d["n_points"], unit)
-                + f"<td>{lag(first_iso, v4i[0], key[2])}</td>"
+                + (('<td colspan="2">not the Gu model</td>') if key[1] == "gu" else
+                   cell_issue(v4i, d["n_points"], unit) + f"<td>{lag(first_iso, v4i[0], key[2])}</td>")
                 + cell(d["v5"], d["n_points"]) + "</tr>")
 full_table = ('<div class="tablewrap">\n<table class="data" style="font-size:12px">\n<thead><tr>'
               '<th>season</th><th>river</th><th>what happened at the gauges</th>'
               '<th>SWALIM: moderate risk</th><th>SWALIM: high risk</th><th>SWALIM: bank full or overflow</th>'
               '<th>trigger: first day and points over their RP</th><th>days SWALIM\'s first bulletin led the trigger</th>'
-              '<th>GloFAS v4 forecast, by issue date</th><th>days SWALIM\'s first bulletin led the v4 issue</th>'
+              '<th>GloFAS v4 forecast, by issue date (Deyr only)</th><th>days SWALIM\'s first bulletin led the v4 issue</th>'
               '<th>GloFAS v5 reanalysis</th></tr></thead>\n<tbody>'
               + "".join(rows) + "</tbody>\n</table>\n</div>")
 
@@ -232,19 +234,20 @@ section = """    <h3>SWALIM's alerts against the trigger</h3>
       The question here is who flagged first in each flood season, SWALIM or the trigger,
       and by how many days. Every date is the date the information was available: the issue
       date of the SWALIM bulletin, the first day the trigger crossed on its reanalysis
-      (Google for Gu, GloFAS v5 for Deyr), and the issue date of the first GloFAS v4
-      forecast (the model that runs live) whose ensemble median had enough points over
-      their thresholds at some lead of 1 to 7 days. The grey band marks the gauges' own
+      (Google for Gu, GloFAS v5 for Deyr), and, in Deyr only, the issue date of the first
+      GloFAS v4 forecast (the live stand-in for GloFAS v5, which has no forecast) whose
+      ensemble median had enough points over their thresholds at some lead of 1 to 7 days.
+      v4 is not the Gu model and is not shown on Gu rows. The grey band marks the gauges' own
       two-gauge 1-in-3 and 1-in-5 crossings.</p>
-    <figure><img src="figs/k_swalim_timeline.png?v=202609071" alt="Timeline of SWALIM bulletins, trigger and GloFAS v4 forecast per flood season">
+    <figure><img src="figs/k_swalim_timeline.png?v=202609111" alt="Timeline of SWALIM bulletins, the window's model and, in Deyr, the GloFAS v4 forecast per flood season">
       <figcaption>Each row is one river-season. Upper track: SWALIM's first bulletin flagging
         risk (open circle) and the bulletins that first reported the moderate, high and bank
         full steps. Lower track: the first day the window's model crossed on its reanalysis
-        (diamond: GloFAS v5 in Deyr, Google in Gu) and the GloFAS v4 forecast's first issue
-        with enough points over (triangle). The text at right gives the days between
+        (diamond: GloFAS v5 in Deyr, Google in Gu) and, in Deyr only, the GloFAS v4 forecast's
+        first issue with enough points over (triangle). The text at right gives the days between
         SWALIM's first bulletin and the model, and in grey between SWALIM and the v4
-        issue. Gu 2024 is beyond the Google and v5 records, so only the v4 forecast is
-        compared there. Deyr 2020's SWALIM bulletin concerned the September flood at Belet
+        issue. Gu 2024 is beyond the Google record, so no model is compared there and SWALIM
+        alone is shown. Deyr 2020's SWALIM bulletin concerned the September flood at Belet
         Weyne, before the Deyr window; Deyr 2006's SWALIM issues 2 to 7 are not on
         ReliefWeb, so its first flag may have been earlier than shown.</figcaption></figure>
     <p>The action window is 1 to 7 days before the flood and readiness 8 to 12. The chart
@@ -252,7 +255,7 @@ section = """    <h3>SWALIM's alerts against the trigger</h3>
       two-gauge 1-in-3 level was first crossed, not the peak. The trigger's date is the day
       the modelled flow crossed; in operation the forecast would have added up to 7 days to
       it. The GloFAS v4 issue date is the operational measure.</p>
-    <figure><img src="figs/k_swalim_window.png?v=202609071" alt="Lead time of each flag before the gauges' 1-in-3 crossing">
+    <figure><img src="figs/k_swalim_window.png?v=202609111" alt="Lead time of each flag before the gauges' 1-in-3 crossing">
       <figcaption>Days between each flag and the gauges' first two-gauge 1-in-3 crossing, one
         row per flood season with a gauge event (Deyr 2019 Juba and Gu 2021 have none). Green:
         the action window, 1 to 7 days before onset; pale green: readiness, 8 to 12 days.
@@ -263,9 +266,9 @@ section = """    <h3>SWALIM's alerts against the trigger</h3>
       and Deyr 2023 on the Juba, and Gu 2024 on the Juba, at 1 to 7 days before onset. It
       was earlier than the window in three (Gu 2020 Shabelle 9 days, Deyr 2023 Shabelle 17
       days, Gu 2024 Shabelle 19 days) and on or after onset in four (Deyr 2006 Juba, Deyr
-      2019 Shabelle, Gu 2020 Juba, Gu 2023 Shabelle). The GloFAS v4 issue was in the window
-      in Gu 2016, Deyr 2023 Juba and Gu 2024 Juba, earlier than it in Deyr 2014 and Deyr 2019
-      on the Shabelle, and late or absent everywhere else; the reanalysis trigger's own day
+      2019 Shabelle, Gu 2020 Juba, Gu 2023 Shabelle). In Deyr, the GloFAS v4 issue was in
+      the window in 2023 on the Juba, earlier than it in 2014 and 2019 on the Shabelle, and
+      late or absent in the other seasons; the reanalysis trigger's own day
       was inside the window in Deyr 2014, Deyr 2019 and Gu 2020 on the Shabelle (and a day
       before the 1-in-5 date in Deyr 2006 on the Juba) and on or after onset in six seasons,
       which is the gap a 1 to 7 day forecast has to close.</p>
@@ -298,12 +301,12 @@ section = """    <h3>SWALIM's alerts against the trigger</h3>
       reading, which is most of 2006 and 2019 to 2021. The 2024 weekly bulletins are read
       from their published readings only, because their prose mixes forecasts and
       look-backs to earlier years.</p>
-    <figure><img src="figs/k_swalim_station_shabelle.png?v=202609081" alt="Shabelle: SWALIM's reported levels at each gauge against the gauge record and the models">
+    <figure><img src="figs/k_swalim_station_shabelle.png?v=202609111" alt="Shabelle: SWALIM's reported levels at each gauge against the gauge record and the models">
       <figcaption>Shabelle. Upper track: SWALIM's reported levels for that gauge. Lower
         track: the models over that station's own threshold. Grey band: that gauge's own
         1-in-3 to 1-in-5 crossings. Deyr 2020's bulletins concern the September flood at
         Belet Weyne, before the Deyr window opens.</figcaption></figure>
-    <figure><img src="figs/k_swalim_station_juba.png?v=202609081" alt="Juba: SWALIM's reported levels at each gauge against the gauge record and the models">
+    <figure><img src="figs/k_swalim_station_juba.png?v=202609111" alt="Juba: SWALIM's reported levels at each gauge against the gauge record and the models">
       <figcaption>Juba, same layout.</figcaption></figure>
     <p>Of the 55 station-seasons, 39 have a bulletin naming that gauge and 21 record it at
       bank full. Belet Weyne and Jowhar are named in 8 of their 9 seasons, Bulo Burti in 6;

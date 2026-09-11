@@ -14,8 +14,7 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
 S = Path(__file__).parent
-PAGE_DIR = Path(__file__).resolve().parents[2] / "pages" / "trigger-single-model"
-OUT = PAGE_DIR / "figs/k_swalim_timeline.png"
+OUT = S / "wt-trigger/pages/trigger-single-model/figs/k_swalim_timeline.png"
 
 
 def D(s):
@@ -76,7 +75,10 @@ def verdicts(r):
     if season == "Deyr 2020":
         return "no bulletin for the October rise", "(September flood bulletin only)"
     v1 = f"{m} record ends 2023" if model_d == "n/a" else compare(f, D(model_d), m)
-    v2 = "no v4 issue crossed" if (f is None and v is None) else compare(f, v, "v4 forecast issue")
+    if season.startswith("Gu"):
+        v2 = ""                                  # v4 is not the Gu model: not compared there
+    else:
+        v2 = "no v4 issue crossed" if (f is None and v is None) else compare(f, v, "v4 forecast issue")
     return v1, v2
 
 
@@ -113,7 +115,7 @@ def panel(ax, rows, x0, x1, title):
         # lower track: the window's model and the v4 forecast issue
         if model_d:
             ax.plot(doy(model_d), y - .2, marker="D", color=cm, ms=7.5, mec="white", mew=.8, zorder=5)
-        if v4:
+        if v4 and season.startswith("Deyr"):
             ax.plot(doy(v4), y - .2, marker="^", color=C_V4, ms=9, mec="white", mew=.8, zorder=5)
         v1, v2 = verdicts(r)
         ax.text(x1 + 1.5, y + .17, v1, va="center", fontsize=9.6, color="#111827")
@@ -153,7 +155,7 @@ handles = [
     Line2D([], [], marker="s", color=C_SWD, ls="none", ms=8, label="SWALIM: bank full or overflow reported"),
     Line2D([], [], marker="D", color=C_V5, ls="none", ms=7.5, label="GloFAS v5 reanalysis: first day the Deyr rule crossed"),
     Line2D([], [], marker="D", color=C_G, ls="none", ms=7.5, label="Google reanalysis: first day the Gu rule crossed"),
-    Line2D([], [], marker="^", color=C_V4, ls="none", ms=9, label="GloFAS v4 forecast: first issue with enough points over"),
+    Line2D([], [], marker="^", color=C_V4, ls="none", ms=9, label="GloFAS v4 forecast, Deyr only (the live stand-in for v5): first issue with enough points over"),
     Patch(color=C_GAUGE, alpha=.45, label="gauges: two over 1-in-3 (thin tick) to two over 1-in-5 (thick tick)"),
 ]
 fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(.155, .995), ncol=2, frameon=False,
