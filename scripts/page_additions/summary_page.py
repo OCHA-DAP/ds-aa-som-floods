@@ -16,7 +16,8 @@ PAGE = S / "wt-trigger/pages/trigger-single-model"
 OUT = PAGE / "summary.html"
 RULE = {("juba", "deyr"): (4, 3), ("shabelle", "deyr"): (4, 2),
         ("juba", "gu"): (5, 3), ("shabelle", "gu"): (6, 2)}
-MODEL = {"deyr": "GloFAS v5", "gu": "Google Flood Hub"}
+MODEL = {"deyr": "GloFAS v5", "gu": "Google Flood Hub"}          # for data lookups
+SOURCE = {"deyr": "GloFAS", "gu": "Google Flood Hub"}           # how the trigger names its source
 ARCHIVE = {"google_grrr": (2016, 2023), "glofas_v4": (2003, 2024)}
 SPAN = list(range(1999, 2025))
 LABEL = {"deyr": ("Deyr", "October to December"), "gu": ("Gu", "March to May")}
@@ -182,7 +183,7 @@ def pill(v):
 
 # --- section 1: the design
 design_rows = "".join(
-    f"<tr><td>{LABEL[s][0]} · {r.title()}</td><td>{LABEL[s][1]}</td><td>{MODEL[s]}</td>"
+    f"<tr><td>{LABEL[s][0]} · {r.title()}</td><td>{LABEL[s][1]}</td><td>{SOURCE[s]}</td>"
     f"<td>{RULE[(r, s)][1]} of {4 if r == 'juba' else 3} points over their own 1-in-{RULE[(r, s)][0]} level, same day</td>"
     f"<td>{STATIONS[r]}</td></tr>"
     for s in ("deyr", "gu") for r in ("juba", "shabelle"))
@@ -241,7 +242,7 @@ for river, season, wname, mname in (("juba", "deyr", "Deyr Juba", "Juba Deyr"), 
     w = win[wname]; a = w["models"][w["adopted_model"]]
     g = rp3c[(rp3c.river == river) & (rp3c.season == season)]
     rho = g[KEY[MODEL[season]]].median()
-    by_window += (f"<tr><td>{wname}</td><td>{MODEL[season]}</td><td class=\"n\">{a['vs_severe']['hits']} of {len(w['severe_years'])}</td>"
+    by_window += (f"<tr><td>{wname}</td><td>{SOURCE[season]}</td><td class=\"n\">{a['vs_severe']['hits']} of {len(w['severe_years'])}</td>"
                   f"<td class=\"n\">{a['vs_flood']['false_alarms']}</td><td class=\"n\">{rho:.2f}</td>"
                   f"<td>{', '.join(str(y) for y in a['activations'])}</td></tr>")
 
@@ -256,7 +257,7 @@ details{{margin:18px 0}} summary{{cursor:pointer;font:700 17px/1.3 Georgia,serif
 
 <h2>The design</h2>
 <div class='tw'><table><thead><tr><th>Window</th><th>Season</th><th>Model</th><th>Rule</th><th>Gauges</th></tr></thead><tbody>{design_rows}</tbody></table></div>
-<p class="note">Thresholds are fitted on each model's own record, so a model that runs high is judged against itself. Readiness, 8 to 12 days ahead, runs on the GloFAS v4 ensemble in all windows and releases the mobilisation share only.</p>
+<p class="note">Thresholds are fitted on each model's own record, so a model that runs high is judged against itself. Readiness, 8 to 12 days ahead, runs on the GloFAS ensemble in all windows and releases the mobilisation share only.</p>
 
 <h2>Does it work?</h2>
 <div class="tiles">
@@ -266,7 +267,7 @@ details{{margin:18px 0}} summary{{cursor:pointer;font:700 17px/1.3 Georgia,serif
 {tile(f"{pooled['Google Flood Hub']:.2f} / {pooled['GloFAS v5']:.2f} / {pooled['GloFAS v4']:.2f}", "agreement with the gauges in flood seasons", "rank correlation over 1-in-3 seasons: Google / GloFAS v5 / GloFAS v4, the model running live")}
 {tile(f"{lag_min:+d} to {lag_max:+d} days", "the chosen model leads the gauge", "best-fit lag at all 14 station-seasons; it rises before the river, never after")}
 {tile("10 to 13 days", "warning in Gu on the Shabelle, from Google", "3 of 4 seasons since 2016; GloFAS v4 gave 3 days once and nothing in the other three")}
-{tile("4 to 19 days", "warning in Deyr, from GloFAS v4", "4 of 7 flood seasons, on one river or the other; missed 2006, a day late in 2020")}
+{tile("4 to 19 days", "warning in Deyr, from GloFAS", "4 of 7 flood seasons, on one river or the other; missed 2006, a day late in 2020 (v4, the version running live)")}
 {tile(f"{sw_first} of {len(both_flag)}", "seasons SWALIM's bulletin came first", "so SWALIM alerts sit in readiness; action needs a forecast that can be backtested")}
 </div>
 
