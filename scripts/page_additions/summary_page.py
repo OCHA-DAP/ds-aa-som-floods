@@ -28,6 +28,7 @@ station = json.load(open(S / "station_metrics.json"))
 swalim_tl = json.load(open(S / "swalim_timeline.json"))
 fallback = json.load(open(S / "obs_fallback.json"))["rows"]
 G24 = json.load(open(S / "gu2024_issue.json"))
+rp3c = pd.DataFrame(json.load(open(S / "rp3_corr.json")))      # rp3_corr.py: rho over 1-in-3+ seasons only
 V4_2024 = {r: (pd.Timestamp(f"2024 {G24[r]['v4_fc_issue'][0]}") if G24[r]["v4_fc_issue"][0] else None)
            for r in ("juba", "shabelle")}
 
@@ -188,12 +189,16 @@ design_rows = "".join(
 
 # --- section 2: tracks the rivers
 peak_rows = ""
-for wname in ("Juba Deyr", "Shabelle Deyr", "Juba Gu", "Shabelle Gu"):
-    season = "deyr" if "Deyr" in wname else "gu"
+KEY = {"Google Flood Hub": "google_grrr", "GloFAS v5": "glofas_v5", "GloFAS v4": "glofas_v4"}
+for river, season, wname in (("juba", "deyr", "Juba Deyr"), ("shabelle", "deyr", "Shabelle Deyr"),
+                             ("juba", "gu", "Juba Gu"), ("shabelle", "gu", "Shabelle Gu")):
+    g = rp3c[(rp3c.river == river) & (rp3c.season == season)]
     adopted = MODEL[season]
-    cells = "".join(f'<td class="n{" pick" if k == adopted else ""}">{peak[wname][k]}</td>'
-                    for k in ("Google Flood Hub", "GloFAS v5", "GloFAS v4", "GEOGloWS"))
-    peak_rows += f"<tr><td>{wname}</td>{cells}<td>{adopted}</td></tr>"
+    cells = "".join(f'<td class="n{" pick" if k == adopted else ""}">{g[KEY[k]].median():.2f}</td>'
+                    for k in ("Google Flood Hub", "GloFAS v5", "GloFAS v4"))
+    nmin, nmax = int(g.n_flood_seasons.min()), int(g.n_flood_seasons.max())
+    peak_rows += f"<tr><td>{wname}</td>{cells}<td class=\"n\">{nmin} to {nmax}</td><td>{adopted}</td></tr>"
+pooled = {k: rp3c[v].median() for k, v in KEY.items()}
 
 # --- section 3: catches the floods
 win_rows = ""
@@ -242,16 +247,17 @@ html = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name
 <p class="note">Thresholds are fitted on each model's own record at the stated return period, so a model that runs high is judged against itself. The readiness phase, 8 to 12 days ahead, runs on the GloFAS v4 ensemble in all four windows and releases the mobilisation share only.</p>
 
 <h2>Does the chosen model track the river?</h2>
-<p>The first test is agreement with what the gauges recorded. For each window, the seasonal peak of each model is ranked against the seasonal peak at the gauges over 1999 to 2023. A value of 1 would mean the model ranks every season exactly as the river did.</p>
-<div class='tw'><table><thead><tr><th>Window</th><th class="n">Google Flood Hub</th><th class="n">GloFAS v5</th><th class="n">GloFAS v4</th><th class="n">GEOGloWS</th><th>Chosen</th></tr></thead><tbody>{peak_rows}</tbody></table></div>
-<p class="note">Rank correlation of seasonal peaks, model reanalysis against gauge level, 21 to 25 seasons per window. The chosen model is in bold.</p>
+<p>The first test is agreement with what the gauges recorded in the flood seasons themselves. For each gauge, only the seasons in which it reached its own 1-in-3 level or rarer are kept, and the model's peak in those seasons is ranked against the gauge's peak. A value of 1 would mean the model orders the flood seasons exactly as the river did; 0 means no relation.</p>
+<div class='tw'><table><thead><tr><th>Window</th><th class="n">Google Flood Hub</th><th class="n">GloFAS v5</th><th class="n">GloFAS v4</th><th class="n">Flood seasons per gauge</th><th>Chosen</th></tr></thead><tbody>{peak_rows}</tbody></table></div>
+<p class="note">Rank correlation of seasonal peaks over each gauge's own 1-in-3 seasons only, 2000 to 2023, median across the window's gauges; the chosen model is in bold. Two cautions. Each gauge has only 4 to 10 flood seasons, so these values move a lot on one season. And on the Shabelle in Gu every model scores near zero because the gauge record is capped at bank full: in the biggest floods Belet Weyne reads 8.3 m for weeks, so there is no ordering of severity left for a model to match. That is a limit of the gauge record, not evidence against the models.</p>
 <div class="tiles">
-{tile(f"{rho_min:.2f} to {rho_max:.2f}", "day-to-day agreement", "rank correlation between the chosen model and each gauge, all 14 station-seasons")}
+{tile(f"{pooled['Google Flood Hub']:.2f} / {pooled['GloFAS v5']:.2f} / {pooled['GloFAS v4']:.2f}", "agreement in flood seasons, all gauges", "median rank correlation over 1-in-3 seasons: Google / GloFAS v5 / GloFAS v4")}
+{tile(f"{rho_min:.2f} to {rho_max:.2f}", "day-to-day agreement, all seasons", "rank correlation between the chosen model and each gauge, all 14 station-seasons")}
 {tile(f"{lag_min:+d} to {lag_max:+d} days", "the model leads the gauge", "best-fit lag at every station: the model rises before the river does, never after")}
 {tile(f"{rp3_hits} of {rp3_ev}", "gauge flood seasons seen at station level", "seasons a gauge crossed its own 1-in-3 and the chosen model crossed too")}
 {tile(f"{rp5_hits} of {rp5_ev}", "severe seasons seen at station level", "the same at 1-in-5")}
 </div>
-<p>Google Flood Hub ranks the seasons best in every window, and it is the choice in Gu. In Deyr the windows run on GloFAS v5 instead, because when the full rule is applied Google over-activates on the Juba in Deyr (three activations with no flood) and misses the Shabelle in Deyr 2020, while GloFAS v5's Deyr record is clean. Correlation picks the shortlist; detection at the window's rule picks the model.</p>
+<p>In the flood seasons that matter, Google Flood Hub and GloFAS v5 both track the gauges and GloFAS v4, the model that runs live, does not: pooled across all gauges its agreement is close to zero. Google leads in Gu and is the choice there. In Deyr the two are level on this measure and the windows run on GloFAS v5, because when the full rule is applied Google over-activates on the Juba in Deyr (three activations with no flood) and misses the Shabelle in Deyr 2020, while GloFAS v5's Deyr record is clean. Correlation makes the shortlist; detection at the window's rule picks the model.</p>
 
 <h2>Does it catch the floods?</h2>
 <p>A flood season means two of a river's gauges over their own 1-in-3 level; severe means two over 1-in-5. Scored over 1999 to 2023.</p>
