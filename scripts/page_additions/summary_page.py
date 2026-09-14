@@ -218,9 +218,9 @@ plt.rcParams.update({"font.size": 9.5, "axes.spines.top": False, "axes.spines.ri
 def fig_agreement():
     fig, axes = plt.subplots(1, 2, figsize=(10.2, 3.3), sharey=True)
     labels = [wname(r, s) for r, s in WINDOWS]
-    panels = [(axes[0], track, (0.3, 1.0), "Tracking: day to day, in the 1-in-3 flood seasons"),
-              (axes[1], agree, (-0.7, 1.0), "Ranking: order of the 1-in-3 floods by size")]
-    for ax, data, xlim, title in panels:
+    panels = [(axes[0], track, (0.3, 1.0), "Tracking: day to day, in the 1-in-3 flood seasons", "tracking correlation, model against gauge"),
+              (axes[1], agree, (-0.7, 1.0), "Ranking: order of the 1-in-3 floods by size", "ranking correlation, model against gauge")]
+    for ax, data, xlim, title, xlabel in panels:
         for i, (r, s) in enumerate(WINDOWS):
             for m, dy in (("google_grrr", .13), ("glofas_v5", -.13)):
                 v = data[(r, s)][m]
@@ -231,7 +231,7 @@ def fig_agreement():
                 ax.axhline(i + .5, color="#eef1f4", lw=1)
         ax.axvline(0, color="#9ca3af", lw=1, ls=":")
         ax.set_xlim(*xlim); ax.set_title(title, fontsize=10, loc="left", color="#111827")
-        ax.set_xlabel("rank correlation, model against gauge")
+        ax.set_xlabel(xlabel)
         ax.grid(axis="x", color="#eef1f4"); ax.tick_params(length=0)
     axes[0].set_yticks(range(len(labels))); axes[0].set_yticklabels(labels); axes[0].invert_yaxis()
     handles = [Line2D([], [], marker="o", ls="none", color=COL[m], label=("Google Flood Hub" if m == "google_grrr" else "GloFAS")) for m in ("google_grrr", "glofas_v5")]
