@@ -80,6 +80,7 @@ swalim_tl = json.load(open(S / "swalim_timeline.json"))
 fallback = json.load(open(S / "obs_fallback.json"))["rows"]
 G24 = json.load(open(S / "gu2024_issue.json"))
 rp3c = pd.DataFrame(json.load(open(S / "rp3_corr.json")))
+rp3t = pd.DataFrame(json.load(open(S / "rp3_track.json")))          # tracking, 1-in-3 seasons only
 index_html = (PAGE / "index.html").read_text(encoding="utf-8")
 index_text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", re.sub(r"<script.*?</script>", " ", index_html, flags=re.S)))
 
@@ -180,14 +181,15 @@ def _med(v):
     return v[m_] if len(v) % 2 else (v[m_ - 1] + v[m_]) / 2
 
 
-MODEL_KEY = {"Google": "google_grrr", "GloFAS v5": "glofas_v5"}
 track = {}
 for river, season in WINDOWS:
-    rows_ = [r for r in station if r["river"] == river and r["season"].lower() == season]
-    track[(river, season)] = {MODEL_KEY[m]: _med([r["rho"] for r in rows_ if r["model"] == m]) for m in MODEL_KEY}
-    assert all(len([r for r in rows_ if r["model"] == m]) == len(STATIONS[river].split(", ")) for m in MODEL_KEY), (river, season)
-track_season = {(s, MODEL_KEY[m]): _med([r["rho"] for r in station if r["season"].lower() == s and r["model"] == m])
-                for s in ("deyr", "gu") for m in MODEL_KEY}
+    g_ = rp3t[(rp3t.river == river) & (rp3t.season == season)]
+    assert len(g_) == len(STATIONS[river].split(", ")), (river, season)
+    track[(river, season)] = {m: float(g_[m].median()) for m in ("google_grrr", "glofas_v5")}
+track_season = {(s, m): float(rp3t[rp3t.season == s][m].median()) for s in ("deyr", "gu") for m in ("google_grrr", "glofas_v5")}
+assert all(track[(r_, "deyr")]["glofas_v5"] > track[(r_, "deyr")]["google_grrr"] for r_ in ("juba", "shabelle")), "prose says GloFAS tracks closer in Deyr"
+assert track[("juba", "gu")]["google_grrr"] > track[("juba", "gu")]["glofas_v5"], "prose says Google tracks closer on the Juba in Gu"
+assert abs(track[("shabelle", "gu")]["google_grrr"] - track[("shabelle", "gu")]["glofas_v5"]) <= 0.05, "prose says the two are level on the Shabelle in Gu"
 lead_band = json.load(open(S / "lead_band_design.json"))
 FADE = {int(k_): v for k_, v in lead_band["fade_share_of_day1"].items()}
 BAND13 = {k_: len(v) for k_, v in lead_band["bands_to_2013"].items()}
@@ -216,7 +218,7 @@ plt.rcParams.update({"font.size": 9.5, "axes.spines.top": False, "axes.spines.ri
 def fig_agreement():
     fig, axes = plt.subplots(1, 2, figsize=(10.2, 3.3), sharey=True)
     labels = [wname(r, s) for r, s in WINDOWS]
-    panels = [(axes[0], track, (0.3, 1.0), "Tracking: day to day, every season"),
+    panels = [(axes[0], track, (0.3, 1.0), "Tracking: day to day, in the 1-in-3 flood seasons"),
               (axes[1], agree, (-0.7, 1.0), "Ranking: order of the 1-in-3 floods by size")]
     for ax, data, xlim, title in panels:
         for i, (r, s) in enumerate(WINDOWS):
@@ -363,8 +365,9 @@ add(table(["Window", "#Flood seasons", "#Severe", "Severe years"],
 add(f"<p class=\"note\">Across both rivers: {len(flood_all)} flood years, {len(severe_all)} severe. Gauges are capped at bank full, so the largest floods record the same reading, and a season where only one gauge crosses does not count even at bank full (Gu 2021 at Belet Weyne).</p>")
 
 add("<h2>Which source, and why</h2><p>Three global models were candidates: Google Flood Hub, GloFAS and GEOGloWS. GEOGloWS runs 4 to 10 times too high on the Shabelle and has no forecast archive, so it drops out. The other two were compared with the SWALIM gauges on their own record of the past (Google's retrospective run, GloFAS's version 5 reanalysis; the forecasts are compared in the next section) in two ways.</p>"
-    "<ul><li><b>Tracking.</b> Over every day of the season, 2000 to 2023, the rank correlation between the model's daily flow and the gauge's daily level, allowing the model to run a few days ahead of or behind the gauge. 1 means the model rises and falls exactly with the gauge; 0, no relation.</li>"
-    "<li><b>Ranking.</b> Keeping only the seasons in which the gauge reached its own 1-in-3 level (4 to 10 per gauge), the rank correlation between how high the model went that season and how high the gauge went: does the model put the floods in the same order of size as the gauge did. 1 is the same order; 0, no relation; below 0, the wrong order.</li>"
+    "<p>Both use only the seasons in which the gauge reached its own 1-in-3 level, 2000 to 2023 (4 to 10 per gauge).</p>"
+    "<ul><li><b>Tracking.</b> Over every day of those seasons, the rank correlation between the model's daily flow and the gauge's daily level, allowing the model to run a few days ahead of or behind the gauge. 1 means the model rises and falls exactly with the gauge; 0, no relation.</li>"
+    "<li><b>Ranking.</b> Over those same seasons, the rank correlation between how high the model went each season and how high the gauge went: does the model put the floods in the same order of size as the gauge did. 1 is the same order; 0, no relation; below 0, the wrong order.</li>"
     "</ul>"
     "<p>Tracking and ranking are shown as the median across the river's gauges, so one value per river and season.</p>")
 rows = []
@@ -396,8 +399,8 @@ add("<div class='tw'><table><thead>"
     "<th colspan='2' class='n' style='border-bottom:1px solid var(--rule)'>Ranking</th>"
     "<th></th></tr>"
     f"<tr><th>Window</th>{_mods}{_mods}<th>Chosen</th></tr></thead><tbody>{_body}</tbody></table></div>")
-add("<figure><img src=\"figs/s_agreement.png\" alt=\"Agreement with the gauges in flood seasons, by window and model\"><figcaption>The two correlations from the table. Left, tracking: how closely the model follows the gauge day to day across all seasons. Right, ranking: whether the model orders the 1-in-3 floods by size as the gauge did. The ringed dot is the source the window runs on.</figcaption></figure>")
-add(f"<p>Day to day, GloFAS follows the gauges more closely in Deyr ({track_season[('deyr', 'glofas_v5')]:.2f} against {track_season[('deyr', 'google_grrr')]:.2f} for Google) and Google slightly more closely in Gu ({track_season[('gu', 'google_grrr')]:.2f} against {track_season[('gu', 'glofas_v5')]:.2f}). Google Flood Hub carries Gu: it tracks the gauges at least as closely, puts the floods closer to the gauges' order of size, and its Gu forecasts arrive before the flood where GloFAS v4's mostly arrive after it, as the next section shows. GloFAS carries Deyr: it tracks the gauges far more closely there, Google over-activates on the Juba there (three activations with no flood) and misses the Shabelle in 2020, while GloFAS's Deyr record is clean. Gu Shabelle reads near zero on ranking for every model because the gauge is capped at bank full in the largest floods; a limit of the record, not of the models.</p>")
+add("<figure><img src=\"figs/s_agreement.png\" alt=\"Agreement with the gauges in flood seasons, by window and model\"><figcaption>The two correlations from the table. Left, tracking: how closely the model follows the gauge day to day through the 1-in-3 flood seasons. Right, ranking: whether the model orders the 1-in-3 floods by size as the gauge did. The ringed dot is the source the window runs on.</figcaption></figure>")
+add(f"<p>Day to day, GloFAS follows the gauges more closely in Deyr ({track_season[('deyr', 'glofas_v5')]:.2f} against {track_season[('deyr', 'google_grrr')]:.2f} for Google) and Google slightly more closely in Gu ({track_season[('gu', 'google_grrr')]:.2f} against {track_season[('gu', 'glofas_v5')]:.2f}). Google Flood Hub carries Gu: it tracks the gauges more closely on the Juba and level with GloFAS on the Shabelle, puts the floods closer to the gauges' order of size, and its Gu forecasts arrive before the flood where GloFAS v4's mostly arrive after it, as the next section shows. GloFAS carries Deyr: it tracks the gauges far more closely there, Google over-activates on the Juba there (three activations with no flood) and misses the Shabelle in 2020, while GloFAS's Deyr record is clean. Gu Shabelle reads near zero on ranking for every model because the gauge is capped at bank full in the largest floods; a limit of the record, not of the models.</p>")
 
 add("<h2>How often it activates</h2><p>Every threshold sits at 1-in-3 or rarer; the vote counts were set so the whole mechanism activates about once in three years while still catching every severe season.</p>")
 add(table(["", "#Activations, 25 years", "Return period", "Years"],
