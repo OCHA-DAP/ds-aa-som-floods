@@ -237,7 +237,7 @@ def fig_agreement():
     handles = [Line2D([], [], marker="o", ls="none", color=COL[m], label=("Google Flood Hub" if m == "google_grrr" else "GloFAS")) for m in ("google_grrr", "glofas_v5")]
     handles.append(Line2D([], [], marker="o", ls="none", color="white", mec="#111827", mew=1.6, ms=9, label="ringed: the source the window runs on"))
     fig.legend(handles=handles, loc="lower left", frameon=False, ncol=3, bbox_to_anchor=(0.01, 0.93), fontsize=8.6)
-    fig.tight_layout(rect=(0, 0, 1, 0.93)); fig.savefig(FIGS / "s_agreement.png", dpi=150); plt.close(fig)
+    fig.tight_layout(rect=(0, 0, 1, 0.93)); fig.savefig(FIGS / "s_agreement.png", dpi=150, bbox_inches="tight", pad_inches=0.12); plt.close(fig)
 
 
 def fig_activations():
@@ -258,7 +258,7 @@ def fig_activations():
                        Line2D([], [], marker="o", ls="none", color=COL["glofas_v5"], label="window activates, GloFAS"),
                        Line2D([], [], marker="o", ls="none", color=COL["google_grrr"], label="window activates, Google Flood Hub")],
               loc="lower left", frameon=False, ncol=2, bbox_to_anchor=(0, 1.0), fontsize=8.6, columnspacing=2.0)
-    fig.tight_layout(); fig.savefig(FIGS / "s_activations.png", dpi=150); plt.close(fig)
+    fig.tight_layout(); fig.savefig(FIGS / "s_activations.png", dpi=150, bbox_inches="tight", pad_inches=0.12); plt.close(fig)
 
 
 def fig_leads():
@@ -291,7 +291,7 @@ def fig_leads():
                        Line2D([], [], marker="|", ls="none", color="#6b7280", ms=9, mew=1.3, alpha=.6, label="every later issue that also met the rule"),
                        Line2D([], [], marker="x", ls="none", color="#6b7280", mew=1.6, label="never crossed (shown at right edge)")],
               loc="lower left", frameon=False, ncol=2, bbox_to_anchor=(0, 1.02), fontsize=8.6)
-    fig.tight_layout(); fig.savefig(FIGS / "s_leads.png", dpi=150); plt.close(fig)
+    fig.tight_layout(); fig.savefig(FIGS / "s_leads.png", dpi=150, bbox_inches="tight", pad_inches=0.12); plt.close(fig)
 
 
 fig_agreement(); fig_activations(); fig_leads()
@@ -314,7 +314,7 @@ th{text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid va
 td{padding:7px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums} td.pick{font-weight:700}
 tr.sev td:first-child{font-weight:700}
-figure{margin:14px 0} figure img{max-width:100%;display:block} figcaption{color:var(--muted);font-size:13px;margin-top:6px;max-width:840px}
+figure{margin:22px 0 26px} figure img{max-width:100%;display:block} figcaption{color:var(--muted);font-size:13px;margin-top:8px;max-width:840px}
 .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
 .before{background:var(--okbg);color:var(--ok)} .same,.after{background:var(--latebg);color:var(--late)} .never{background:var(--missbg);color:var(--miss)} .na{background:var(--nabg);color:var(--na)}
 .who{color:var(--muted);font-size:12px;display:block}
