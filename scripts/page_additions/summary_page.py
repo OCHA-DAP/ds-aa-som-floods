@@ -120,7 +120,7 @@ def verdict(first_onset, when, year, model):
     if not (lo <= year <= hi):
         return ("na", "no archive", None)
     if when is None:
-        return ("never", "never crossed", None)
+        return ("never", "rule never met", None)
     lead = (first_onset - when).days
     return ("before", f"{lead} d before", lead) if lead > 0 else ("same", "same day", 0) if lead == 0 else ("after", f"{-lead} d after", lead)
 
@@ -283,14 +283,14 @@ def fig_leads():
                 ax.plot([x], [i + dy], "o", color=COL[m], ms=7, mec="white", mew=.8, zorder=3)
     ax.set_yticks(range(len(rows))); ax.set_yticklabels(labels); ax.invert_yaxis()
     ax.set_xlim(-22, 23.5); ax.set_xticks([-21, -14, -7, 0, 7, 14, 21])
-    ax.set_xticklabels(["21 d before", "14 d before", "7 d before", "2nd gauge over 1-in-3", "7 d after", "14 d after", "21 d after"], fontsize=8.5)
-    ax.set_xlabel("days from the day the river's second gauge crossed its own 1-in-3 level, the start of the flood season", fontsize=8.8, color="#374151")
+    ax.set_xticklabels(["21 d before", "14 d before", "7 d before", "second gauge over 1-in-3", "7 d after", "14 d after", "21 d after"], fontsize=8.5)
+    ax.set_xlabel("days before (left) and after (right) the river's second gauge crossed its own 1-in-3 level", fontsize=8.8, color="#374151")
     ax.text(-4, -0.9, "action window", color="#166534", fontsize=8.5, ha="center"); ax.text(-10, -0.9, "readiness", color="#4d7c0f", fontsize=8.5, ha="center")
     ax.grid(axis="x", color="#f1f5f9"); ax.tick_params(length=0)
     ax.legend(handles=[Line2D([], [], marker="o", ls="none", color=COL["google_grrr"], label="Google Flood Hub forecast, first issue meeting the rule"),
                        Line2D([], [], marker="o", ls="none", color=COL["glofas_v4"], label="GloFAS v4 forecast (the version running live)"),
                        Line2D([], [], marker="|", ls="none", color="#6b7280", ms=9, mew=1.3, alpha=.6, label="every later issue that also met the rule"),
-                       Line2D([], [], marker="x", ls="none", color="#6b7280", mew=1.6, label="never crossed (shown at right edge)")],
+                       Line2D([], [], marker="x", ls="none", color="#6b7280", mew=1.6, label="rule never met (shown at right edge)")],
               loc="lower left", frameon=False, ncol=2, bbox_to_anchor=(0, 1.02), fontsize=8.6)
     fig.tight_layout(); fig.savefig(FIGS / "s_leads.png", dpi=150, bbox_inches="tight", pad_inches=0.12); plt.close(fig)
 
@@ -365,8 +365,8 @@ add(table(["Window", "#Flood seasons", "#Severe", "Severe years"],
           [[c(wname(r, s)), n(str(len(flood[(r, s)]))), n(str(len(severe[(r, s)]))), c(yl(severe[(r, s)]))] for r, s in WINDOWS]))
 add(f"<p class=\"note\">Across both rivers there are {len(flood_all)} flood years, of which {len(severe_all)} are severe. Gauges are capped at bank full, so the largest floods record the same reading. A season in which only one gauge crosses does not count, as in Gu 2021 at Belet Weyne.</p>")
 
-add("<h2>Which source, and why</h2><p>Three global models were considered. GEOGloWS runs 4 to 10 times too high on the Shabelle and has no forecast archive, and was not taken further. Google Flood Hub and GloFAS were compared with the SWALIM gauges on their own records of the past, Google's retrospective run and GloFAS's version 5 reanalysis, using only the seasons in which the gauge reached its own 1-in-3 level between 2000 and 2023 (4 to 10 seasons per gauge). Values are the median across the river's gauges.</p>"
-    "<ul><li><b>Tracking</b> is the rank correlation between the model's daily flow and the gauge's daily level over every day of those seasons, allowing the model to run a few days ahead of or behind the gauge. A value of 1 means the model rises and falls exactly with the gauge, and 0 means no relation.</li>"
+add(f"<h2>Which source, and why</h2><p>Three global models were considered. GEOGloWS runs 4 to 10 times too high on the Shabelle and has no forecast archive, and was not taken further. Google Flood Hub and GloFAS were compared with the SWALIM gauges on their own records of the past, Google's retrospective run and GloFAS's version 5 reanalysis, using only the seasons in which the gauge reached its own 1-in-3 level between 2000 and 2023 ({rp3t.n_flood_seasons.min()} to {rp3t.n_flood_seasons.max()} seasons per gauge). Values are the median across the river's gauges; ranking needs at least four seasons, which leaves Dollow out of it.</p>"
+    "<ul><li><b>Tracking</b> is the rank correlation between the model's daily flow and the gauge's daily level over every day of those seasons, allowing the model to run ahead of or behind the gauge (the best fit was within ten days for every gauge). A value of 1 means the model rises and falls exactly with the gauge, and 0 means no relation.</li>"
     "<li><b>Ranking</b> is the rank correlation between how high the model went in each of those seasons and how high the gauge went. It tests whether the model orders the floods by size as the gauge did. A value of 1 means the same order, 0 means no relation, and a value below 0 means the wrong order.</li>"
     "</ul>")
 rows = []
@@ -383,7 +383,7 @@ for s in ("deyr", "gu"):
         rows.append(row)
     # season total: either river; a flood year is caught if the model's rule activated on either river
     fl_s = flood[("juba", s)] | flood[("shabelle", s)]
-    row = [(f"<b>{SEASON[s][0]}, either river</b>", "")]
+    row = [(f"<b>{SEASON[s][0]}, both rivers</b>", "")]
     for m in ("google_grrr", "glofas_v5"):
         row.append((f"<b>{track_season[(s, m)]:.2f}</b>", ' class="n"'))
     for m in ("google_grrr", "glofas_v5"):
@@ -416,8 +416,8 @@ add(f"<p>In Deyr, GloFAS v4 activated before the second gauge crossed in {d['per
 rows6 = [[c(f"{SEASON[s][0]} {r['year']}{' *' if r['severe'] else ''}"), c(" and ".join(r["rivers"])), c(r["first_onset"]), c(pill(r["google_grrr"])), c(pill(r["glofas_v4"])), c(escape(r["first"]))] for s in ("deyr", "gu") for r in fb_rows[s]]
 add("<details><summary>Flood by flood</summary>" + table(["Season", "River(s) that flooded", "Second gauge over 1-in-3", "Google Flood Hub forecast", "GloFAS v4 forecast", "First"], rows6) + "</details>")
 
-add(f"<h2>SWALIM's alerts</h2><p>SWALIM's bulletins were first in {sw_first} of the {len(both_flag)} seasons in which both SWALIM and the window's source flagged, and SWALIM alone flagged in {len(sw_only)} further seasons. The bulletins are forward-looking and often early, and a SWALIM moderate flood risk alert for either river therefore activates readiness. They cannot carry the action phase, because CERF needs an activation basis that can be backtested and the bulletins are expert judgement rather than a fixed rule.</p>")
-rows7 = [[c(t_["season"]), c(t_["river"]), c(t_["swalim_first"] or "no bulletin"), c(t_["vs_trigger"])] for t_ in swalim_tl]
+add(f"<h2>SWALIM's alerts</h2><p>SWALIM's bulletins were first in {sw_first} of the {len(both_flag)} seasons in which both SWALIM and the window's source flagged, and SWALIM alone flagged in {len(sw_only)} further seasons. First means the bulletin date against the day the window's rule was met on the source's own record, since GloFAS version 5 has no forecast archive. The bulletins are forward-looking and often early, and a SWALIM moderate flood risk alert for either river therefore activates readiness. They cannot carry the action phase, because CERF needs an activation basis that can be backtested and the bulletins are expert judgement rather than a fixed rule.</p>")
+rows7 = [[c(t_["season"]), c(t_["river"]), c(t_["swalim_first"] or "no bulletin"), c(t_["vs_trigger"].replace("rule never met", "rule never met on its record"))] for t_ in swalim_tl]
 add("<details><summary>SWALIM against the window's source, season by season</summary>" + table(["Season", "River", "SWALIM first bulletin", "Who was first"], rows7) + "</details>")
 
 add("<h2>What runs live, and what is open</h2><ul>"
