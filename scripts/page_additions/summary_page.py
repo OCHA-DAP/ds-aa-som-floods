@@ -419,12 +419,13 @@ def fmt_usd(n_):
     return f"${n_ / 1e6:.1f}M"
 
 
+AI_ORDER = [("juba", "gu"), ("juba", "deyr"), ("shabelle", "gu"), ("shabelle", "deyr")]   # as on the analysis page: river, then season, Gu first
 rows_y, n_multi, n_unattr = [], 0, 0
-for row in ai["rows"]:
+for row in reversed(ai["rows"]):                                                          # latest year first, as there
     y = row["year"]
     cells_ = [c(str(y))]
     keep = False
-    for r, s in WINDOWS:
+    for r, s in AI_ORDER:
         w_ = row["basins"][r][s]
         a_ = y in act[(r, s)]
         assert a_ == bool(w_["adopted"]), ("activation mismatch with the analysis table", y, r, s)
@@ -438,11 +439,12 @@ for row in ai["rows"]:
         cells_.append(n(fmt_usd(c2["usd"]) + ("*" if c2.get("unattr") else "")) if c2 else ("", ""))
     if keep:
         rows_y.append(cells_)
-_sub = "".join('<th class="n">points</th><th>gauges</th><th class="n">EM-DAT</th><th class="n">CERF</th>' for _ in WINDOWS)
-_top = "".join(f"<th colspan='4' style='border-bottom:1px solid var(--rule)'>{wname(r, s)}, {POOL[r]} points</th>" for r, s in WINDOWS)
+_sub = "".join('<th class="n">points</th><th>gauges</th><th class="n">EM-DAT</th><th class="n">CERF</th>' for _ in AI_ORDER)
+_riv = "".join(f"<th colspan='8' style='border-bottom:1px solid var(--rule);text-align:center'>{r.title()}</th>" for r in ("juba", "shabelle"))
+_top = "".join(f"<th colspan='4' style='border-bottom:1px solid var(--rule)'>{SEASON[s][0]}, {POOL[r]} points</th>" for r, s in AI_ORDER)
 _body = "".join("<tr>" + "".join(f"<td{a}>{x}</td>" for x, a in r_) + "</tr>" for r_ in rows_y)
 add("<p>Year by year, for every year with a gauge flood, an activation, an EM-DAT record or a CERF allocation. Points is the peak number of the window's monitored points over their thresholds on the same day that season, shaded green where the window activated. Gauges is the flood benchmark above. EM-DAT is people affected and CERF the allocation from the UN Central Emergency Response Fund, each attributed to the river named in the record; * marks a record naming both rivers or neither, shown under both.</p>")
-add(f"<div class='tw'><table class='ai'><thead><tr><th></th>{_top}</tr><tr><th>Year</th>{_sub}</tr></thead><tbody>{_body}</tbody></table></div>")
+add(f"<div class='tw'><table class='ai'><thead><tr><th></th>{_riv}</tr><tr><th></th>{_top}</tr><tr><th>Year</th>{_sub}</tr></thead><tbody>{_body}</tbody></table></div>")
 add(f"<figure><img src=\"figs/s_activations.png\" alt=\"Flood seasons and activations by year and window\"><figcaption>Squares mark gauge flood seasons, dark where severe. Dots mark the years in which the window activated on its source. There are {n_act} activations in 25 years. All {len(severe_all)} severe seasons are caught, and one activation, in {yl(outside)}, has no gauge flood behind it, although SWALIM and WFP both record that year as a major flood. Return periods are Weibull, (years + 1) divided by activations.</figcaption></figure>")
 
 d, g = fb_tot["deyr"], fb_tot["gu"]
