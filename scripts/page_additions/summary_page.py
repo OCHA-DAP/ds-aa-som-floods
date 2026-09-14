@@ -167,6 +167,7 @@ for season in ("deyr", "gu"):
         rows.append(rec)
     fb_rows[season], fb_tot[season] = rows, {"per_model": tot, "head_to_head": h2h, "n_both": n_both, "n": len(rows), "n_severe": sum(r["severe"] for r in rows)}
 json.dump({"rows": fb_rows, "totals": fb_tot}, open(S / "summary_rows.json", "w"), indent=1, default=str)
+d, g = fb_tot["deyr"], fb_tot["gu"]
 
 # ---------------------------------------------------------------- step 3: agreement in flood seasons
 agree = {}
@@ -346,14 +347,21 @@ yl = lambda ys: ", ".join(str(y) for y in sorted(ys)) or "none"
 
 # ================================================================ the page
 add(f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>How we got to the trigger | Somalia riverine flood trigger</title><style>{CSS}
+<title>Trigger summary | Somalia riverine flood trigger</title><style>{CSS}
 details{{margin:14px 0}} summary{{cursor:pointer;font-weight:600;padding:4px 0;color:var(--green)}}
 </style></head><body>
 <header><div class="wrap"><small>Somalia Riverine Flood Trigger / summary</small>
-<h1>How we got to the trigger</h1>
-<p>This page sets out how the trigger was designed and the evidence behind each choice. Figures cover 1999 to 2023 unless stated. The full analysis is on the <a href="index.html" style="color:#fff">trigger analysis page</a>.</p></div></header>
+<h1>Trigger summary</h1>
+<p>Summary of findings from the trigger analysis for the Juba and Shabelle rivers: the trigger, how it performs against the gauge record and the historical forecasts, and what runs live. Figures cover 1999 to 2023 unless stated. The full analysis is on the <a href="index.html" style="color:#fff">trigger analysis page</a>.</p></div></header>
 <div class="wrap">""")
 
+add("<h2>Findings</h2><ul>"
+    f"<li>Four windows, one forecast source each: GloFAS in Deyr and Google Flood Hub in Gu, with thresholds between 1-in-4 and 1-in-6 at each gauge. Any one window activating releases the allocation.</li>"
+    f"<li>On the 1999 to 2023 gauge record the mechanism activates {n_act} times in 25 years ({rate_env}), catches all {len(severe_all)} severe seasons, and activates once with no gauge flood behind it ({yl(outside)}).</li>"
+    f"<li>GloFAS tracks the gauges more closely in Deyr ({track_season[('deyr', 'glofas_v5')]:.2f} against {track_season[('deyr', 'google_grrr')]:.2f} for Google) and Google more closely in Gu ({track_season[('gu', 'google_grrr')]:.2f} against {track_season[('gu', 'glofas_v5')]:.2f}); Google also orders the Gu floods closer to the gauges' order.</li>"
+    f"<li>On the historical forecasts, Google was first in all {g['n_both']} Gu seasons both archives cover and GloFAS v4 was first in {d['head_to_head']['glofas_v4']} of {d['n_both']} in Deyr. The action window stops at 7 days because Google forecasts no further and the GloFAS signal fades beyond a week.</li>"
+    f"<li>SWALIM's bulletins were first in {sw_first} of {len(both_flag)} seasons where both flagged. They activate readiness; action needs a rule that can be backtested.</li>"
+    "<li>GloFAS version 4 runs both phases today, until a version 5 forecast is published and Google Flood Hub can be read by API.</li></ul>")
 add("<h2>The trigger</h2><p>The trigger covers two rivers and two rainy seasons, which gives four windows. Each window runs on one forecast source and one rule. If any one window activates, the full allocation is released.</p>")
 add(table(["Window", "Season", "Source", "Rule", "Gauges"],
           [[c(wname(r, s)), c(SEASON[s][1]), c(SOURCE[s]), c(f"{RULE[(r, s)][1]} of {4 if r == 'juba' else 3} gauges forecast over their own 1-in-{RULE[(r, s)][0]} level on the same day"), c(STATIONS[r])] for r, s in WINDOWS]))
@@ -412,7 +420,7 @@ for row in ai["rows"]:
     for r, s in WINDOWS:
         assert (y_ := row["year"]) is not None and (y_ in act[(r, s)]) == bool(row["basins"][r][s]["adopted"]), ("activation mismatch with the analysis table", row["year"], r, s)
 AI_JSON = json.dumps({"meta": {"windows": ai["meta"]["windows"]}, "rows": ai["rows"]}, separators=(",", ":"))
-add("<p>Activations, impact and response, year by year, as on the analysis page. The trigger column is the peak number of monitored points over their thresholds at the same time that season, filled red where the window activates. RP is the return period of the season's highest level at the SWALIM reference gauge, 5yr for 1-in-5 or rarer and 3yr for 1-in-3 to 1-in-5. EM-DAT is people affected and CERF the allocation from the UN Central Emergency Response Fund in US dollars, each attributed to the river named in the record; an event naming both rivers is counted under both, and an allocation naming neither is shown under both and marked *.</p>")
+add("<p>Activations, impact and response, year by year, as on the analysis page. The trigger column is the peak number of monitored points over their thresholds at the same time that season, filled red where the window activates. RP is the gauge benchmark above: 5yr where two of the river's gauges reached their own 1-in-5 level that season, 3yr where two reached 1-in-3 but not 1-in-5. The table fits each gauge's levels on its record from 2000 to its last reading, which runs into 2024 for some gauges, where the rest of this page stops at 2023; the two differ in one cell, Deyr Juba 2008, 5yr here and 1-in-3 above. EM-DAT is people affected and CERF the allocation from the UN Central Emergency Response Fund in US dollars, each attributed to the river named in the record; an event naming both rivers is counted under both, and an allocation naming neither is shown under both and marked *.</p>")
 add('<div class="tablewrap"><table class="ai" id="aiTable"><tr><td>loading</td></tr></table></div>')
 add("<script>(function(){var AI_DATA=" + AI_JSON + r""";
 function fmtN(v){if(!v)return"";if(v>=1e6)return(v/1e6).toFixed(v>=1e7?0:1)+"M";if(v>=1e3)return Math.round(v/1e3)+"k";return String(v);}
@@ -424,15 +432,15 @@ var h=[];
 h.push("<colgroup><col style='width:40px'>"+groups.map(function(){return "<col style='width:46px'><col style='width:32px'><col style='width:42px'><col style='width:40px'>";}).join("")+"</colgroup>");
 h.push('<tr><th rowspan="3" style="vertical-align:bottom">year</th>'+["Juba","Shabelle"].map(function(b){return '<th colspan="8" class="gl" style="font-size:10px">'+b+"</th>";}).join("")+"</tr>");
 h.push("<tr>"+groups.map(function(g){var m=D.meta.windows[g[0]+"_"+g[1]];return '<th colspan="4" class="gl">'+g[1].charAt(0).toUpperCase()+g[1].slice(1)+": \u2265"+m.n_req+"/"+m.pool+"</th>";}).join("")+"</tr>");
-h.push("<tr>"+groups.map(function(){return '<th class="gl" style="color:#B34036">trigger</th><th title="empirical RP of the season&#39;s max gauge level">RP</th><th style="color:#8E5FA8">EM-DAT</th><th style="color:#2A78D6">CERF</th>';}).join("")+"</tr>");
+h.push("<tr>"+groups.map(function(){return '<th class="gl" style="color:#B34036">trigger</th><th title="gauge benchmark: two of the river&#39;s gauges over their own level">RP</th><th style="color:#8E5FA8">EM-DAT</th><th style="color:#2A78D6">CERF</th>';}).join("")+"</tr>");
 D.rows.slice().reverse().forEach(function(r){
   var cells=["<td><b>"+r.year+"</b></td>"];
   groups.forEach(function(g){
     var w=r.basins[g[0]][g[1]];var m=D.meta.windows[g[0]+"_"+g[1]];
     if(w.adopted)cells.push('<td class="gl" style="background:rgba(179,64,54,.30)" title="trigger activates: '+w.n+" of "+m.pool+' pairs over threshold (requires '+m.n_req+')"><b style="color:#7A241C">'+w.n+"</b></td>");
     else cells.push('<td class="gl"'+(w.n?' title="'+w.n+" of "+m.pool+' pairs over threshold"':"")+">"+(w.n?w.n:'<span style="color:#c9cfd6">0</span>')+"</td>");
-    if(w.bench==="severe")cells.push('<td style="background:rgba(179,64,54,.14)" title="seasonal max level at the reference gauge: empirical RP \u2265 5 yr"><span style="color:#B34036;font-weight:700">5yr</span></td>');
-    else if(w.bench==="moderate")cells.push('<td style="background:rgba(244,169,59,.18)" title="seasonal max level at the reference gauge: empirical RP \u2265 3 yr"><span style="color:#B8860B;font-weight:500">3yr</span></td>');
+    if(w.bench==="severe")cells.push('<td style="background:rgba(179,64,54,.14)" title="two of the river&#39;s gauges over their own 1-in-5 level"><span style="color:#B34036;font-weight:700">5yr</span></td>');
+    else if(w.bench==="moderate")cells.push('<td style="background:rgba(244,169,59,.18)" title="two of the river&#39;s gauges over their own 1-in-3 level"><span style="color:#B8860B;font-weight:500">3yr</span></td>');
     else cells.push('<td style="color:#c9cfd6"></td>');
     var e=w.emdat;
     cells.push('<td class="num" style="'+emShade(e&&e.aff)+'"'+(e?' title="'+fmtN(e.aff)+' affected'+(e.deaths?", "+e.deaths+" deaths":"")+(e.multi?"; incl. multi-river event(s) counted under both rivers":"")+'"':"")+">"+(e?fmtN(e.aff):"")+"</td>");
@@ -445,7 +453,6 @@ document.getElementById("aiTable").innerHTML=h.join("");
 })();</script>""")
 add(f"<figure><img src=\"figs/s_activations.png\" alt=\"Flood seasons and activations by year and window\"><figcaption>Squares mark gauge flood seasons, dark where severe. Dots mark the years in which the window activated on its source. There are {n_act} activations in 25 years. All {len(severe_all)} severe seasons are caught, and one activation, in {yl(outside)}, has no gauge flood behind it, although SWALIM and WFP both record that year as a major flood. Return periods are Weibull, (years + 1) divided by activations.</figcaption></figure>")
 
-d, g = fb_tot["deyr"], fb_tot["gu"]
 add(f"<h2>Checked on the forecasts</h2><p>The tests above use each model's record of the past, whereas the trigger runs on forecasts. The historical forecasts were therefore replayed to find the day the alert would have gone out, 1 to 7 days ahead, and that day was compared with the day the flood season began at the gauges, which is the day the river's second gauge crossed its own 1-in-3 level (the first gauge may have crossed days earlier). Either river counts. Only Google Flood Hub (2016 to 2023) and GloFAS v4 (2003 to 2023, plus the live Gu 2024 forecasts) have archives. GloFAS's archive holds two issue days a week ({GLOFAS_ISSUES} a year) where Google's holds every day, so replayed GloFAS lead times are coarser by up to three days. The live GloFAS forecast is daily.</p>")
 add("<figure><img src=\"figs/s_leads.png\" alt=\"Lead time of the first forecast issue meeting the rule, per flood season\"><figcaption>One row per flood season, with severe seasons starred. The green band is the action window and the pale green band is readiness. The dot is the first forecast issue that met the rule, and the ticks are every later issue that met it. Points left of the line went out before the second gauge crossed, and points to the right went out after it.</figcaption></figure>")
 add(f"<p>In Deyr, GloFAS v4 activated before the second gauge crossed in {d['per_model']['glofas_v4'].get('before', 0)} of {d['n']} seasons and was first in {d['head_to_head']['glofas_v4']} of the {d['n_both']} seasons both archives cover. In Gu, Google was first in all {g['n_both']}. On the Shabelle it gave 10 to 13 days of warning in three of four seasons, where GloFAS v4 gave 3 days once and nothing in the other three. The lead-time comparison and the calibration were done independently and point the same way.</p>")
