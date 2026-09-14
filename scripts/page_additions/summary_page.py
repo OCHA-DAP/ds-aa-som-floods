@@ -360,8 +360,7 @@ add("<h2>Findings</h2><ul>"
     f"<li>On the 1999 to 2023 gauge record the mechanism activates {n_act} times in 25 years ({rate_env}), catches all {len(severe_all)} severe seasons, and activates once with no gauge flood behind it ({yl(outside)}).</li>"
     f"<li>GloFAS tracks the gauges more closely in Deyr ({track_season[('deyr', 'glofas_v5')]:.2f} against {track_season[('deyr', 'google_grrr')]:.2f} for Google) and Google more closely in Gu ({track_season[('gu', 'google_grrr')]:.2f} against {track_season[('gu', 'glofas_v5')]:.2f}); Google also orders the Gu floods closer to the gauges' order.</li>"
     f"<li>On the historical forecasts, Google was first in all {FB_G['n_both']} Gu seasons both archives cover and GloFAS v4 was first in {FB_D['head_to_head']['glofas_v4']} of {FB_D['n_both']} in Deyr. The action window stops at 7 days because Google forecasts no further and the GloFAS signal fades beyond a week.</li>"
-    f"<li>SWALIM's bulletins were first in {sw_first} of {len(both_flag)} seasons where both flagged. They activate readiness; action needs a rule that can be backtested.</li>"
-    "<li>GloFAS version 4 runs both phases today, until a version 5 forecast is published and Google Flood Hub can be read by API.</li></ul>")
+    f"<li>SWALIM's bulletins were first in {sw_first} of {len(both_flag)} seasons where both flagged. They activate readiness; action needs a rule that can be backtested.</li></ul>")
 add("<h2>The trigger</h2><p>The trigger covers two rivers and two rainy seasons, which gives four windows. Each window runs on one forecast source and one rule. If any one window activates, the full allocation is released.</p>")
 add(table(["Window", "Season", "Source", "Rule", "Gauges"],
           [[c(wname(r, s)), c(SEASON[s][1]), c(SOURCE[s]), c(f"{RULE[(r, s)][1]} of {4 if r == 'juba' else 3} gauges forecast over their own 1-in-{RULE[(r, s)][0]} level on the same day"), c(STATIONS[r])] for r, s in WINDOWS]))
