@@ -208,7 +208,7 @@ def fig_activations():
 def fig_leads():
     rows = [(s, r) for s in ("deyr", "gu") for r in fb_rows[s]]
     fig, ax = plt.subplots(figsize=(8.4, 0.34 * len(rows) + 1.4))
-    ax.axvspan(1, 7, color="#dcfce7", alpha=.8, zorder=0); ax.axvspan(8, 12, color="#f0fdf4", alpha=.9, zorder=0)
+    ax.axvspan(-7, -1, color="#dcfce7", alpha=.8, zorder=0); ax.axvspan(-12, -8, color="#f0fdf4", alpha=.9, zorder=0)
     ax.axvline(0, color="#374151", lw=1.2)
     labels = []
     for i, (s, r) in enumerate(rows):
@@ -218,18 +218,18 @@ def fig_leads():
             if v["kind"] == "na":
                 continue
             if v["lead"] is None:
-                ax.plot([-22], [i + dy], "x", color=COL[m], ms=7, mew=1.6, zorder=3)
+                ax.plot([22], [i + dy], "x", color=COL[m], ms=7, mew=1.6, zorder=3)
             else:
-                x = max(min(v["lead"], 21), -21)
+                x = max(min(-v["lead"], 21), -21)              # negative = before the flood
                 ax.plot([x], [i + dy], "o", color=COL[m], ms=7, mec="white", mew=.8, zorder=3)
     ax.set_yticks(range(len(rows))); ax.set_yticklabels(labels); ax.invert_yaxis()
-    ax.set_xlim(-23.5, 22); ax.set_xticks([-21, -14, -7, 0, 7, 14, 21])
-    ax.set_xticklabels(["21 d after", "14 d after", "7 d after", "flood begins", "7 d before", "14 d before", "21 d before"], fontsize=8.5)
-    ax.text(4, -0.9, "action window", color="#166534", fontsize=8.5, ha="center"); ax.text(10, -0.9, "readiness", color="#4d7c0f", fontsize=8.5, ha="center")
+    ax.set_xlim(-22, 23.5); ax.set_xticks([-21, -14, -7, 0, 7, 14, 21])
+    ax.set_xticklabels(["21 d before", "14 d before", "7 d before", "flood begins", "7 d after", "14 d after", "21 d after"], fontsize=8.5)
+    ax.text(-4, -0.9, "action window", color="#166534", fontsize=8.5, ha="center"); ax.text(-10, -0.9, "readiness", color="#4d7c0f", fontsize=8.5, ha="center")
     ax.grid(axis="x", color="#f1f5f9"); ax.tick_params(length=0)
     ax.legend(handles=[Line2D([], [], marker="o", ls="none", color=COL["google_grrr"], label="Google Flood Hub forecast, first issue meeting the rule"),
                        Line2D([], [], marker="o", ls="none", color=COL["glofas_v4"], label="GloFAS v4 forecast (the version running live)"),
-                       Line2D([], [], marker="x", ls="none", color="#6b7280", mew=1.6, label="never crossed (shown at left edge)")],
+                       Line2D([], [], marker="x", ls="none", color="#6b7280", mew=1.6, label="never crossed (shown at right edge)")],
               loc="lower left", frameon=False, ncol=1, bbox_to_anchor=(0, 1.02), fontsize=8.6)
     fig.tight_layout(); fig.savefig(FIGS / "s_leads.png", dpi=150); plt.close(fig)
 
@@ -329,7 +329,7 @@ add(f"<figure><img src=\"figs/s_activations.png\" alt=\"Flood seasons and activa
 
 d, g = fb_tot["deyr"], fb_tot["gu"]
 add("<h2>Checked on the forecasts</h2><p>The tests above use each model's record of the past. A trigger runs on forecasts, so the historical forecasts were replayed to find the day the alert would have gone out, at lead times of 1 to 7 days, against the day the flood began at the gauges. Either river counts. Only Google Flood Hub (2016 to 2023) and GloFAS v4 (2003 to 2023, plus the live Gu 2024 forecasts) have archives, so this is a comparison of those two.</p>")
-add("<figure><img src=\"figs/s_leads.png\" alt=\"Lead time of the first forecast issue meeting the rule, per flood season\"><figcaption>One row per flood season, * severe. Green: the action window, 1 to 7 days before the flood; pale green: readiness. Points right of the line are alerts that went out before the flood began.</figcaption></figure>")
+add("<figure><img src=\"figs/s_leads.png\" alt=\"Lead time of the first forecast issue meeting the rule, per flood season\"><figcaption>One row per flood season, * severe. Green: the action window, 1 to 7 days before the flood; pale green: readiness. Points left of the line are alerts that went out before the flood began; points to the right came after it.</figcaption></figure>")
 add(f"<p>Deyr: GloFAS v4 activated before the flood in {d['per_model']['glofas_v4'].get('before', 0)} of {d['n']} seasons and was first in {d['head_to_head']['glofas_v4']} of the {d['n_both']} both archives cover. Gu: Google was first in all {g['n_both']}, and on the Shabelle gave 10 to 13 days of warning in three of four seasons where GloFAS v4 gave 3 days once and nothing in the other three. The lead-time evidence and the calibration choice were made independently and agree.</p>")
 rows6 = [[c(f"{SEASON[s][0]} {r['year']}{' *' if r['severe'] else ''}"), c(" and ".join(r["rivers"])), c(r["first_onset"]), c(pill(r["google_grrr"])), c(pill(r["glofas_v4"])), c(escape(r["first"]))] for s in ("deyr", "gu") for r in fb_rows[s]]
 add("<details><summary>Flood by flood</summary>" + table(["Season", "River(s) that flooded", "Flood began", "Google Flood Hub forecast", "GloFAS v4 forecast", "First"], rows6) + "</details>")
