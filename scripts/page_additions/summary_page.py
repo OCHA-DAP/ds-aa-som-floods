@@ -283,8 +283,7 @@ def fig_leads():
                 ax.plot([x], [i + dy], "o", color=COL[m], ms=7, mec="white", mew=.8, zorder=3)
     ax.set_yticks(range(len(rows))); ax.set_yticklabels(labels); ax.invert_yaxis()
     ax.set_xlim(-22, 23.5); ax.set_xticks([-21, -14, -7, 0, 7, 14, 21])
-    ax.set_xticklabels(["21 d before", "14 d before", "7 d before", "second gauge
-over 1-in-3", "7 d after", "14 d after", "21 d after"], fontsize=8.5)
+    ax.set_xticklabels(["21 d before", "14 d before", "7 d before", "second gauge\nover 1-in-3", "7 d after", "14 d after", "21 d after"], fontsize=8.5)
     ax.set_xlabel("days before (left) and after (right) the river's second gauge crossed its own 1-in-3 level", fontsize=8.8, color="#374151")
     ax.text(-4, -0.9, "action window", color="#166534", fontsize=8.5, ha="center"); ax.text(-10, -0.9, "readiness", color="#4d7c0f", fontsize=8.5, ha="center")
     ax.grid(axis="x", color="#f1f5f9"); ax.tick_params(length=0)
