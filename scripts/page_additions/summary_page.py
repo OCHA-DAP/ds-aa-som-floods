@@ -465,7 +465,7 @@ add("<details><summary>SWALIM against the window's source, season by season</sum
 add("<h2>What runs live, and what is open</h2><ul>"
     "<li><b>Two gauges have stopped reporting.</b> Bardheere has not reported since 30 November 2023 and Bualle since 14 March 2024.</li>"
     "<li><b>Impact years are not yet defined.</b> The benchmark is gauge levels rather than people affected, and 2013 and 2021 show why an impact cross-check is the next step. Each window holds three to five severe seasons, so every difference on this page rests on one or two events.</li></ul>")
-add(f"<footer>Generated {datetime.date.today().isoformat()} from the trigger analysis outputs and checked against the analysis page when built.</footer></div></body></html>")
+add("</div></body></html>")
 
 html = "".join(H)
 OUT.write_text(html, encoding="utf-8")
