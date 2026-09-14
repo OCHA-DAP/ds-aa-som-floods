@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live monitoring &mdash; Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Daily status of the Somalia anticipatory-action riverine flood trigger: the four river-season windows, today's GloFAS and Google Flood Hub forecasts at the seven monitored points, and the readiness and action legs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+.hero.hero-sub { padding:40px 44px 34px; }
+.hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; }
+.crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+.crumb a:hover { text-decoration:underline; }
+article { padding:8px 44px 24px; max-width:1000px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:20px; color:var(--n9); margin:34px 0 10px; line-height:1.25; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; }
+article a { color:var(--b6); }
+.banner { display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; margin:22px 0 6px; padding:16px 20px; border-radius:6px; border:1px solid #e2e7e7; border-left:8px solid var(--b5); background:#fff; }
+.banner .status { font-family:'Merriweather',Georgia,serif; font-size:22px; font-weight:700; color:var(--b6); }
+.banner.warn { border-left-color:#D48F2A; } .banner.warn .status { color:#B0722B; }
+.banner.error { border-left-color:#B34036; } .banner.error .status { color:#B34036; }
+.banner.off { border-left-color:#9aa4a6; } .banner.off .status { color:#5e6a6b; }
+.banner .meta { font-size:12.5px; color:var(--n7); line-height:1.6; }
+.grid4 { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin:18px 0 8px; }
+.win { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5); border-radius:5px; padding:14px 16px 12px; }
+.win.closed { opacity:.62; border-top-color:#c8d0d1; }
+.win.act { border-top-color:#B34036; } .win.ready { border-top-color:#D48F2A; }
+.win h3 { margin:0 0 4px; font-family:'Merriweather',Georgia,serif; font-size:15px; color:var(--n9); }
+.win .src { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--n7); margin-bottom:10px; }
+.win .leg { display:flex; justify-content:space-between; align-items:baseline; font-size:13px; color:var(--n8); padding:5px 0; border-top:1px solid #f0f3f3; }
+.win .leg b { font-size:17px; color:var(--n9); }
+.win .leg .fired { color:#B34036; } .win .leg .fired-r { color:#B0722B; }
+.pill { display:inline-block; font-size:10px; padding:2px 7px; border-radius:10px; text-transform:uppercase; letter-spacing:.07em; font-weight:700; background:var(--b05); color:var(--b7); border:1px solid var(--b1); vertical-align:2px; margin-left:6px; }
+.pill.grey { background:#f0f3f3; color:#5e6a6b; border-color:#e2e7e7; }
+figure { margin:20px 0 8px; } figure img { width:100%; height:auto; display:block; border:1px solid #e2e7e7; border-radius:4px; }
+figcaption { font-size:12px; color:var(--n7); margin-top:7px; line-height:1.5; }
+table.data { border-collapse:collapse; width:100%; margin:12px 0 4px; font-size:13px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 9px 6px; }
+table.data td { border-bottom:1px solid #eef1f1; padding:6px 9px; color:var(--n8); white-space:nowrap; }
+table.data td.n { text-align:right; font-variant-numeric:tabular-nums; }
+table.data td.over { color:#B34036; font-weight:600; }
+table.data td.none { color:#9aa4a6; }
+.bar { display:inline-block; height:9px; background:var(--b1); border-radius:2px; vertical-align:middle; margin-right:6px; }
+.bar.over { background:#B34036; }
+.tablewrap { overflow-x:auto; }
+.callout { margin:18px 0; padding:12px 16px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
+.callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
+.callout.error { background:#fbeeec; border-left-color:#B34036; }
+.provenance { margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7; font-size:12px; color:var(--n7); line-height:1.7; }
+.provenance a { color:var(--b6); }
+@media (max-width:640px) { article { padding:4px 22px 16px; } .hero.hero-sub { padding:32px 22px 28px; } .provenance { margin:28px 22px 32px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero hero-sub">
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / live monitoring</p>
+      <h1>Live monitoring</h1>
+      <p>Daily status of the anticipatory-action trigger for riverine flooding on the Juba and
+         Shabelle rivers: today's GloFAS and Google Flood Hub forecasts at the seven monitored
+         points, read against the four river-season windows. Updated once a day after the
+         20:00 UTC run; the same evaluation feeds the email notifications.</p>
+    </div>
+  </header>
+
+  <article>
+    <div id="banner" class="banner off"><span class="status">Loading…</span></div>
+    <div id="windows" class="grid4"></div>
+    <div id="notes"></div>
+
+    <h2>Today's forecasts</h2>
+    <figure id="chartfig" hidden>
+      <img id="chart" alt="Forecast at each monitored point as a share of its own threshold">
+      <figcaption>Each line is one monitored point, as a percentage of its own trigger level for the
+        season being watched; the dashed line is the level that counts as a vote. Darker band: action
+        leads (1 to 7 days). Lighter band: readiness leads (8 to 12 days). GloFAS lines are the
+        ensemble median.</figcaption>
+    </figure>
+
+    <h2>Point by point</h2>
+    <p id="tables-intro">For each open window, the forecast peak at each point within the leg's lead band and inside the season months, against the point's level.</p>
+    <div id="tables"></div>
+
+    <h2>How to read this page</h2>
+    <ul>
+      <li><strong>Four windows, one source each.</strong> Gu (March to May) runs on Google Flood Hub, Deyr (October to December) on GloFAS. A window activates when, on a single forecast day, enough of the river's points are forecast at or above their own return-period level: Juba needs 3 of 4 points, Shabelle 2 of 3. Any one window activating releases the allocation.</li>
+      <li><strong>Action</strong> reads leads 1 to 7 days on the window's source. <strong>Readiness</strong> reads GloFAS at leads 8 to 12 days for every window, with levels fitted on that lead band, and releases only the mobilisation share.</li>
+      <li><strong>SWALIM.</strong> A SWALIM moderate flood risk alert for either river also activates readiness. Bulletins are not read automatically: check <a href="https://frrims.faoswalim.org/">FAO SWALIM</a> alongside this page.</li>
+      <li><strong>A window is open</strong> from twelve days before its season begins, when a forecast day can first fall inside it, until the season ends. Outside the two seasons the pipeline still runs and this page still updates, but no emails are sent.</li>
+      <li>Full design and evidence: the <a href="../trigger-single-model/summary.html">trigger summary</a> and the <a href="../trigger-single-model/">analysis page</a>. Which GloFAS version is live, and what it does to the thresholds: <a href="../glofas-version/">GloFAS version switch</a>.</li>
+    </ul>
+  </article>
+
+  <p class="provenance" id="prov">
+    Status file written by <code>pipelines/export_monitoring_status.py</code> in
+    <a href="https://github.com/OCHA-DAP/ds-aa-som-floods">ds-aa-som-floods</a>
+    (<a href="https://github.com/OCHA-DAP/ds-aa-som-floods/actions/workflows/monitoring.yml">workflow runs</a>).
+    Forecast data: <a href="https://ewds.climate.copernicus.eu/datasets/cems-glofas-forecast">GloFAS operational, EWDS</a> ·
+    <a href="https://sites.research.google/floods/">Google Flood Hub</a>. Dev-stage data plane on a public page.
+    <span id="updated"></span>
+  </p>
+</div>
+
+<script>
+const fmtDate = s => s ? new Date(s + "T00:00:00Z").toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric", timeZone:"UTC"}) : "—";
+const fmtTs = s => s ? new Date(s).toLocaleString("en-GB", {day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit", timeZoneName:"short"}) : "—";
+const n0 = x => x == null ? "—" : Math.round(x).toLocaleString("en-GB");
+
+function legRow(name, leg, fired, cls) {
+  const v = leg.max_votes, req = leg.n_req, of = leg.n_of;
+  const rep = leg.n_reporting < of ? ` · ${leg.n_reporting} of ${of} reporting` : "";
+  return `<div class="leg"><span>${name}<br><span style="font-size:11px;color:var(--n7)">rule ${req} of ${of} over 1-in-${leg.rp}${rep}</span></span>
+          <b class="${fired ? cls : ""}">${v}/${of}</b></div>`;
+}
+
+function windowCard(key, w) {
+  const a = w.action, r = w.readiness;
+  const cls = !w.open ? "closed" : a.activated ? "act" : r.activated ? "ready" : "";
+  const src = (w.action.source === "google" ? "Google Flood Hub" : "GloFAS") + " · action" +
+              (w.open ? (w.in_season ? "" : " · opens soon") : " · closed");
+  return `<div class="win ${cls}"><h3>${w.title}${w.open ? "" : '<span class="pill grey">closed</span>'}${a.activated && w.open ? '<span class="pill" style="background:#fbeeec;color:#B34036;border-color:#f3c9c4">action</span>' : ""}${!a.activated && r.activated && w.open ? '<span class="pill" style="background:#fdf3e7;color:#B0722B;border-color:#f3dcb8">readiness</span>' : ""}</h3>
+    <div class="src">${src}</div>
+    ${legRow("Action (1–7 d)", a, a.activated, "fired")}
+    ${legRow("Readiness (GloFAS 8–12 d)", r, r.activated, "fired-r")}
+  </div>`;
+}
+
+function pointTable(w, leg, legName, titles) {
+  const rows = Object.entries(leg.stations).map(([st, v]) => {
+    if (!v.reporting) return `<tr><td>${titles.station[st]}</td><td class="none" colspan="3">not in the live feed</td><td class="n">${n0(v.threshold)}</td></tr>`;
+    if (v.max_value == null) return `<tr><td>${titles.station[st]}</td><td class="none" colspan="3">no forecast day inside the season months yet</td><td class="n">${n0(v.threshold)}</td></tr>`;
+    const pct = Math.min(v.pct_of_threshold, 250);
+    return `<tr><td>${titles.station[st]}</td>
+      <td class="n ${v.exceeds ? "over" : ""}">${n0(v.max_value)}</td>
+      <td>${fmtDate(v.max_date)}</td>
+      <td><span class="bar ${v.exceeds ? "over" : ""}" style="width:${Math.max(2, pct * 0.6)}px"></span>${v.pct_of_threshold}%</td>
+      <td class="n">${n0(v.threshold)}</td></tr>`;
+  }).join("");
+  const src = leg.source === "google" ? "Google Flood Hub" : "GloFAS ensemble median";
+  return `<h3 style="font-size:15px;margin:22px 0 2px;font-family:Merriweather,Georgia,serif">${w.title} — ${legName}</h3>
+    <p style="margin:0 0 6px;font-size:12.5px;color:var(--n7)">${src}, leads ${leg.leads[0]}–${leg.leads[1]} days, valid days in season · rule ${leg.n_req} of ${leg.n_of} over 1-in-${leg.rp} · max ${leg.max_votes} on ${fmtDate(leg.max_votes_date)}</p>
+    <div class="tablewrap"><table class="data"><thead><tr><th>Point</th><th>Forecast peak (m³/s)</th><th>On</th><th>% of level</th><th>Level (m³/s)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.statusText); return r.json(); }).then(s => {
+  const b = document.getElementById("banner");
+  const cls = s.action ? "error" : s.readiness ? "warn" : s.open_windows.length ? "" : "off";
+  b.className = "banner " + cls;
+  const openTitles = s.open_windows.map(k => s.windows[k].title).join(", ") || "none (out of season)";
+  b.innerHTML = `<span class="status">${s.status}</span>
+    <span class="meta">Forecasts retrieved <b>${fmtDate(s.monitoring_date)}</b> · open window${s.open_windows.length === 1 ? "" : "s"}: ${openTitles}<br>
+    GloFAS: ${s.glofas_version || "n/a"}, issue ${fmtDate(s.glofas_issue)}, ${s.n_glofas_points} points · Google Flood Hub: ${s.n_google_gauges} of 7 gauges, issue ${s.google_issue || "n/a"}</span>`;
+  document.getElementById("windows").innerHTML = Object.entries(s.windows).map(([k, w]) => windowCard(k, w)).join("");
+  const notes = [];
+  if (s.chart_stale) notes.push(`<div class="callout warn">The chart is from the last available run; today's is not published yet.</div>`);
+  if (s.n_google_gauges < 7) notes.push(`<div class="callout warn">Google Flood Hub's live API serves ${s.n_google_gauges} of the 7 monitored points. Dollow's gauge is not in the operational feed, so in Gu the Juba rule (3 of 4) can only be met if all three live Juba points cross.</div>`);
+  notes.push(`<div class="callout">${s.swalim_note} <a href="https://frrims.faoswalim.org/">FAO SWALIM</a>.</div>`);
+  document.getElementById("notes").innerHTML = notes.join("");
+  if (s.chart) { document.getElementById("chart").src = s.chart + "?v=" + encodeURIComponent(s.generated_at); document.getElementById("chartfig").hidden = false; }
+  const shown = s.open_windows.length ? s.open_windows : Object.keys(s.windows);
+  document.getElementById("tables-intro").textContent = s.open_windows.length
+    ? "For each open window, the forecast peak at each point within the leg's lead band and inside the season months, against the point's level."
+    : "No window is open. Shown for every window: the forecast peak at each point within the lead band, against the level, counting only valid days inside the season months (so most cells are empty out of season).";
+  document.getElementById("tables").innerHTML = shown.map(k => pointTable(s.windows[k], s.windows[k].action, "action", s.titles) + pointTable(s.windows[k], s.windows[k].readiness, "readiness", s.titles)).join("");
+  document.getElementById("updated").textContent = ` Status generated ${fmtTs(s.generated_at)}.`;
+}).catch(err => {
+  document.getElementById("banner").innerHTML = `<span class="status">No status yet</span><span class="meta">Could not load status.json (${err.message}). The monitoring pipeline writes it after its first run.</span>`;
+});
+</script>
+</body>
+</html>

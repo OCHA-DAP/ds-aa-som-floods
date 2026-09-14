@@ -6,8 +6,11 @@ name: Deploy pages site to GitHub Pages
 # variant — two cards do not need a manifest; the manifest-driven variant lives in
 # OCHA-DAP/ds-storm-impact-harmonisation). No build step, no Python, no credentials.
 #
-# The repo is private, so the site is served on a private *.pages.github.io subdomain,
-# visible to OCHA-DAP members only.
+# The repo is public, so the site is public at https://ocha-dap.github.io/ds-aa-som-floods/.
+#
+# The monitoring pipeline (monitoring.yml, 20:00 UTC) pushes status.json + latest.png to
+# the orphan `monitoring-status` branch; the scheduled run here ~45 min later overlays
+# them into pages/monitoring/ so the public status page is never far behind the data.
 #
 # workflow_dispatch exists for manual redeploys (including from a branch, pre-merge).
 # configure-pages with enablement: true creates/switches the site to workflow builds on
@@ -17,6 +20,8 @@ on:
   push:
     branches: [main]
     paths: ["pages/**", ".github/workflows/deploy-pages.yml"]
+  schedule:
+    - cron: "45 20 * * *"
   workflow_dispatch:
 
 permissions:
@@ -36,6 +41,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Overlay the monitoring status data (orphan branch, may not exist yet)
+        run: |
+          git fetch --depth 1 origin monitoring-status || true
+          git checkout origin/monitoring-status -- pages/monitoring/status.json pages/monitoring/latest.png 2>/dev/null || true
+          ls -la pages/monitoring/
       - name: Assemble site (landing at /, report at /trigger/)
         run: |
           mkdir -p site

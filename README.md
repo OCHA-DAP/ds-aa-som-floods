@@ -11,6 +11,8 @@ Develop and evaluate flood trigger thresholds to activate preparedness and early
 - `analysis/` — Jupyter notebooks for exploratory analysis and trigger simulations
 - `data/` — Cached local data files (folder structure tracked, contents gitignored)
 - `src/` — Data-source clients, constants, and utility functions
+- `src/monitoring/`, `pipelines/` — the daily monitoring pipeline (forecast fetch, trigger evaluation, chart, Listmonk email, status export); see `CLAUDE.md` for the runbook
+- `pages/` — the GitHub Pages site: trigger design, live monitoring status (`/monitoring/`) and the GloFAS version note (`/glofas-version/`)
 
 ## Usage
 

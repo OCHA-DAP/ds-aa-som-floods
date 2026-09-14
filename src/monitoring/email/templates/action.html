@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+  <p>Dear Humanitarian Coordinator, dear colleagues,</p>
+  <p>
+    The action trigger of the OCHA coordinated anticipatory action framework for riverine flooding in Somalia has been reached for the <b>{{ action_titles|join(' and ') }}</b> window{{ 's' if action_titles|length != 1 else '' }}:
+    {% for key in action_windows %}{% set w = windows[key] %}
+    {{ source_title[w.action.source] }} forecasts <b>{{ w.action.max_votes }} of {{ w.action.n_of }}</b> monitored points on the {{ river_title[w.river] }} at or above their 1-in-{{ w.action.rp }} level on {{ w.action.max_votes_date }} (rule: {{ w.action.n_req }} of {{ w.action.n_of }}){{ '; ' if not loop.last else '.' }}
+    {% endfor %}
+    In line with forecasts issued on {{ pub_date }}.
+  </p>
+  <p>
+    <!-- TODO: link the framework document once published -->
+    All activities in line with the framework document should now commence. OCHA may convene a meeting of the participating partners.
+  </p>
+  <p>Points over their level:</p>
+  <ul>
+    {% for key in action_windows %}{% set w = windows[key] %}{% for st, v in w.action.stations.items() %}{% if v.exceeds %}
+    <li><b>{{ station_title[st] }}</b> ({{ river_title[w.river] }}): forecast peak {{ "{:,.0f}".format(v.max_value) }} m<sup>3</sup>/s on {{ v.max_date }}, level {{ "{:,.0f}".format(v.threshold) }} m<sup>3</sup>/s ({{ v.pct_of_threshold }}%)</li>
+    {% endif %}{% endfor %}{% endfor %}
+  </ul>
+  <p>The live status page is at <a href="{{ dashboard_url }}">{{ dashboard_url }}</a>.</p>
+  <p>Best wishes and good luck,</p>
+  <p>OCHA Centre for Humanitarian Data</p>
+</div>
+{% endblock content %}

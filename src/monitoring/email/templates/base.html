@@ -1,0 +1,15 @@
+<div style="font-family:Helvetica, Arial, sans-serif;font-size:14px;color:#222;">
+  <h1 style="font-weight:normal;">Somalia: Riverine Flood Monitoring</h1>
+  <div style="font-size:11px;padding: 6px 10px 6px 10px;background-color:#F0F0F0;color:#000000;font-style:italic">
+    <p style="margin:0;">
+      This is an automated email produced for monitoring the Somalia Anticipatory Action framework for riverine flooding on the Juba and Shabelle rivers.
+      {{ cadence_note or "During the Gu (March to May) and Deyr (October to December) monitoring windows, updates are sent weekly on Mondays, or in the event that the readiness or action trigger is met." }}
+    </p>
+  </div>
+  <h2 style="font-weight:normal;">{{ trigger_status }} - {{ pub_date }}</h2>
+  {% block content %} {% endblock content %}
+  <hr>
+  <p style="font-size:12px;color:#555;">
+    Contact the OCHA Centre for Humanitarian Data via {{ contact_name }} at <a href="mailto:{{ contact_email }}">{{ contact_email }}</a> with any questions or feedback on this email notification system, or if you wish to be added to or removed from it.
+  </p>
+</div>

@@ -17,3 +17,11 @@ data/*
 # Researcher scratch — EDA outputs, throwaway scripts, plot dumps
 artefacts/
 *.pyc
+
+# monitoring dry-run outputs
+temp/
+
+# monitoring status data lives on the orphan monitoring-status branch, not on main
+pages/monitoring/status.json
+pages/monitoring/latest.png
+pages/monitoring/_email_preview.html

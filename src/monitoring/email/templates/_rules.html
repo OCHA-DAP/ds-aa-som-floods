@@ -1,0 +1,22 @@
+<p>The framework monitors four river-season windows. Each runs on one forecast source and one rule: a window activates when, on a single forecast day, enough of the river's monitored points are forecast at or above their own return-period level.</p>
+<table style="border-collapse:collapse;font-size:13px;margin:8px 0 12px;">
+  <tr style="background:#F0F0F0;">
+    <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;">Window</th>
+    <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;">Action source (1 to 7 days ahead)</th>
+    <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;">Action rule</th>
+    <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;">Readiness (GloFAS, 8 to 12 days)</th>
+    <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;">Today</th>
+  </tr>
+  {% for key, w in windows.items() %}
+  <tr{% if not w.open %} style="color:#888;"{% endif %}>
+    <td style="padding:4px 8px;border:1px solid #ddd;"><b>{{ w.title }}</b>{% if not w.open %} (closed){% endif %}</td>
+    <td style="padding:4px 8px;border:1px solid #ddd;">{{ source_title[w.action.source] }}</td>
+    <td style="padding:4px 8px;border:1px solid #ddd;">{{ w.action.n_req }} of {{ w.action.n_of }} points over 1-in-{{ w.action.rp }}</td>
+    <td style="padding:4px 8px;border:1px solid #ddd;">{{ w.readiness.n_req }} of {{ w.readiness.n_of }} points over 1-in-{{ w.readiness.rp }}</td>
+    <td style="padding:4px 8px;border:1px solid #ddd;">
+      {% if w.open %}action {{ w.action.max_votes }}/{{ w.action.n_of }}{% if w.action.n_reporting < w.action.n_of %} ({{ w.action.n_reporting }} reporting){% endif %} · readiness {{ w.readiness.max_votes }}/{{ w.readiness.n_of }}{% else %}&mdash;{% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<p style="font-size:12px;color:#555;">Readiness may also be activated by a <b>SWALIM moderate flood risk alert</b> for either river. SWALIM bulletins are not read automatically: check the <a href="https://frrims.faoswalim.org/">FAO SWALIM flood risk pages</a> alongside this email.</p>

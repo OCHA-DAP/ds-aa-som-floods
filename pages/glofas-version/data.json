@@ -1,0 +1,684 @@
+{
+ "generated": "2026-09-14",
+ "operational": "glofas_v4",
+ "ratio_median_deyr_rp": 2.4778618543157687,
+ "deyr_levels": [
+  {
+   "river": "juba",
+   "station": "dollow",
+   "rp": 4,
+   "v4": 1735.8,
+   "v5": 600.9,
+   "ratio": 2.9,
+   "mean4": 890.4000244140625,
+   "mean5": 259.0,
+   "readiness_rp": 4,
+   "readiness_band": 1498.8
+  },
+  {
+   "river": "juba",
+   "station": "luuq",
+   "rp": 4,
+   "v4": 1733.8,
+   "v5": 972.9,
+   "ratio": 1.8,
+   "mean4": 895.2999877929688,
+   "mean5": 320.29998779296875,
+   "readiness_rp": 4,
+   "readiness_band": 1517.2
+  },
+  {
+   "river": "juba",
+   "station": "bardheere",
+   "rp": 4,
+   "v4": 1730.0,
+   "v5": 965.9,
+   "ratio": 1.8,
+   "mean4": 906.2000122070312,
+   "mean5": 328.0,
+   "readiness_rp": 4,
+   "readiness_band": 1532.3
+  },
+  {
+   "river": "juba",
+   "station": "bualle",
+   "rp": 4,
+   "v4": 1724.8,
+   "v5": 870.7,
+   "ratio": 2.0,
+   "mean4": 913.5999755859375,
+   "mean5": 313.20001220703125,
+   "readiness_rp": 4,
+   "readiness_band": 1551.3
+  },
+  {
+   "river": "shabelle",
+   "station": "belet_weyne",
+   "rp": 4,
+   "v4": 1078.9,
+   "v5": 435.4,
+   "ratio": 2.5,
+   "mean4": 471.1000061035156,
+   "mean5": 149.10000610351562,
+   "readiness_rp": 4,
+   "readiness_band": 956.6
+  },
+  {
+   "river": "shabelle",
+   "station": "bulo_burti",
+   "rp": 4,
+   "v4": 1078.6,
+   "v5": 365.5,
+   "ratio": 3.0,
+   "mean4": 475.6000061035156,
+   "mean5": 115.5,
+   "readiness_rp": 4,
+   "readiness_band": 967.9
+  },
+  {
+   "river": "shabelle",
+   "station": "jowhar",
+   "rp": 4,
+   "v4": 1122.0,
+   "v5": 337.0,
+   "ratio": 3.3,
+   "mean4": 486.79998779296875,
+   "mean5": 104.0999984741211,
+   "readiness_rp": 4,
+   "readiness_band": 978.3
+  }
+ ],
+ "activations": {
+  "juba_deyr|fit=glofas_v4|flow=glofas_v4": [
+   2001,
+   2005,
+   2014,
+   2015,
+   2017,
+   2023
+  ],
+  "juba_deyr|fit=glofas_v4|flow=glofas_v5": [
+   2023
+  ],
+  "juba_deyr|fit=glofas_v5|flow=glofas_v4": [
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023
+  ],
+  "juba_deyr|fit=glofas_v5|flow=glofas_v5": [
+   2006,
+   2023
+  ],
+  "shabelle_deyr|fit=glofas_v4|flow=glofas_v4": [
+   2007,
+   2010,
+   2013,
+   2014,
+   2019,
+   2020
+  ],
+  "shabelle_deyr|fit=glofas_v4|flow=glofas_v5": [],
+  "shabelle_deyr|fit=glofas_v5|flow=glofas_v4": [
+   1999,
+   2000,
+   2001,
+   2002,
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023
+  ],
+  "shabelle_deyr|fit=glofas_v5|flow=glofas_v5": [
+   2006,
+   2013,
+   2014,
+   2019,
+   2020,
+   2023
+  ]
+ },
+ "gu_activations": {
+  "juba_gu": [
+   2013,
+   2016,
+   2018,
+   2020
+  ],
+  "shabelle_gu": [
+   2013,
+   2016,
+   2018,
+   2020
+  ]
+ },
+ "envelope": {
+  "glofas_v4": {
+   "years": [
+    2001,
+    2005,
+    2007,
+    2010,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2023
+   ],
+   "n": 13,
+   "rp": 1.9230769230769231,
+   "severe_caught": [
+    2014,
+    2016,
+    2018,
+    2019,
+    2020,
+    2023
+   ],
+   "severe_missed": [
+    2006
+   ],
+   "no_flood": [
+    2001,
+    2007,
+    2013,
+    2015
+   ]
+  },
+  "glofas_v5": {
+   "years": [
+    2006,
+    2013,
+    2014,
+    2016,
+    2018,
+    2019,
+    2020,
+    2023
+   ],
+   "n": 8,
+   "rp": 3.125,
+   "severe_caught": [
+    2006,
+    2014,
+    2016,
+    2018,
+    2019,
+    2020,
+    2023
+   ],
+   "severe_missed": [],
+   "no_flood": [
+    2013
+   ]
+  }
+ },
+ "benchmark": {
+  "juba_gu": {
+   "flood": [
+    2005,
+    2010,
+    2016,
+    2018,
+    2020,
+    2023
+   ],
+   "severe": [
+    2018,
+    2020,
+    2023
+   ]
+  },
+  "juba_deyr": {
+   "flood": [
+    2006,
+    2008,
+    2014,
+    2017,
+    2023
+   ],
+   "severe": [
+    2006,
+    2014,
+    2023
+   ]
+  },
+  "shabelle_gu": {
+   "flood": [
+    2003,
+    2005,
+    2010,
+    2016,
+    2018,
+    2020,
+    2023
+   ],
+   "severe": [
+    2016,
+    2020,
+    2023
+   ]
+  },
+  "shabelle_deyr": {
+   "flood": [
+    2006,
+    2008,
+    2014,
+    2019,
+    2020,
+    2023
+   ],
+   "severe": [
+    2006,
+    2014,
+    2019,
+    2020,
+    2023
+   ]
+  }
+ },
+ "sweep_v4": [
+  {
+   "window": "Deyr Juba",
+   "rp": 3,
+   "n_req": 2,
+   "n_of": 4,
+   "years": [
+    2001,
+    2005,
+    2006,
+    2011,
+    2014,
+    2015,
+    2017,
+    2023
+   ],
+   "n": 8,
+   "severe": 3,
+   "n_severe": 3,
+   "false": 4,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Juba",
+   "rp": 3,
+   "n_req": 3,
+   "n_of": 4,
+   "years": [
+    2001,
+    2005,
+    2006,
+    2011,
+    2014,
+    2015,
+    2017,
+    2023
+   ],
+   "n": 8,
+   "severe": 3,
+   "n_severe": 3,
+   "false": 4,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Juba",
+   "rp": 3,
+   "n_req": 4,
+   "n_of": 4,
+   "years": [
+    2001,
+    2005,
+    2011,
+    2014,
+    2015,
+    2017,
+    2023
+   ],
+   "n": 7,
+   "severe": 2,
+   "n_severe": 3,
+   "false": 4,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Juba",
+   "rp": 4,
+   "n_req": 2,
+   "n_of": 4,
+   "years": [
+    2001,
+    2005,
+    2014,
+    2015,
+    2017,
+    2023
+   ],
+   "n": 6,
+   "severe": 2,
+   "n_severe": 3,
+   "false": 3,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Juba",
+   "rp": 4,
+   "n_req": 3,
+   "n_of": 4,
+   "years": [
+    2001,
+    2005,
+    2014,
+    2015,
+    2017,
+    2023
+   ],
+   "n": 6,
+   "severe": 2,
+   "n_severe": 3,
+   "false": 3,
+   "adopted": true
+  },
+  {
+   "window": "Deyr Juba",
+   "rp": 4,
+   "n_req": 4,
+   "n_of": 4,
+   "years": [
+    2001,
+    2005,
+    2014,
+    2015,
+    2017,
+    2023
+   ],
+   "n": 6,
+   "severe": 2,
+   "n_severe": 3,
+   "false": 3,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Juba",
+   "rp": 5,
+   "n_req": 2,
+   "n_of": 4,
+   "years": [
+    2005,
+    2014,
+    2015,
+    2017,
+    2023
+   ],
+   "n": 5,
+   "severe": 2,
+   "n_severe": 3,
+   "false": 2,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Juba",
+   "rp": 5,
+   "n_req": 3,
+   "n_of": 4,
+   "years": [
+    2005,
+    2014,
+    2015,
+    2017,
+    2023
+   ],
+   "n": 5,
+   "severe": 2,
+   "n_severe": 3,
+   "false": 2,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Juba",
+   "rp": 5,
+   "n_req": 4,
+   "n_of": 4,
+   "years": [
+    2017,
+    2023
+   ],
+   "n": 2,
+   "severe": 1,
+   "n_severe": 3,
+   "false": 0,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Juba",
+   "rp": 6,
+   "n_req": 2,
+   "n_of": 4,
+   "years": [
+    2014,
+    2015,
+    2017,
+    2023
+   ],
+   "n": 4,
+   "severe": 2,
+   "n_severe": 3,
+   "false": 1,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Juba",
+   "rp": 6,
+   "n_req": 3,
+   "n_of": 4,
+   "years": [
+    2015,
+    2017,
+    2023
+   ],
+   "n": 3,
+   "severe": 1,
+   "n_severe": 3,
+   "false": 1,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Juba",
+   "rp": 6,
+   "n_req": 4,
+   "n_of": 4,
+   "years": [
+    2017,
+    2023
+   ],
+   "n": 2,
+   "severe": 1,
+   "n_severe": 3,
+   "false": 0,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Shabelle",
+   "rp": 3,
+   "n_req": 2,
+   "n_of": 3,
+   "years": [
+    2006,
+    2007,
+    2010,
+    2013,
+    2014,
+    2017,
+    2019,
+    2020
+   ],
+   "n": 8,
+   "severe": 4,
+   "n_severe": 5,
+   "false": 4,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Shabelle",
+   "rp": 3,
+   "n_req": 3,
+   "n_of": 3,
+   "years": [
+    2007,
+    2010,
+    2013,
+    2014,
+    2019,
+    2020
+   ],
+   "n": 6,
+   "severe": 3,
+   "n_severe": 5,
+   "false": 3,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Shabelle",
+   "rp": 4,
+   "n_req": 2,
+   "n_of": 3,
+   "years": [
+    2007,
+    2010,
+    2013,
+    2014,
+    2019,
+    2020
+   ],
+   "n": 6,
+   "severe": 3,
+   "n_severe": 5,
+   "false": 3,
+   "adopted": true
+  },
+  {
+   "window": "Deyr Shabelle",
+   "rp": 4,
+   "n_req": 3,
+   "n_of": 3,
+   "years": [
+    2010,
+    2013,
+    2019,
+    2020
+   ],
+   "n": 4,
+   "severe": 2,
+   "n_severe": 5,
+   "false": 2,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Shabelle",
+   "rp": 5,
+   "n_req": 2,
+   "n_of": 3,
+   "years": [
+    2010,
+    2013,
+    2014,
+    2019,
+    2020
+   ],
+   "n": 5,
+   "severe": 3,
+   "n_severe": 5,
+   "false": 2,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Shabelle",
+   "rp": 5,
+   "n_req": 3,
+   "n_of": 3,
+   "years": [
+    2013,
+    2019,
+    2020
+   ],
+   "n": 3,
+   "severe": 2,
+   "n_severe": 5,
+   "false": 1,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Shabelle",
+   "rp": 6,
+   "n_req": 2,
+   "n_of": 3,
+   "years": [
+    2010,
+    2013,
+    2019,
+    2020
+   ],
+   "n": 4,
+   "severe": 2,
+   "n_severe": 5,
+   "false": 2,
+   "adopted": false
+  },
+  {
+   "window": "Deyr Shabelle",
+   "rp": 6,
+   "n_req": 3,
+   "n_of": 3,
+   "years": [
+    2013,
+    2019
+   ],
+   "n": 2,
+   "severe": 1,
+   "n_severe": 5,
+   "false": 1,
+   "adopted": false
+  }
+ ]
+}
