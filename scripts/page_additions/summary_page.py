@@ -296,7 +296,7 @@ def fig_leads():
     fig.tight_layout(); fig.savefig(FIGS / "s_leads.png", dpi=150, bbox_inches="tight", pad_inches=0.12); plt.close(fig)
 
 
-fig_agreement(); fig_activations(); fig_leads()
+fig_agreement(); fig_leads()
 
 # ================================================================ HTML helpers
 CSS = """
@@ -450,7 +450,6 @@ D.rows.slice().reverse().forEach(function(r){
 });
 document.getElementById("aiTable").innerHTML=h.join("");
 })();</script>""")
-add(f"<figure><img src=\"figs/s_activations.png\" alt=\"Flood seasons and activations by year and window\"><figcaption>Squares mark gauge flood seasons, dark where severe. Dots mark the years in which the window activated on its source. There are {n_act} activations in 25 years. All {len(severe_all)} severe seasons are caught, and one activation, in {yl(outside)}, has no gauge flood behind it, although SWALIM and WFP both record that year as a major flood. Return periods are Weibull, (years + 1) divided by activations.</figcaption></figure>")
 
 d, g = FB_D, FB_G
 add(f"<h2>Checked on the forecasts</h2><p>The tests above use each model's record of the past, whereas the trigger runs on forecasts. The historical forecasts were therefore replayed to find the day the alert would have gone out, 1 to 7 days ahead, and that day was compared with the day the flood season began at the gauges, which is the day the river's second gauge crossed its own 1-in-3 level (the first gauge may have crossed days earlier). Either river counts. Only Google Flood Hub (2016 to 2023) and GloFAS v4 (2003 to 2023, plus the live Gu 2024 forecasts) have archives. GloFAS's archive holds two issue days a week ({GLOFAS_ISSUES} a year) where Google's holds every day, so replayed GloFAS lead times are coarser by up to three days. The live GloFAS forecast is daily.</p>")
