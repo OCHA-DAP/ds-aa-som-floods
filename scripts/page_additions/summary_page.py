@@ -50,6 +50,28 @@ def dfmt(x):
     return f"{x.day} {x.strftime('%b')}"
 
 
+def all_issue_dates(model, river, season, rp, n_req, span, leads=(1, 7)):
+    """Year -> sorted issue dates (normalised) on which the ensemble median at the given leads
+    put >= n_req of the river's points over their level. Same construction as
+    somlib.first_issue_dates, keeping every issue rather than the first."""
+    import numpy as np
+    rf = L.reforecast(model)
+    rf = rf[rf.station.isin(L.TRIGGER_STATIONS[river]) & rf.leadtime_days.between(*leads)
+            & rf.valid_time.dt.month.isin(L.SEASONS[season])]
+    med = rf.groupby(["issued_time", "valid_time", "station"]).discharge.median().unstack("station")
+    thr = L.model_thresholds(model, river, season, rp)
+    cols = [c for c in thr.index if c in med.columns and not np.isnan(thr[c])]
+    votes = (med[cols] >= thr[cols]).sum(axis=1)
+    hit = votes[votes >= n_req].reset_index()
+    hit.columns = ["issued", "valid", "votes"]
+    hit["year"] = hit["valid"].dt.year
+    out = {}
+    for y, g in hit.groupby("year"):
+        if y in span:
+            out[y] = sorted(set(g["issued"].dt.normalize()))
+    return out
+
+
 # ---------------------------------------------------------------- inputs already computed
 metrics = json.load(open(S / "metrics.json"))
 win = {w["window"]: w for w in metrics["windows"]}
@@ -104,15 +126,17 @@ def verdict(first_onset, when, year, model):
 
 fb_rows, fb_tot = {}, {}
 for season in ("deyr", "gu"):
-    onset, sev_s, fc = {}, {}, {"google_grrr": {}, "glofas_v4": {}}
+    onset, sev_s, fc, fc_all = {}, {}, {"google_grrr": {}, "glofas_v4": {}}, {}
     for river in ("juba", "shabelle"):
         rp, n = RULE[(river, season)]
         onset[river] = L.gauge_crossings(river, season, 3, span=SPAN)
         sev_s[river] = set(L.gauge_crossings(river, season, L.SEVERE_RP, span=SPAN))
         for mdl in fc:
             fc[mdl][river] = {y: v[0] for y, v in L.first_issue_dates(mdl, river, season, rp, n, span=SPAN, leads=(1, 7)).items()}
+            fc_all.setdefault(mdl, {})[river] = all_issue_dates(mdl, river, season, rp, n, SPAN)
         if season == "gu" and V4_2024[river] is not None:
             fc["glofas_v4"][river][2024] = V4_2024[river]
+            fc_all["glofas_v4"][river][2024] = [V4_2024[river]]          # only the first is archived for 2024
     years = sorted({y for r in onset for y in onset[r] if y in SPAN and (season == "gu" or y <= 2023)})
     # the 1999-2023 flood years must agree with the benchmark used everywhere else
     assert {y for y in years if y <= 2023} == set().union(*(flood[(r, season)] for r in ("juba", "shabelle"))), season
@@ -126,7 +150,9 @@ for season in ("deyr", "gu"):
             c = {r: fc[mdl][r][y] for r in fc[mdl] if y in fc[mdl][r]}
             when, river = (min(c.values()), min(c, key=c.get)) if c else (None, None)
             kind, text, lead = verdict(first, when, y, mdl)
-            rec[mdl] = {"kind": kind, "text": text, "river": river.title() if river else None, "when": dfmt(when) if when is not None else None, "lead": lead}
+            issues = sorted({d for r_ in fc_all.get(mdl, {}) for d in fc_all[mdl][r_].get(y, [])})
+            rec[mdl] = {"kind": kind, "text": text, "river": river.title() if river else None, "when": dfmt(when) if when is not None else None,
+                        "lead": lead, "all_leads": [(first - d_).days for d_ in issues], "n_issues": len(issues)}
             tot[mdl][kind] = tot[mdl].get(kind, 0) + 1
             leads[mdl] = (kind, lead)
         g, v = leads["google_grrr"], leads["glofas_v4"]
@@ -220,6 +246,9 @@ def fig_leads():
             if v["lead"] is None:
                 ax.plot([22], [i + dy], "x", color=COL[m], ms=7, mew=1.6, zorder=3)
             else:
+                later = [max(min(-ld, 21), -21) for ld in v.get("all_leads", []) if ld != v["lead"]]
+                if later:
+                    ax.plot(later, [i + dy] * len(later), "|", color=COL[m], ms=9, mew=1.3, alpha=.5, zorder=2)
                 x = max(min(-v["lead"], 21), -21)              # negative = before the flood
                 ax.plot([x], [i + dy], "o", color=COL[m], ms=7, mec="white", mew=.8, zorder=3)
     ax.set_yticks(range(len(rows))); ax.set_yticklabels(labels); ax.invert_yaxis()
@@ -229,8 +258,9 @@ def fig_leads():
     ax.grid(axis="x", color="#f1f5f9"); ax.tick_params(length=0)
     ax.legend(handles=[Line2D([], [], marker="o", ls="none", color=COL["google_grrr"], label="Google Flood Hub forecast, first issue meeting the rule"),
                        Line2D([], [], marker="o", ls="none", color=COL["glofas_v4"], label="GloFAS v4 forecast (the version running live)"),
+                       Line2D([], [], marker="|", ls="none", color="#6b7280", ms=9, mew=1.3, alpha=.6, label="every later issue that also met the rule"),
                        Line2D([], [], marker="x", ls="none", color="#6b7280", mew=1.6, label="never crossed (shown at right edge)")],
-              loc="lower left", frameon=False, ncol=1, bbox_to_anchor=(0, 1.02), fontsize=8.6)
+              loc="lower left", frameon=False, ncol=2, bbox_to_anchor=(0, 1.02), fontsize=8.6)
     fig.tight_layout(); fig.savefig(FIGS / "s_leads.png", dpi=150); plt.close(fig)
 
 
@@ -329,7 +359,7 @@ add(f"<figure><img src=\"figs/s_activations.png\" alt=\"Flood seasons and activa
 
 d, g = fb_tot["deyr"], fb_tot["gu"]
 add("<h2>Checked on the forecasts</h2><p>The tests above use each model's record of the past. A trigger runs on forecasts, so the historical forecasts were replayed to find the day the alert would have gone out, at lead times of 1 to 7 days, against the day the flood began at the gauges. Either river counts. Only Google Flood Hub (2016 to 2023) and GloFAS v4 (2003 to 2023, plus the live Gu 2024 forecasts) have archives, so this is a comparison of those two.</p>")
-add("<figure><img src=\"figs/s_leads.png\" alt=\"Lead time of the first forecast issue meeting the rule, per flood season\"><figcaption>One row per flood season, * severe. Green: the action window, 1 to 7 days before the flood; pale green: readiness. Points left of the line are alerts that went out before the flood began; points to the right came after it.</figcaption></figure>")
+add("<figure><img src=\"figs/s_leads.png\" alt=\"Lead time of the first forecast issue meeting the rule, per flood season\"><figcaption>One row per flood season, * severe. Green: the action window, 1 to 7 days before the flood; pale green: readiness. The dot is the first forecast issue that met the rule; the small ticks are every later issue that met it again. Points left of the line went out before the flood began; points to the right came after it.</figcaption></figure>")
 add(f"<p>Deyr: GloFAS v4 activated before the flood in {d['per_model']['glofas_v4'].get('before', 0)} of {d['n']} seasons and was first in {d['head_to_head']['glofas_v4']} of the {d['n_both']} both archives cover. Gu: Google was first in all {g['n_both']}, and on the Shabelle gave 10 to 13 days of warning in three of four seasons where GloFAS v4 gave 3 days once and nothing in the other three. The lead-time evidence and the calibration choice were made independently and agree.</p>")
 rows6 = [[c(f"{SEASON[s][0]} {r['year']}{' *' if r['severe'] else ''}"), c(" and ".join(r["rivers"])), c(r["first_onset"]), c(pill(r["google_grrr"])), c(pill(r["glofas_v4"])), c(escape(r["first"]))] for s in ("deyr", "gu") for r in fb_rows[s]]
 add("<details><summary>Flood by flood</summary>" + table(["Season", "River(s) that flooded", "Flood began", "Google Flood Hub forecast", "GloFAS v4 forecast", "First"], rows6) + "</details>")
