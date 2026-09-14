@@ -202,7 +202,7 @@ def fig_agreement():
         ax.axhline(i + .5, color="#eef1f4", lw=1) if i < 3 else None
     ax.axvline(0, color="#9ca3af", lw=1, ls=":")
     ax.set_yticks(range(len(labels))); ax.set_yticklabels(labels); ax.invert_yaxis()
-    ax.set_xlim(-0.7, 1.0); ax.set_xlabel("rank correlation of seasonal peaks over the gauge's own 1-in-3 seasons (median across the window's gauges)")
+    ax.set_xlim(-0.7, 1.0); ax.set_xlabel("1-in-3 flood seasons only: rank correlation of the model's seasonal peak with the gauge's (median across the window's gauges)")
     ax.grid(axis="x", color="#eef1f4"); ax.tick_params(length=0)
     handles = [Line2D([], [], marker="o", ls="none", color=COL[m], label=NICE[m]) for m in ("google_grrr", "glofas_v5", "glofas_v4")]
     handles.append(Line2D([], [], marker="o", ls="none", color="white", mec="#111827", mew=1.6, ms=9, label="ringed: the source the window runs on"))
@@ -333,21 +333,21 @@ add(table(["Window", "#Flood seasons", "#Severe", "Severe years"],
           [[c(wname(r, s)), n(str(len(flood[(r, s)]))), n(str(len(severe[(r, s)]))), c(yl(severe[(r, s)]))] for r, s in WINDOWS]))
 add(f"<p class=\"note\">Across both rivers: {len(flood_all)} flood years, {len(severe_all)} severe. Gauges are capped at bank full, so the largest floods record the same reading, and a season where only one gauge crosses does not count even at bank full (Gu 2021 at Belet Weyne).</p>")
 
-add("<h2>Which source, and why</h2><p>Three global models were candidates: Google Flood Hub, GloFAS and GEOGloWS. GEOGloWS runs 4 to 10 times too high on the Shabelle and has no forecast archive, so it drops out. The other two were tested twice on each window: do they order the flood seasons the way the gauges did, and do they catch the severe seasons when the window's rule is applied to their own record.</p>")
+add("<h2>Which source, and why</h2><p>Three global models were candidates: Google Flood Hub, GloFAS and GEOGloWS. GEOGloWS runs 4 to 10 times too high on the Shabelle and has no forecast archive, so it drops out. The other two were tested twice on each window: do they order the flood seasons the way the gauges did, and how many of the 1-in-3 flood seasons do they catch when the window's rule is applied to their own record.</p>")
 rows = []
 for r, s in WINDOWS:
     w = win[wname(r, s)]
     row = [c(wname(r, s))]
     for m in ("google_grrr", "glofas_v5", "glofas_v4"):
-        row.append((pick if m == CAL[s] else n)(f"{agree[(r, s)][m]:.2f}"))
+        row.append(n(f"{agree[(r, s)][m]:.2f}"))
     for m in ("google_grrr", "glofas_v5", "glofas_v4"):
         a_ = w["models"][m]
-        row.append((pick if m == CAL[s] else n)(f"{a_['vs_severe']['hits']} of {len(w['severe_years'])}, {a_['vs_flood']['false_alarms']} false"))
+        row.append(n(f"{a_['vs_flood']['hits']} of {len(w['flood_years'])}"))
     row.append(c(SOURCE[s]))
     rows.append(row)
-add(table(["Window", "#Agreement: Google", "#GloFAS v5", "#GloFAS v4", "#Severe caught: Google", "#GloFAS v5", "#GloFAS v4", "Chosen"], rows))
-add("<figure><img src=\"figs/s_agreement.png\" alt=\"Agreement with the gauges in flood seasons, by window and model\"><figcaption>Agreement: rank correlation between the model's seasonal peak and the gauge's, over the gauge's own 1-in-3 seasons only (4 to 10 per gauge), median across the window's gauges. The ringed dot is the source the window runs on. Severe caught, in the table, is at the window's rule; false is activations in years with no gauge flood.</figcaption></figure>")
-add(f"<p>Google Flood Hub carries Gu: it leads on agreement, matches GloFAS on severe seasons caught (with one activation in a year with no gauge flood, 2013, that GloFAS does not have), and its Gu forecasts arrive before the flood where GloFAS v4's mostly arrive after it, as the next section shows. GloFAS carries Deyr: Google over-activates on the Juba there (three activations with no flood) and misses the Shabelle in 2020, while GloFAS's Deyr record is clean. GloFAS v4, the version running live, agrees least with the gauges (pooled {pooled['glofas_v4']:.2f} against {pooled['google_grrr']:.2f} for Google) and catches one severe Gu season of three on the Shabelle. Gu Shabelle reads near zero on agreement for every model because the gauge is capped at bank full in the largest floods; a limit of the record, not of the models.</p>")
+add(table(["Window", "#Agreement: Google", "#GloFAS v5", "#GloFAS v4", "#1-in-3 seasons caught: Google", "#GloFAS v5", "#GloFAS v4", "Chosen"], rows))
+add("<figure><img src=\"figs/s_agreement.png\" alt=\"Agreement with the gauges in flood seasons, by window and model\"><figcaption>Agreement: rank correlation between the model's seasonal peak and the gauge's, over the gauge's own 1-in-3 seasons only (4 to 10 per gauge), median across the window's gauges. The ringed dot is the source the window runs on. Seasons caught, in the table, is the number of the window's 1-in-3 flood seasons in which the model's own record met the window's rule.</figcaption></figure>")
+add(f"<p>Google Flood Hub carries Gu: it leads on agreement, catches every severe Gu season that GloFAS catches (GloFAS catches one more of the moderate 1-in-3 seasons in each Gu window, and Google carries one activation in a year with no gauge flood, 2013), and its Gu forecasts arrive before the flood where GloFAS v4's mostly arrive after it, as the next section shows. GloFAS carries Deyr: Google over-activates on the Juba there (three activations with no flood) and misses the Shabelle in 2020, while GloFAS's Deyr record is clean. GloFAS v4, the version running live, agrees least with the gauges (pooled {pooled['glofas_v4']:.2f} against {pooled['google_grrr']:.2f} for Google) and catches one severe Gu season of three on the Shabelle. Gu Shabelle reads near zero on agreement for every model because the gauge is capped at bank full in the largest floods; a limit of the record, not of the models.</p>")
 
 add("<h2>How often it activates</h2><p>Every threshold sits at 1-in-3 or rarer; the vote counts were set so the whole mechanism activates about once in three years while still catching every severe season.</p>")
 add(table(["", "#Activations, 25 years", "Return period", "Years"],
