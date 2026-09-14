@@ -315,7 +315,7 @@ th{text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid va
 td{padding:7px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums} td.pick{font-weight:700}
 tr.sev td:first-child{font-weight:700}
-td.yes{background:var(--okbg);color:var(--ok)} td.fl{background:var(--latebg);color:var(--late)} td.sv{background:var(--missbg);color:var(--miss)} figure{margin:22px 0 26px} figure img{max-width:100%;display:block} figcaption{color:var(--muted);font-size:13px;margin-top:8px;max-width:840px}
+table.ai th,table.ai td{font-size:12px;padding:5px 6px;white-space:nowrap} td.yes{background:var(--okbg);color:var(--ok)} td.fl{background:var(--latebg);color:var(--late)} td.sv{background:var(--missbg);color:var(--miss)} figure{margin:22px 0 26px} figure img{max-width:100%;display:block} figcaption{color:var(--muted);font-size:13px;margin-top:8px;max-width:840px}
 .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
 .before{background:var(--okbg);color:var(--ok)} .same,.after{background:var(--latebg);color:var(--late)} .never{background:var(--missbg);color:var(--miss)} .na{background:var(--nabg);color:var(--na)}
 .who{color:var(--muted);font-size:12px;display:block}
@@ -407,24 +407,42 @@ add(table(["", "#Activations, 25 years", "Return period", "Years"],
           + [[c("Juba, either window"), n(str(len(per_river["juba"]))), c(rate_river["juba"]), c(yl(per_river["juba"]))],
              [c("Shabelle, either window"), n(str(len(per_river["shabelle"]))), c(rate_river["shabelle"]), c(yl(per_river["shabelle"]))],
              [c("Whole mechanism"), n(str(n_act)), c(rate_env), c(yl(env_years))]]))
-yrs_any = sorted({y for k_ in act for y in act[k_]} | {y for k_ in flood for y in flood[k_]})
-rows_y = []
-for y in yrs_any:
-    cells = [c(str(y))]
+ai = json.load(open(PAGE / "activation_impact.json"))          # the analysis page's year-by-year table data
+POOL = {"juba": 4, "shabelle": 3}
+
+
+def fmt_people(n_):
+    return f"{n_ / 1e6:.1f}M" if n_ >= 1e6 else f"{round(n_ / 1e3):d}k" if n_ >= 1000 else str(n_)
+
+
+def fmt_usd(n_):
+    return f"${n_ / 1e6:.1f}M"
+
+
+rows_y, n_multi, n_unattr = [], 0, 0
+for row in ai["rows"]:
+    y = row["year"]
+    cells_ = [c(str(y))]
+    keep = False
     for r, s in WINDOWS:
-        a_, f_, sv_ = y in act[(r, s)], y in flood[(r, s)], y in severe[(r, s)]
-        if a_:
-            cells.append((("activated, severe flood" if sv_ else "activated, flood" if f_ else "activated, no gauge flood"), ' class="yes"'))
-        elif sv_:
-            cells.append(("severe flood, not activated", ' class="sv"'))
-        elif f_:
-            cells.append(("flood, not activated", ' class="fl"'))
-        else:
-            cells.append(("", ""))
-    cells.append(("activated" if y in env_years else "", ' class="yes"' if y in env_years else ""))
-    rows_y.append(cells)
-add("<p>Year by year, for every year with a gauge flood or an activation. Years not listed had neither.</p>")
-add(table(["Year"] + [wname(r, s) for r, s in WINDOWS] + ["Mechanism"], rows_y))
+        w_ = row["basins"][r][s]
+        a_ = y in act[(r, s)]
+        assert a_ == bool(w_["adopted"]), ("activation mismatch with the analysis table", y, r, s)
+        f_, sv_ = y in flood[(r, s)], y in severe[(r, s)]
+        keep = keep or a_ or f_ or bool(w_["emdat"]) or bool(w_["cerf"])
+        cells_.append((f"{w_['n']} of {POOL[r]}" if w_["n"] else "", ' class="n yes"' if a_ else ' class="n"'))
+        cells_.append(("1-in-5", ' class="sv"') if sv_ else ("1-in-3", ' class="fl"') if f_ else ("", ""))
+        e_ = w_["emdat"]; n_multi += bool(e_ and e_.get("multi"))
+        cells_.append(n(fmt_people(e_["aff"]) + ("*" if e_.get("multi") else "")) if e_ else ("", ""))
+        c2 = w_["cerf"]; n_unattr += bool(c2 and c2.get("unattr"))
+        cells_.append(n(fmt_usd(c2["usd"]) + ("*" if c2.get("unattr") else "")) if c2 else ("", ""))
+    if keep:
+        rows_y.append(cells_)
+_sub = "".join('<th class="n">points over</th><th>gauges</th><th class="n">EM-DAT</th><th class="n">CERF</th>' for _ in WINDOWS)
+_top = "".join(f"<th colspan='4' style='border-bottom:1px solid var(--rule)'>{wname(r, s)}</th>" for r, s in WINDOWS)
+_body = "".join("<tr>" + "".join(f"<td{a}>{x}</td>" for x, a in r_) + "</tr>" for r_ in rows_y)
+add("<p>Year by year, for every year with a gauge flood, an activation, an EM-DAT record or a CERF allocation. Points over is the peak number of the window's monitored points forecast over their thresholds on the same day that season, shaded green where the window activated. Gauges is the flood benchmark above. EM-DAT is people affected and CERF the allocation from the UN Central Emergency Response Fund, each attributed to the river named in the record; * marks a record naming both rivers or neither, shown under both.</p>")
+add(f"<div class='tw'><table class='ai'><thead><tr><th></th>{_top}</tr><tr><th>Year</th>{_sub}</tr></thead><tbody>{_body}</tbody></table></div>")
 add(f"<figure><img src=\"figs/s_activations.png\" alt=\"Flood seasons and activations by year and window\"><figcaption>Squares mark gauge flood seasons, dark where severe. Dots mark the years in which the window activated on its source. There are {n_act} activations in 25 years. All {len(severe_all)} severe seasons are caught, and one activation, in {yl(outside)}, has no gauge flood behind it, although SWALIM and WFP both record that year as a major flood. Return periods are Weibull, (years + 1) divided by activations.</figcaption></figure>")
 
 d, g = fb_tot["deyr"], fb_tot["gu"]
