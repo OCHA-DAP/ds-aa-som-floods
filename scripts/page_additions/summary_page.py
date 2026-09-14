@@ -315,7 +315,7 @@ th{text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid va
 td{padding:7px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums} td.pick{font-weight:700}
 tr.sev td:first-child{font-weight:700}
-table.ai th,table.ai td{font-size:11.5px;padding:4px 5px;white-space:nowrap} td.yes{background:var(--okbg);color:var(--ok)} td.fl{background:var(--latebg);color:var(--late)} td.sv{background:var(--missbg);color:var(--miss)} figure{margin:22px 0 26px} figure img{max-width:100%;display:block} figcaption{color:var(--muted);font-size:13px;margin-top:8px;max-width:840px}
+.tablewrap{overflow-x:auto} table.ai{table-layout:fixed;width:100%;border-collapse:collapse;font-size:10.5px} table.ai th{font-size:9px;letter-spacing:.04em;padding:4px 1px;text-align:center;color:#5e6a6b;text-transform:uppercase;font-weight:700;border-bottom:2px solid #d4eae4;overflow:hidden} table.ai td{padding:3px 1px;text-align:center;border-bottom:1px solid #eef1f1;color:#3f4748;white-space:nowrap;overflow:hidden} table.ai .gl{border-left:2px solid #d4eae4} table.ai .num{font-size:10px} td.yes{background:var(--okbg);color:var(--ok)} td.fl{background:var(--latebg);color:var(--late)} td.sv{background:var(--missbg);color:var(--miss)} figure{margin:22px 0 26px} figure img{max-width:100%;display:block} figcaption{color:var(--muted);font-size:13px;margin-top:8px;max-width:840px}
 .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
 .before{background:var(--okbg);color:var(--ok)} .same,.after{background:var(--latebg);color:var(--late)} .never{background:var(--missbg);color:var(--miss)} .na{background:var(--nabg);color:var(--na)}
 .who{color:var(--muted);font-size:12px;display:block}
@@ -408,43 +408,41 @@ add(table(["", "#Activations, 25 years", "Return period", "Years"],
              [c("Shabelle, either window"), n(str(len(per_river["shabelle"]))), c(rate_river["shabelle"]), c(yl(per_river["shabelle"]))],
              [c("Whole mechanism"), n(str(n_act)), c(rate_env), c(yl(env_years))]]))
 ai = json.load(open(PAGE / "activation_impact.json"))          # the analysis page's year-by-year table data
-POOL = {"juba": 4, "shabelle": 3}
-
-
-def fmt_people(n_):
-    return f"{n_ / 1e6:.1f}M" if n_ >= 1e6 else f"{round(n_ / 1e3):d}k" if n_ >= 1000 else str(n_)
-
-
-def fmt_usd(n_):
-    return f"${n_ / 1e6:.1f}M"
-
-
-AI_ORDER = [("juba", "gu"), ("juba", "deyr"), ("shabelle", "gu"), ("shabelle", "deyr")]   # as on the analysis page: river, then season, Gu first
-rows_y, n_multi, n_unattr = [], 0, 0
-for row in reversed(ai["rows"]):                                                          # latest year first, as there
-    y = row["year"]
-    cells_ = [c(str(y))]
-    keep = False
-    for r, s in AI_ORDER:
-        w_ = row["basins"][r][s]
-        a_ = y in act[(r, s)]
-        assert a_ == bool(w_["adopted"]), ("activation mismatch with the analysis table", y, r, s)
-        f_, sv_ = y in flood[(r, s)], y in severe[(r, s)]
-        keep = keep or a_ or f_ or bool(w_["emdat"]) or bool(w_["cerf"])
-        cells_.append((str(w_["n"]) if w_["n"] else "", ' class="n yes"' if a_ else ' class="n"'))
-        cells_.append(("1-in-5", ' class="sv"') if sv_ else ("1-in-3", ' class="fl"') if f_ else ("", ""))
-        e_ = w_["emdat"]; n_multi += bool(e_ and e_.get("multi"))
-        cells_.append(n(fmt_people(e_["aff"]) + ("*" if e_.get("multi") else "")) if e_ else ("", ""))
-        c2 = w_["cerf"]; n_unattr += bool(c2 and c2.get("unattr"))
-        cells_.append(n(fmt_usd(c2["usd"]) + ("*" if c2.get("unattr") else "")) if c2 else ("", ""))
-    if keep:
-        rows_y.append(cells_)
-_sub = "".join('<th class="n">points</th><th>gauges</th><th class="n">EM-DAT</th><th class="n">CERF</th>' for _ in AI_ORDER)
-_riv = "".join(f"<th colspan='8' style='border-bottom:1px solid var(--rule);text-align:center'>{r.title()}</th>" for r in ("juba", "shabelle"))
-_top = "".join(f"<th colspan='4' style='border-bottom:1px solid var(--rule)'>{SEASON[s][0]}, {POOL[r]} points</th>" for r, s in AI_ORDER)
-_body = "".join("<tr>" + "".join(f"<td{a}>{x}</td>" for x, a in r_) + "</tr>" for r_ in rows_y)
-add("<p>Year by year, for every year with a gauge flood, an activation, an EM-DAT record or a CERF allocation. Points is the peak number of the window's monitored points over their thresholds on the same day that season, shaded green where the window activated. Gauges is the flood benchmark above. EM-DAT is people affected and CERF the allocation from the UN Central Emergency Response Fund, each attributed to the river named in the record; * marks a record naming both rivers or neither, shown under both.</p>")
-add(f"<div class='tw'><table class='ai'><thead><tr><th></th>{_riv}</tr><tr><th></th>{_top}</tr><tr><th>Year</th>{_sub}</tr></thead><tbody>{_body}</tbody></table></div>")
+for row in ai["rows"]:
+    for r, s in WINDOWS:
+        assert (y_ := row["year"]) is not None and (y_ in act[(r, s)]) == bool(row["basins"][r][s]["adopted"]), ("activation mismatch with the analysis table", row["year"], r, s)
+AI_JSON = json.dumps({"meta": {"windows": ai["meta"]["windows"]}, "rows": ai["rows"]}, separators=(",", ":"))
+add("<p>Activations, impact and response, year by year, as on the analysis page. The trigger column is the peak number of monitored points over their thresholds at the same time that season, filled red where the window activates. RP is the return period of the season's highest level at the SWALIM reference gauge, 5yr for 1-in-5 or rarer and 3yr for 1-in-3 to 1-in-5. EM-DAT is people affected and CERF the allocation from the UN Central Emergency Response Fund in US dollars, each attributed to the river named in the record; an event naming both rivers is counted under both, and an allocation naming neither is shown under both and marked *.</p>")
+add('<div class="tablewrap"><table class="ai" id="aiTable"><tr><td>loading</td></tr></table></div>')
+add("<script>(function(){var AI_DATA=" + AI_JSON + r""";
+function fmtN(v){if(!v)return"";if(v>=1e6)return(v/1e6).toFixed(v>=1e7?0:1)+"M";if(v>=1e3)return Math.round(v/1e3)+"k";return String(v);}
+function emShade(v){if(!v)return"";if(v>=1e6)return"background:rgba(142,95,168,.42);";if(v>=2.5e5)return"background:rgba(142,95,168,.26);";return"background:rgba(142,95,168,.13);";}
+function cerfShade(v){if(!v)return"";return(v>=8e6?"background:rgba(42,120,214,.30);":"background:rgba(42,120,214,.16);");}
+var D=AI_DATA;
+var groups=[["juba","gu"],["juba","deyr"],["shabelle","gu"],["shabelle","deyr"]];
+var h=[];
+h.push("<colgroup><col style='width:40px'>"+groups.map(function(){return "<col style='width:46px'><col style='width:32px'><col style='width:42px'><col style='width:40px'>";}).join("")+"</colgroup>");
+h.push('<tr><th rowspan="3" style="vertical-align:bottom">year</th>'+["Juba","Shabelle"].map(function(b){return '<th colspan="8" class="gl" style="font-size:10px">'+b+"</th>";}).join("")+"</tr>");
+h.push("<tr>"+groups.map(function(g){var m=D.meta.windows[g[0]+"_"+g[1]];return '<th colspan="4" class="gl">'+g[1].charAt(0).toUpperCase()+g[1].slice(1)+": \u2265"+m.n_req+"/"+m.pool+"</th>";}).join("")+"</tr>");
+h.push("<tr>"+groups.map(function(){return '<th class="gl" style="color:#B34036">trigger</th><th title="empirical RP of the season&#39;s max gauge level">RP</th><th style="color:#8E5FA8">EM-DAT</th><th style="color:#2A78D6">CERF</th>';}).join("")+"</tr>");
+D.rows.slice().reverse().forEach(function(r){
+  var cells=["<td><b>"+r.year+"</b></td>"];
+  groups.forEach(function(g){
+    var w=r.basins[g[0]][g[1]];var m=D.meta.windows[g[0]+"_"+g[1]];
+    if(w.adopted)cells.push('<td class="gl" style="background:rgba(179,64,54,.30)" title="trigger activates: '+w.n+" of "+m.pool+' pairs over threshold (requires '+m.n_req+')"><b style="color:#7A241C">'+w.n+"</b></td>");
+    else cells.push('<td class="gl"'+(w.n?' title="'+w.n+" of "+m.pool+' pairs over threshold"':"")+">"+(w.n?w.n:'<span style="color:#c9cfd6">0</span>')+"</td>");
+    if(w.bench==="severe")cells.push('<td style="background:rgba(179,64,54,.14)" title="seasonal max level at the reference gauge: empirical RP \u2265 5 yr"><span style="color:#B34036;font-weight:700">5yr</span></td>');
+    else if(w.bench==="moderate")cells.push('<td style="background:rgba(244,169,59,.18)" title="seasonal max level at the reference gauge: empirical RP \u2265 3 yr"><span style="color:#B8860B;font-weight:500">3yr</span></td>');
+    else cells.push('<td style="color:#c9cfd6"></td>');
+    var e=w.emdat;
+    cells.push('<td class="num" style="'+emShade(e&&e.aff)+'"'+(e?' title="'+fmtN(e.aff)+' affected'+(e.deaths?", "+e.deaths+" deaths":"")+(e.multi?"; incl. multi-river event(s) counted under both rivers":"")+'"':"")+">"+(e?fmtN(e.aff):"")+"</td>");
+    var c2=w.cerf;
+    cells.push('<td class="num" style="'+cerfShade(c2&&c2.usd)+'"'+(c2?' title="US$ '+c2.usd.toLocaleString()+(c2.unattr?"; river not stated in the allocation narrative - shown under both":"")+'"':"")+">"+(c2?fmtN(c2.usd)+(c2.unattr?"*":""):"")+"</td>");
+  });
+  h.push("<tr>"+cells.join("")+"</tr>");
+});
+document.getElementById("aiTable").innerHTML=h.join("");
+})();</script>""")
 add(f"<figure><img src=\"figs/s_activations.png\" alt=\"Flood seasons and activations by year and window\"><figcaption>Squares mark gauge flood seasons, dark where severe. Dots mark the years in which the window activated on its source. There are {n_act} activations in 25 years. All {len(severe_all)} severe seasons are caught, and one activation, in {yl(outside)}, has no gauge flood behind it, although SWALIM and WFP both record that year as a major flood. Return periods are Weibull, (years + 1) divided by activations.</figcaption></figure>")
 
 d, g = fb_tot["deyr"], fb_tot["gu"]
