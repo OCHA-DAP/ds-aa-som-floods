@@ -464,7 +464,7 @@ rows7 = [[c(t_["season"]), c(t_["river"]), c(t_["swalim_first"] or "no bulletin"
 add("<details><summary>SWALIM against the window's source, season by season</summary>" + table(["Season", "River", "SWALIM first bulletin", "Who was first"], rows7) + "</details>")
 
 add("<h2>What runs live, and what is open</h2><ul>"
-    "<li><b>GloFAS version 4 runs both phases today.</b> Deyr is calibrated on version 5, which has no published forecast yet, and Gu on Google Flood Hub, to which there is no API access yet. Version 4 stands in, with levels refitted on its own record.</li>"
+    "<li><b>Two of the sources are not yet available live.</b> Google Flood Hub has no API access yet and GloFAS version 5 has no published forecast yet. Until they do, the monitoring runs on GloFAS version 4 forecasts in both phases, with levels refitted on version 4's own record.</li>"
     "<li><b>Two gauges have stopped reporting.</b> Bardheere has not reported since 30 November 2023 and Bualle since 14 March 2024.</li>"
     "<li><b>Impact years are not yet defined.</b> The benchmark is gauge levels rather than people affected, and 2013 and 2021 show why an impact cross-check is the next step. Each window holds three to five severe seasons, so every difference on this page rests on one or two events.</li></ul>")
 add(f"<footer>Generated {datetime.date.today().isoformat()} from the trigger analysis outputs and checked against the analysis page when built.</footer></div></body></html>")
