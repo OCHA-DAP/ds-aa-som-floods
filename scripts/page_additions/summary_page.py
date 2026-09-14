@@ -173,6 +173,29 @@ for river, season in WINDOWS:
     g = rp3c[(rp3c.river == river) & (rp3c.season == season)]
     agree[(river, season)] = {m: float(g[m].median()) for m in ("google_grrr", "glofas_v5", "glofas_v4")} | {"n": (int(g.n_flood_seasons.min()), int(g.n_flood_seasons.max()))}
 pooled = {m: float(rp3c[m].median()) for m in ("google_grrr", "glofas_v5", "glofas_v4")}
+
+
+def _med(v):
+    v = sorted(v); m_ = len(v) // 2
+    return v[m_] if len(v) % 2 else (v[m_ - 1] + v[m_]) / 2
+
+
+MODEL_KEY = {"Google": "google_grrr", "GloFAS v5": "glofas_v5"}
+track = {}
+for river, season in WINDOWS:
+    rows_ = [r for r in station if r["river"] == river and r["season"].lower() == season]
+    track[(river, season)] = {MODEL_KEY[m]: _med([r["rho"] for r in rows_ if r["model"] == m]) for m in MODEL_KEY}
+    assert all(len([r for r in rows_ if r["model"] == m]) == len(STATIONS[river].split(", ")) for m in MODEL_KEY), (river, season)
+track_season = {(s, MODEL_KEY[m]): _med([r["rho"] for r in station if r["season"].lower() == s and r["model"] == m])
+                for s in ("deyr", "gu") for m in MODEL_KEY}
+lead_band = json.load(open(S / "lead_band_design.json"))
+FADE = {int(k_): v for k_, v in lead_band["fade_share_of_day1"].items()}
+BAND13 = {k_: len(v) for k_, v in lead_band["bands_to_2013"].items()}
+assert 0.85 <= FADE[7] <= 0.92 and 0.68 <= FADE[12] <= 0.78, FADE
+assert BAND13["1-7"] > BAND13["8-12"], BAND13
+_iss4 = L.reforecast("glofas_v4").issued_time.drop_duplicates(); GLOFAS_ISSUES = int(_iss4.groupby(_iss4.dt.year).size().median())
+_issg = L.reforecast("google_grrr").issued_time.drop_duplicates(); GOOGLE_ISSUES = int(_issg.groupby(_issg.dt.year).size().median())
+assert 100 <= GLOFAS_ISSUES <= 110 and GOOGLE_ISSUES >= 360, (GLOFAS_ISSUES, GOOGLE_ISSUES)
 adopted_station = [r for r in station if r["adopted"]]
 lag_min, lag_max = min(r["lag_days"] for r in adopted_station), max(r["lag_days"] for r in adopted_station)
 assert lag_min >= 0, "a chosen model trails a gauge somewhere; the page says it never does"
@@ -191,23 +214,28 @@ plt.rcParams.update({"font.size": 9.5, "axes.spines.top": False, "axes.spines.ri
 
 
 def fig_agreement():
-    fig, ax = plt.subplots(figsize=(8.4, 3.1))
+    fig, axes = plt.subplots(1, 2, figsize=(10.2, 3.3), sharey=True)
     labels = [wname(r, s) for r, s in WINDOWS]
-    for i, (r, s) in enumerate(WINDOWS):
-        for m, dy in (("google_grrr", .13), ("glofas_v5", -.13)):
-            v = agree[(r, s)][m]
-            chosen = (m == CAL[s])
-            ax.plot([v], [i + dy], "o", color=COL[m], ms=9 if chosen else 7, mec=("#111827" if chosen else "white"),
-                    mew=(1.6 if chosen else .8), zorder=4 if chosen else 3)
-        ax.axhline(i + .5, color="#eef1f4", lw=1) if i < 3 else None
-    ax.axvline(0, color="#9ca3af", lw=1, ls=":")
-    ax.set_yticks(range(len(labels))); ax.set_yticklabels(labels); ax.invert_yaxis()
-    ax.set_xlim(-0.7, 1.0); ax.set_xlabel("1-in-3 flood seasons only: rank correlation of seasonal peaks, model against gauge")
-    ax.grid(axis="x", color="#eef1f4"); ax.tick_params(length=0)
+    panels = [(axes[0], track, (0.3, 1.0), "Tracking: day to day, every season"),
+              (axes[1], agree, (-0.7, 1.0), "Ranking: order of the 1-in-3 floods by size")]
+    for ax, data, xlim, title in panels:
+        for i, (r, s) in enumerate(WINDOWS):
+            for m, dy in (("google_grrr", .13), ("glofas_v5", -.13)):
+                v = data[(r, s)][m]
+                chosen = (m == CAL[s])
+                ax.plot([v], [i + dy], "o", color=COL[m], ms=9 if chosen else 7, mec=("#111827" if chosen else "white"),
+                        mew=(1.6 if chosen else .8), zorder=4 if chosen else 3)
+            if i < 3:
+                ax.axhline(i + .5, color="#eef1f4", lw=1)
+        ax.axvline(0, color="#9ca3af", lw=1, ls=":")
+        ax.set_xlim(*xlim); ax.set_title(title, fontsize=10, loc="left", color="#111827")
+        ax.set_xlabel("rank correlation, model against gauge")
+        ax.grid(axis="x", color="#eef1f4"); ax.tick_params(length=0)
+    axes[0].set_yticks(range(len(labels))); axes[0].set_yticklabels(labels); axes[0].invert_yaxis()
     handles = [Line2D([], [], marker="o", ls="none", color=COL[m], label=("Google Flood Hub" if m == "google_grrr" else "GloFAS")) for m in ("google_grrr", "glofas_v5")]
     handles.append(Line2D([], [], marker="o", ls="none", color="white", mec="#111827", mew=1.6, ms=9, label="ringed: the source the window runs on"))
-    ax.legend(handles=handles, loc="lower left", frameon=False, ncol=3, bbox_to_anchor=(0, 1.0), fontsize=8.6)
-    fig.tight_layout(); fig.savefig(FIGS / "s_agreement.png", dpi=150); plt.close(fig)
+    fig.legend(handles=handles, loc="lower left", frameon=False, ncol=3, bbox_to_anchor=(0.01, 0.93), fontsize=8.6)
+    fig.tight_layout(rect=(0, 0, 1, 0.93)); fig.savefig(FIGS / "s_agreement.png", dpi=150); plt.close(fig)
 
 
 def fig_activations():
@@ -234,7 +262,7 @@ def fig_activations():
 def fig_leads():
     rows = [(s, r) for s in ("deyr", "gu") for r in fb_rows[s]]
     fig, ax = plt.subplots(figsize=(8.4, 0.34 * len(rows) + 1.4))
-    ax.axvspan(-7, -1, color="#dcfce7", alpha=.8, zorder=0); ax.axvspan(-12, -8, color="#f0fdf4", alpha=.9, zorder=0)
+    ax.axvspan(-7.5, -0.5, color="#dcfce7", alpha=.8, zorder=0); ax.axvspan(-12.5, -7.5, color="#f0fdf4", alpha=.9, zorder=0)
     ax.axvline(0, color="#374151", lw=1.2)
     labels = []
     for i, (s, r) in enumerate(rows):
@@ -327,19 +355,26 @@ add("<h2>The trigger</h2><p>Two rivers, two rainy seasons, four windows. Each wi
 add(table(["Window", "Season", "Source", "Rule", "Gauges"],
           [[c(wname(r, s)), c(SEASON[s][1]), c(SOURCE[s]), c(f"{RULE[(r, s)][1]} of {4 if r == 'juba' else 3} gauges forecast over their own 1-in-{RULE[(r, s)][0]} level on the same day"), c(STATIONS[r])] for r, s in WINDOWS]))
 add("<p class=\"note\">Readiness activates 8 to 12 days ahead, on the GloFAS ensemble forecast in all windows or on a SWALIM moderate flood risk alert for either river, and releases the mobilisation share; action activates 1 to 7 days ahead and releases the rest. Thresholds are fitted on each source's own record, so a model that runs high is judged against itself.</p>")
+add(f"<p><b>Why action stops at 7 days.</b> Google Flood Hub, the Gu source, forecasts 7 days ahead and no further. GloFAS forecasts run longer, but the ensemble's high flows fade with lead: by day 7 they sit about {round((1 - FADE[7]) * 100):d} per cent below the day-1 forecast, by day 12 about {round((1 - FADE[12]) * 100):d} per cent below, so the same rule activates far less often out there (over the years both GloFAS archives cover, {BAND13['1-7']} times at 1 to 7 days and {'once' if BAND13['8-12'] == 1 else str(BAND13['8-12']) + ' times'} at 8 to 12). Days 8 to 12 therefore carry readiness, at the smaller share, not action. And the actions themselves take 2 to 5 days once activated (cash reaches households 2 to 3 days after the transfer is instructed, readiness tasks 3 to 5 days), so a week is enough time to act on a forecast firm enough to commit the larger share.</p>")
 
 add("<h2>What counts as a flood</h2><p>The trigger is scored against what the rivers did, from the SWALIM gauge record. A river has a flood season when two of its gauges reach their own 1-in-3 level, a severe season when two reach 1-in-5. Each gauge's levels are fitted on its own 2000 to 2023 record.</p>")
 add(table(["Window", "#Flood seasons", "#Severe", "Severe years"],
           [[c(wname(r, s)), n(str(len(flood[(r, s)]))), n(str(len(severe[(r, s)]))), c(yl(severe[(r, s)]))] for r, s in WINDOWS]))
 add(f"<p class=\"note\">Across both rivers: {len(flood_all)} flood years, {len(severe_all)} severe. Gauges are capped at bank full, so the largest floods record the same reading, and a season where only one gauge crosses does not count even at bank full (Gu 2021 at Belet Weyne).</p>")
 
-add("<h2>Which source, and why</h2><p>Three global models were candidates: Google Flood Hub, GloFAS and GEOGloWS. GEOGloWS runs 4 to 10 times too high on the Shabelle and has no forecast archive, so it drops out. The other two were tested twice on each window, each on its own record of the past (Google's retrospective run, GloFAS's version 5 reanalysis; the forecasts are compared in the next section): do they rank the flood seasons in the same order of size as the gauges did, and how many of the 1-in-3 flood seasons do they catch when the window's rule is applied to their own record. The ranking measure runs from 1, the model puts the flood seasons in exactly the gauges' order, through 0, no relation, to negative values, the wrong order.</p>")
+add("<h2>Which source, and why</h2><p>Three global models were candidates: Google Flood Hub, GloFAS and GEOGloWS. GEOGloWS runs 4 to 10 times too high on the Shabelle and has no forecast archive, so it drops out. The other two were compared with the SWALIM gauges on their own record of the past (Google's retrospective run, GloFAS's version 5 reanalysis; the forecasts are compared in the next section) in three ways.</p>"
+    "<ul><li><b>Tracking.</b> Over every day of the season, 2000 to 2023, the rank correlation between the model's daily flow and the gauge's daily level, allowing the model to run a few days ahead of or behind the gauge. 1 means the model rises and falls exactly with the gauge; 0, no relation.</li>"
+    "<li><b>Ranking.</b> Keeping only the seasons in which the gauge reached its own 1-in-3 level (4 to 10 per gauge), the rank correlation between how high the model went that season and how high the gauge went: does the model put the floods in the same order of size as the gauge did. 1 is the same order; 0, no relation; below 0, the wrong order.</li>"
+    "<li><b>Seasons caught.</b> Of those 1-in-3 flood seasons, how many the window's rule would have activated in, applied to the model's own record.</li></ul>"
+    "<p>Tracking and ranking are shown as the median across the river's gauges, so one value per river and season.</p>")
 rows = []
 season_total = {}
 for s in ("deyr", "gu"):
     for r in ("juba", "shabelle"):
         w = win[wname(r, s)]
         row = [c(wname(r, s))]
+        for m in ("google_grrr", "glofas_v5"):
+            row.append(n(f"{track[(r, s)][m]:.2f}"))
         for m in ("google_grrr", "glofas_v5"):
             row.append(n(f"{agree[(r, s)][m]:.2f}"))
         for m in ("google_grrr", "glofas_v5"):
@@ -350,6 +385,8 @@ for s in ("deyr", "gu"):
     # season total: either river; a flood year is caught if the model's rule activated on either river
     fl_s = flood[("juba", s)] | flood[("shabelle", s)]
     row = [(f"<b>{SEASON[s][0]}, either river</b>", "")]
+    for m in ("google_grrr", "glofas_v5"):
+        row.append((f"<b>{track_season[(s, m)]:.2f}</b>", ' class="n"'))
     for m in ("google_grrr", "glofas_v5"):
         g_ = rp3c[rp3c.season == s]
         row.append((f"<b>{g_[m].median():.2f}</b>", ' class="n"'))
@@ -362,11 +399,12 @@ for s in ("deyr", "gu"):
 _body = "".join("<tr>" + "".join(f"<td{a}>{c_}</td>" for c_, a in r) + "</tr>" for r in rows)
 _mods = "".join(f'<th class="n">{"Google Flood Hub" if m == "google_grrr" else "GloFAS"}</th>' for m in ("google_grrr", "glofas_v5"))
 add("<div class='tw'><table><thead>"
-    "<tr><th></th><th colspan='2' class='n' style='border-bottom:1px solid var(--rule)'>Ranks the flood seasons as the gauges did</th>"
-    "<th colspan='2' class='n' style='border-bottom:1px solid var(--rule)'>1-in-3 flood seasons caught at the window's rule</th><th></th></tr>"
-    f"<tr><th>Window</th>{_mods}{_mods}<th>Chosen</th></tr></thead><tbody>{_body}</tbody></table></div>")
-add("<figure><img src=\"figs/s_agreement.png\" alt=\"Agreement with the gauges in flood seasons, by window and model\"><figcaption>Ranking agreement, the left half of the table: rank correlation between the model's seasonal peak and the gauge's, over the gauge's own 1-in-3 seasons only (4 to 10 per gauge), median across the window's gauges. The ringed dot is the source the window runs on. Seasons caught, in the table, is the number of the window's 1-in-3 flood seasons in which the model's own record met the window's rule.</figcaption></figure>")
-add(f"<p>Taken by season across both rivers, Google catches {season_total[('gu', 'google_grrr')][0]} of the {season_total[('gu', 'google_grrr')][1]} Gu flood years and GloFAS {season_total[('gu', 'glofas_v5')][0]}; in Deyr, Google {season_total[('deyr', 'google_grrr')][0]} of {season_total[('deyr', 'google_grrr')][1]} and GloFAS {season_total[('deyr', 'glofas_v5')][0]}. Google Flood Hub carries Gu: it ranks the flood seasons closest to the gauges, catches every severe Gu season that GloFAS catches (GloFAS catches one more of the moderate 1-in-3 seasons in each Gu window, and Google carries one activation in a year with no gauge flood, 2013), and its Gu forecasts arrive before the flood where GloFAS v4's mostly arrive after it, as the next section shows. GloFAS carries Deyr: Google over-activates on the Juba there (three activations with no flood) and misses the Shabelle in 2020, while GloFAS's Deyr record is clean. Gu Shabelle reads near zero on ranking for every model because the gauge is capped at bank full in the largest floods; a limit of the record, not of the models.</p>")
+    "<tr><th></th><th colspan='2' class='n' style='border-bottom:1px solid var(--rule)'>Tracking</th>"
+    "<th colspan='2' class='n' style='border-bottom:1px solid var(--rule)'>Ranking</th>"
+    "<th colspan='2' class='n' style='border-bottom:1px solid var(--rule)'>1-in-3 seasons caught</th><th></th></tr>"
+    f"<tr><th>Window</th>{_mods}{_mods}{_mods}<th>Chosen</th></tr></thead><tbody>{_body}</tbody></table></div>")
+add("<figure><img src=\"figs/s_agreement.png\" alt=\"Agreement with the gauges in flood seasons, by window and model\"><figcaption>The two correlations from the table. Left, tracking: how closely the model follows the gauge day to day across all seasons. Right, ranking: whether the model orders the 1-in-3 floods by size as the gauge did. The ringed dot is the source the window runs on.</figcaption></figure>")
+add(f"<p>Day to day, GloFAS follows the gauges more closely in Deyr ({track_season[('deyr', 'glofas_v5')]:.2f} against {track_season[('deyr', 'google_grrr')]:.2f} for Google) and Google slightly more closely in Gu ({track_season[('gu', 'google_grrr')]:.2f} against {track_season[('gu', 'glofas_v5')]:.2f}). Taken by season across both rivers, Google catches {season_total[('gu', 'google_grrr')][0]} of the {season_total[('gu', 'google_grrr')][1]} Gu flood years and GloFAS {season_total[('gu', 'glofas_v5')][0]}; in Deyr, Google {season_total[('deyr', 'google_grrr')][0]} of {season_total[('deyr', 'google_grrr')][1]} and GloFAS {season_total[('deyr', 'glofas_v5')][0]}. Google Flood Hub carries Gu: it tracks the gauges at least as closely, puts the floods closer to the gauges' order of size, catches every severe Gu season that GloFAS catches (GloFAS catches two more of the moderate 1-in-3 Gu floods, 2005 and 2010, which would add two activations to the mechanism's 8 in 25 years; Google carries one activation in a year with no gauge flood, 2013), and its Gu forecasts arrive before the flood where GloFAS v4's mostly arrive after it, as the next section shows. GloFAS carries Deyr: Google over-activates on the Juba there (three activations with no flood) and misses the Shabelle in 2020, while GloFAS's Deyr record is clean. Gu Shabelle reads near zero on ranking for every model because the gauge is capped at bank full in the largest floods; a limit of the record, not of the models.</p>")
 
 add("<h2>How often it activates</h2><p>Every threshold sits at 1-in-3 or rarer; the vote counts were set so the whole mechanism activates about once in three years while still catching every severe season.</p>")
 add(table(["", "#Activations, 25 years", "Return period", "Years"],
@@ -377,14 +415,13 @@ add(table(["", "#Activations, 25 years", "Return period", "Years"],
 add(f"<figure><img src=\"figs/s_activations.png\" alt=\"Flood seasons and activations by year and window\"><figcaption>Squares: gauge flood seasons, dark where severe. Dots: years the window activates on its source, Google Flood Hub in Gu and GloFAS in Deyr. {n_act} activations in 25 years, all {len(severe_all)} severe seasons caught, one activation with no gauge flood behind it ({yl(outside)}, a year SWALIM and WFP both record as a major flood). Return periods are Weibull, (years + 1) over activations.</figcaption></figure>")
 
 d, g = fb_tot["deyr"], fb_tot["gu"]
-add("<h2>Checked on the forecasts</h2><p>The tests above use each model's record of the past. A trigger runs on forecasts, so the historical forecasts were replayed to find the day the alert would have gone out, at lead times of 1 to 7 days, against the day the flood began at the gauges. Either river counts. Only Google Flood Hub (2016 to 2023) and GloFAS v4 (2003 to 2023, plus the live Gu 2024 forecasts) have archives, so this is a comparison of those two.</p>")
+add(f"<h2>Checked on the forecasts</h2><p>The tests above use each model's record of the past. A trigger runs on forecasts, so the historical forecasts were replayed to find the day the alert would have gone out, at lead times of 1 to 7 days, against the day the flood began at the gauges. Either river counts. Only Google Flood Hub (2016 to 2023) and GloFAS v4 (2003 to 2023, plus the live Gu 2024 forecasts) have archives, so this is a comparison of those two. GloFAS's archive holds forecasts for two issue days a week ({GLOFAS_ISSUES} a year) where Google's holds every day, so a GloFAS alert in the replay can only fall on those days and its lead times are coarser by up to three days; the live GloFAS forecast is daily.</p>")
 add("<figure><img src=\"figs/s_leads.png\" alt=\"Lead time of the first forecast issue meeting the rule, per flood season\"><figcaption>One row per flood season, * severe. Green: the action window, 1 to 7 days before the flood; pale green: readiness. The dot is the first forecast issue that met the rule; the small ticks are every later issue that met it again. Points left of the line went out before the flood began; points to the right came after it.</figcaption></figure>")
 add(f"<p>Deyr: GloFAS v4 activated before the flood in {d['per_model']['glofas_v4'].get('before', 0)} of {d['n']} seasons and was first in {d['head_to_head']['glofas_v4']} of the {d['n_both']} both archives cover. Gu: Google was first in all {g['n_both']}, and on the Shabelle gave 10 to 13 days of warning in three of four seasons where GloFAS v4 gave 3 days once and nothing in the other three. The lead-time evidence and the calibration choice were made independently and agree.</p>")
 rows6 = [[c(f"{SEASON[s][0]} {r['year']}{' *' if r['severe'] else ''}"), c(" and ".join(r["rivers"])), c(r["first_onset"]), c(pill(r["google_grrr"])), c(pill(r["glofas_v4"])), c(escape(r["first"]))] for s in ("deyr", "gu") for r in fb_rows[s]]
 add("<details><summary>Flood by flood</summary>" + table(["Season", "River(s) that flooded", "Flood began", "Google Flood Hub forecast", "GloFAS v4 forecast", "First"], rows6) + "</details>")
 
-add(f"<h2>SWALIM's alerts, and the fail-safe</h2><p>SWALIM's flood bulletins were first in {sw_first} of the {len(both_flag)} seasons where both SWALIM and the window's source flagged, and in {len(sw_only)} seasons only SWALIM flagged. They are forward-looking and often early, so a SWALIM moderate flood risk alert for either river activates readiness. They cannot carry the action phase: CERF needs an activation basis that can be backtested, and the bulletins are expert judgement rather than a fixed rule.</p>")
-add(f"<p>If every forecast misses, a gauge at bank full is the fail-safe. On the record that would have activated {len(fs_only)} seasons no forecast caught, including Gu 2023 on the Shabelle, the one severe season every model missed. Where a forecast also activated, bank full came {min(r['bank1_vs_trigger'] for r in fs_both)} to {max(r['bank1_vs_trigger'] for r in fs_both)} days later: coverage, not lead time.</p>")
+add(f"<h2>SWALIM's alerts</h2><p>SWALIM's flood bulletins were first in {sw_first} of the {len(both_flag)} seasons where both SWALIM and the window's source flagged, and in {len(sw_only)} seasons only SWALIM flagged. They are forward-looking and often early, so a SWALIM moderate flood risk alert for either river activates readiness. They cannot carry the action phase: CERF needs an activation basis that can be backtested, and the bulletins are expert judgement rather than a fixed rule.</p>")
 rows7 = [[c(t_["season"]), c(t_["river"]), c(t_["swalim_first"] or "no bulletin"), c(t_["vs_trigger"])] for t_ in swalim_tl]
 add("<details><summary>SWALIM against the window's source, season by season</summary>" + table(["Season", "River", "SWALIM first bulletin", "Who was first"], rows7) + "</details>")
 
@@ -400,6 +437,8 @@ OUT.write_text(html, encoding="utf-8")
 # ================================================================ consistency checks on the rendered page
 vis = html
 assert "—" not in vis, "em dash on the page"
+assert "fail-safe" not in vis and "fail safe" not in vis, "fail-safe still on the page"
+assert "seasonal peak" not in vis, "seasonal peaks wording on the page"
 for word in (" fired", " fires ", " basin", " product"):
     assert word not in vis, f"forbidden word {word!r}"
 for f in re.findall(r'figs/([^"]+)"', vis):
