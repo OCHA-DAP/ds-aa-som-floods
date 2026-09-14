@@ -362,10 +362,10 @@ add(table(["Window", "#Flood seasons", "#Severe", "Severe years"],
           [[c(wname(r, s)), n(str(len(flood[(r, s)]))), n(str(len(severe[(r, s)]))), c(yl(severe[(r, s)]))] for r, s in WINDOWS]))
 add(f"<p class=\"note\">Across both rivers: {len(flood_all)} flood years, {len(severe_all)} severe. Gauges are capped at bank full, so the largest floods record the same reading, and a season where only one gauge crosses does not count even at bank full (Gu 2021 at Belet Weyne).</p>")
 
-add("<h2>Which source, and why</h2><p>Three global models were candidates: Google Flood Hub, GloFAS and GEOGloWS. GEOGloWS runs 4 to 10 times too high on the Shabelle and has no forecast archive, so it drops out. The other two were compared with the SWALIM gauges on their own record of the past (Google's retrospective run, GloFAS's version 5 reanalysis; the forecasts are compared in the next section) in three ways.</p>"
+add("<h2>Which source, and why</h2><p>Three global models were candidates: Google Flood Hub, GloFAS and GEOGloWS. GEOGloWS runs 4 to 10 times too high on the Shabelle and has no forecast archive, so it drops out. The other two were compared with the SWALIM gauges on their own record of the past (Google's retrospective run, GloFAS's version 5 reanalysis; the forecasts are compared in the next section) in two ways.</p>"
     "<ul><li><b>Tracking.</b> Over every day of the season, 2000 to 2023, the rank correlation between the model's daily flow and the gauge's daily level, allowing the model to run a few days ahead of or behind the gauge. 1 means the model rises and falls exactly with the gauge; 0, no relation.</li>"
     "<li><b>Ranking.</b> Keeping only the seasons in which the gauge reached its own 1-in-3 level (4 to 10 per gauge), the rank correlation between how high the model went that season and how high the gauge went: does the model put the floods in the same order of size as the gauge did. 1 is the same order; 0, no relation; below 0, the wrong order.</li>"
-    "<li><b>Seasons caught.</b> Of those 1-in-3 flood seasons, how many the window's rule would have activated in, applied to the model's own record.</li></ul>"
+    "</ul>"
     "<p>Tracking and ranking are shown as the median across the river's gauges, so one value per river and season.</p>")
 rows = []
 season_total = {}
@@ -377,9 +377,6 @@ for s in ("deyr", "gu"):
             row.append(n(f"{track[(r, s)][m]:.2f}"))
         for m in ("google_grrr", "glofas_v5"):
             row.append(n(f"{agree[(r, s)][m]:.2f}"))
-        for m in ("google_grrr", "glofas_v5"):
-            a_ = w["models"][m]
-            row.append(n(f"{a_['vs_flood']['hits']} of {len(w['flood_years'])}"))
         row.append(c(SOURCE[s]))
         rows.append(row)
     # season total: either river; a flood year is caught if the model's rule activated on either river
@@ -390,10 +387,6 @@ for s in ("deyr", "gu"):
     for m in ("google_grrr", "glofas_v5"):
         g_ = rp3c[rp3c.season == s]
         row.append((f"<b>{g_[m].median():.2f}</b>", ' class="n"'))
-    for m in ("google_grrr", "glofas_v5"):
-        caught = fl_s & (set(win[wname("juba", s)]["models"][m]["activations"]) | set(win[wname("shabelle", s)]["models"][m]["activations"]))
-        season_total[(s, m)] = (len(caught), len(fl_s))
-        row.append((f"<b>{len(caught)} of {len(fl_s)}</b>", ' class="n"'))
     row.append(c(SOURCE[s]))
     rows.append(row)
 _body = "".join("<tr>" + "".join(f"<td{a}>{c_}</td>" for c_, a in r) + "</tr>" for r in rows)
@@ -401,10 +394,10 @@ _mods = "".join(f'<th class="n">{"Google Flood Hub" if m == "google_grrr" else "
 add("<div class='tw'><table><thead>"
     "<tr><th></th><th colspan='2' class='n' style='border-bottom:1px solid var(--rule)'>Tracking</th>"
     "<th colspan='2' class='n' style='border-bottom:1px solid var(--rule)'>Ranking</th>"
-    "<th colspan='2' class='n' style='border-bottom:1px solid var(--rule)'>1-in-3 seasons caught</th><th></th></tr>"
-    f"<tr><th>Window</th>{_mods}{_mods}{_mods}<th>Chosen</th></tr></thead><tbody>{_body}</tbody></table></div>")
+    "<th></th></tr>"
+    f"<tr><th>Window</th>{_mods}{_mods}<th>Chosen</th></tr></thead><tbody>{_body}</tbody></table></div>")
 add("<figure><img src=\"figs/s_agreement.png\" alt=\"Agreement with the gauges in flood seasons, by window and model\"><figcaption>The two correlations from the table. Left, tracking: how closely the model follows the gauge day to day across all seasons. Right, ranking: whether the model orders the 1-in-3 floods by size as the gauge did. The ringed dot is the source the window runs on.</figcaption></figure>")
-add(f"<p>Day to day, GloFAS follows the gauges more closely in Deyr ({track_season[('deyr', 'glofas_v5')]:.2f} against {track_season[('deyr', 'google_grrr')]:.2f} for Google) and Google slightly more closely in Gu ({track_season[('gu', 'google_grrr')]:.2f} against {track_season[('gu', 'glofas_v5')]:.2f}). Taken by season across both rivers, Google catches {season_total[('gu', 'google_grrr')][0]} of the {season_total[('gu', 'google_grrr')][1]} Gu flood years and GloFAS {season_total[('gu', 'glofas_v5')][0]}; in Deyr, Google {season_total[('deyr', 'google_grrr')][0]} of {season_total[('deyr', 'google_grrr')][1]} and GloFAS {season_total[('deyr', 'glofas_v5')][0]}. Google Flood Hub carries Gu: it tracks the gauges at least as closely, puts the floods closer to the gauges' order of size, catches every severe Gu season that GloFAS catches (GloFAS catches two more of the moderate 1-in-3 Gu floods, 2005 and 2010, which would add two activations to the mechanism's 8 in 25 years; Google carries one activation in a year with no gauge flood, 2013), and its Gu forecasts arrive before the flood where GloFAS v4's mostly arrive after it, as the next section shows. GloFAS carries Deyr: Google over-activates on the Juba there (three activations with no flood) and misses the Shabelle in 2020, while GloFAS's Deyr record is clean. Gu Shabelle reads near zero on ranking for every model because the gauge is capped at bank full in the largest floods; a limit of the record, not of the models.</p>")
+add(f"<p>Day to day, GloFAS follows the gauges more closely in Deyr ({track_season[('deyr', 'glofas_v5')]:.2f} against {track_season[('deyr', 'google_grrr')]:.2f} for Google) and Google slightly more closely in Gu ({track_season[('gu', 'google_grrr')]:.2f} against {track_season[('gu', 'glofas_v5')]:.2f}). Google Flood Hub carries Gu: it tracks the gauges at least as closely, puts the floods closer to the gauges' order of size, and its Gu forecasts arrive before the flood where GloFAS v4's mostly arrive after it, as the next section shows. GloFAS carries Deyr: it tracks the gauges far more closely there, Google over-activates on the Juba there (three activations with no flood) and misses the Shabelle in 2020, while GloFAS's Deyr record is clean. Gu Shabelle reads near zero on ranking for every model because the gauge is capped at bank full in the largest floods; a limit of the record, not of the models.</p>")
 
 add("<h2>How often it activates</h2><p>Every threshold sits at 1-in-3 or rarer; the vote counts were set so the whole mechanism activates about once in three years while still catching every severe season.</p>")
 add(table(["", "#Activations, 25 years", "Return period", "Years"],
