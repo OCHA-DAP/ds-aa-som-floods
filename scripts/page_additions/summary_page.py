@@ -315,7 +315,7 @@ th{text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid va
 td{padding:7px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums} td.pick{font-weight:700}
 tr.sev td:first-child{font-weight:700}
-figure{margin:22px 0 26px} figure img{max-width:100%;display:block} figcaption{color:var(--muted);font-size:13px;margin-top:8px;max-width:840px}
+table.proto td:nth-child(1),table.proto td:nth-child(4){width:30%} table.proto td:nth-child(2){width:18%} table.proto td{font-size:13.5px} figure{margin:22px 0 26px} figure img{max-width:100%;display:block} figcaption{color:var(--muted);font-size:13px;margin-top:8px;max-width:840px}
 .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap}
 .before{background:var(--okbg);color:var(--ok)} .same,.after{background:var(--latebg);color:var(--late)} .never{background:var(--missbg);color:var(--miss)} .na{background:var(--nabg);color:var(--na)}
 .who{color:var(--muted);font-size:12px;display:block}
@@ -417,8 +417,39 @@ rows6 = [[c(f"{SEASON[s][0]} {r['year']}{' *' if r['severe'] else ''}"), c(" and
 add("<details><summary>Flood by flood</summary>" + table(["Season", "River(s) that flooded", "Second gauge over 1-in-3", "Google Flood Hub forecast", "GloFAS v4 forecast", "First"], rows6) + "</details>")
 
 add(f"<h2>SWALIM's alerts</h2><p>SWALIM's bulletins were first in {sw_first} of the {len(both_flag)} seasons in which both SWALIM and the window's source flagged, and SWALIM alone flagged in {len(sw_only)} further seasons. First means the bulletin date against the day the window's rule was met on the source's own record, since GloFAS version 5 has no forecast archive. The bulletins are forward-looking and often early, and a SWALIM moderate flood risk alert for either river therefore activates readiness. They cannot carry the action phase, because CERF needs an activation basis that can be backtested and the bulletins are expert judgement rather than a fixed rule.</p>")
-rows7 = [[c(t_["season"]), c(t_["river"]), c(t_["swalim_first"] or "no bulletin"), c(t_["vs_trigger"].replace("rule never met", "rule never met on its record"))] for t_ in swalim_tl]
+rows7 = [[c(t_["season"]), c(t_["river"]), c(t_["swalim_first"] or "no bulletin"), c(t_["vs_trigger"].replace("never crossed", "rule never met on its record"))] for t_ in swalim_tl]
 add("<details><summary>SWALIM against the window's source, season by season</summary>" + table(["Season", "River", "SWALIM first bulletin", "Who was first"], rows7) + "</details>")
+
+# ---------------------------------------------------------------- activation protocol (agreed 10 September 2026)
+PROTOCOL = [
+    ("row", ["Daily forecast and river monitoring for the Juba and Shabelle: EF5, SWALIM river bulletins, GloFAS forecasts, Google forecasts and station readings",
+             "OCHA CHD, FAO SWALIM, MoWE, SODMA", "Daily, 1 March to 31 May and 1 October to 31 December", "Daily trigger status per river and season", "Automated"]),
+    ("head", "If the readiness trigger is reached (8 to 12 days before the flood)"),
+    ("row", ["Alert that the readiness threshold has been reached: river, stations at which it was reached, values",
+             "OCHA CHD, FAO SWALIM, MoWE, SODMA", "Within 2 hours", "Alert to the AA mailing list", "Email"]),
+    ("row", ["Readiness activation", "OCHA Somalia", "Same day",
+             "Email to partners, RC and CERF confirming readiness is activated, naming the districts covered by the stations reached (district table below); CERF letters releasing the mobilisation share; readiness activities and targeting start through SODMA and MOHADM", "Email"]),
+    ("head", "If the action trigger is reached (1 to 7 days before the flood)"),
+    ("row", ["Alert that the action threshold has been reached: river, stations at which it was reached, values",
+             "OCHA CHD, FAO SWALIM, MoWE, SODMA", "Within 2 hours", "Alert to the AA mailing list", "Email"]),
+    ("row", ["Hybrid meeting to confirm the action trigger and agree the districts, based on the stations at which the threshold has been reached (district table below)",
+             "OCHA Somalia convenes SODMA, MOHADM, SWALIM, MoWE, WFP, FAO, participating agencies", "Same day",
+             "Action confirmed for the Juba or the Shabelle; districts and priority locations agreed", "Hybrid meeting"]),
+    ("row", ["Activation of anticipatory action", "OCHA Somalia", "Same day",
+             "Email to partners, RC and CERF confirming AA is activated based on the meeting, naming the districts; CERF letters authorising 100% of funds; activities start through SODMA and MOHADM", "Email"]),
+]
+DISTRICTS = [("Juba", "Dollow", "Doolow"), ("Juba", "Luuq", "Luuq"), ("Juba", "Bardheere", "Baardheere, Saakow"), ("Juba", "Bualle", "Bu'aale, Jilib"),
+             ("Shabelle", "Belet Weyne", "Beledweyne"), ("Shabelle", "Bulo Burti", "Bulo Burte, Jalalaqsi"), ("Shabelle", "Jowhar", "Jowhar, Balcad, Afgooye, Qoryooley, Marka")]
+add("<h2>When it activates</h2><p>Monitoring runs every day through both seasons. When a trigger is reached, the steps below follow. Each phase is activated once per season per river.</p>")
+_pr = []
+for kind, v in PROTOCOL:
+    if kind == "head":
+        _pr.append(f"<tr><td colspan='5' style='font-weight:600;padding-top:14px'>{escape(v)}</td></tr>")
+    else:
+        _pr.append("<tr>" + "".join(f"<td>{escape(x)}</td>" for x in v) + "</tr>")
+add("<div class='tw'><table class='proto'><thead><tr>" + "".join(f"<th>{h_}</th>" for h_ in ("What", "Who", "By when", "Output", "How")) + f"</tr></thead><tbody>{''.join(_pr)}</tbody></table></div>")
+add("<details><summary>Districts covered by each monitored station</summary><p class=\"note\">Districts are assigned to the gauge immediately upstream of them, in downstream order. SoDMA and SWALIM confirm the list at the start of each season. A district is identified for anticipatory action when its station is among those reached, or when an upstream station on the same river is reached and SWALIM expects the flood wave to arrive within the lead time.</p>"
+    + table(["River", "Station", "Districts covered"], [[c(r_), c(s_), c(d_)] for r_, s_, d_ in DISTRICTS]) + "</details>")
 
 add("<h2>What runs live, and what is open</h2><ul>"
     "<li><b>GloFAS version 4 runs both phases today.</b> Deyr is calibrated on version 5, which has no published forecast yet, and Gu on Google Flood Hub, to which there is no API access yet. Version 4 stands in, with levels refitted on its own record.</li>"
