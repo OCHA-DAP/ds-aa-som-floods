@@ -105,6 +105,13 @@ outside = sorted(env_years - flood_all)
 per_river = {r: set().union(*(act[(r, s)] for s in ("deyr", "gu"))) for r in ("juba", "shabelle")}
 rate_env = rp_text(n_act)
 rate_river = {r: rp_text(len(v)) for r, v in per_river.items()}
+# readiness leg as designed (GloFAS ensemble, 6 of 11 members, readiness thresholds), from the v4 reforecast sweep, 2003-2023
+sweep = json.load(open(S / "prob_sweep_results.json"))
+RSPAN = set(range(2003, 2024))
+ready_years = set().union(*(set(x["years"]) for x in sweep if x["leg"] == "readiness" and x["k"] == 6)) & RSPAN
+either_years = ready_years | (env_years & RSPAN)
+assert len(RSPAN) == 21 and 8 <= len(ready_years) <= 12 and env_years <= RSPAN | {1999, 2000, 2001, 2002}, (len(ready_years), sorted(env_years))
+rate_ready, rate_either = rp_text(len(ready_years), n=len(RSPAN)), rp_text(len(either_years), n=len(RSPAN))
 # cross-check against the analysis page's own headline tiles
 assert f"{rate_env} overall action return period" in index_text, rate_env
 assert f"{rate_river['shabelle']} / {rate_river['juba']} per river" in index_text, rate_river
@@ -127,10 +134,11 @@ def verdict(first_onset, when, year, model):
 
 fb_rows, fb_tot = {}, {}
 for season in ("deyr", "gu"):
-    onset, sev_s, fc, fc_all = {}, {}, {"google_grrr": {}, "glofas_v4": {}}, {}
+    onset, sev_s, fc, fc_all, first1 = {}, {}, {"google_grrr": {}, "glofas_v4": {}}, {}, {}
     for river in ("juba", "shabelle"):
         rp, n = RULE[(river, season)]
         onset[river] = L.gauge_crossings(river, season, 3, span=SPAN)
+        first1.setdefault(river, L.gauge_crossings(river, season, 3, n_req=1, span=SPAN))   # day the river's FIRST gauge crossed
         sev_s[river] = set(L.gauge_crossings(river, season, L.SEVERE_RP, span=SPAN))
         for mdl in fc:
             fc[mdl][river] = {y: v[0] for y, v in L.first_issue_dates(mdl, river, season, rp, n, span=SPAN, leads=(1, 7)).items()}
@@ -145,7 +153,11 @@ for season in ("deyr", "gu"):
     for y in years:
         flooded = [r for r in onset if y in onset[r]]
         first = min(onset[r][y] for r in flooded)
-        rec = {"year": y, "rivers": [r.title() for r in flooded], "severe": any(y in sev_s[r] for r in flooded), "first_onset": dfmt(first)}
+        r0 = min(flooded, key=lambda r_: onset[r_][y])                        # the river whose second gauge set the reference day
+        first_gauge_before = (first - first1[r0][y]).days                     # days the river's first gauge crossed ahead of its second
+        assert first_gauge_before >= 0, (y, r0, first_gauge_before)
+        rec = {"year": y, "rivers": [r.title() for r in flooded], "severe": any(y in sev_s[r] for r in flooded), "first_onset": dfmt(first),
+               "first_gauge_before": first_gauge_before}
         leads = {}
         for mdl in fc:
             c = {r: fc[mdl][r][y] for r in fc[mdl] if y in fc[mdl][r]}
@@ -270,6 +282,8 @@ def fig_leads():
     labels = []
     for i, (s, r) in enumerate(rows):
         labels.append(f"{SEASON[s][0]} {r['year']}{' *' if r['severe'] else ''}")
+        x1 = -min(r.get("first_gauge_before", 0), 21)
+        ax.plot([x1, x1], [i - .42, i + .42], color="#9ca3af", lw=1.8, solid_capstyle="butt", zorder=1)
         for m, dy in (("google_grrr", .17), ("glofas_v4", -.17)):
             v = r[m]
             if v["kind"] == "na":
@@ -291,7 +305,8 @@ def fig_leads():
     ax.legend(handles=[Line2D([], [], marker="o", ls="none", color=COL["google_grrr"], label="Google Flood Hub forecast, first issue meeting the rule"),
                        Line2D([], [], marker="o", ls="none", color=COL["glofas_v4"], label="GloFAS v4 forecast (the version running live)"),
                        Line2D([], [], marker="|", ls="none", color="#6b7280", ms=9, mew=1.3, alpha=.6, label="every later issue that also met the rule"),
-                       Line2D([], [], marker="x", ls="none", color="#6b7280", mew=1.6, label="rule never met (shown at right edge)")],
+                       Line2D([], [], marker="x", ls="none", color="#6b7280", mew=1.6, label="rule never met (shown at right edge)"),
+                       Line2D([], [], color="#9ca3af", lw=1.8, label="first gauge over 1-in-3 (the zero line is the second)")],
               loc="lower left", frameon=False, ncol=2, bbox_to_anchor=(0, 1.02), fontsize=8.6)
     fig.tight_layout(); fig.savefig(FIGS / "s_leads.png", dpi=150, bbox_inches="tight", pad_inches=0.12); plt.close(fig)
 
@@ -365,6 +380,8 @@ add("<h2>The trigger</h2><p>The trigger covers two rivers and two rainy seasons,
 add(table(["Window", "Season", "Source", "Rule", "Gauges"],
           [[c(wname(r, s)), c(SEASON[s][1]), c(SOURCE[s]), c(f"{RULE[(r, s)][1]} of {4 if r == 'juba' else 3} gauges forecast over their own 1-in-{RULE[(r, s)][0]} level on the same day"), c(STATIONS[r])] for r, s in WINDOWS]))
 add("<p class=\"note\">Readiness activates 8 to 12 days ahead, either on the GloFAS ensemble forecast or on a SWALIM moderate flood risk alert for either river, and releases the mobilisation share. Action activates 1 to 7 days ahead and releases the rest. Thresholds are fitted on each source's own record.</p>")
+add(table(["Readiness", "Action", "Either phase"], [[c(rate_ready), c(rate_env), c(rate_either)]]))
+add(f"<p class=\"note\">Return periods of the trigger, Weibull (years + 1) over activations. Action: {n_act} activations in 25 years, 1999 to 2023. Readiness: {len(ready_years)} activations in the 21 years of GloFAS forecast archive, 2003 to 2023, on the GloFAS route alone; SWALIM alerts would add to it. Either phase: {len(either_years)} years of those 21 in which readiness or action activated.</p>")
 add(f"<p><b>Why action stops at 7 days.</b> Google Flood Hub, the Gu source, forecasts 7 days ahead and no further. GloFAS forecasts run longer, but the ensemble's high flows fall away with lead time. By day 7 they are about {round((1 - FADE[7]) * 100):d} per cent below the day-1 forecast, and by day 12 about {round((1 - FADE[12]) * 100):d} per cent below. Over the years both GloFAS archives cover, the same rule activated {BAND13['1-7']} times at 1 to 7 days and {'once' if BAND13['8-12'] == 1 else str(BAND13['8-12']) + ' times'} at 8 to 12 days. Days 8 to 12 are therefore used for readiness rather than action.</p>")
 
 add("<h2>What counts as a flood</h2><p>The trigger is scored against the SWALIM gauge record. A river has a flood season when two of its gauges reach their own 1-in-3 level, and a severe season when two reach their 1-in-5 level. Each gauge's levels are fitted on its own record from 2000 to 2023.</p>")
@@ -453,7 +470,7 @@ document.getElementById("aiTable").innerHTML=h.join("");
 
 d, g = FB_D, FB_G
 add(f"<h2>Checked on the forecasts</h2><p>The tests above use each model's record of the past, whereas the trigger runs on forecasts. The historical forecasts were therefore replayed to find the day the alert would have gone out, 1 to 7 days ahead, and that day was compared with the day the flood season began at the gauges, which is the day the river's second gauge crossed its own 1-in-3 level (the first gauge may have crossed days earlier). Either river counts. Only Google Flood Hub (2016 to 2023) and GloFAS v4 (2003 to 2023, plus the live Gu 2024 forecasts) have archives. GloFAS's archive holds two issue days a week ({GLOFAS_ISSUES} a year) where Google's holds every day, so replayed GloFAS lead times are coarser by up to three days. The live GloFAS forecast is daily.</p>")
-add("<figure><img src=\"figs/s_leads.png\" alt=\"Lead time of the first forecast issue meeting the rule, per flood season\"><figcaption>One row per flood season, with severe seasons starred. The green band is the action window and the pale green band is readiness. The dot is the first forecast issue that met the rule, and the ticks are every later issue that met it. Points left of the line went out before the second gauge crossed, and points to the right went out after it.</figcaption></figure>")
+add("<figure><img src=\"figs/s_leads.png\" alt=\"Lead time of the first forecast issue meeting the rule, per flood season\"><figcaption>One row per flood season, with severe seasons starred. The green band is the action window and the pale green band is readiness. The grey bar is the day the river's first gauge crossed its own 1-in-3 level, and the black line at zero is the second gauge, the reference used here. The dot is the first forecast issue that met the rule, and the ticks are every later issue that met it. Points left of the zero line went out before the second gauge crossed, and points to the right went out after it.</figcaption></figure>")
 add(f"<p>In Deyr, GloFAS v4 activated before the second gauge crossed in {d['per_model']['glofas_v4'].get('before', 0)} of {d['n']} seasons and was first in {d['head_to_head']['glofas_v4']} of the {d['n_both']} seasons both archives cover. In Gu, Google was first in all {g['n_both']}. On the Shabelle it gave 10 to 13 days of warning in three of four seasons, where GloFAS v4 gave 3 days once and nothing in the other three. The lead-time comparison and the calibration were done independently and point the same way.</p>")
 rows6 = [[c(f"{SEASON[s][0]} {r['year']}{' *' if r['severe'] else ''}"), c(" and ".join(r["rivers"])), c(r["first_onset"]), c(pill(r["google_grrr"])), c(pill(r["glofas_v4"])), c(escape(r["first"]))] for s in ("deyr", "gu") for r in fb_rows[s]]
 add("<details><summary>Flood by flood</summary>" + table(["Season", "River(s) that flooded", "Second gauge over 1-in-3", "Google Flood Hub forecast", "GloFAS v4 forecast", "First"], rows6) + "</details>")
