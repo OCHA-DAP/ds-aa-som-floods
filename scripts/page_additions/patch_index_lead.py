@@ -29,9 +29,10 @@ def shade(ld):
 
 def cells(o, key):
     if o[key + "_date"] is None:
-        return "<td>never</td><td>&ndash;</td>"
+        return '<td style="white-space:nowrap">never</td><td style="text-align:center">&ndash;</td>'
     ld = o[key + "_lead"]
-    return f"<td>{o[key + '_date']}</td>" + (f"<td{shade(ld)}>{ld:+d} d</td>" if ld is not None else "<td>&ndash;</td>")
+    lead_td = f'<td style="text-align:center;{"background:" + (GREEN if ld >= 8 else AMBER if ld >= 0 else RED) if ld is not None else ""}">{f"{ld:+d} d" if ld is not None else "&ndash;"}</td>'
+    return f'<td style="white-space:nowrap">{o[key + "_date"]}</td>' + lead_td
 
 
 def count(key, f):
@@ -46,8 +47,9 @@ def yrs(key, f):
     return ", ".join(f"{label(o)} ({o[key + '_lead']:+d} d)" for o in with_in if o[key + "_lead"] is not None and f(o[key + "_lead"]))
 
 
-summary = "".join(f"<tr><td>{lab}</td><td>{count(k, lambda x: x >= 8)}</td><td>{count(k, lambda x: 0 <= x < 8)}</td><td>{count(k, lambda x: x < 0)}</td><td>{never(k)}</td></tr>" for k, lab in RECORDS)
-detail = "".join(f"<tr><td>{label(o)}</td><td>{o['inundation'] or 'below 1-in-' + str(RP)}</td>{cells(o, 'gauge')}{cells(o, 'reanalysis')}{cells(o, 'forecast')}</tr>" for o in lead)
+C = ' style="text-align:center"'
+summary = "".join(f"<tr><td>{lab}</td><td{C}>{count(k, lambda x: x >= 8)}</td><td{C}>{count(k, lambda x: 0 <= x < 8)}</td><td{C}>{count(k, lambda x: x < 0)}</td><td{C}>{never(k)}</td></tr>" for k, lab in RECORDS)
+detail = "".join(f"<tr><td style='white-space:nowrap'>{label(o)}</td><td style='white-space:nowrap'>{o['inundation'] or 'below 1-in-' + str(RP)}</td>{cells(o, 'gauge')}{cells(o, 'reanalysis')}{cells(o, 'forecast')}</tr>" for o in lead)
 below = ", ".join(label(o) for o in lead if not o["inundation"])
 
 block = f'''    <p id="lead-to-inundation"><strong>Does the trigger catch the inundation ahead of time?</strong> The question is
@@ -65,7 +67,8 @@ block = f'''    <p id="lead-to-inundation"><strong>Does the trigger catch the in
       met the action rule at leads 1 to 7).</p>
     <div class="tablewrap">
     <table class="data">
-    <thead><tr><th>record, either river</th><th>8 days or more before exposure crossed its 1-in-{RP}</th><th>on the day or up to 7 days before</th><th>after the crossing</th><th>never</th></tr></thead>
+    <colgroup><col style="width:40%"><col style="width:18%"><col style="width:18%"><col style="width:13%"><col style="width:11%"></colgroup>
+    <thead><tr><th>record, either river</th><th{C}>8 days or more before the 1-in-{RP} crossing</th><th{C}>on the day or up to 7 days before</th><th{C}>after the crossing</th><th{C}>never</th></tr></thead>
     <tbody>{summary}</tbody>
     </table>
     </div>
@@ -80,7 +83,8 @@ block = f'''    <p id="lead-to-inundation"><strong>Does the trigger catch the in
       Gu 2023.</p>
     <div class="tablewrap">
     <table class="data">
-    <thead><tr><th>season</th><th>inundation (exposure over 1-in-{RP})</th><th>SWALIM gauges</th><th>lead</th><th>reanalysis rule met</th><th>lead</th><th>forecast issue</th><th>lead</th></tr></thead>
+    <thead><tr><th rowspan="2" style="vertical-align:bottom">season</th><th rowspan="2" style="vertical-align:bottom">exposure crossed 1-in-{RP}</th><th colspan="2"{C}>SWALIM gauges, 2nd over 1-in-3</th><th colspan="2"{C}>reanalysis rule met</th><th colspan="2"{C}>first forecast issue</th></tr>
+    <tr><th>date</th><th{C}>lead</th><th>date</th><th{C}>lead</th><th>date</th><th{C}>lead</th></tr></thead>
     <tbody>{detail}</tbody>
     </table>
     </div>
