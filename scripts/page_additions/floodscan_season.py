@@ -48,7 +48,7 @@ for season in ("deyr", "gu"):
                         "benchmark": [{"year": int(y), "rank": int(rk[y]), "people": int(am[y]), "severe": y in sv} for y in sorted(fl) if y in rk.index],
                         "in_top8": sum(1 for y in fl if y in rk.index and rk[y] <= 8), "n_flood": len([y for y in fl if y in rk.index]),
                         "severe_in_top8": sum(1 for y in sv if y in rk.index and rk[y] <= 8), "n_severe": len(sv)}
-    print(f"\n{season.title()}, both rivers, seasonal max people exposed in the 14 districts (1-in-5 level {lev/1000:.0f}k)")
+    print(f"\n{season.title()}, both rivers, seasonal max people exposed in the 14 districts (1-in-{SFED_RP} level {lev/1000:.0f}k)")
     print("  top 8:", ", ".join(f"{y}{' S' if y in sv else ' F' if y in fl else ''} ({v/1000:.0f}k, 1-in-{rp[y]:.0f})" for y, v in top.head(8).items()))
     print("  two-gauge flood years:", ", ".join(f"{y}{' S' if y in sv else ''}: rank {int(rk[y])} ({am[y]/1000:.0f}k)" for y in sorted(fl) if y in rk.index))
     print(f"  in top 8: {rank_out[season]['in_top8']} of {rank_out[season]['n_flood']} flood years; severe {rank_out[season]['severe_in_top8']} of {len(sv)}")
@@ -69,7 +69,7 @@ for season in ("deyr", "gu"):
             rec[key + "_lead"] = (d - dd).days if (d is not None and dd is not None) else None
         lead_out.append(rec)
         f = lambda k: rec[k + "_date"] or "never"; g = lambda k: f"{rec[k + '_lead']:+d} d" if rec[k + "_lead"] is not None else "-"
-        print(f"  {season.title() + ' ' + str(y):12}{(rec['inundation'] or 'below 1-in-5'):>13}{f('gauge'):>18}{g('gauge'):>6}{f('reanalysis'):>13}{g('reanalysis'):>6}{f('forecast'):>13}{g('forecast'):>6}")
+        print(f"  {season.title() + ' ' + str(y):12}{(rec['inundation'] or 'below 1-in-' + str(SFED_RP)):>13}{f('gauge'):>18}{g('gauge'):>6}{f('reanalysis'):>13}{g('reanalysis'):>6}{f('forecast'):>13}{g('forecast'):>6}")
 json.dump(rank_out, open(S / "floodscan_rank.json", "w"), indent=1)
 json.dump(lead_out, open(S / "floodscan_lead.json", "w"), indent=1)
 with_in = [o for o in lead_out if o["inundation"]]

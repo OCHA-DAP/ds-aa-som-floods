@@ -14,6 +14,7 @@ from matplotlib.lines import Line2D
 
 S = Path(__file__).parent
 lead = [o for o in json.load(open(S / "floodscan_lead.json")) if o["inundation"]]
+RP = json.load(open(S / "floodscan_rank.json"))["deyr"].get("rp", 5)
 C_SFED, C_G, C_R, C_F = "#0E8A7B", "#111827", "#7C3AED", "#B34036"
 XMAX = 30
 MARK = (("gauge", "o", C_G, 8), ("reanalysis", "s", C_R, 7), ("forecast", "D", C_F, 7))
@@ -42,7 +43,7 @@ ax.set_xticks(ticks); ax.set_xticklabels([f"{-t} d before" if t < 0 else "inunda
 ax.axvspan(-7.5, 0, color="#f0fdf4", zorder=0)
 ax.text(-3.75, -1.2, "up to 7 d", color="#4d7c0f", fontsize=8.5, ha="center", va="center")
 ax.text(-19, -1.2, "8 d or more before inundation", color="#166534", fontsize=8.5, ha="center", va="center")
-ax.set_xlabel("days before (left) and after (right) FloodScan flood exposure across the 14 AA districts went over its own 1-in-5 level", fontsize=8.8, color="#374151")
+ax.set_xlabel(f"days before (left) and after (right) FloodScan flood exposure across the 14 AA districts went over its own 1-in-{RP} level", fontsize=8.8, color="#374151")
 ax.grid(axis="x", color="#f1f5f9"); ax.tick_params(length=0)
 for sp in ("top", "right"):
     ax.spines[sp].set_visible(False)

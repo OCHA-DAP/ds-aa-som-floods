@@ -10,7 +10,7 @@ S = Path(__file__).parent
 page = S / "wt-trigger/pages/trigger-single-model/index.html"
 h = page.read_text(encoding="utf-8")
 rank = json.load(open(S / "floodscan_rank.json"))
-RP = 5
+RP = rank["deyr"].get("rp", 5)
 
 anchor = '<h3 id="calibrated-on-the-reanalysis-checked-on-the-forecasts">'
 assert h.count(anchor) == 1
@@ -38,8 +38,7 @@ block = f'''        <h3 id="when-does-inundation-follow-the-gauges">Does the tri
       Juba; Belet Weyne, Bulo Burto, Jalalaqsi, Jowhar, Balcad, Afgooye, Qoryooley and Marka on
       the Shabelle; 1998&ndash;2023, both rivers together, by season. Inundation is dated as the
       first day of the season on which that exposure reaches its own 1-in-{RP} level (Weibull on
-      seasonal maxima); 1-in-{RP} rather than 1-in-3 so that ordinary seasonal ponding does not
-      count.</p>
+      seasonal maxima), the same convention as the gauges.</p>
     <p><strong>Do the two-gauge flood years show high inundation?</strong> Partly. The largest floods
       do: Deyr 2023, the largest exposure season on record with {k(d['top8'][0]['people'])} people, Gu 2018 with
       {k(g['top8'][0]['people'])}, and Deyr 2014, Deyr 2017 and Gu 2023 all in the top six of 26 seasons. But
@@ -60,17 +59,19 @@ block = f'''        <h3 id="when-does-inundation-follow-the-gauges">Does the tri
       or apart from, the gauges, and each is a gap in the benchmark rather than in the satellite:</p>
     <ul>
       <li><strong>The Shabelle districts flood in a different order from the gauges.</strong> In Gu
-        2023 Afgooye and Jowhar crossed their own 1-in-{RP} exposure on 7 April, the day before the
-        first gauge; in Gu 2018 Belet Weyne district did on 9 April, twelve days before its gauge
-        reached 1-in-3; in Deyr 2023 Bulo Burto did on 7 October, four weeks before the gauges.
+        2023 Jowhar and Jalalaqsi crossed their own 1-in-{RP} exposure on 18 and 19 March, three
+        weeks before the first gauge; in Gu 2018 Belet Weyne district did on 9 April, twelve days
+        before its gauge reached 1-in-3; in Deyr 2023 Bulo Burto did on 7 October, four weeks
+        before the Shabelle gauges.
         Water reaches people through breaks in the embankments and in the lower reach from
         Afgooye to Marka, which has no gauge, before the monitored gauges reach their levels.</li>
       <li><strong>The fitted 1-in-3 levels sit at or above SWALIM's high-risk levels</strong> at
         Bardheere, Belet Weyne and Jowhar. Moderate flooding can therefore be under way before a
         gauge reaches its statistical 1-in-3, which the benchmark counts as no flood yet.</li>
-      <li><strong>Rain on the floodplain reads as water.</strong> In Gu 2010 Doolow and Luuq districts
-        crossed their exposure levels on 5 and 21 March, with the gauges at 34 to 95 per cent of
-        their levels: rainfall ponding at 10 km resolution, not the river.</li>
+      <li><strong>Rain on the floodplain reads as water.</strong> In Gu 2010 Doolow and Baardheere
+        districts crossed their exposure levels on 2 and 5 March, two months before the gauges,
+        which then stood at 34 to 95 per cent of their levels: rainfall ponding at 10 km
+        resolution, not the river.</li>
     </ul>
 '''
 h = h.replace(anchor, block + anchor)

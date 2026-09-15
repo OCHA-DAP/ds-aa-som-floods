@@ -10,7 +10,7 @@ S = Path(__file__).parent
 page = S / "wt-trigger/pages/trigger-single-model/index.html"
 h = page.read_text(encoding="utf-8")
 lead = json.load(open(S / "floodscan_lead.json"))
-RP = 5
+RP = json.load(open(S / "floodscan_rank.json"))["deyr"].get("rp", 5)
 
 anchor = "    <p>The comparison is thin"
 assert h.count(anchor) == 1
@@ -57,8 +57,8 @@ block = f'''    <p id="lead-to-inundation"><strong>Does the trigger catch the in
       with a forecast archive (Google Flood Hub 2016&ndash;2023 in Gu, GloFAS v4 2003&ndash;2023 in
       Deyr). In {n_in} of the {n}, exposure across the 14 districts reached its own 1-in-{RP} level, so an
       inundation day exists; in the other {n - n_in} it stayed below ({below}). The inundation day is the
-      crossing, not the peak: the peak exposure came 0 to 19 days after it (the same day in Deyr
-      2014, 19 days later in Deyr 2023). Three dated records are set against the
+      crossing, not the peak: the peak exposure came 0 to 20 days after it (the same day in Deyr
+      2014, 20 days later in Deyr 2023). Three dated records are set against the
       inundation day, each the earliest on either river, as the mechanism counts: the SWALIM
       gauges (the day a river's second gauge went over its own 1-in-3 level, the page's
       benchmark), the reanalysis (the first day a window's calibration record, Google's
@@ -77,10 +77,10 @@ block = f'''    <p id="lead-to-inundation"><strong>Does the trigger catch the in
       ({yrs("forecast", lambda x: x >= 8)}), all Deyr on GloFAS v4; on the day or up to seven days before in
       {count("forecast", lambda x: 0 <= x < 8)} ({yrs("forecast", lambda x: 0 <= x < 8)}); and after it in {count("forecast", lambda x: x < 0)} ({yrs("forecast", lambda x: x < 0)}), the season
       every source missed. The SWALIM gauges, the benchmark the rest of this page is scored
-      against, sit 3 to 13 days before the inundation and three days after it in Deyr 2017, a
+      against, sit 2 to 13 days before the inundation and three days after it in Deyr 2017, a
       season the gauges called on the Juba while the exposure came on the Shabelle. The
       reanalysis, the record the windows were calibrated on, never met the rule in Deyr 2017 or
-      Gu 2023.</p>
+      Gu 2023 and met it a day after the crossing in Gu 2018.</p>
     <div class="tablewrap">
     <table class="data">
     <thead><tr><th rowspan="2" style="vertical-align:bottom">season</th><th rowspan="2" style="vertical-align:bottom">exposure crossed 1-in-{RP}</th><th colspan="2"{C}>SWALIM gauges, 2nd over 1-in-3</th><th colspan="2"{C}>reanalysis rule met</th><th colspan="2"{C}>first forecast issue</th></tr>
