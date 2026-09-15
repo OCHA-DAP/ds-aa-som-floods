@@ -2468,6 +2468,6 @@
   }
  ],
  "notes": [
-  "2026-09-15: google_grrr dollow rows refitted on the Juba main-stem gauge hybas_1121039440 (the design's hybas_1121038740 is the Dawa branch and is not served by the live API). A rebuild from data/processed/discharge_daily_google_grrr.parquet reverts them unless that parquet is refreshed."
+  "2026-09-15: google_grrr dollow rows fitted on the Juba main-stem gauge hybas_1121039440 (the design's hybas_1121038740 is the Dawa branch and is not served by the live API). The processed Google tables on blob (discharge_daily/return_periods/reforecast google_grrr) carry the same gauge since 2026-09-15, so build() reproduces these rows."
  ]
 }

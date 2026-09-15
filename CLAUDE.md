@@ -70,7 +70,8 @@ and never register Deyr 2006/2023 on the Shabelle — see the page.
 - Dollow's Google point is the Juba main-stem gauge `hybas_1121039440` (since 2026-09-15). The
   design's gauge `hybas_1121038740` is the Dawa branch and is **not in the Flood Hub API** (404).
   The Gu levels for Dollow in `src/monitoring/thresholds.json` are fitted on the main-stem gauge's
-  retrospective; the analysis pages still use the old point.
+  retrospective, and the processed Google tables on blob carry that gauge since 2026-09-15. The trigger
+  pages (feat/multisource-trigger) still show the old gauge's Dollow numbers until they are rebuilt.
 - Google's live horizon is issue−2 … issue+5 days, so the action leg reads Google at leads 1–5.
 - SWALIM moderate flood risk alerts (readiness) are **not automated**; emails and the page point
   readers to FAO SWALIM.
