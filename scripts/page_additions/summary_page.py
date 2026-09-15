@@ -490,6 +490,7 @@ rows7 = [[c(t_["season"]), c(t_["river"]), c(t_["swalim_first"] or "no bulletin"
 add("<details><summary>SWALIM against the window's source, season by season</summary>" + table(["Season", "River", "SWALIM first bulletin", "Who was first"], rows7) + "</details>")
 
 add("<h2>What runs live, and what is open</h2><ul>"
+    "<li><b>Dollow's Google Flood Hub point is not served by the live API.</b> The Gu Juba window was designed and tested on four Google points; the live feed returns forecasts for three, so the 3-of-4 rule runs as 3 of 3 until a substitute point for Dollow is confirmed and given its own level. On the record this changed no activation year, but the live rule is stricter than the tested one.</li>"
     "<li><b>Two gauges have stopped reporting.</b> Bardheere has not reported since 30 November 2023 and Bualle since 14 March 2024.</li>"
     "<li><b>Impact years are not yet defined.</b> The benchmark is gauge levels rather than people affected, and 2013 and 2021 show why an impact cross-check is the next step. Each window holds three to five severe seasons, so every difference on this page rests on one or two events.</li></ul>")
 add("</div></body></html>")
