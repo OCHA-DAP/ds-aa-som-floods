@@ -34,6 +34,7 @@ from src.monitoring.flags import env_flag, mode  # noqa: E402
 TEMPLATES = ROOT / "src" / "monitoring" / "email" / "templates"
 DESIGN_URL = cfg.PAGES_URL + "trigger-single-model/summary.html"
 DASHBOARD_URL = cfg.PAGES_URL + "monitoring/"
+SOURCE_URL = {"glofas": "https://global-flood.emergency.copernicus.eu/", "google": "https://sites.research.google/floods/"}
 
 
 def resolve_list_id(client, list_type):
@@ -63,6 +64,13 @@ def simulate(result):
 
 def render(result, template_name, chart_url):
     env = Environment(loader=FileSystemLoader(TEMPLATES))
+    open_sources = []                      # the action source of each open window, then GloFAS (readiness)
+    for k in result["open_windows"]:
+        src = result["windows"][k]["action"]["source"]
+        if src not in open_sources:
+            open_sources.append(src)
+    if "glofas" not in open_sources:
+        open_sources.append("glofas")
     ctx = dict(
         pub_date=result["monitoring_date"], trigger_status=result["status"], chart_url=chart_url,
         windows=result["windows"], open_windows=result["open_windows"],
@@ -72,6 +80,7 @@ def render(result, template_name, chart_url):
         readiness_windows=result["readiness_windows"],
         readiness_titles=[result["windows"][k]["title"] for k in result["readiness_windows"]],
         source_title=cfg.SOURCE_TITLE, river_title=cfg.RIVER_TITLE, station_title=cfg.STATION_TITLE,
+        open_sources=open_sources, source_url=SOURCE_URL,
         contact_name=cfg.CONTACT_NAME, contact_email=cfg.CONTACT_EMAIL,
         dashboard_url=DASHBOARD_URL, repo_url=cfg.REPO_URL, design_url=DESIGN_URL,
     )

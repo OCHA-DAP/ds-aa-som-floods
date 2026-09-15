@@ -39,7 +39,5 @@
   <p style="margin:0;font-size:13px;color:#555;">Readiness (GloFAS, 8 to 12 days ahead): {{ w.readiness.max_votes }} of {{ w.readiness.n_of }} stations over their 1-in-{{ w.readiness.rp }} threshold{% if w.readiness.max_votes_date %} on {{ w.readiness.max_votes_date }}{% endif %}.</p>
   {% endfor %}
   <p style="margin-top:24px;">The live status page is at <a href="{{ dashboard_url }}">{{ dashboard_url }}</a>.</p>
-  <p>Best regards,</p>
-  <p>OCHA Centre for Humanitarian Data</p>
 </div>
 {% endblock content %}
