@@ -11,9 +11,10 @@ fs = pd.read_parquet("floodscan_daily.parquet"); fs["date"] = pd.to_datetime(fs[
 WINDOWS = [("juba", "deyr"), ("shabelle", "deyr"), ("juba", "gu"), ("shabelle", "gu")]
 SEG_GAUGE = {("shabelle", "upper"): ["belet_weyne", "bulo_burti"], ("shabelle", "mid"): ["jowhar"], ("juba", "upper"): ["dollow", "luuq", "bardheere"], ("juba", "lower"): ["bualle"]}
 SPAN = range(1999, 2024)
+SFED_RP = 5          # inundation is dated when the buffer's flooded fraction reaches its own 1-in-5 level (gauges stay at 1-in-3)
 
 
-def sfed_onsets(river, segment, season, rp=3):
+def sfed_onsets(river, segment, season, rp=SFED_RP):
     s = fs[(fs.river == river) & (fs.segment == segment)].set_index("date")["mean_sfed"].sort_index()
     s = s[s.index.month.isin(L.SEASONS[season])]
     am = s.groupby(s.index.year).max().dropna()
@@ -27,7 +28,7 @@ def sfed_onsets(river, segment, season, rp=3):
 
 
 res = {}
-print("FloodScan (whole-river buffer) 1-in-3 onset against the gauges, days (+ = inundation after the gauge day)")
+print(f"FloodScan (whole-river buffer) 1-in-{SFED_RP} onset against the gauges' 1-in-3, days (+ = inundation after the gauge day)")
 print(f"{'window':15}{'yrs both':>9}{'vs 2nd gauge: median (range)':>32}{'vs 1st gauge: median (range)':>32}   SFED-only years | gauge-only years")
 for river, season in WINDOWS:
     on_s, lev = sfed_onsets(river, "full", season)
@@ -36,7 +37,7 @@ for river, season in WINDOWS:
     d2 = sorted((on_s[y] - g2[y]).days for y in both); d1 = sorted((on_s[y] - g1[y]).days for y in both)
     med = lambda v: (v[len(v) // 2] if len(v) % 2 else (v[len(v) // 2 - 1] + v[len(v) // 2]) / 2) if v else None
     rng = lambda v: f"{v[0]} to {v[-1]}" if v else "-"
-    res[f"{season}_{river}"] = {"level": lev, "years_both": both, "vs_second": {y: (on_s[y] - g2[y]).days for y in both}, "vs_first": {y: (on_s[y] - g1[y]).days for y in both},
+    res[f"{season}_{river}"] = {"level": lev, "sfed_rp": SFED_RP, "years_both": both, "vs_second": {y: (on_s[y] - g2[y]).days for y in both}, "vs_first": {y: (on_s[y] - g1[y]).days for y in both},
                                 "sfed_only": sorted(set(on_s) - set(g2)), "gauge_only": sorted(set(g2) - set(on_s))}
     print(f"{season.title() + ' ' + river.title():15}{len(both):>9}{str(med(d2)) + ' (' + rng(d2) + ')':>32}{str(med(d1)) + ' (' + rng(d1) + ')':>32}   {res[f'{season}_{river}']['sfed_only']} | {res[f'{season}_{river}']['gauge_only']}")
     for y in both:
