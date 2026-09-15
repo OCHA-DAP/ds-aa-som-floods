@@ -841,29 +841,33 @@ html { scroll-behavior:smooth; }
         34 to 95 per cent of their levels: rainfall ponding at 10 km resolution, not the river.
         Raising the FloodScan level to 1-in-5 removes most such seasons but not this one.</li>
     </ul>
-    <p id="lead-to-inundation"><strong>Does the trigger catch the inundation seven days ahead?</strong> Taking every
-      season in which FloodScan's flooded fraction reached its own 1-in-5 level and a forecast
-      archive exists (15 seasons: Google Flood Hub 2016&ndash;2023 in Gu, GloFAS v4 2003&ndash;2023 in
-      Deyr), and the first forecast issue on which the window's source met the action rule at
-      leads 1 to 7: on the same river the rule was met seven or more days before inundation in
-      <strong>2 of 15</strong> seasons, one to six days before in 1,
-      on or after the day in 2, and never in 10. Counting an activation
-      on either river, 4 of 15 had seven or more days. The seven-day cases are
-      Deyr on the Juba, 2014 and 2023, on GloFAS v4. In Gu, Google met the rule the day before
-      inundation on the Juba in 2018 and eight days after it on the Shabelle in 2018 and 2023.</p>
+    <p id="lead-to-inundation"><strong>Does the trigger catch the inundation seven days ahead?</strong> The question is
+      asked only for the seasons the two-gauge rule calls a flood, 19 of them with a forecast
+      archive (Google Flood Hub 2016&ndash;2023 in Gu, GloFAS v4 2003&ndash;2023 in Deyr). In 8 of
+      the 19 FloodScan reached its own 1-in-5 level, so an inundation day exists; in the other
+      11 the whole-river flooded fraction stayed below it, including the severe Shabelle Deyr
+      seasons of 2014, 2019 and 2020, which says more about a 10-km product over a narrow river
+      than about those floods. For the 8: on the same river the action rule was met seven or
+      more days before inundation in <strong>2 of 8</strong>, one to six days before
+      in 1, on or after the day in 2, and never in
+      3. Counting an activation on either river, 3 of 8 had seven
+      or more days. The seven-day cases are Deyr on the Juba, 2014 and 2023, on GloFAS v4. In
+      Gu, Google met the rule one day before inundation on the Juba in 2018 and eight days after
+      it on the Shabelle in 2018 and 2023. The last column of each pair gives the same lead
+      measured against the second gauge, the page's usual reference, for comparison.</p>
     <div class="tablewrap">
     <table class="data">
-    <thead><tr><th>season</th><th>inundation (FloodScan 1-in-5)</th><th>rule met, same river</th><th>lead</th><th>rule met, either river</th><th>lead</th></tr></thead>
-    <tbody><tr><td>Juba Gu 2017</td><td>2017-05-04</td><td>never</td><td>&ndash;</td><td>never</td><td>&ndash;</td></tr><tr><td>Juba Gu 2018</td><td>2018-04-16</td><td>2018-04-15</td><td style="background:rgba(244,169,59,.18)">+1 d</td><td>2018-04-15</td><td style="background:rgba(244,169,59,.18)">+1 d</td></tr><tr><td>Juba Gu 2023</td><td>2023-03-28</td><td>never</td><td>&ndash;</td><td>2023-04-26</td><td style="background:rgba(179,64,54,.14)">-29 d</td></tr><tr><td>Juba Deyr 2006</td><td>2006-10-31</td><td>never</td><td>&ndash;</td><td>never</td><td>&ndash;</td></tr><tr><td>Juba Deyr 2011</td><td>2011-10-20</td><td>never</td><td>&ndash;</td><td>never</td><td>&ndash;</td></tr><tr><td>Juba Deyr 2014</td><td>2014-11-04</td><td>2014-10-23</td><td style="background:rgba(14,138,123,.18)">+12 d</td><td>2014-10-07</td><td style="background:rgba(14,138,123,.18)">+28 d</td></tr><tr><td>Juba Deyr 2023</td><td>2023-11-03</td><td>2023-10-21</td><td style="background:rgba(14,138,123,.18)">+13 d</td><td>2023-10-21</td><td style="background:rgba(14,138,123,.18)">+13 d</td></tr><tr><td>Shabelle Gu 2017</td><td>2017-05-05</td><td>never</td><td>&ndash;</td><td>never</td><td>&ndash;</td></tr><tr><td>Shabelle Gu 2018</td><td>2018-04-19</td><td>2018-04-27</td><td style="background:rgba(179,64,54,.14)">-8 d</td><td>2018-04-15</td><td style="background:rgba(244,169,59,.18)">+4 d</td></tr><tr><td>Shabelle Gu 2023</td><td>2023-04-18</td><td>2023-04-26</td><td style="background:rgba(179,64,54,.14)">-8 d</td><td>2023-04-26</td><td style="background:rgba(179,64,54,.14)">-8 d</td></tr><tr><td>Shabelle Deyr 2011</td><td>2011-10-25</td><td>never</td><td>&ndash;</td><td>never</td><td>&ndash;</td></tr><tr><td>Shabelle Deyr 2015</td><td>2015-10-22</td><td>never</td><td>&ndash;</td><td>2015-10-23</td><td style="background:rgba(179,64,54,.14)">-1 d</td></tr><tr><td>Shabelle Deyr 2016</td><td>2016-11-20</td><td>never</td><td>&ndash;</td><td>never</td><td>&ndash;</td></tr><tr><td>Shabelle Deyr 2017</td><td>2017-11-04</td><td>never</td><td>&ndash;</td><td>2017-10-19</td><td style="background:rgba(14,138,123,.18)">+16 d</td></tr><tr><td>Shabelle Deyr 2023</td><td>2023-10-31</td><td>never</td><td>&ndash;</td><td>2023-10-21</td><td style="background:rgba(14,138,123,.18)">+10 d</td></tr></tbody>
+    <thead><tr><th>season</th><th>2nd gauge over 1-in-3</th><th>inundation (FloodScan 1-in-5)</th><th>rule met, same river</th><th>lead to inundation</th><th>lead to 2nd gauge</th><th>rule met, either river</th><th>lead to inundation</th><th>lead to 2nd gauge</th></tr></thead>
+    <tbody><tr><td>Juba Gu 2016</td><td>2016-05-01</td><td>below 1-in-5</td><td>2016-05-01</td><td>&ndash;</td><td>+0 d</td><td>2016-04-30</td><td>&ndash;</td><td>+1 d</td></tr><tr><td>Juba Gu 2018</td><td>2018-04-17</td><td>2018-04-16</td><td>2018-04-15</td><td style="background:rgba(244,169,59,.18)">+1 d</td><td>+2 d</td><td>2018-04-15</td><td style="background:rgba(244,169,59,.18)">+1 d</td><td>+2 d</td></tr><tr><td>Juba Gu 2020</td><td>2020-04-22</td><td>below 1-in-5</td><td>2020-04-24</td><td>&ndash;</td><td>-2 d</td><td>2020-04-22</td><td>&ndash;</td><td>+0 d</td></tr><tr><td>Juba Gu 2023</td><td>2023-03-25</td><td>2023-03-28</td><td>never</td><td>&ndash;</td><td>&ndash;</td><td>2023-04-26</td><td style="background:rgba(179,64,54,.14)">-29 d</td><td>-32 d</td></tr><tr><td>Juba Deyr 2006</td><td>2006-10-30</td><td>2006-10-31</td><td>never</td><td>&ndash;</td><td>&ndash;</td><td>never</td><td>&ndash;</td><td>&ndash;</td></tr><tr><td>Juba Deyr 2008</td><td>2008-11-15</td><td>below 1-in-5</td><td>never</td><td>&ndash;</td><td>&ndash;</td><td>never</td><td>&ndash;</td><td>&ndash;</td></tr><tr><td>Juba Deyr 2014</td><td>2014-10-22</td><td>2014-11-04</td><td>2014-10-23</td><td style="background:rgba(14,138,123,.18)">+12 d</td><td>-1 d</td><td>2014-10-07</td><td style="background:rgba(14,138,123,.18)">+28 d</td><td>+15 d</td></tr><tr><td>Juba Deyr 2017</td><td>2017-11-07</td><td>below 1-in-5</td><td>2017-10-19</td><td>&ndash;</td><td>+19 d</td><td>2017-10-19</td><td>&ndash;</td><td>+19 d</td></tr><tr><td>Juba Deyr 2023</td><td>2023-10-25</td><td>2023-11-03</td><td>2023-10-21</td><td style="background:rgba(14,138,123,.18)">+13 d</td><td>+4 d</td><td>2023-10-21</td><td style="background:rgba(14,138,123,.18)">+13 d</td><td>+4 d</td></tr><tr><td>Shabelle Gu 2016</td><td>2016-05-11</td><td>below 1-in-5</td><td>2016-04-30</td><td>&ndash;</td><td>+11 d</td><td>2016-04-30</td><td>&ndash;</td><td>+11 d</td></tr><tr><td>Shabelle Gu 2018</td><td>2018-05-07</td><td>2018-04-19</td><td>2018-04-27</td><td style="background:rgba(179,64,54,.14)">-8 d</td><td>+10 d</td><td>2018-04-15</td><td style="background:rgba(244,169,59,.18)">+4 d</td><td>+22 d</td></tr><tr><td>Shabelle Gu 2020</td><td>2020-05-05</td><td>below 1-in-5</td><td>2020-04-22</td><td>&ndash;</td><td>+13 d</td><td>2020-04-22</td><td>&ndash;</td><td>+13 d</td></tr><tr><td>Shabelle Gu 2023</td><td>2023-04-17</td><td>2023-04-18</td><td>2023-04-26</td><td style="background:rgba(179,64,54,.14)">-8 d</td><td>-9 d</td><td>2023-04-26</td><td style="background:rgba(179,64,54,.14)">-8 d</td><td>-9 d</td></tr><tr><td>Shabelle Deyr 2006</td><td>2006-11-02</td><td>below 1-in-5</td><td>never</td><td>&ndash;</td><td>&ndash;</td><td>never</td><td>&ndash;</td><td>&ndash;</td></tr><tr><td>Shabelle Deyr 2008</td><td>2008-11-20</td><td>below 1-in-5</td><td>never</td><td>&ndash;</td><td>&ndash;</td><td>never</td><td>&ndash;</td><td>&ndash;</td></tr><tr><td>Shabelle Deyr 2014</td><td>2014-10-20</td><td>below 1-in-5</td><td>2014-10-07</td><td>&ndash;</td><td>+13 d</td><td>2014-10-07</td><td>&ndash;</td><td>+13 d</td></tr><tr><td>Shabelle Deyr 2019</td><td>2019-10-14</td><td>below 1-in-5</td><td>2019-10-02</td><td>&ndash;</td><td>+12 d</td><td>2019-10-02</td><td>&ndash;</td><td>+12 d</td></tr><tr><td>Shabelle Deyr 2020</td><td>2020-10-01</td><td>below 1-in-5</td><td>2020-10-02</td><td>&ndash;</td><td>-1 d</td><td>2020-10-02</td><td>&ndash;</td><td>-1 d</td></tr><tr><td>Shabelle Deyr 2023</td><td>2023-11-06</td><td>2023-10-31</td><td>never</td><td>&ndash;</td><td>&ndash;</td><td>2023-10-21</td><td style="background:rgba(14,138,123,.18)">+10 d</td><td>+16 d</td></tr></tbody>
     </table>
     </div>
-    <p>Two readings of this. Ten of the 15 inundation seasons are not gauge floods at all, so the
-      models had no river flood to forecast; FloodScan is seeing rain on the floodplain or the
-      lower Shabelle. Set those aside and the trigger's timing against the gauges stands as
-      shown earlier on this page. But in the seasons that were both a gauge flood and a
-      satellite-visible inundation, the answer to the question is no for Gu and yes for Deyr
-      on the Juba: on the Shabelle the ground was under water before the forecasts saw the
-      river reach its levels, and on the Juba in Gu the two came within a day.</p>
+    <p>So, where the ground is seen to flood, the trigger gave a week's warning on the Juba in
+      Deyr and did not on the Shabelle or in Gu: on the Shabelle the floodplain was under water
+      before the forecasts saw the river reach its levels, and on the Juba in Gu the two came
+      within a day. The last column of each pair shows the same forecasts against the second gauge:
+      where the second gauge crossed weeks after the first, as on the Juba in Deyr, the
+      inundation reference gives the forecasts more credit than the gauge does, and on the
+      Shabelle in Gu less.</p>
     <p>The comparison is thin. Only one to three seasons per window are called a flood by both
       records, FloodScan calls seasons the gauges do not, and misses several the gauges call
       (Gu Shabelle 2003, 2005, 2010, 2016 and 2020). The flood-benchmark step kept the gauges
