@@ -85,7 +85,7 @@ table.data td.none { color:#9aa4a6; }
     <div id="notes"></div>
 
     <div class="maprow">
-      <div class="map"><svg id="map" role="img" aria-label="Map of the Juba and Shabelle rivers with the fourteen anticipatory-action districts, coloured by the open window's status"></svg></div>
+      <div class="map"><svg id="map" role="img" aria-label="Map of the Juba and Shabelle rivers with the fourteen anticipatory-action districts, coloured by the status of the season being monitored"></svg></div>
       <div class="legend" id="maplegend"></div>
     </div>
     <!-- /map -->
@@ -100,7 +100,7 @@ table.data td.none { color:#9aa4a6; }
     </figure>
 
     <h2>Forecast peak at each station</h2>
-    <p id="tables-intro">For each open window, the forecast peak at each station within the leg's lead band and inside the window months, against the station's threshold. A ratio of 1.00× or more means the peak reaches the threshold and the station votes.</p>
+    <p id="tables-intro">For each window of the season being monitored, the forecast peak at each station within the leg's lead band and inside the window months, against the station's threshold. A ratio of 1.00× or more means the peak reaches the threshold and the station votes.</p>
     <div id="tables"></div>
 
     <h2>How to read this page</h2>
@@ -159,9 +159,10 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
   const b = document.getElementById("banner");
   const cls = s.action ? "error" : s.readiness ? "warn" : s.open_windows.length ? "" : "off";
   b.className = "banner " + cls;
-  const openTitles = s.open_windows.map(k => s.windows[k].title).join(", ") || "none";
+  const cap = x => x.charAt(0).toUpperCase() + x.slice(1);
+  const seasonNow = [...new Set(s.open_windows.map(k => s.windows[k].season))].map(cap).join(" and ") || "no season";
   b.innerHTML = `<span class="status">${s.status}</span>
-    <span class="meta">Forecasts retrieved <b>${fmtDate(s.monitoring_date)}</b> · open window${s.open_windows.length === 1 ? "" : "s"}: ${openTitles}<br>
+    <span class="meta">Forecasts retrieved <b>${fmtDate(s.monitoring_date)}</b> · currently monitoring <b>${seasonNow}</b><br>
     GloFAS version ${s.glofas_operational === "glofas_v5" ? "5" : "4"} (operational), issue ${fmtDate(s.glofas_issue)}, ${s.n_glofas_points} points · Google Flood Hub: ${s.n_google_gauges} of 7 gauges, issue ${s.google_issue || "n/a"}</span>`;
   // open season first (Deyr from September to January, Gu from February to June), Juba before Shabelle
   const order = ["juba", "shabelle"];
@@ -174,7 +175,7 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
   if (s.chart) { document.getElementById("chart").src = s.chart + "?v=" + encodeURIComponent(s.generated_at); document.getElementById("chartfig").hidden = false; }
   const shown = s.open_windows.length ? s.open_windows : Object.keys(s.windows);
   document.getElementById("tables-intro").textContent = s.open_windows.length
-    ? "For each open window, the forecast peak at each station within the leg's lead band and inside the window months, against the station's threshold. A ratio of 1.00× or more means the peak reaches the threshold and the station votes."
+    ? "For each window of the season being monitored, the forecast peak at each station within the leg's lead band and inside the window months, against the station's threshold. A ratio of 1.00× or more means the peak reaches the threshold and the station votes."
     : "No window is open. Shown for every window: the forecast peak at each station within the lead band, against the threshold, counting only valid days inside the window months (so most cells are empty).";
   document.getElementById("tables").innerHTML = shown.map(k => pointTable(s.windows[k], s.windows[k].readiness, "readiness", s.titles) + pointTable(s.windows[k], s.windows[k].action, "action", s.titles)).join("");
 }).catch(err => {
