@@ -802,6 +802,35 @@ html { scroll-behavior:smooth; }
       apart. The same-day rule is therefore kept, and a tolerance is a lever for later if
       the activation rate is allowed to rise.
     </div>
+        <h3 id="when-does-inundation-follow-the-gauges">When does inundation follow the gauges? (FloodScan)</h3>
+    <p>The benchmark dates a flood from the day the river's second gauge crosses its own 1-in-3
+      level. FloodScan gives an independent date for water on the ground: the daily flooded
+      fraction (SFED, about 10 km resolution) averaged over a 10-km buffer of the river's main
+      stem, 1998&ndash;2023, the same series the flood-benchmark step validated against the
+      gauges. Inundation is dated here the same way as the gauges, the first day of the season
+      on which the buffer's flooded fraction reaches its own 1-in-3 level (Weibull on seasonal
+      maxima). The table compares that day with the gauge days, in the seasons both records
+      call a 1-in-3 flood; a positive number means inundation showed after the gauge day.</p>
+    <div class="tablewrap">
+    <table class="data">
+    <thead><tr><th>window</th><th>seasons both call a flood</th><th>inundation vs 2nd gauge, median (range)</th><th>vs 1st gauge, median (range)</th><th>seasons</th><th>FloodScan only</th><th>gauges only</th></tr></thead>
+    <tbody><tr><td>Juba Gu</td><td>4</td><td>-1 d (-74 to +3)</td><td>0 d (-61 to +4)</td><td>2010, 2016, 2018, 2023</td><td>2001, 2002, 2004, 2017, 2022</td><td>2005, 2020</td></tr><tr><td>Juba Deyr</td><td>4</td><td>+2 d (-4 to +7)</td><td>+8 d (+0 to +27)</td><td>2006, 2014, 2017, 2023</td><td>2000, 2002, 2011, 2013, 2015</td><td>2008</td></tr><tr><td>Shabelle Gu</td><td>2</td><td>-14 d (-22 to -6)</td><td>-2 d (-6 to +3)</td><td>2018, 2023</td><td>2002, 2004, 2006, 2011, 2017, 2019, 2022</td><td>2003, 2005, 2010, 2016, 2020</td></tr><tr><td>Shabelle Deyr</td><td>3</td><td>+5 d (-6 to +10)</td><td>+18 d (-4 to +29)</td><td>2014, 2019, 2023</td><td>2004, 2011, 2012, 2015, 2016, 2017</td><td>2006, 2008, 2020</td></tr></tbody>
+    </table>
+    </div>
+    <p>Where the two records agree that a season flooded, inundation appears within about a
+      week of the second-gauge day: 2 to 5 days after it in Deyr, and around the first
+      gauge in Gu, where the Juba's gauges cross within a day of each other anyway. The
+      second-gauge convention is therefore close to when water is seen on the ground, and
+      the first-gauge day runs up to four weeks ahead of it on the Shabelle in Deyr.</p>
+    <p>The comparison is thin and the two records disagree often. Only two to four seasons per
+      window are called a flood by both; FloodScan calls several seasons the gauges do not
+      (Gu Shabelle seven of them) and misses several the gauges call (Gu Shabelle 2003,
+      2005, 2010, 2016 and 2020). At 10 km the SFED product blurs a river a few hundred
+      metres wide with rainfall ponding on the floodplain, which is why the flood-benchmark
+      step kept the gauges as the benchmark and FloodScan as context. Gu Juba 2010, with
+      inundation dated 74 days before the gauges, is a rainfall signal in March, not the
+      river. The medians above should be read as consistent with the gauge dating, not as a
+      measurement of it.</p>
 <h3 id="calibrated-on-the-reanalysis-checked-on-the-forecasts">Calibrated on the reanalysis, checked on the forecasts</h3>
 <p>Refitting the same rule on the forecast archives themselves, 2003&ndash;2023, thresholds from 1-in-3 to 1-in-5. Out of the field: Google GRRR, whose archive is too short to carry a 1-in-3 threshold, so it can only be calibrated on the retrospective.</p><div class="tablewrap">
 <table class="data">
