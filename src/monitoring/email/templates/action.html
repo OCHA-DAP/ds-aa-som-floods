@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
-  <p>Dear Humanitarian Coordinator, dear colleagues,</p>
   <p>
     The action trigger of the anticipatory action framework for riverine flooding in Somalia has been reached for the <b>{{ action_titles|join(' and ') }}</b> window{{ 's' if action_titles|length != 1 else '' }}:
     {% for key in action_windows %}{% set w = windows[key] %}
