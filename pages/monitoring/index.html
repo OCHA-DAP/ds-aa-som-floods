@@ -185,7 +185,7 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
   document.getElementById("tables-intro").textContent = s.open_windows.length
     ? "For each open window, the forecast peak at each station within the leg's lead band and inside the season months, against the station's level."
     : "No window is open. Shown for every window: the forecast peak at each station within the lead band, against the level, counting only valid days inside the season months (so most cells are empty outside the season months).";
-  document.getElementById("tables").innerHTML = shown.map(k => pointTable(s.windows[k], s.windows[k].action, "action", s.titles) + pointTable(s.windows[k], s.windows[k].readiness, "readiness", s.titles)).join("");
+  document.getElementById("tables").innerHTML = shown.map(k => pointTable(s.windows[k], s.windows[k].readiness, "readiness", s.titles) + pointTable(s.windows[k], s.windows[k].action, "action", s.titles)).join("");
   document.getElementById("updated").textContent = ` Status generated ${fmtTs(s.generated_at)}.`;
 }).catch(err => {
   document.getElementById("banner").innerHTML = `<span class="status">No status yet</span><span class="meta">Could not load status.json (${err.message}). The monitoring pipeline writes it after its first run.</span>`;
