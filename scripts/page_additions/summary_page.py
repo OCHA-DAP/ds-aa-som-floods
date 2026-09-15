@@ -387,21 +387,19 @@ add(table(["Window", "#Flood seasons", "#Severe", "Severe years"],
 add(f"<p class=\"note\">Across both rivers there are {len(flood_all)} flood years, of which {len(severe_all)} are severe. Gauges are capped at bank full, so the largest floods record the same reading. A season in which only one gauge crosses does not count, as in Gu 2021 at Belet Weyne.</p>")
 
 gap_rows = []
-for river in ("juba", "shabelle"):
-    cells_ = [c(river.title())]
+for river, season in WINDOWS:
+    cells_ = [c(wname(river, season))]
     for rp_ in (3, 5):
-        gaps = []
-        for season in ("deyr", "gu"):
-            c2 = L.gauge_crossings(river, season, rp_, span=SPAN); c1 = L.gauge_crossings(river, season, rp_, n_req=1, span=SPAN)
-            gaps += [(d2 - c1[y]).days for y, d2 in c2.items() if y <= 2023]
-        gaps.sort(); mid = gaps[len(gaps) // 2] if len(gaps) % 2 else (gaps[len(gaps) // 2 - 1] + gaps[len(gaps) // 2]) / 2
+        c2 = L.gauge_crossings(river, season, rp_, span=SPAN); c1 = L.gauge_crossings(river, season, rp_, n_req=1, span=SPAN)
+        gaps = sorted((d2 - c1[y]).days for y, d2 in c2.items() if y <= 2023)
+        mid = gaps[len(gaps) // 2] if len(gaps) % 2 else (gaps[len(gaps) // 2 - 1] + gaps[len(gaps) // 2]) / 2
         cells_ += [n(f"{mid:.0f}"), c(f"{gaps[0]} to {gaps[-1]}"), n(str(len(gaps)))]
     gap_rows.append(cells_)
 add("<p>The flood is dated from the second gauge. The first gauge on the river crosses earlier, by the following number of days.</p>")
 _gh = "".join(f"<th colspan='3' class='n' style='border-bottom:1px solid var(--rule)'>First to second gauge over 1-in-{rp_}</th>" for rp_ in (3, 5))
 _gs = "".join("<th class='n'>Median days</th><th>Range</th><th class='n'>Seasons</th>" for _ in (3, 5))
 _gb = "".join("<tr>" + "".join(f"<td{a}>{x}</td>" for x, a in r_) + "</tr>" for r_ in gap_rows)
-add(f"<div class='tw'><table><thead><tr><th></th>{_gh}</tr><tr><th>River</th>{_gs}</tr></thead><tbody>{_gb}</tbody></table></div>")
+add(f"<div class='tw'><table><thead><tr><th></th>{_gh}</tr><tr><th>Window</th>{_gs}</tr></thead><tbody>{_gb}</tbody></table></div>")
 
 add(f"<h2>Which source, and why</h2><p>Three global models were considered. GEOGloWS runs 4 to 10 times too high on the Shabelle and has no forecast archive, and was not taken further. Google Flood Hub and GloFAS were compared with the SWALIM gauges on their own records of the past, Google's retrospective run and GloFAS's version 5 reanalysis, using only the seasons in which the gauge reached its own 1-in-3 level between 2000 and 2023 ({rp3t.n_flood_seasons.min()} to {rp3t.n_flood_seasons.max()} seasons per gauge). Both measures are Spearman correlations, which compare ranks rather than raw values, and both are shown as the median across the river's gauges; ranking needs at least four seasons, which leaves Dollow out of it.</p>"
     "<ul><li><b>Tracking</b> correlates the model's daily flow with the gauge's daily level over every day of those seasons, allowing the model to run ahead of or behind the gauge (the best fit was within ten days for every gauge). A value of 1 means the model rises and falls exactly with the gauge, and 0 means no relation.</li>"
