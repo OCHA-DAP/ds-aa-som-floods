@@ -1,4 +1,4 @@
-<p>The framework monitors four river-season windows. Each runs on one forecast source and one rule: a window activates when, on a single forecast day, enough of the river's monitored points are forecast at or above their own return-period threshold.</p>
+<p>The framework monitors four river-season windows, two per season. Each runs on one forecast source and one rule: a window activates when, on a single forecast day, enough of the river's monitored stations are forecast at or above their own return-period threshold. The windows open now:</p>
 <table style="border-collapse:collapse;font-size:13px;margin:8px 0 12px;">
   <tr style="background:#F0F0F0;">
     <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;">Window</th>
@@ -7,14 +7,14 @@
     <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;">Action rule</th>
     <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;">Today</th>
   </tr>
-  {% for key, w in windows.items()|sort(attribute='1.open', reverse=true) %}
-  <tr{% if not w.open %} style="color:#888;"{% endif %}>
-    <td style="padding:4px 8px;border:1px solid #ddd;"><b>{{ w.title }}</b>{% if not w.open %} (closed){% endif %}</td>
+  {% for key, w in windows.items() if w.open %}
+  <tr>
+    <td style="padding:4px 8px;border:1px solid #ddd;"><b>{{ w.title }}</b></td>
     <td style="padding:4px 8px;border:1px solid #ddd;">{{ w.readiness.n_req }} of {{ w.readiness.n_of }} stations over 1-in-{{ w.readiness.rp }}</td>
     <td style="padding:4px 8px;border:1px solid #ddd;">{{ source_title[w.action.source] }}</td>
     <td style="padding:4px 8px;border:1px solid #ddd;">{{ w.action.n_req }} of {{ w.action.n_of }} stations over 1-in-{{ w.action.rp }}</td>
     <td style="padding:4px 8px;border:1px solid #ddd;">
-      {% if w.open %}readiness {{ w.readiness.max_votes }}/{{ w.readiness.n_of }}, action {{ w.action.max_votes }}/{{ w.action.n_of }}{% if w.action.n_reporting < w.action.n_of %} ({{ w.action.n_reporting }} reporting){% endif %}{% else %}closed{% endif %}
+      readiness {{ w.readiness.max_votes }}/{{ w.readiness.n_of }}, action {{ w.action.max_votes }}/{{ w.action.n_of }}{% if w.action.n_reporting < w.action.n_of %} ({{ w.action.n_reporting }} reporting){% endif %}
     </td>
   </tr>
   {% endfor %}
