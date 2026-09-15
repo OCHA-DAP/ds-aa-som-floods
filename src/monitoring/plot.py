@@ -113,45 +113,57 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
 
 
 def monitoring_chart(df, result, levels_df=None):
+    """One panel per source the open season actually uses. Deyr runs on GloFAS
+    alone (action 1-7 d and readiness 8-12 d), so the two rivers sit side by
+    side; Gu adds the Google action panel, so rivers become rows."""
     levels_df = thr.load() if levels_df is None else levels_df
     monitoring_date = pd.Timestamp(result["monitoring_date"]).date()
     season, is_open = season_shown(monitoring_date)
-    fig, axes = plt.subplots(2, 2, figsize=(13, 9.4), dpi=150, sharey=False)
-    for i, river in enumerate(("juba", "shabelle")):
+    rivers = ("juba", "shabelle")
+    two_sources = any(cfg.ACTION_RULES[(rv, season)]["source"] == "google" for rv in rivers)
+    if two_sources:
+        fig, axes = plt.subplots(2, 2, figsize=(13, 9.4), dpi=150)
+        ax_of, left = (lambda i, j: axes[i, j]), [axes[0, 0], axes[1, 0]]
+        head, rect = (0.975, 0.945), (0, 0.03, 1, 0.93)
+    else:
+        fig, axes = plt.subplots(1, 2, figsize=(13, 5.4), dpi=150)
+        ax_of, left = (lambda i, j: axes[i]), [axes[0]]
+        head, rect = (0.965, 0.915), (0, 0.04, 1, 0.87)
+    for i, river in enumerate(rivers):
         w = (river, season)
         key = cfg.WINDOW_KEY[w]
         stations = TRIGGER_STATIONS[river]
         a = cfg.ACTION_RULES[w]
         r = cfg.READINESS_RULES[w]
-        # Google column: Gu action source; in Deyr shown against its Gu levels for context
-        g_levels = thr.lookup(levels_df, "google_grrr", season, cfg.ACTION_RULES[(river, "gu")]["rp"], stations)
-        g_role = "action source" if a["source"] == "google" else "context (not a trigger source this season)"
-        _panel(axes[i, 0], df, "google", river, season, g_levels,
-               result["windows"][key] if a["source"] == "google" else None, "action" if a["source"] == "google" else g_role)
-        # GloFAS column: action source in Deyr (reanalysis levels), readiness everywhere
+        col = 0
+        if a["source"] == "google":
+            g_levels = thr.lookup(levels_df, "google_grrr", season, a["rp"], stations)
+            _panel(ax_of(i, 0), df, "google", river, season, g_levels, result["windows"][key], "action")
+            col = 1
         if a["source"] == "glofas":
             gl_levels = thr.lookup(levels_df, cfg.GLOFAS_OPERATIONAL, season, a["rp"], stations)
             role = "action"
         else:
             gl_levels = thr.lookup(levels_df, cfg.GLOFAS_OPERATIONAL, season, r["rp"], stations, basis="readiness_band")
             role = "readiness"
-        _panel(axes[i, 1], df, "glofas", river, season, gl_levels, result["windows"][key], role)
-    axes[0, 0].set_ylabel("% of the point's threshold")
-    axes[1, 0].set_ylabel("% of the point's threshold")
+        _panel(ax_of(i, col), df, "glofas", river, season, gl_levels, result["windows"][key], role)
+    for ax in left:
+        ax.set_ylabel("% of the point's threshold")
     status = result["status"]
-    fig.text(0.02, 0.975, f"Somalia riverine flood trigger · forecasts retrieved {_day_month(monitoring_date)} {monitoring_date:%Y} · "
-                          f"{cfg.SEASON_TITLE[season]}{'' if is_open else ' (closed)'}",
+    fig.text(0.02, head[0], f"Somalia riverine flood trigger · forecasts retrieved {_day_month(monitoring_date)} {monitoring_date:%Y} · "
+                            f"{cfg.SEASON_TITLE[season]}{'' if is_open else ' (closed)'}",
              fontsize=11, color=BODY)
-    label = fig.text(0.02, 0.945, "Status: ", fontsize=11, color=BODY)
+    label = fig.text(0.02, head[1], "Status: ", fontsize=11, color=BODY)
     fig.canvas.draw()
     x1 = fig.transFigure.inverted().transform((label.get_window_extent().x1, 0))[0]
-    fig.text(x1, 0.945, status, fontsize=11, fontweight="bold", color=STATUS_COLORS.get(status, INK))
-    fig.text(0.02, 0.012, f"Lines: forecast at each trigger point as % of its own threshold (GloFAS: ensemble median, "
-                          f"levels from the {cfg.GLOFAS_OPERATIONAL.replace('_', ' ')} climatology; "
-                          f"Google: Flood Hub deterministic, levels from its retrospective). Dashed line = vote level. "
-                          f"GloFAS run: {result.get('glofas_version') or 'n/a'}; Google issue: {result.get('google_issue') or 'n/a'}.",
+    fig.text(x1, head[1], status, fontsize=11, fontweight="bold", color=STATUS_COLORS.get(status, INK))
+    sources = (f"GloFAS: ensemble median, levels from the {cfg.GLOFAS_OPERATIONAL.replace('_', ' ')} climatology"
+               + ("; Google: Flood Hub deterministic, levels from its retrospective" if two_sources else ""))
+    runs = f"GloFAS run: {result.get('glofas_version') or 'n/a'}" + (f"; Google issue: {result.get('google_issue') or 'n/a'}" if two_sources else "")
+    fig.text(0.02, 0.012, f"Lines: forecast at each trigger point as % of its own threshold ({sources}). "
+                          f"Dashed line = vote level. {runs}.",
              fontsize=7.5, color=FAINT, wrap=True)
-    fig.tight_layout(rect=(0, 0.03, 1, 0.93), h_pad=3.2)
+    fig.tight_layout(rect=rect, h_pad=3.2)
     return fig
 
 
