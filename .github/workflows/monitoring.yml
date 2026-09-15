@@ -1,0 +1,104 @@
+name: Monitor Somalia riverine flooding
+
+# Daily evaluation of the Somalia AA riverine flood trigger (four river-season
+# windows on GloFAS + Google Flood Hub), email via Listmonk, status snapshot
+# pushed to the orphan `monitoring-status` branch for the public page at
+# /monitoring/ (deploy-pages.yml overlays it ~45 min later).
+#
+# 16:00 UTC, the first full hour after both feeds are in: the GloFAS 00Z operational
+# run reaches EWDS between ~14:15 and ~15:30 UTC (observed 2026-09-14/15) and Google
+# issues its daily forecast around 12:00-13:00 UTC. If GloFAS is late, etl.fetch_glofas
+# falls back to the previous day's issue.
+#
+# Run modes (KB infrastructure/email-testing.md): TEST_EMAIL / DRY_RUN default
+# to true in the code; production is the explicit `false` set from repo
+# variables. Set repo vars TEST_EMAIL=false and DRY_RUN=false to go live.
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Monitoring date to process (YYYY-MM-DD); default today"
+        required: false
+        type: string
+      test_email:
+        description: "Send to the test list (true) or the real lists (false)"
+        type: choice
+        options: ["true", "false"]
+        default: "true"
+      dry_run:
+        description: "Fetch and evaluate only; no DB write, no blob, no email"
+        type: choice
+        options: ["true", "false"]
+        default: "false"
+      simulate_trigger:
+        description: "Force an action activation to exercise the alert path"
+        type: choice
+        options: ["false", "true"]
+        default: "false"
+  schedule:
+    - cron: "0 16 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    env:
+      DSCI_AZ_BLOB_DEV_SAS: ${{ secrets.DSCI_AZ_BLOB_DEV_SAS }}
+      DSCI_AZ_BLOB_DEV_SAS_WRITE: ${{ secrets.DSCI_AZ_BLOB_DEV_SAS_WRITE }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      CDSAPI_KEY: ${{ secrets.CDSAPI_KEY }}
+      CDSAPI_URL: ${{ secrets.CDSAPI_URL }}
+      # ocha-relay reads DSCI_LISTMONK_BASE_URL; the org secret is DSCI_LISTMONK_API_URL
+      DSCI_LISTMONK_BASE_URL: ${{ secrets.DSCI_LISTMONK_API_URL }}
+      DSCI_LISTMONK_API_USERNAME: ${{ secrets.DSCI_LISTMONK_API_USERNAME }}
+      DSCI_LISTMONK_API_KEY: ${{ secrets.DSCI_LISTMONK_API_KEY }}
+      MONITORING_DATE: ${{ inputs.date || '' }}
+      TEST_EMAIL: ${{ inputs.test_email || vars.TEST_EMAIL || 'true' }}
+      DRY_RUN: ${{ inputs.dry_run || vars.DRY_RUN || 'true' }}
+      SIMULATE_TRIGGER: ${{ inputs.simulate_trigger || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-monitoring.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-monitoring.txt
+          python -m pip install -e . --no-deps
+      - name: Fetch forecasts and store
+        run: python pipelines/check_forecasts.py
+      - name: Chart
+        run: python pipelines/save_plots.py
+      - name: Email
+        run: python pipelines/send_emails.py
+      - name: Publish monitoring status
+        if: env.DRY_RUN != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin monitoring-status:monitoring-status 2>/dev/null || true
+          if git rev-parse --verify monitoring-status >/dev/null 2>&1; then
+            git worktree add /tmp/status-branch monitoring-status
+          else
+            git worktree add --orphan -b monitoring-status /tmp/status-branch
+            cat > /tmp/status-branch/README.md <<'MD'
+          # monitoring-status
+
+          Generated data only: `pages/monitoring/status.json` and `latest.png`, pushed
+          directly (no PR) by `.github/workflows/monitoring.yml` after each daily run.
+          The page that reads them, `pages/monitoring/index.html`, lives on `main` and
+          goes through review; `deploy-pages.yml` overlays this branch onto the site.
+          MD
+          fi
+          mkdir -p /tmp/status-branch/pages/monitoring
+          STATUS_OUT_DIR=/tmp/status-branch/pages/monitoring python pipelines/export_monitoring_status.py
+          cd /tmp/status-branch
+          git add README.md pages/monitoring/status.json pages/monitoring/latest.png
+          git diff --staged --quiet || git commit -m "update monitoring status"
+          git push origin monitoring-status

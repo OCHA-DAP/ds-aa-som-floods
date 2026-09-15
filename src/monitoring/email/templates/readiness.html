@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div>
+  <p>The <b>readiness trigger</b> of the anticipatory action framework for riverine flooding in Somalia has been reached for the <b>{{ readiness_titles|join(' and ') }}</b> window{{ 's' if readiness_titles|length != 1 else '' }}:
+    {% for key in readiness_windows %}{% set w = windows[key] %}
+    the <a href="https://global-flood.emergency.copernicus.eu/">GloFAS</a> ensemble median forecasts <b>{{ w.readiness.max_votes }} of {{ w.readiness.n_of }}</b> monitored points on the {{ river_title[w.river] }} at or above their 1-in-{{ w.readiness.rp }} threshold on {{ w.readiness.max_votes_date }}, 8 to 12 days ahead{{ '; ' if not loop.last else '.' }}
+    {% endfor %}
+    Based on forecasts retrieved on {{ pub_date }}.
+  </p>
+  <p>The action trigger has not been reached. We will continue monitoring for the action trigger daily.</p>
+  {% include "_rules.html" %}
+  <img src="{{ chart_url }}" width="640" style="max-width:100%;height:auto;"/>
+  <p>The live status page is at <a href="{{ dashboard_url }}">{{ dashboard_url }}</a>. Code and documentation are available <a href="{{ repo_url }}">on GitHub</a>.</p>
+</div>
+{% endblock content %}
