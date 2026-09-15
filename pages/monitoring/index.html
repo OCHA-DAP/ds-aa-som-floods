@@ -52,9 +52,8 @@ table.data td.none { color:#9aa4a6; }
 .callout { margin:18px 0; padding:12px 16px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
 .callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
 .callout.error { background:#fbeeec; border-left-color:#B34036; }
-.provenance { margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7; font-size:12px; color:var(--n7); line-height:1.7; }
 .provenance a { color:var(--b6); }
-@media (max-width:640px) { article { padding:4px 22px 16px; } .hero.hero-sub { padding:32px 22px 28px; } .provenance { margin:28px 22px 32px; } }
+@media (max-width:640px) { article { padding:4px 22px 16px; } .hero.hero-sub { padding:32px 22px 28px; }  }
 .maprow{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:18px;align-items:start;margin:14px 0 4px}
 @media (max-width:760px){.maprow{grid-template-columns:1fr}}
 .map{border:1px solid #e2e7e7;border-radius:6px;background:#f6f8f8;overflow:hidden} .map svg{display:block;width:100%;height:auto}
@@ -115,14 +114,6 @@ table.data td.none { color:#9aa4a6; }
     </ul>
   </article>
 
-  <p class="provenance" id="prov">
-    Status file written by <code>pipelines/export_monitoring_status.py</code> in
-    <a href="https://github.com/OCHA-DAP/ds-aa-som-floods">ds-aa-som-floods</a>
-    (<a href="https://github.com/OCHA-DAP/ds-aa-som-floods/actions/workflows/monitoring.yml">workflow runs</a>).
-    Forecast data: <a href="https://ewds.climate.copernicus.eu/datasets/cems-glofas-forecast">GloFAS operational, EWDS</a> ·
-    <a href="https://sites.research.google/floods/">Google Flood Hub</a>. Dev-stage data plane on a public page.
-    <span id="updated"></span>
-  </p>
 </div>
 
 <script>
@@ -187,7 +178,6 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
     ? "For each open window, the forecast peak at each station within the leg's lead band and inside the window months, against the station's threshold. A ratio of 1.00× or more means the peak reaches the threshold and the station votes."
     : "No window is open. Shown for every window: the forecast peak at each station within the lead band, against the threshold, counting only valid days inside the window months (so most cells are empty).";
   document.getElementById("tables").innerHTML = shown.map(k => pointTable(s.windows[k], s.windows[k].readiness, "readiness", s.titles) + pointTable(s.windows[k], s.windows[k].action, "action", s.titles)).join("");
-  document.getElementById("updated").textContent = ` Status generated ${fmtTs(s.generated_at)}.`;
 }).catch(err => {
   document.getElementById("banner").innerHTML = `<span class="status">No status yet</span><span class="meta">Could not load status.json (${err.message}). The monitoring pipeline writes it after its first run.</span>`;
 });
