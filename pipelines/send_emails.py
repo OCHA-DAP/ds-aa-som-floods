@@ -115,7 +115,7 @@ def main():
         template, email_type = "informational", "info"
 
     tags = ("[TEST] " if flags["TEST_EMAIL"] else "") + ("[SIM] " if flags["SIMULATE_TRIGGER"] else "")
-    subject = f"{tags}{cfg.EMAIL_SUBJECT_PREFIX} - {result['status']} {monitoring_date}"
+    subject = f"{tags}{cfg.EMAIL_SUBJECT_PREFIX} · {result['status']} {monitoring_date}"
     name = (f"{cfg.LISTMONK_PROJECT_TAG} {template} {monitoring_date} "
             f"{datetime.now(timezone.utc):%Y%m%dT%H%M}"
             + (" [test]" if flags["TEST_EMAIL"] else "") + (" [sim]" if flags["SIMULATE_TRIGGER"] else ""))

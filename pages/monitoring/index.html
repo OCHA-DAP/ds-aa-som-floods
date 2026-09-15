@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Live monitoring &mdash; Somalia Riverine Flood Trigger</title>
-<meta name="description" content="Daily status of the Somalia anticipatory-action riverine flood trigger: the four river-season windows, today's GloFAS and Google Flood Hub forecasts at the seven monitored points, and the readiness and action legs.">
+<title>Live monitoring &middot; Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Daily status of the Somalia anticipatory action trigger for riverine flooding on the Juba and Shabelle rivers: the latest forecasts at the seven monitored stations against the trigger thresholds of the season being monitored.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -72,15 +72,15 @@ table.data td.none { color:#9aa4a6; }
     <div class="inner">
       <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / live monitoring</p>
       <h1>Live monitoring</h1>
-      <p>Daily status of the anticipatory-action trigger for riverine flooding on the Juba and
-         Shabelle rivers: today's GloFAS and Google Flood Hub forecasts at the seven monitored
-         points, read against the four river-season windows. Updated once a day after the
-         16:00 UTC run; the same evaluation feeds the email notifications.</p>
+      <p>Daily status of the anticipatory action trigger for riverine flooding on the Juba and
+         Shabelle rivers. The latest forecasts at the seven monitored stations are compared with
+         the trigger thresholds of the season being monitored. Updated once a day after the
+         16:00 UTC run. The same evaluation feeds the email notifications.</p>
     </div>
   </header>
 
   <article>
-    <div id="banner" class="banner off"><span class="status">Loading…</span></div>
+    <div id="banner" class="banner off"><span class="status">Loading</span></div>
     <div id="windows" class="grid4"></div>
     <div id="notes"></div>
 
@@ -116,9 +116,9 @@ table.data td.none { color:#9aa4a6; }
 </div>
 
 <script>
-const fmtDate = s => s ? new Date(s + "T00:00:00Z").toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric", timeZone:"UTC"}) : "—";
-const fmtTs = s => s ? new Date(s).toLocaleString("en-GB", {day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit", timeZoneName:"short"}) : "—";
-const n0 = x => x == null ? "—" : Math.round(x).toLocaleString("en-GB");
+const fmtDate = s => s ? new Date(s + "T00:00:00Z").toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric", timeZone:"UTC"}) : "";
+const fmtTs = s => s ? new Date(s).toLocaleString("en-GB", {day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit", timeZoneName:"short"}) : "";
+const n0 = x => x == null ? "" : Math.round(x).toLocaleString("en-GB");
 
 function legRow(name, leg, fired, cls) {
   const v = leg.max_votes, req = leg.n_req, of = leg.n_of;
@@ -133,8 +133,8 @@ function windowCard(key, w) {
   const src = (w.action.source === "google" ? "Google Flood Hub" : "GloFAS") + " · action";
   return `<div class="win ${cls}"><h3>${w.title}${w.open ? "" : '<span class="pill grey">out of season</span>'}${a.activated && w.open ? '<span class="pill" style="background:#fbeeec;color:#B34036;border-color:#f3c9c4">action</span>' : ""}${!a.activated && r.activated && w.open ? '<span class="pill" style="background:#fdf3e7;color:#B0722B;border-color:#f3dcb8">readiness</span>' : ""}</h3>
     <div class="src">${src}</div>
-    ${legRow("Readiness (GloFAS 8–12 d)", r, r.activated, "fired-r")}
-    ${legRow("Action (1–7 d)", a, a.activated, "fired")}
+    ${legRow("Readiness (GloFAS 8 to 12 d)", r, r.activated, "fired-r")}
+    ${legRow("Action (1 to 7 d)", a, a.activated, "fired")}
   </div>`;
 }
 
@@ -150,8 +150,8 @@ function pointTable(w, leg, legName, titles) {
       <td class="n">${n0(v.threshold)}</td></tr>`;
   }).join("");
   const src = leg.source === "google" ? "Google Flood Hub" : "GloFAS ensemble median";
-  return `<h3 style="font-size:15px;margin:22px 0 2px;font-family:Merriweather,Georgia,serif">${w.title} — ${legName}</h3>
-    <p style="margin:0 0 6px;font-size:12.5px;color:var(--n7)">${src}, leads ${leg.leads[0]}–${leg.leads[1]} days, valid days inside the window · rule ${leg.n_req} of ${leg.n_of} over 1-in-${leg.rp} · max ${leg.max_votes} on ${fmtDate(leg.max_votes_date)}</p>
+  return `<h3 style="font-size:15px;margin:22px 0 2px;font-family:Merriweather,Georgia,serif">${w.title}: ${legName}</h3>
+    <p style="margin:0 0 6px;font-size:12.5px;color:var(--n7)">${src}, leads ${leg.leads[0]} to ${leg.leads[1]} days, valid days inside the window · rule ${leg.n_req} of ${leg.n_of} over 1-in-${leg.rp} · highest count on one day ${leg.max_votes} of ${leg.n_of}${leg.max_votes_date ? ` on ${fmtDate(leg.max_votes_date)}` : ""}</p>
     <div class="tablewrap"><table class="data stations"><colgroup><col style="width:20%"><col style="width:17%"><col style="width:19%"><col style="width:27%"><col style="width:17%"></colgroup><thead><tr><th>Station</th><th class="n">Forecast peak (m³/s)</th><th>Day of peak</th><th>Peak / threshold</th><th class="n">Threshold (m³/s)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
@@ -163,7 +163,9 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
   const seasonNow = [...new Set(s.open_windows.map(k => s.windows[k].season))].map(cap).join(" and ") || "no season";
   b.innerHTML = `<span class="status">${s.status}</span>
     <span class="meta">Forecasts retrieved <b>${fmtDate(s.monitoring_date)}</b> · currently monitoring <b>${seasonNow}</b><br>
-    GloFAS version ${s.glofas_operational === "glofas_v5" ? "5" : "4"} (operational), issue ${fmtDate(s.glofas_issue)}, ${s.n_glofas_points} points · Google Flood Hub: ${s.n_google_gauges} of 7 gauges, issue ${s.google_issue || "n/a"}</span>`;
+    ${s.open_windows.some(k => s.windows[k].action.source === "google")
+      ? `Google Flood Hub: ${s.n_google_gauges} of 7 gauges, issue ${s.google_issue || "n/a"} · GloFAS version ${s.glofas_operational === "glofas_v5" ? "5" : "4"} (operational), issue ${fmtDate(s.glofas_issue)}, ${s.n_glofas_points} stations`
+      : `GloFAS only this season: version ${s.glofas_operational === "glofas_v5" ? "5" : "4"} (operational), issue ${fmtDate(s.glofas_issue)}, ${s.n_glofas_points} stations`}</span>`;
   // open season first (Deyr from September to January, Gu from February to June), Juba before Shabelle
   const order = ["juba", "shabelle"];
   const cards = Object.entries(s.windows).sort(([, a], [, b]) => (b.open - a.open) || (order.indexOf(a.river) - order.indexOf(b.river)));

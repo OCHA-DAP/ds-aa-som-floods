@@ -71,12 +71,12 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
             a0, a1 = issue + pd.Timedelta(days=cfg.ACTION_LEADS[0] - 1), issue + pd.Timedelta(days=cfg.ACTION_LEADS[1] - 1)
             r0, r1 = issue + pd.Timedelta(days=cfg.READINESS_LEADS[0] - 1), issue + pd.Timedelta(days=cfg.READINESS_LEADS[1] - 1)
             ax.axvspan(r0 - pd.Timedelta(hours=12), r1 + pd.Timedelta(hours=12), color="#F1F4F7", zorder=0)
-            ax.text(r0, 0.97, "readiness 8–12 d", transform=ax.get_xaxis_transform(), fontsize=8,
+            ax.text(r0, 0.97, "readiness 8 to 12 d", transform=ax.get_xaxis_transform(), fontsize=8,
                     color=FAINT, va="top")
         else:
             a0, a1 = issue + pd.Timedelta(days=cfg.ACTION_LEADS[0]), issue + pd.Timedelta(days=cfg.ACTION_LEADS[1])
         ax.axvspan(a0 - pd.Timedelta(hours=12), a1 + pd.Timedelta(hours=12), color="#E6EEF7", zorder=0)
-        ax.text(a0, 0.97, "action 1–7 d", transform=ax.get_xaxis_transform(), fontsize=8,
+        ax.text(a0, 0.97, "action 1 to 7 d", transform=ax.get_xaxis_transform(), fontsize=8,
                 color=FAINT, va="top")
     for st in stations:
         s = sub[sub.station == st].sort_values("valid_date")
@@ -104,7 +104,7 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
         votes = (f"  ·  max {leg['max_votes']} of {leg['n_of']} points over"
                  + (f" on {_day_month(pd.Timestamp(leg['max_votes_date']))}" if leg["max_votes_date"] else "")
                  + f" (rule: {leg['n_req']} of {leg['n_of']})")
-    title = f"{cfg.RIVER_TITLE[river]} · {cfg.SOURCE_TITLE[product]} — {role}{votes}"
+    title = f"{cfg.RIVER_TITLE[river]} · {cfg.SOURCE_TITLE[product]} · {role}{votes}"
     ax.set_title(title, color=PRODUCT_COLORS[product], pad=8)
     if missing:
         ax.text(0.995, 0.03, "not in live feed: " + ", ".join(missing), transform=ax.transAxes,
