@@ -42,7 +42,8 @@ figcaption { font-size:12px; color:var(--n7); margin-top:7px; line-height:1.5; }
 table.data { border-collapse:collapse; width:100%; margin:12px 0 4px; font-size:13px; }
 table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 9px 6px; }
 table.data td { border-bottom:1px solid #eef1f1; padding:6px 9px; color:var(--n8); white-space:nowrap; }
-table.data td.n { text-align:right; font-variant-numeric:tabular-nums; }
+table.data td.n, table.data th.n { text-align:right; font-variant-numeric:tabular-nums; }
+table.data.stations { table-layout:fixed; min-width:620px; }
 table.data td.over { color:#B34036; font-weight:600; }
 table.data td.none { color:#9aa4a6; }
 .bar { display:inline-block; height:9px; background:var(--b1); border-radius:2px; vertical-align:middle; margin-right:6px; }
@@ -91,23 +92,23 @@ table.data td.none { color:#9aa4a6; }
     </div>
     <!-- /map -->
 
-    <h2>Latest forecasts against the trigger levels</h2>
+    <h2>Latest forecasts against the trigger thresholds</h2>
     <figure id="chartfig" hidden>
       <img id="chart" alt="Forecast at each monitored point as a share of its own threshold">
-      <figcaption>Each line is one monitored point, as a percentage of its own trigger level for the
-        season being watched; the dashed line is the level that counts as a vote. Darker band: action
+      <figcaption>Each line is one monitored point, as a percentage of its own trigger threshold for the
+        season being watched; the dashed line is the threshold that counts as a vote. Darker band: action
         leads (1 to 7 days). Lighter band: readiness leads (8 to 12 days). GloFAS lines are the
         ensemble median.</figcaption>
     </figure>
 
     <h2>Forecast peak at each station</h2>
-    <p id="tables-intro">For each open window, the forecast peak at each station within the leg's lead band and inside the window months, against the station's level.</p>
+    <p id="tables-intro">For each open window, the forecast peak at each station within the leg's lead band and inside the window months, against the station's threshold. A ratio of 1.00× or more means the peak reaches the threshold and the station votes.</p>
     <div id="tables"></div>
 
     <h2>How to read this page</h2>
     <ul>
-      <li><strong>Four windows, one source each.</strong> Gu (window February to June) runs on Google Flood Hub, Deyr (window September to January) on GloFAS. A window activates when, on a single forecast day, enough of the river's points are forecast at or above their own return-period level: Juba needs 3 of 4 points, Shabelle 2 of 3. Any one window activating releases the allocation.</li>
-      <li><strong>Action</strong> reads leads 1 to 7 days on the window's source. <strong>Readiness</strong> reads GloFAS at leads 8 to 12 days for every window, with levels fitted on that lead band, and releases only the mobilisation share.</li>
+      <li><strong>Four windows, one source each.</strong> Gu (window February to June) runs on Google Flood Hub, Deyr (window September to January) on GloFAS. A window activates when, on a single forecast day, enough of the river's points are forecast at or above their own return-period threshold: Juba needs 3 of 4 points, Shabelle 2 of 3. Any one window activating releases the allocation.</li>
+      <li><strong>Action</strong> reads leads 1 to 7 days on the window's source. <strong>Readiness</strong> reads GloFAS at leads 8 to 12 days for every window, with thresholds fitted on that lead band, and releases only the mobilisation share.</li>
       <li><strong>SWALIM.</strong> A SWALIM moderate flood risk alert for either river also activates readiness. Bulletins are not read automatically: check <a href="https://frrims.faoswalim.org/">FAO SWALIM</a> alongside this page.</li>
       <li><strong>A window is open</strong> by calendar month: Deyr from September to January, Gu from February to June. Every forecast day inside the window counts, so monitoring for Deyr starts in September and for Gu in February. In July and August the pipeline still runs and this page still updates, but no email is sent.</li>
       <li>Full design and evidence: the <a href="../trigger-single-model/summary.html">trigger summary</a> and the <a href="../trigger-single-model/">analysis page</a>. Which GloFAS version is live, and what it does to the thresholds: <a href="../glofas-version/">GloFAS version switch</a>.</li>
@@ -155,13 +156,13 @@ function pointTable(w, leg, legName, titles) {
     return `<tr><td>${titles.station[st]}</td>
       <td class="n ${v.exceeds ? "over" : ""}">${n0(v.max_value)}</td>
       <td>${fmtDate(v.max_date)}</td>
-      <td><span class="bar ${v.exceeds ? "over" : ""}" style="width:${Math.max(2, pct * 0.6)}px"></span>${v.pct_of_threshold}%</td>
+      <td><span class="bar ${v.exceeds ? "over" : ""}" style="width:${Math.max(2, pct * 0.6)}px"></span>${(v.pct_of_threshold / 100).toFixed(2)}×</td>
       <td class="n">${n0(v.threshold)}</td></tr>`;
   }).join("");
   const src = leg.source === "google" ? "Google Flood Hub" : "GloFAS ensemble median";
   return `<h3 style="font-size:15px;margin:22px 0 2px;font-family:Merriweather,Georgia,serif">${w.title} — ${legName}</h3>
     <p style="margin:0 0 6px;font-size:12.5px;color:var(--n7)">${src}, leads ${leg.leads[0]}–${leg.leads[1]} days, valid days inside the window · rule ${leg.n_req} of ${leg.n_of} over 1-in-${leg.rp} · max ${leg.max_votes} on ${fmtDate(leg.max_votes_date)}</p>
-    <div class="tablewrap"><table class="data"><thead><tr><th>Station</th><th>Forecast peak (m³/s)</th><th>On</th><th>% of level</th><th>Level (m³/s)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    <div class="tablewrap"><table class="data stations"><colgroup><col style="width:20%"><col style="width:17%"><col style="width:19%"><col style="width:27%"><col style="width:17%"></colgroup><thead><tr><th>Station</th><th class="n">Forecast peak (m³/s)</th><th>Day of peak</th><th>Peak / threshold</th><th class="n">Threshold (m³/s)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.statusText); return r.json(); }).then(s => {
@@ -183,8 +184,8 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
   if (s.chart) { document.getElementById("chart").src = s.chart + "?v=" + encodeURIComponent(s.generated_at); document.getElementById("chartfig").hidden = false; }
   const shown = s.open_windows.length ? s.open_windows : Object.keys(s.windows);
   document.getElementById("tables-intro").textContent = s.open_windows.length
-    ? "For each open window, the forecast peak at each station within the leg's lead band and inside the window months, against the station's level."
-    : "No window is open. Shown for every window: the forecast peak at each station within the lead band, against the level, counting only valid days inside the window months (so most cells are empty).";
+    ? "For each open window, the forecast peak at each station within the leg's lead band and inside the window months, against the station's threshold. A ratio of 1.00× or more means the peak reaches the threshold and the station votes."
+    : "No window is open. Shown for every window: the forecast peak at each station within the lead band, against the threshold, counting only valid days inside the window months (so most cells are empty).";
   document.getElementById("tables").innerHTML = shown.map(k => pointTable(s.windows[k], s.windows[k].readiness, "readiness", s.titles) + pointTable(s.windows[k], s.windows[k].action, "action", s.titles)).join("");
   document.getElementById("updated").textContent = ` Status generated ${fmtTs(s.generated_at)}.`;
 }).catch(err => {
@@ -244,9 +245,9 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
       const w = openFor[st.river]; let cls = "pt", title = st.name;
       if (w) {
         const a = w.action.stations[key], r = w.readiness.stations[key];
-        if (a && a.exceeds) { cls += " over"; title += ": forecast over its action level (" + a.pct_of_threshold + "% of level)"; }
-        else if (r && r.exceeds) { cls += " rdy"; title += ": forecast over its readiness level (" + r.pct_of_threshold + "% of level)"; }
-        else if (a) { title += ": " + (a.pct_of_threshold == null ? "no forecast in the lead band yet" : a.pct_of_threshold + "% of its action level"); }
+        if (a && a.exceeds) { cls += " over"; title += ": forecast over its action threshold (" + (a.pct_of_threshold / 100).toFixed(2) + "× threshold)"; }
+        else if (r && r.exceeds) { cls += " rdy"; title += ": forecast over its readiness threshold (" + (r.pct_of_threshold / 100).toFixed(2) + "× threshold)"; }
+        else if (a) { title += ": " + (a.pct_of_threshold == null ? "no forecast in the lead band yet" : (a.pct_of_threshold / 100).toFixed(2) + "× its action threshold"); }
       } else title += ": no window open";
       const x = X(st.lon), y = Y(st.lat), left = st.river === "juba";
       g += '<circle class="' + cls + '" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="6.5"><title>' + esc(title) + "</title></circle>";
@@ -259,9 +260,9 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
       '<div class="row"><span class="sw" style="background:rgba(46,139,110,.16);border-color:#2E8B6E"></span>Trigger not reached</div>' +
       '<div class="row"><span class="sw" style="background:#e9eeee"></span>No window open</div>' +
       '<h3 style="margin-top:16px">Monitored points</h3>' +
-      '<div class="row"><span class="dot" style="background:#B34036;border-color:#7A241C"></span>Over its action level</div>' +
-      '<div class="row"><span class="dot" style="background:#D48F2A;border-color:#8a5a15"></span>Over its readiness level</div>' +
-      '<div class="row"><span class="dot"></span>Below its levels</div>';
+      '<div class="row"><span class="dot" style="background:#B34036;border-color:#7A241C"></span>Over its action threshold</div>' +
+      '<div class="row"><span class="dot" style="background:#D48F2A;border-color:#8a5a15"></span>Over its readiness threshold</div>' +
+      '<div class="row"><span class="dot"></span>Below its thresholds</div>';
   }).catch(e => { document.getElementById("maplegend").textContent = "Map data could not be loaded: " + e.message; });
 })();
 </script>
