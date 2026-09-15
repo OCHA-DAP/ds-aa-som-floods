@@ -2,7 +2,6 @@
 {% block content %}
 {% include "_advisory.html" %}
 <div>
-  <p>Dear colleagues,</p>
   <p>The <b>readiness trigger</b> of the anticipatory action framework for riverine flooding in Somalia has been reached for the <b>{{ readiness_titles|join(' and ') }}</b> window{{ 's' if readiness_titles|length != 1 else '' }}:
     {% for key in readiness_windows %}{% set w = windows[key] %}
     the <a href="https://global-flood.emergency.copernicus.eu/">GloFAS</a> ensemble median forecasts <b>{{ w.readiness.max_votes }} of {{ w.readiness.n_of }}</b> monitored points on the {{ river_title[w.river] }} at or above their 1-in-{{ w.readiness.rp }} threshold on {{ w.readiness.max_votes_date }}, 8 to 12 days ahead{{ '; ' if not loop.last else '.' }}

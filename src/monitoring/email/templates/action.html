@@ -10,9 +10,9 @@
   </p>
   {% set ordered = action_windows + (open_windows|reject('in', action_windows)|list) %}
   {% for key in ordered %}{% set w = windows[key] %}
-  <h3 style="font-weight:normal;font-size:15px;margin:18px 0 4px;">{{ w.title }}{% if key in action_windows %}: action trigger reached{% else %}: action trigger not reached{% endif %}</h3>
-  <p style="margin:0 0 6px;font-size:13px;color:#555;">{{ source_title[w.action.source] }}, 1 to 7 days ahead, rule {{ w.action.n_req }} of {{ w.action.n_of }} stations over 1-in-{{ w.action.rp }}. Highest count on one day: {{ w.action.max_votes }} of {{ w.action.n_of }}{% if w.action.max_votes_date %} on {{ w.action.max_votes_date }}{% endif %}.</p>
-  <table width="90%" style="border:1px solid #000;border-collapse:collapse;font-size:0.9em;margin-bottom:20px;">
+  <h3 style="font-weight:normal;font-size:15px;margin:24px 0 6px;">{{ w.title }}{% if key in action_windows %}: action trigger reached{% else %}: action trigger not reached{% endif %}</h3>
+  <p style="margin:0 0 8px;font-size:13px;color:#555;">{{ source_title[w.action.source] }}, 1 to 7 days ahead, rule {{ w.action.n_req }} of {{ w.action.n_of }} stations over 1-in-{{ w.action.rp }}. Highest count on one day: {{ w.action.max_votes }} of {{ w.action.n_of }}{% if w.action.max_votes_date %} on {{ w.action.max_votes_date }}{% endif %}.</p>
+  <table width="90%" style="border:1px solid #000;border-collapse:collapse;font-size:0.9em;margin:0 0 8px;">
     <tr style="background-color:#1BB580;color:white;">
       <th style="padding:8px;border:1px solid transparent;">Station</th>
       <th style="padding:8px;border:1px solid transparent;">Forecast peak (m<sup>3</sup>/s)</th>
@@ -36,9 +36,9 @@
     </tr>
     {% endfor %}
   </table>
-  <p style="margin:0 0 12px;font-size:13px;color:#555;">Readiness (GloFAS, 8 to 12 days ahead): {{ w.readiness.max_votes }} of {{ w.readiness.n_of }} stations over their 1-in-{{ w.readiness.rp }} threshold{% if w.readiness.max_votes_date %} on {{ w.readiness.max_votes_date }}{% endif %}.</p>
+  <p style="margin:0;font-size:13px;color:#555;">Readiness (GloFAS, 8 to 12 days ahead): {{ w.readiness.max_votes }} of {{ w.readiness.n_of }} stations over their 1-in-{{ w.readiness.rp }} threshold{% if w.readiness.max_votes_date %} on {{ w.readiness.max_votes_date }}{% endif %}.</p>
   {% endfor %}
-  <p>The live status page is at <a href="{{ dashboard_url }}">{{ dashboard_url }}</a>.</p>
+  <p style="margin-top:24px;">The live status page is at <a href="{{ dashboard_url }}">{{ dashboard_url }}</a>.</p>
   <p>Best regards,</p>
   <p>OCHA Centre for Humanitarian Data</p>
 </div>
