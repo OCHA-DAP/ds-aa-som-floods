@@ -54,7 +54,9 @@ block = f'''    <p id="lead-to-inundation"><strong>Does the trigger catch the in
       asked only for the seasons the two-SWALIM-gauge rule calls a flood on either river, {n} of them
       with a forecast archive (Google Flood Hub 2016&ndash;2023 in Gu, GloFAS v4 2003&ndash;2023 in
       Deyr). In {n_in} of the {n}, exposure across the 14 districts reached its own 1-in-{RP} level, so an
-      inundation day exists; in the other {n - n_in} it stayed below ({below}). Three dated records are set against the
+      inundation day exists; in the other {n - n_in} it stayed below ({below}). The inundation day is the
+      crossing, not the peak: the peak exposure came 0 to 19 days after it (the same day in Deyr
+      2014, 19 days later in Deyr 2023). Three dated records are set against the
       inundation day, each the earliest on either river, as the mechanism counts: the SWALIM
       gauges (the day a river's second gauge went over its own 1-in-3 level, the page's
       benchmark), the reanalysis (the first day a window's calibration record, Google's
@@ -63,7 +65,7 @@ block = f'''    <p id="lead-to-inundation"><strong>Does the trigger catch the in
       met the action rule at leads 1 to 7).</p>
     <div class="tablewrap">
     <table class="data">
-    <thead><tr><th>record, either river</th><th>8 days or more before inundation</th><th>on the day or up to 7 days before</th><th>after</th><th>never</th></tr></thead>
+    <thead><tr><th>record, either river</th><th>8 days or more before exposure crossed its 1-in-{RP}</th><th>on the day or up to 7 days before</th><th>after the crossing</th><th>never</th></tr></thead>
     <tbody>{summary}</tbody>
     </table>
     </div>
