@@ -391,11 +391,11 @@ for river, season in WINDOWS:
         mid = gaps[len(gaps) // 2] if len(gaps) % 2 else (gaps[len(gaps) // 2 - 1] + gaps[len(gaps) // 2]) / 2
         gap[(river, season, rp_)] = (f"{mid:.0f}", f"{gaps[0]} to {gaps[-1]}")
 _fh = ("<tr><th colspan='4'></th>"
-       "<th colspan='2' class='n' style='border-bottom:1px solid var(--rule)'>Days from first to second gauge, median</th></tr>"
+       "<th colspan='2' class='n' style='border-bottom:1px solid var(--rule)'>First to second gauge, median</th></tr>"
        "<tr><th>Window</th><th class='n'>Flood seasons</th><th class='n'>Severe</th><th>Severe years</th>"
        "<th class='n'>Over 1-in-3</th><th class='n'>Over 1-in-5</th></tr>")
 _fb = "".join("<tr>" + f"<td>{wname(r, s)}</td><td class='n'>{len(flood[(r, s)])}</td><td class='n'>{len(severe[(r, s)])}</td><td>{yl(severe[(r, s)])}</td>"
-              + "".join(f"<td class='n'>{gap[(r, s, rp_)][0]}</td>" for rp_ in (3, 5)) + "</tr>" for r, s in WINDOWS)
+              + "".join(f"<td class='n'>{gap[(r, s, rp_)][0]} day{'' if gap[(r, s, rp_)][0] == '1' else 's'}</td>" for rp_ in (3, 5)) + "</tr>" for r, s in WINDOWS)
 add(f"<div class='tw'><table><thead>{_fh}</thead><tbody>{_fb}</tbody></table></div>")
 add(f"<p class=\"note\">Across both rivers there are {len(flood_all)} flood years, of which {len(severe_all)} are severe. Gauges are capped at bank full, so the largest floods record the same reading. A season in which only one gauge crosses does not count, as in Gu 2021 at Belet Weyne. The flood is dated from the day the second gauge crosses; the last two columns give the median number of days by which the river's first gauge crossed earlier.</p>")
 
