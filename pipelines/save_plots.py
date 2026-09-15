@@ -1,4 +1,5 @@
-"""Step 2 of the daily run: evaluate the windows and chart the day to blob."""
+"""Step 2 of the daily run: evaluate the windows, chart the day, and archive the
+day's forecast rows and evaluation to blob."""
 
 import sys
 from pathlib import Path
@@ -25,6 +26,8 @@ def main():
     else:
         plot.save_chart(fig, monitoring_date)
         print(f"chart uploaded to {plot.chart_blob_name(monitoring_date)}")
+        names = etl.archive_day(df, result, monitoring_date)
+        print(f"day archived to blob: {names[0]}, {names[1]}")
 
 
 if __name__ == "__main__":

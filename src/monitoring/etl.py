@@ -49,6 +49,20 @@ def glofas_raw_blob(monitoring_date):
     return f"{cfg.PROJECT_PREFIX}/raw/glofas/monitoring/glofas_forecast_{monitoring_date}.grib"
 
 
+def google_raw_blob(monitoring_date):
+    return f"{cfg.PROJECT_PREFIX}/raw/google/monitoring/google_forecast_{monitoring_date}.json"
+
+
+def forecasts_blob(monitoring_date):
+    """Processed rows of both sources for one monitoring day (same columns as the DB table)."""
+    return f"{cfg.PROJECT_PREFIX}/monitoring/forecasts/{monitoring_date}.parquet"
+
+
+def status_blob(monitoring_date):
+    """The evaluation result (status.json content) for one monitoring day."""
+    return f"{cfg.PROJECT_PREFIX}/monitoring/status/{monitoring_date}.json"
+
+
 def _container(write=False):
     return stratus.get_container_client("projects", cfg.BLOB_STAGE, write=write)
 
@@ -207,7 +221,7 @@ def _google_query(gauge_ids):
     return r.json().get("forecasts", {})
 
 
-def fetch_google(monitoring_date, stations=ALL_TRIGGER_STATIONS):
+def fetch_google(monitoring_date, stations=ALL_TRIGGER_STATIONS, keep_raw=True):
     """Latest Google Flood Hub forecast per trigger gauge.
 
     One batched call; if the API rejects the batch (it answers 404 for the
@@ -244,6 +258,9 @@ def fetch_google(monitoring_date, stations=ALL_TRIGGER_STATIONS):
                     not_served.append(by_gauge[g])
                 else:
                     raise
+    if keep_raw and forecasts:
+        _container(write=True).upload_blob(google_raw_blob(monitoring_date),
+                                           json.dumps(forecasts).encode(), overwrite=True)
     rows = []
     for gid, block in forecasts.items():
         issues = block.get("forecasts", [])
@@ -272,6 +289,22 @@ def fetch_google(monitoring_date, stations=ALL_TRIGGER_STATIONS):
 COLUMNS = ["monitoring_date", "source", "station", "valid_date", "river", "issued_time",
            "leadtime_days", "value", "value_min", "value_p25", "value_p75", "value_max",
            "n_members", "model_version"]
+
+
+def archive_day(df, result, monitoring_date):
+    """Keep the day's processed forecast rows and evaluation on blob, next to the raw
+    GRIB, the raw Google answer and the chart, so a day can be re-read without the DB
+    or the monitoring-status git branch."""
+    import io
+
+    buf = io.BytesIO()
+    out = df[COLUMNS].copy()
+    out["issued_time"] = pd.to_datetime(out["issued_time"], utc=True)
+    out.to_parquet(buf, index=False)
+    c = _container(write=True)
+    c.upload_blob(forecasts_blob(monitoring_date), buf.getvalue(), overwrite=True)
+    c.upload_blob(status_blob(monitoring_date), json.dumps(result, indent=1, default=str).encode(), overwrite=True)
+    return forecasts_blob(monitoring_date), status_blob(monitoring_date)
 
 
 def upsert(df):

@@ -34,6 +34,10 @@ Daily GHA `monitoring.yml` at 16:00 UTC (first full hour after GloFAS lands on E
    `monitoring-status` branch under `pages/monitoring/`; `deploy-pages.yml` (16:45 UTC cron)
    overlays them so <https://ocha-dap.github.io/ds-aa-som-floods/monitoring/> reads them.
 
+Blob (container `projects`, dev, prefix `ds-aa-som-floods/`): raw GloFAS GRIB `raw/glofas/monitoring/`, raw Google
+answer `raw/google/monitoring/`, processed rows `monitoring/forecasts/<date>.parquet`, evaluation
+`monitoring/status/<date>.json`, chart `monitoring/<date>.png`. The DB table holds the same rows.
+
 Run modes (KB `infrastructure/email-testing.md`): `TEST_EMAIL`, `DRY_RUN` default **true**;
 production needs repo vars `TEST_EMAIL=false`, `DRY_RUN=false`. `SIMULATE_TRIGGER=true` forces an
 action activation (tags `[SIM]`; a real-list simulation additionally needs
