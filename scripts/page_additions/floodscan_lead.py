@@ -12,7 +12,7 @@ import pandas as pd
 import somlib as L
 from src.utils import weibull_level
 
-fs = pd.read_parquet("floodscan_daily.parquet"); fs["date"] = pd.to_datetime(fs["date"])
+fs = pd.read_parquet("inundation_series.parquet"); fs["date"] = pd.to_datetime(fs["date"])   # people exposed per river's AA districts (floodscan_districts.py)
 WINDOWS = [("juba", "gu"), ("juba", "deyr"), ("shabelle", "gu"), ("shabelle", "deyr")]
 RULE = {("juba", "deyr"): (4, 3), ("shabelle", "deyr"): (4, 2), ("juba", "gu"): (5, 3), ("shabelle", "gu"): (6, 2)}
 CAL = {"deyr": "glofas_v5", "gu": "google_grrr"}
@@ -24,7 +24,7 @@ RIVERS = ("juba", "shabelle")
 
 
 def sfed_onsets(river, season, rp=SFED_RP):
-    s = fs[(fs.river == river) & (fs.segment == "full")].set_index("date")["mean_sfed"].sort_index()
+    s = fs[fs.river == river].set_index("date")["value"].sort_index()
     s = s[s.index.month.isin(L.SEASONS[season])]
     lev = weibull_level(s.groupby(s.index.year).max().dropna().values, rp)
     return {y: g[g >= lev].index.min().normalize() for y, g in s.groupby(s.index.year) if (g >= lev).any() and y in SPAN}

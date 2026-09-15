@@ -41,7 +41,7 @@ ax.set_xticks(ticks); ax.set_xticklabels([f"{-t} d before" if t < 0 else "inunda
 ax.axvspan(-7.5, 0, color="#f0fdf4", zorder=0)
 ax.text(-3.75, -0.9, "up to 7 d", color="#4d7c0f", fontsize=8.5, ha="center")
 ax.text(-19, -0.9, "8 d or more before inundation", color="#166534", fontsize=8.5, ha="center")
-ax.set_xlabel("days before (left) and after (right) FloodScan's flooded fraction along the river went over its own 1-in-5 level", fontsize=8.8, color="#374151")
+ax.set_xlabel("days before (left) and after (right) FloodScan flood exposure in the river's AA districts went over its own 1-in-5 level", fontsize=8.8, color="#374151")
 ax.grid(axis="x", color="#f1f5f9"); ax.tick_params(length=0)
 for sp in ("top", "right"):
     ax.spines[sp].set_visible(False)
