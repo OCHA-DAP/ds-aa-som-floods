@@ -113,7 +113,7 @@ def main():
     if flags["DRY_RUN"]:
         body = render(result, template, chart_url="chart.png")
         out = Path("temp"); out.mkdir(exist_ok=True)
-        (out / f"email_{template}_{monitoring_date}.html").write_text(body)
+        (out / f"email_{template}_{monitoring_date}.html").write_text(body, encoding="utf-8")
         print(f"DRY_RUN: {template} email rendered to temp/, subject {subject!r}; not sent")
         return
 
