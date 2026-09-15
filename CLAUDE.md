@@ -15,7 +15,7 @@ at leads 8–12 d for every window (`src/monitoring/config.py: READINESS_RULES`)
 
 ## Monitoring pipeline (runbook)
 
-Daily GHA `monitoring.yml` at 20:00 UTC, four steps, all from repo root:
+Daily GHA `monitoring.yml` at 16:00 UTC (first full hour after GloFAS lands on EWDS, ~14:15-15:30 UTC), four steps, all from repo root:
 
 1. `pipelines/check_forecasts.py` — GloFAS operational ensemble at the 7 frozen cells
    (`src/monitoring/glofas_cells.json`) from EWDS, Google Flood Hub for the 6 live gauges,
@@ -31,7 +31,7 @@ Daily GHA `monitoring.yml` at 20:00 UTC, four steps, all from repo root:
    Windows are open by calendar month (`config.MONITORING_OPEN_MONTHS`): Deyr September to
    January, Gu February to June; every forecast day inside the window counts, so Deyr monitoring starts in September.
 4. `pipelines/export_monitoring_status.py` — `status.json` + `latest.png` to the orphan
-   `monitoring-status` branch under `pages/monitoring/`; `deploy-pages.yml` (20:45 UTC cron)
+   `monitoring-status` branch under `pages/monitoring/`; `deploy-pages.yml` (16:45 UTC cron)
    overlays them so <https://ocha-dap.github.io/ds-aa-som-floods/monitoring/> reads them.
 
 Run modes (KB `infrastructure/email-testing.md`): `TEST_EMAIL`, `DRY_RUN` default **true**;

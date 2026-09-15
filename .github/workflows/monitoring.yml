@@ -5,8 +5,10 @@ name: Monitor Somalia riverine flooding
 # pushed to the orphan `monitoring-status` branch for the public page at
 # /monitoring/ (deploy-pages.yml overlays it ~45 min later).
 #
-# 20:00 UTC: the GloFAS 00Z operational run is on EWDS by ~15:30 UTC and Google
-# issues its daily forecast around 12:00-13:00 UTC.
+# 16:00 UTC, the first full hour after both feeds are in: the GloFAS 00Z operational
+# run reaches EWDS between ~14:15 and ~15:30 UTC (observed 2026-09-14/15) and Google
+# issues its daily forecast around 12:00-13:00 UTC. If GloFAS is late, etl.fetch_glofas
+# falls back to the previous day's issue.
 #
 # Run modes (KB infrastructure/email-testing.md): TEST_EMAIL / DRY_RUN default
 # to true in the code; production is the explicit `false` set from repo
@@ -35,7 +37,7 @@ on:
         options: ["false", "true"]
         default: "false"
   schedule:
-    - cron: "0 20 * * *"
+    - cron: "0 16 * * *"
 
 permissions:
   contents: write
