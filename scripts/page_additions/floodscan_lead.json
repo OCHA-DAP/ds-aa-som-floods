@@ -1,162 +1,5 @@
 [
  {
-  "river": "juba",
-  "season": "gu",
-  "year": 2016,
-  "inundation": "2016-05-03",
-  "gauge_date": "2016-05-01",
-  "gauge_lead": 2,
-  "reanalysis_date": "2016-05-07",
-  "reanalysis_lead": -4,
-  "forecast_date": "2016-04-30",
-  "forecast_lead": 3
- },
- {
-  "river": "juba",
-  "season": "gu",
-  "year": 2018,
-  "inundation": "2018-04-15",
-  "gauge_date": "2018-04-17",
-  "gauge_lead": -2,
-  "reanalysis_date": "2018-04-20",
-  "reanalysis_lead": -5,
-  "forecast_date": "2018-04-15",
-  "forecast_lead": 0
- },
- {
-  "river": "juba",
-  "season": "gu",
-  "year": 2020,
-  "inundation": null,
-  "gauge_date": "2020-04-22",
-  "gauge_lead": null,
-  "reanalysis_date": "2020-04-29",
-  "reanalysis_lead": null,
-  "forecast_date": "2020-04-22",
-  "forecast_lead": null
- },
- {
-  "river": "juba",
-  "season": "gu",
-  "year": 2023,
-  "inundation": "2023-03-25",
-  "gauge_date": "2023-03-25",
-  "gauge_lead": 0,
-  "reanalysis_date": null,
-  "reanalysis_lead": null,
-  "forecast_date": "2023-04-26",
-  "forecast_lead": -32
- },
- {
-  "river": "juba",
-  "season": "deyr",
-  "year": 2006,
-  "inundation": "2006-10-31",
-  "gauge_date": "2006-10-30",
-  "gauge_lead": 1,
-  "reanalysis_date": "2006-10-29",
-  "reanalysis_lead": 2,
-  "forecast_date": null,
-  "forecast_lead": null
- },
- {
-  "river": "juba",
-  "season": "deyr",
-  "year": 2008,
-  "inundation": null,
-  "gauge_date": "2008-11-15",
-  "gauge_lead": null,
-  "reanalysis_date": null,
-  "reanalysis_lead": null,
-  "forecast_date": null,
-  "forecast_lead": null
- },
- {
-  "river": "juba",
-  "season": "deyr",
-  "year": 2014,
-  "inundation": "2014-11-04",
-  "gauge_date": "2014-10-20",
-  "gauge_lead": 15,
-  "reanalysis_date": "2014-10-16",
-  "reanalysis_lead": 19,
-  "forecast_date": "2014-10-07",
-  "forecast_lead": 28
- },
- {
-  "river": "juba",
-  "season": "deyr",
-  "year": 2017,
-  "inundation": null,
-  "gauge_date": "2017-11-07",
-  "gauge_lead": null,
-  "reanalysis_date": null,
-  "reanalysis_lead": null,
-  "forecast_date": "2017-10-19",
-  "forecast_lead": null
- },
- {
-  "river": "juba",
-  "season": "deyr",
-  "year": 2023,
-  "inundation": "2023-11-03",
-  "gauge_date": "2023-10-25",
-  "gauge_lead": 9,
-  "reanalysis_date": "2023-10-29",
-  "reanalysis_lead": 5,
-  "forecast_date": "2023-10-21",
-  "forecast_lead": 13
- },
- {
-  "river": "shabelle",
-  "season": "gu",
-  "year": 2016,
-  "inundation": null,
-  "gauge_date": "2016-05-01",
-  "gauge_lead": null,
-  "reanalysis_date": "2016-05-07",
-  "reanalysis_lead": null,
-  "forecast_date": "2016-04-30",
-  "forecast_lead": null
- },
- {
-  "river": "shabelle",
-  "season": "gu",
-  "year": 2018,
-  "inundation": "2018-04-20",
-  "gauge_date": "2018-04-17",
-  "gauge_lead": 3,
-  "reanalysis_date": "2018-04-20",
-  "reanalysis_lead": 0,
-  "forecast_date": "2018-04-15",
-  "forecast_lead": 5
- },
- {
-  "river": "shabelle",
-  "season": "gu",
-  "year": 2020,
-  "inundation": null,
-  "gauge_date": "2020-04-22",
-  "gauge_lead": null,
-  "reanalysis_date": "2020-04-29",
-  "reanalysis_lead": null,
-  "forecast_date": "2020-04-22",
-  "forecast_lead": null
- },
- {
-  "river": "shabelle",
-  "season": "gu",
-  "year": 2023,
-  "inundation": "2023-04-07",
-  "gauge_date": "2023-03-25",
-  "gauge_lead": 13,
-  "reanalysis_date": null,
-  "reanalysis_lead": null,
-  "forecast_date": "2023-04-26",
-  "forecast_lead": -19
- },
- {
-  "river": "shabelle",
   "season": "deyr",
   "year": 2006,
   "inundation": null,
@@ -168,7 +11,6 @@
   "forecast_lead": null
  },
  {
-  "river": "shabelle",
   "season": "deyr",
   "year": 2008,
   "inundation": null,
@@ -180,7 +22,6 @@
   "forecast_lead": null
  },
  {
-  "river": "shabelle",
   "season": "deyr",
   "year": 2014,
   "inundation": "2014-10-30",
@@ -192,7 +33,17 @@
   "forecast_lead": 23
  },
  {
-  "river": "shabelle",
+  "season": "deyr",
+  "year": 2017,
+  "inundation": "2017-11-04",
+  "gauge_date": "2017-11-07",
+  "gauge_lead": -3,
+  "reanalysis_date": null,
+  "reanalysis_lead": null,
+  "forecast_date": "2017-10-19",
+  "forecast_lead": 16
+ },
+ {
   "season": "deyr",
   "year": 2019,
   "inundation": null,
@@ -204,7 +55,6 @@
   "forecast_lead": null
  },
  {
-  "river": "shabelle",
   "season": "deyr",
   "year": 2020,
   "inundation": null,
@@ -216,7 +66,6 @@
   "forecast_lead": null
  },
  {
-  "river": "shabelle",
   "season": "deyr",
   "year": 2023,
   "inundation": "2023-11-01",
@@ -226,5 +75,49 @@
   "reanalysis_lead": 3,
   "forecast_date": "2023-10-21",
   "forecast_lead": 11
+ },
+ {
+  "season": "gu",
+  "year": 2016,
+  "inundation": null,
+  "gauge_date": "2016-05-01",
+  "gauge_lead": null,
+  "reanalysis_date": "2016-05-07",
+  "reanalysis_lead": null,
+  "forecast_date": "2016-04-30",
+  "forecast_lead": null
+ },
+ {
+  "season": "gu",
+  "year": 2018,
+  "inundation": "2018-04-20",
+  "gauge_date": "2018-04-17",
+  "gauge_lead": 3,
+  "reanalysis_date": "2018-04-20",
+  "reanalysis_lead": 0,
+  "forecast_date": "2018-04-15",
+  "forecast_lead": 5
+ },
+ {
+  "season": "gu",
+  "year": 2020,
+  "inundation": null,
+  "gauge_date": "2020-04-22",
+  "gauge_lead": null,
+  "reanalysis_date": "2020-04-29",
+  "reanalysis_lead": null,
+  "forecast_date": "2020-04-22",
+  "forecast_lead": null
+ },
+ {
+  "season": "gu",
+  "year": 2023,
+  "inundation": "2023-04-07",
+  "gauge_date": "2023-03-25",
+  "gauge_lead": 13,
+  "reanalysis_date": null,
+  "reanalysis_lead": null,
+  "forecast_date": "2023-04-26",
+  "forecast_lead": -19
  }
 ]

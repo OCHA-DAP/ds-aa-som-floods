@@ -1,7 +1,7 @@
-"""(Re)build the FloodScan inundation subsection on the analysis page (index.html): removes any
-existing version (including the seven-day block inside it), then inserts the current one before
-'Calibrated on the reanalysis'. Reads floodscan_timing.json (floodscan_timing.py, on the
-district-exposure series from floodscan_districts.py). Run patch_index_lead.py afterwards."""
+"""(Re)build the FloodScan inundation subsection on the analysis page (index.html), by season with
+both rivers together: removes any existing version (including the seven-day block inside it), then
+inserts the current one before 'Calibrated on the reanalysis'. Reads floodscan_rank.json
+(floodscan_season.py). Run patch_index_lead.py afterwards."""
 import json
 import re
 from pathlib import Path
@@ -9,72 +9,55 @@ from pathlib import Path
 S = Path(__file__).parent
 page = S / "wt-trigger/pages/trigger-single-model/index.html"
 h = page.read_text(encoding="utf-8")
-res = json.load(open(S / "floodscan_timing.json"))
-RP = res["gu_juba"].get("sfed_rp", 3)
+rank = json.load(open(S / "floodscan_rank.json"))
+RP = 5
 
 anchor = '<h3 id="calibrated-on-the-reanalysis-checked-on-the-forecasts">'
 assert h.count(anchor) == 1
 h, n_removed = re.subn(r'\s*<h3 id="when-does-inundation-follow-the-gauges">.*?(?=<h3 id="calibrated-on-the-reanalysis-checked-on-the-forecasts">)', "\n", h, flags=re.S)
 
-NAME = {"deyr_juba": "Juba Deyr", "deyr_shabelle": "Shabelle Deyr", "gu_juba": "Juba Gu", "gu_shabelle": "Shabelle Gu"}
-ORDER = ["gu_juba", "deyr_juba", "gu_shabelle", "deyr_shabelle"]
 
-
-def med(v):
-    v = sorted(v)
-    return (v[len(v) // 2] if len(v) % 2 else (v[len(v) // 2 - 1] + v[len(v) // 2]) / 2) if v else None
-
-
-def cell(vals):
-    if not vals:
-        return "&ndash;"
-    m = med(vals)
-    m = f"{m:+.0f}" if m != 0 else "0"
-    return f"{m} d ({min(vals):+d} to {max(vals):+d})"
+def k(v):
+    return f"{round(v / 1000):,}k"
 
 
 rows = []
-for k in ORDER:
-    r = res[k]
-    v2 = list(r["vs_second"].values()); v1 = list(r["vs_first"].values())
-    yrs = ", ".join(str(y) for y in r["years_both"]) or "&ndash;"
-    so = ", ".join(str(y) for y in r["sfed_only"]) or "&ndash;"
-    go = ", ".join(str(y) for y in r["gauge_only"]) or "&ndash;"
-    rows.append(f"<tr><td>{NAME[k]}</td><td>{len(r['years_both'])}</td><td>{cell(v2)}</td><td>{cell(v1)}</td><td>{yrs}</td><td>{so}</td><td>{go}</td></tr>")
+for season in ("deyr", "gu"):
+    r = rank[season]
+    top = ", ".join(f"{t['year']}{' (severe)' if t['bench'] == 'severe' else ' (flood)' if t['bench'] == 'flood' else ''} {k(t['people'])}" for t in r["top8"])
+    bench = ", ".join(f"{b['year']}{'*' if b['severe'] else ''} rank {b['rank']} ({k(b['people'])})" for b in r["benchmark"])
+    rows.append(f"<tr><td>{season.title()}</td><td>{top}</td><td>{bench}</td><td>{r['in_top8']} of {r['n_flood']}</td><td>{r['severe_in_top8']} of {r['n_severe']}</td></tr>")
 
-block = f'''        <h3 id="when-does-inundation-follow-the-gauges">When does inundation follow the gauges? (FloodScan)</h3>
+d, g = rank["deyr"], rank["gu"]
+block = f'''        <h3 id="when-does-inundation-follow-the-gauges">Does the trigger catch the inundation? (FloodScan)</h3>
     <p>The benchmark dates a flood from the day the river's second SWALIM gauge crosses its own
-      1-in-3 level. FloodScan gives an independent date for water on the ground. The series used
-      here is flood exposure, people living in flooded cells (FloodScan SFED at about 10 km
-      times WorldPop, the team's flood-exposure pipeline), summed each day over the river's
+      1-in-3 level. FloodScan gives an independent record of water on the ground. The series used
+      here is flood exposure, people living in flooded cells (FloodScan SFED at about 10 km times
+      WorldPop, the team's flood-exposure pipeline), summed each day over the 14
       anticipatory-action districts: Doolow, Luuq, Baardheere, Saakow, Bu'aale and Jilib on the
       Juba; Belet Weyne, Bulo Burto, Jalalaqsi, Jowhar, Balcad, Afgooye, Qoryooley and Marka on
-      the Shabelle; 1998&ndash;2023. Inundation is dated as the first day of the season on which
-      that exposure reaches its own 1-in-{RP} level (Weibull on seasonal maxima); 1-in-{RP} rather
-      than 1-in-3 so that ordinary seasonal ponding does not count.</p>
-    <p><strong>Do the benchmark years show high inundation?</strong> On the Juba, yes. Four of the five
-      Deyr flood seasons the gauges call are among the eight largest exposure seasons of 26,
-      including all three severe ones, with 2023 the largest on record; in Gu, three of six, with
-      2018 and 2023 in the top three. On the Shabelle, only partly. Two of the six Deyr flood
-      seasons are in the top eight, and the severe 2019 and 2020 seasons rank 15th and 17th; in
-      Gu, three of seven, with the severe 2020 season 22nd. The largest Shabelle exposure seasons
-      are ones the gauges did not call a flood: Deyr 2017 (179,000 people), Deyr 2015 (169,000),
-      Gu 2002 and Gu 2006. So the gauge benchmark and the exposure record agree on the Juba and
-      only loosely on the Shabelle, where most of the exposed population lives in the lower
-      districts below the last gauge.</p>
-    <p>The table compares the inundation day with the SWALIM gauge days in the seasons both records
-      call a flood; a positive number means inundation showed after the gauge day.</p>
+      the Shabelle; 1998&ndash;2023, both rivers together, by season. Inundation is dated as the
+      first day of the season on which that exposure reaches its own 1-in-{RP} level (Weibull on
+      seasonal maxima); 1-in-{RP} rather than 1-in-3 so that ordinary seasonal ponding does not
+      count.</p>
+    <p><strong>Do the two-gauge flood years show high inundation?</strong> Partly. The largest floods
+      do: Deyr 2023, the largest exposure season on record with {k(d['top8'][0]['people'])} people, Gu 2018 with
+      {k(g['top8'][0]['people'])}, and Deyr 2014, Deyr 2017 and Gu 2023 all in the top six of 26 seasons. But
+      several severe gauge seasons do not: Deyr 2006, 2019 and 2020 rank 11th, 14th and 17th, Gu
+      2016 13th and Gu 2020 22nd. And several of the largest exposure seasons were not gauge
+      floods: Deyr 2015 ({k(d['top8'][2]['people'])}), Deyr 2004, Gu 2002 ({k(g['top8'][1]['people'])}) and Gu 2006. In all,
+      {d['in_top8']} of the {d['n_flood']} Deyr flood years and {g['in_top8']} of the {g['n_flood']} Gu flood years are among the eight largest
+      exposure seasons. The gauge benchmark and the exposure record agree on the biggest floods
+      and disagree on the moderate ones, and the disagreement is mostly on the Shabelle, where most
+      of the exposed population lives in the lower districts below the last gauge.</p>
     <div class="tablewrap">
     <table class="data">
-    <thead><tr><th>window</th><th>seasons both call a flood</th><th>inundation vs 2nd SWALIM gauge, median (range)</th><th>vs 1st SWALIM gauge, median (range)</th><th>seasons</th><th>FloodScan only</th><th>SWALIM gauges only</th></tr></thead>
+    <thead><tr><th>season</th><th>eight largest exposure seasons, 1998&ndash;2023 (people exposed)</th><th>two-gauge flood years, * severe: rank of 26</th><th>flood years in top 8</th><th>severe in top 8</th></tr></thead>
     <tbody>{"".join(rows)}</tbody>
     </table>
     </div>
-    <p><strong>On the Juba the second-gauge date holds.</strong> Inundation lands within two days of
-      the second gauge in Gu and 1 to 13 days after it in Deyr. <strong>On the Shabelle in Gu it
-      comes first:</strong> 10 and 17 days before the second gauge in 2023 and 2018, a day before
-      the first. Three things put inundation ahead of the gauges, and each is a gap in the
-      benchmark rather than in the satellite:</p>
+    <p>Where both records agree a season flooded, three things put water on the ground ahead of,
+      or apart from, the gauges, and each is a gap in the benchmark rather than in the satellite:</p>
     <ul>
       <li><strong>The Shabelle districts flood in a different order from the gauges.</strong> In Gu
         2023 Afgooye and Jowhar crossed their own 1-in-{RP} exposure on 7 April, the day before the
@@ -91,16 +74,14 @@ block = f'''        <h3 id="when-does-inundation-follow-the-gauges">When does in
     </ul>
 '''
 h = h.replace(anchor, block + anchor)
-# closing paragraph of the subsection (the seven-day block is inserted before it by patch_index_lead.py)
-closing = '''    <p>The comparison is thin. Only two or three seasons per window are called a flood by both
-      records. The exposure record calls seasons the gauges do not, mostly on the Shabelle, and
-      stays below its level in gauge floods there (Deyr 2006, 2008, 2019 and 2020; Gu 2003, 2005,
-      2010, 2016 and 2020). At 10 km FloodScan blurs the river with rain on the floodplain, and
-      exposure follows population, so the lower Shabelle weighs heavily in it. The
-      flood-benchmark step kept the gauges as the benchmark for those reasons. What the
+closing = '''    <p>The comparison is thin: eleven benchmark seasons have a forecast archive and five of them an
+      inundation day. The exposure record calls seasons the gauges do not, mostly on the Shabelle,
+      and stays below its level in several gauge floods. At 10 km FloodScan blurs the river with
+      rain on the floodplain, and exposure follows population, so the lower Shabelle weighs heavily
+      in it. The flood-benchmark step kept the gauges as the benchmark for those reasons. What the
       comparison adds is a direction: where the benchmark errs on timing it errs late, on the
       Shabelle, and the reach it misses is the one below the last gauge.</p>
 '''
 h = h.replace(anchor, closing + anchor)
 page.write_text(h, encoding="utf-8")
-print("removed", n_removed, "old block(s); inserted; rows:", len(rows))
+print("removed", n_removed, "old block(s); inserted")
