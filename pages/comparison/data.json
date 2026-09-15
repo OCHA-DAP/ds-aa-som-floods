@@ -1,0 +1,1860 @@
+{
+ "years": [
+  1999,
+  2000,
+  2001,
+  2002,
+  2003,
+  2004,
+  2005,
+  2006,
+  2007,
+  2008,
+  2009,
+  2010,
+  2011,
+  2012,
+  2013,
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023
+ ],
+ "windows": [
+  "juba_gu",
+  "juba_deyr",
+  "shabelle_gu",
+  "shabelle_deyr"
+ ],
+ "targets": {
+  "juba_gu": [
+   2018,
+   2020,
+   2021,
+   2023
+  ],
+  "juba_deyr": [
+   2000,
+   2006,
+   2019,
+   2023
+  ],
+  "shabelle_gu": [
+   2018,
+   2020,
+   2021,
+   2023
+  ],
+  "shabelle_deyr": [
+   2006,
+   2019,
+   2023
+  ]
+ },
+ "target_rule": "CERF flood allocation, or EM-DAT >= 100,000 affected",
+ "selection": {
+  "lag_guard": -3,
+  "min_rho": 0.5,
+  "rel_tol": 0.1
+ },
+ "setups": {
+  "mixed": {
+   "meta": {
+    "juba_gu": {
+     "model": "GloFAS v5 + Google GRRR",
+     "rp": 6,
+     "n_req": 3,
+     "pool": 4,
+     "years": [
+      2016,
+      2018,
+      2020
+     ],
+     "leg_rp": 8.7,
+     "units": [
+      {
+       "station": "Luuq",
+       "model": "Google",
+       "rho": 0.866,
+       "lag": 0
+      },
+      {
+       "station": "Dollow",
+       "model": "Google",
+       "rho": 0.848,
+       "lag": 3
+      },
+      {
+       "station": "Luuq",
+       "model": "GloFAS v5",
+       "rho": 0.846,
+       "lag": 0
+      },
+      {
+       "station": "Dollow",
+       "model": "GloFAS v5",
+       "rho": 0.827,
+       "lag": -1
+      }
+     ],
+     "candidates": 4,
+     "vs_gauge": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 1,
+      "tpr": 0.67,
+      "ppv": 0.67,
+      "f1": 0.67
+     },
+     "vs_target": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 2,
+      "tpr": 0.5,
+      "ppv": 0.67,
+      "f1": 0.57
+     },
+     "lead_days": -12.0
+    },
+    "juba_deyr": {
+     "model": "GloFAS v5",
+     "rp": 3,
+     "n_req": 2,
+     "pool": 2,
+     "years": [
+      2006,
+      2015,
+      2017,
+      2023
+     ],
+     "leg_rp": 6.5,
+     "units": [
+      {
+       "station": "Dollow",
+       "model": "GloFAS v5",
+       "rho": 0.868,
+       "lag": 5
+      },
+      {
+       "station": "Luuq",
+       "model": "GloFAS v5",
+       "rho": 0.849,
+       "lag": 3
+      }
+     ],
+     "candidates": 3,
+     "vs_gauge": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 1,
+      "tpr": 0.67,
+      "ppv": 0.5,
+      "f1": 0.57
+     },
+     "vs_target": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 2,
+      "tpr": 0.5,
+      "ppv": 0.5,
+      "f1": 0.5
+     },
+     "lead_days": 9.2
+    },
+    "shabelle_gu": {
+     "model": "GloFAS v5 + Google GRRR",
+     "rp": 5,
+     "n_req": 4,
+     "pool": 4,
+     "years": [
+      2016,
+      2018,
+      2020
+     ],
+     "leg_rp": 8.7,
+     "units": [
+      {
+       "station": "Belet Weyne",
+       "model": "Google",
+       "rho": 0.808,
+       "lag": 6
+      },
+      {
+       "station": "Bulo Burti",
+       "model": "Google",
+       "rho": 0.786,
+       "lag": 4
+      },
+      {
+       "station": "Jowhar",
+       "model": "Google",
+       "rho": 0.779,
+       "lag": 4
+      },
+      {
+       "station": "Belet Weyne",
+       "model": "GloFAS v5",
+       "rho": 0.778,
+       "lag": -3
+      }
+     ],
+     "candidates": 4,
+     "vs_gauge": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 1,
+      "tpr": 0.67,
+      "ppv": 0.67,
+      "f1": 0.67
+     },
+     "vs_target": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 2,
+      "tpr": 0.5,
+      "ppv": 0.67,
+      "f1": 0.57
+     },
+     "lead_days": 2.0
+    },
+    "shabelle_deyr": {
+     "model": "GloFAS v5",
+     "rp": 6,
+     "n_req": 3,
+     "pool": 3,
+     "years": [
+      2006,
+      2019,
+      2023
+     ],
+     "leg_rp": 8.7,
+     "units": [
+      {
+       "station": "Belet Weyne",
+       "model": "GloFAS v5",
+       "rho": 0.826,
+       "lag": 4
+      },
+      {
+       "station": "Bulo Burti",
+       "model": "GloFAS v5",
+       "rho": 0.819,
+       "lag": 2
+      },
+      {
+       "station": "Jowhar",
+       "model": "GloFAS v5",
+       "rho": 0.808,
+       "lag": 0
+      }
+     ],
+     "candidates": 6,
+     "vs_gauge": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 2,
+      "tpr": 0.6,
+      "ppv": 1.0,
+      "f1": 0.75
+     },
+     "vs_target": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "tpr": 1.0,
+      "ppv": 1.0,
+      "f1": 1.0
+     },
+     "lead_days": 12.0
+    }
+   },
+   "table": [
+    {
+     "year": 1999,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2007,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "juba_gu",
+     "n": 2,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "juba_gu",
+     "n": 2,
+     "fire": false
+    },
+    {
+     "year": 2014,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "juba_gu",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2017,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "juba_gu",
+     "n": 4,
+     "fire": true
+    },
+    {
+     "year": 2019,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2020,
+     "window": "juba_gu",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2021,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 1999,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "juba_deyr",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2007,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2014,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "juba_deyr",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2016,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2017,
+     "window": "juba_deyr",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2018,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2019,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2020,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2021,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "juba_deyr",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 1999,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "shabelle_gu",
+     "n": 3,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2007,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "shabelle_gu",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "shabelle_gu",
+     "n": 3,
+     "fire": false
+    },
+    {
+     "year": 2014,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "shabelle_gu",
+     "n": 4,
+     "fire": true
+    },
+    {
+     "year": 2017,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "shabelle_gu",
+     "n": 4,
+     "fire": true
+    },
+    {
+     "year": 2019,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2020,
+     "window": "shabelle_gu",
+     "n": 4,
+     "fire": true
+    },
+    {
+     "year": 2021,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 1999,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2007,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2014,
+     "window": "shabelle_deyr",
+     "n": 2,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2017,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2019,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2020,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2021,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": true
+    }
+   ],
+   "windows_counts": [
+    3,
+    4,
+    3,
+    3
+   ],
+   "envelope": {
+    "years": [
+     2006,
+     2015,
+     2016,
+     2017,
+     2018,
+     2019,
+     2020,
+     2023
+    ],
+    "n": 8,
+    "rp": 3.2,
+    "vs_gauge": {
+     "tp": 6,
+     "fp": 2,
+     "fn": 1,
+     "tpr": 0.86,
+     "ppv": 0.75,
+     "f1": 0.8
+    },
+    "vs_target": {
+     "tp": 5,
+     "fp": 3,
+     "fn": 2,
+     "tpr": 0.71,
+     "ppv": 0.62,
+     "f1": 0.67
+    },
+    "lead_days": 4.5
+   }
+  },
+  "one": {
+   "meta": {
+    "juba_gu": {
+     "model": "Google GRRR",
+     "rp": 4,
+     "n_req": 2,
+     "pool": 2,
+     "years": [
+      2013,
+      2016,
+      2018,
+      2020
+     ],
+     "leg_rp": 6.5,
+     "units": [
+      {
+       "station": "Luuq",
+       "model": "Google",
+       "rho": 0.866,
+       "lag": 0
+      },
+      {
+       "station": "Dollow",
+       "model": "Google",
+       "rho": 0.848,
+       "lag": 3
+      }
+     ],
+     "candidates": 4,
+     "vs_gauge": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 1,
+      "tpr": 0.67,
+      "ppv": 0.5,
+      "f1": 0.57
+     },
+     "vs_target": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 2,
+      "tpr": 0.5,
+      "ppv": 0.5,
+      "f1": 0.5
+     },
+     "lead_days": -4.0
+    },
+    "juba_deyr": {
+     "model": "GloFAS v5",
+     "rp": 4,
+     "n_req": 2,
+     "pool": 2,
+     "years": [
+      2015,
+      2023
+     ],
+     "leg_rp": 13.0,
+     "units": [
+      {
+       "station": "Dollow",
+       "model": "GloFAS v5",
+       "rho": 0.868,
+       "lag": 5
+      },
+      {
+       "station": "Luuq",
+       "model": "GloFAS v5",
+       "rho": 0.849,
+       "lag": 3
+      }
+     ],
+     "candidates": 3,
+     "vs_gauge": {
+      "tp": 1,
+      "fp": 1,
+      "fn": 2,
+      "tpr": 0.33,
+      "ppv": 0.5,
+      "f1": 0.4
+     },
+     "vs_target": {
+      "tp": 1,
+      "fp": 1,
+      "fn": 3,
+      "tpr": 0.25,
+      "ppv": 0.5,
+      "f1": 0.33
+     },
+     "lead_days": 1.8
+    },
+    "shabelle_gu": {
+     "model": "Google GRRR",
+     "rp": 6,
+     "n_req": 2,
+     "pool": 3,
+     "years": [
+      2013,
+      2016,
+      2018,
+      2020
+     ],
+     "leg_rp": 6.5,
+     "units": [
+      {
+       "station": "Belet Weyne",
+       "model": "Google",
+       "rho": 0.808,
+       "lag": 6
+      },
+      {
+       "station": "Bulo Burti",
+       "model": "Google",
+       "rho": 0.786,
+       "lag": 4
+      },
+      {
+       "station": "Jowhar",
+       "model": "Google",
+       "rho": 0.779,
+       "lag": 4
+      }
+     ],
+     "candidates": 4,
+     "vs_gauge": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 1,
+      "tpr": 0.67,
+      "ppv": 0.5,
+      "f1": 0.57
+     },
+     "vs_target": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 2,
+      "tpr": 0.5,
+      "ppv": 0.5,
+      "f1": 0.5
+     },
+     "lead_days": 1.0
+    },
+    "shabelle_deyr": {
+     "model": "GloFAS v5",
+     "rp": 6,
+     "n_req": 3,
+     "pool": 3,
+     "years": [
+      2006,
+      2019,
+      2023
+     ],
+     "leg_rp": 8.7,
+     "units": [
+      {
+       "station": "Belet Weyne",
+       "model": "GloFAS v5",
+       "rho": 0.826,
+       "lag": 4
+      },
+      {
+       "station": "Bulo Burti",
+       "model": "GloFAS v5",
+       "rho": 0.819,
+       "lag": 2
+      },
+      {
+       "station": "Jowhar",
+       "model": "GloFAS v5",
+       "rho": 0.808,
+       "lag": 0
+      }
+     ],
+     "candidates": 6,
+     "vs_gauge": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 2,
+      "tpr": 0.6,
+      "ppv": 1.0,
+      "f1": 0.75
+     },
+     "vs_target": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "tpr": 1.0,
+      "ppv": 1.0,
+      "f1": 1.0
+     },
+     "lead_days": 12.0
+    }
+   },
+   "table": [
+    {
+     "year": 1999,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "juba_gu",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "juba_gu",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2007,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "juba_gu",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "juba_gu",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2014,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "juba_gu",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2017,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "juba_gu",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2019,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2020,
+     "window": "juba_gu",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2021,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "juba_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "juba_gu",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 1999,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2007,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2014,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "juba_deyr",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 2016,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2017,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2019,
+     "window": "juba_deyr",
+     "n": 1,
+     "fire": false
+    },
+    {
+     "year": 2020,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2021,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "juba_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "juba_deyr",
+     "n": 2,
+     "fire": true
+    },
+    {
+     "year": 1999,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2007,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "shabelle_gu",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2014,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "shabelle_gu",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2017,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "shabelle_gu",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2019,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2020,
+     "window": "shabelle_gu",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2021,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "shabelle_gu",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 1999,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2000,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2001,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2002,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2003,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2004,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2005,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2006,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2007,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2008,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2009,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2010,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2011,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2012,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2013,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2014,
+     "window": "shabelle_deyr",
+     "n": 2,
+     "fire": false
+    },
+    {
+     "year": 2015,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2016,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2017,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2018,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2019,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": true
+    },
+    {
+     "year": 2020,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2021,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2022,
+     "window": "shabelle_deyr",
+     "n": 0,
+     "fire": false
+    },
+    {
+     "year": 2023,
+     "window": "shabelle_deyr",
+     "n": 3,
+     "fire": true
+    }
+   ],
+   "windows_counts": [
+    4,
+    2,
+    4,
+    3
+   ],
+   "envelope": {
+    "years": [
+     2006,
+     2013,
+     2015,
+     2016,
+     2018,
+     2019,
+     2020,
+     2023
+    ],
+    "n": 8,
+    "rp": 3.2,
+    "vs_gauge": {
+     "tp": 6,
+     "fp": 2,
+     "fn": 1,
+     "tpr": 0.86,
+     "ppv": 0.75,
+     "f1": 0.8
+    },
+    "vs_target": {
+     "tp": 5,
+     "fp": 3,
+     "fn": 2,
+     "tpr": 0.71,
+     "ppv": 0.62,
+     "f1": 0.67
+    },
+    "lead_days": 0.9
+   }
+  }
+ },
+ "bench": {
+  "juba_gu": {
+   "sev": [
+    2018,
+    2020,
+    2023
+   ],
+   "mod": [
+    2005,
+    2010,
+    2016,
+    2018,
+    2020,
+    2023
+   ]
+  },
+  "juba_deyr": {
+   "sev": [
+    2006,
+    2014,
+    2023
+   ],
+   "mod": [
+    2006,
+    2008,
+    2014,
+    2017,
+    2023
+   ]
+  },
+  "shabelle_gu": {
+   "sev": [
+    2016,
+    2020,
+    2023
+   ],
+   "mod": [
+    2003,
+    2005,
+    2010,
+    2016,
+    2018,
+    2020,
+    2023
+   ]
+  },
+  "shabelle_deyr": {
+   "sev": [
+    2006,
+    2014,
+    2019,
+    2020,
+    2023
+   ],
+   "mod": [
+    2006,
+    2008,
+    2014,
+    2019,
+    2020,
+    2023
+   ]
+  }
+ },
+ "impact": {
+  "cerf": {
+   "juba_deyr|2006": 10437041,
+   "shabelle_deyr|2006": 10437041,
+   "juba_gu|2018": 5133588,
+   "shabelle_gu|2018": 5133588,
+   "juba_deyr|2019": 8000222,
+   "shabelle_deyr|2019": 8000222,
+   "shabelle_gu|2020": 7100529,
+   "juba_deyr|2023": 10000009,
+   "shabelle_deyr|2023": 10000009
+  },
+  "emdat": {
+   "juba_gu|2000": 3500,
+   "shabelle_gu|2000": 3500,
+   "juba_deyr|2000": 150000,
+   "juba_deyr|2001": 6500,
+   "juba_gu|2005": 7520,
+   "shabelle_gu|2005": 5020,
+   "shabelle_deyr|2006": 299000,
+   "juba_deyr|2006": 155500,
+   "shabelle_deyr|2007": 8000,
+   "juba_deyr|2008": 52000,
+   "juba_deyr|2009": 1750,
+   "shabelle_deyr|2009": 1750,
+   "shabelle_deyr|2011": 2800,
+   "shabelle_deyr|2012": 32200,
+   "juba_gu|2013": 50000,
+   "shabelle_gu|2013": 50000,
+   "juba_deyr|2014": 90000,
+   "shabelle_deyr|2014": 90000,
+   "shabelle_gu|2015": 16296,
+   "juba_gu|2018": 700000,
+   "shabelle_gu|2018": 700000,
+   "juba_deyr|2019": 500000,
+   "shabelle_deyr|2019": 500000,
+   "juba_gu|2020": 1191020,
+   "shabelle_gu|2020": 1191020,
+   "juba_gu|2021": 400000,
+   "shabelle_gu|2021": 400000,
+   "juba_gu|2023": 568003,
+   "shabelle_gu|2023": 568003,
+   "juba_deyr|2023": 2758000,
+   "shabelle_deyr|2023": 2758000
+  }
+ }
+}

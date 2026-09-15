@@ -1,0 +1,284 @@
+[
+ {
+  "river": "juba",
+  "season": "deyr",
+  "station": "Dollow",
+  "flood_years": [
+   2017,
+   2023
+  ],
+  "n_flood_seasons": 2,
+  "google_grrr": 0.81,
+  "google_grrr_lag": -8,
+  "google_grrr_n_days": 176,
+  "glofas_v5": 0.92,
+  "glofas_v5_lag": -2,
+  "glofas_v5_n_days": 184
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "station": "Luuq",
+  "flood_years": [
+   2006,
+   2008,
+   2011,
+   2013,
+   2014,
+   2015,
+   2017,
+   2023
+  ],
+  "n_flood_seasons": 8,
+  "google_grrr": 0.63,
+  "google_grrr_lag": -5,
+  "google_grrr_n_days": 728,
+  "glofas_v5": 0.85,
+  "glofas_v5_lag": 1,
+  "glofas_v5_n_days": 735
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "station": "Bardheere",
+  "flood_years": [
+   2006,
+   2008,
+   2014,
+   2023
+  ],
+  "n_flood_seasons": 4,
+  "google_grrr": 0.69,
+  "google_grrr_lag": -7,
+  "google_grrr_n_days": 337,
+  "glofas_v5": 0.78,
+  "glofas_v5_lag": 0,
+  "glofas_v5_n_days": 330
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "station": "Bualle",
+  "flood_years": [
+   2008,
+   2014,
+   2017,
+   2019,
+   2023
+  ],
+  "n_flood_seasons": 5,
+  "google_grrr": 0.61,
+  "google_grrr_lag": -5,
+  "google_grrr_n_days": 452,
+  "glofas_v5": 0.85,
+  "glofas_v5_lag": 1,
+  "glofas_v5_n_days": 459
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "station": "Dollow",
+  "flood_years": [
+   2018,
+   2020,
+   2023
+  ],
+  "n_flood_seasons": 3,
+  "google_grrr": 0.87,
+  "google_grrr_lag": 0,
+  "google_grrr_n_days": 276,
+  "glofas_v5": 0.68,
+  "glofas_v5_lag": -10,
+  "glofas_v5_n_days": 276
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "station": "Luuq",
+  "flood_years": [
+   2005,
+   2006,
+   2010,
+   2016,
+   2018,
+   2020,
+   2023
+  ],
+  "n_flood_seasons": 7,
+  "google_grrr": 0.88,
+  "google_grrr_lag": -1,
+  "google_grrr_n_days": 643,
+  "glofas_v5": 0.87,
+  "glofas_v5_lag": 0,
+  "glofas_v5_n_days": 643
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "station": "Bardheere",
+  "flood_years": [
+   2005,
+   2010,
+   2016,
+   2018,
+   2020,
+   2021,
+   2023
+  ],
+  "n_flood_seasons": 7,
+  "google_grrr": 0.86,
+  "google_grrr_lag": 0,
+  "google_grrr_n_days": 643,
+  "glofas_v5": 0.84,
+  "glofas_v5_lag": 0,
+  "glofas_v5_n_days": 643
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "station": "Bualle",
+  "flood_years": [
+   2010,
+   2016,
+   2018,
+   2020,
+   2023
+  ],
+  "n_flood_seasons": 5,
+  "google_grrr": 0.87,
+  "google_grrr_lag": 2,
+  "google_grrr_n_days": 460,
+  "glofas_v5": 0.82,
+  "glofas_v5_lag": -3,
+  "glofas_v5_n_days": 458
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "station": "Belet Weyne",
+  "flood_years": [
+   2006,
+   2008,
+   2014,
+   2019,
+   2020,
+   2023
+  ],
+  "n_flood_seasons": 6,
+  "google_grrr": 0.78,
+  "google_grrr_lag": 6,
+  "google_grrr_n_days": 544,
+  "glofas_v5": 0.88,
+  "glofas_v5_lag": 5,
+  "glofas_v5_n_days": 552
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "station": "Bulo Burti",
+  "flood_years": [
+   2006,
+   2007,
+   2008,
+   2014,
+   2019,
+   2020,
+   2023
+  ],
+  "n_flood_seasons": 7,
+  "google_grrr": 0.66,
+  "google_grrr_lag": 10,
+  "google_grrr_n_days": 634,
+  "glofas_v5": 0.82,
+  "glofas_v5_lag": 7,
+  "glofas_v5_n_days": 644
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "station": "Jowhar",
+  "flood_years": [
+   2000,
+   2001,
+   2003,
+   2008,
+   2012,
+   2014,
+   2015,
+   2017,
+   2019,
+   2020
+  ],
+  "n_flood_seasons": 10,
+  "google_grrr": 0.64,
+  "google_grrr_lag": 4,
+  "google_grrr_n_days": 918,
+  "glofas_v5": 0.85,
+  "glofas_v5_lag": 4,
+  "glofas_v5_n_days": 918
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "station": "Belet Weyne",
+  "flood_years": [
+   2005,
+   2010,
+   2016,
+   2018,
+   2020,
+   2021,
+   2023
+  ],
+  "n_flood_seasons": 7,
+  "google_grrr": 0.85,
+  "google_grrr_lag": 9,
+  "google_grrr_n_days": 644,
+  "glofas_v5": 0.79,
+  "glofas_v5_lag": 0,
+  "glofas_v5_n_days": 643
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "station": "Bulo Burti",
+  "flood_years": [
+   2003,
+   2005,
+   2010,
+   2016,
+   2018,
+   2020,
+   2023
+  ],
+  "n_flood_seasons": 7,
+  "google_grrr": 0.78,
+  "google_grrr_lag": 7,
+  "google_grrr_n_days": 644,
+  "glofas_v5": 0.79,
+  "glofas_v5_lag": -5,
+  "glofas_v5_n_days": 644
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "station": "Jowhar",
+  "flood_years": [
+   2002,
+   2003,
+   2012,
+   2013,
+   2015,
+   2016,
+   2017,
+   2020
+  ],
+  "n_flood_seasons": 8,
+  "google_grrr": 0.77,
+  "google_grrr_lag": 3,
+  "google_grrr_n_days": 736,
+  "glofas_v5": 0.76,
+  "glofas_v5_lag": -9,
+  "glofas_v5_n_days": 736
+ }
+]

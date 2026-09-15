@@ -1,0 +1,842 @@
+[
+ {
+  "river": "juba",
+  "station": "Dollow",
+  "season": "Deyr",
+  "model": "Google",
+  "adopted": false,
+  "rho": 0.59,
+  "lag_days": -1,
+  "gauge_years": 8,
+  "gauge_level_rp3": 5.080000000000001,
+  "gauge_level_rp5": 5.227556287078216,
+  "rp3": {
+   "gauge_events": 2,
+   "hits": 1,
+   "misses": 1,
+   "false_alarms": 2,
+   "POD": 0.5,
+   "FAR": 0.6666666666666666,
+   "CSI": 0.25
+  },
+  "rp5": {
+   "gauge_events": 1,
+   "hits": 1,
+   "misses": 0,
+   "false_alarms": 2,
+   "POD": 1.0,
+   "FAR": 0.6666666666666666,
+   "CSI": 0.3333333333333333
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Dollow",
+  "season": "Deyr",
+  "model": "GloFAS v5",
+  "adopted": true,
+  "rho": 0.84,
+  "lag_days": 2,
+  "gauge_years": 8,
+  "gauge_level_rp3": 5.080000000000001,
+  "gauge_level_rp5": 5.227556287078216,
+  "rp3": {
+   "gauge_events": 2,
+   "hits": 2,
+   "misses": 0,
+   "false_alarms": 1,
+   "POD": 1.0,
+   "FAR": 0.3333333333333333,
+   "CSI": 0.6666666666666666
+  },
+  "rp5": {
+   "gauge_events": 1,
+   "hits": 1,
+   "misses": 0,
+   "false_alarms": 2,
+   "POD": 1.0,
+   "FAR": 0.6666666666666666,
+   "CSI": 0.3333333333333333
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Dollow",
+  "season": "Gu",
+  "model": "Google",
+  "adopted": true,
+  "rho": 0.84,
+  "lag_days": 1,
+  "gauge_years": 9,
+  "gauge_level_rp3": 5.27055954201447,
+  "gauge_level_rp5": 5.56,
+  "rp3": {
+   "gauge_events": 3,
+   "hits": 3,
+   "misses": 0,
+   "false_alarms": 1,
+   "POD": 1.0,
+   "FAR": 0.25,
+   "CSI": 0.75
+  },
+  "rp5": {
+   "gauge_events": 2,
+   "hits": 2,
+   "misses": 0,
+   "false_alarms": 2,
+   "POD": 1.0,
+   "FAR": 0.5,
+   "CSI": 0.5
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Dollow",
+  "season": "Gu",
+  "model": "GloFAS v5",
+  "adopted": false,
+  "rho": 0.79,
+  "lag_days": -1,
+  "gauge_years": 9,
+  "gauge_level_rp3": 5.27055954201447,
+  "gauge_level_rp5": 5.56,
+  "rp3": {
+   "gauge_events": 3,
+   "hits": 3,
+   "misses": 0,
+   "false_alarms": 1,
+   "POD": 1.0,
+   "FAR": 0.25,
+   "CSI": 0.75
+  },
+  "rp5": {
+   "gauge_events": 2,
+   "hits": 2,
+   "misses": 0,
+   "false_alarms": 1,
+   "POD": 1.0,
+   "FAR": 0.3333333333333333,
+   "CSI": 0.6666666666666666
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Luuq",
+  "season": "Deyr",
+  "model": "Google",
+  "adopted": false,
+  "rho": 0.58,
+  "lag_days": -5,
+  "gauge_years": 23,
+  "gauge_level_rp3": 5.3,
+  "gauge_level_rp5": 5.868948202238297,
+  "rp3": {
+   "gauge_events": 8,
+   "hits": 6,
+   "misses": 2,
+   "false_alarms": 2,
+   "POD": 0.75,
+   "FAR": 0.25,
+   "CSI": 0.6
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 2,
+   "misses": 2,
+   "false_alarms": 3,
+   "POD": 0.5,
+   "FAR": 0.6,
+   "CSI": 0.2857142857142857
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Luuq",
+  "season": "Deyr",
+  "model": "GloFAS v5",
+  "adopted": true,
+  "rho": 0.85,
+  "lag_days": 3,
+  "gauge_years": 23,
+  "gauge_level_rp3": 5.3,
+  "gauge_level_rp5": 5.868948202238297,
+  "rp3": {
+   "gauge_events": 8,
+   "hits": 4,
+   "misses": 4,
+   "false_alarms": 4,
+   "POD": 0.5,
+   "FAR": 0.5,
+   "CSI": 0.3333333333333333
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 2,
+   "misses": 2,
+   "false_alarms": 3,
+   "POD": 0.5,
+   "FAR": 0.6,
+   "CSI": 0.2857142857142857
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Luuq",
+  "season": "Gu",
+  "model": "Google",
+  "adopted": true,
+  "rho": 0.87,
+  "lag_days": 0,
+  "gauge_years": 22,
+  "gauge_level_rp3": 5.231665800369601,
+  "gauge_level_rp5": 5.637159836958929,
+  "rp3": {
+   "gauge_events": 7,
+   "hits": 6,
+   "misses": 1,
+   "false_alarms": 2,
+   "POD": 0.8571428571428571,
+   "FAR": 0.25,
+   "CSI": 0.6666666666666666
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 3,
+   "misses": 1,
+   "false_alarms": 2,
+   "POD": 0.75,
+   "FAR": 0.4,
+   "CSI": 0.5
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Luuq",
+  "season": "Gu",
+  "model": "GloFAS v5",
+  "adopted": false,
+  "rho": 0.85,
+  "lag_days": 0,
+  "gauge_years": 22,
+  "gauge_level_rp3": 5.231665800369601,
+  "gauge_level_rp5": 5.637159836958929,
+  "rp3": {
+   "gauge_events": 7,
+   "hits": 6,
+   "misses": 1,
+   "false_alarms": 2,
+   "POD": 0.8571428571428571,
+   "FAR": 0.25,
+   "CSI": 0.6666666666666666
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 3,
+   "misses": 1,
+   "false_alarms": 2,
+   "POD": 0.75,
+   "FAR": 0.4,
+   "CSI": 0.5
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Bardheere",
+  "season": "Deyr",
+  "model": "Google",
+  "adopted": false,
+  "rho": 0.49,
+  "lag_days": -7,
+  "gauge_years": 23,
+  "gauge_level_rp3": 9.000000000000002,
+  "gauge_level_rp5": 9.018211564553937,
+  "rp3": {
+   "gauge_events": 4,
+   "hits": 3,
+   "misses": 1,
+   "false_alarms": 5,
+   "POD": 0.75,
+   "FAR": 0.625,
+   "CSI": 0.3333333333333333
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 2,
+   "misses": 2,
+   "false_alarms": 3,
+   "POD": 0.5,
+   "FAR": 0.6,
+   "CSI": 0.2857142857142857
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Bardheere",
+  "season": "Deyr",
+  "model": "GloFAS v5",
+  "adopted": true,
+  "rho": 0.78,
+  "lag_days": 4,
+  "gauge_years": 23,
+  "gauge_level_rp3": 9.000000000000002,
+  "gauge_level_rp5": 9.018211564553937,
+  "rp3": {
+   "gauge_events": 4,
+   "hits": 2,
+   "misses": 2,
+   "false_alarms": 6,
+   "POD": 0.5,
+   "FAR": 0.75,
+   "CSI": 0.2
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 2,
+   "misses": 2,
+   "false_alarms": 3,
+   "POD": 0.5,
+   "FAR": 0.6,
+   "CSI": 0.2857142857142857
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Bardheere",
+  "season": "Gu",
+  "model": "Google",
+  "adopted": true,
+  "rho": 0.86,
+  "lag_days": 1,
+  "gauge_years": 22,
+  "gauge_level_rp3": 7.816092690341043,
+  "gauge_level_rp5": 8.364169401597355,
+  "rp3": {
+   "gauge_events": 7,
+   "hits": 5,
+   "misses": 2,
+   "false_alarms": 3,
+   "POD": 0.7142857142857143,
+   "FAR": 0.375,
+   "CSI": 0.5
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 2,
+   "misses": 2,
+   "false_alarms": 3,
+   "POD": 0.5,
+   "FAR": 0.6,
+   "CSI": 0.2857142857142857
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Bardheere",
+  "season": "Gu",
+  "model": "GloFAS v5",
+  "adopted": false,
+  "rho": 0.85,
+  "lag_days": -1,
+  "gauge_years": 22,
+  "gauge_level_rp3": 7.816092690341043,
+  "gauge_level_rp5": 8.364169401597355,
+  "rp3": {
+   "gauge_events": 7,
+   "hits": 5,
+   "misses": 2,
+   "false_alarms": 3,
+   "POD": 0.7142857142857143,
+   "FAR": 0.375,
+   "CSI": 0.5
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 2,
+   "misses": 2,
+   "false_alarms": 3,
+   "POD": 0.5,
+   "FAR": 0.6,
+   "CSI": 0.2857142857142857
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Bualle",
+  "season": "Deyr",
+  "model": "Google",
+  "adopted": false,
+  "rho": 0.66,
+  "lag_days": -5,
+  "gauge_years": 16,
+  "gauge_level_rp3": 7.2687570128987415,
+  "gauge_level_rp5": 7.392570408292774,
+  "rp3": {
+   "gauge_events": 5,
+   "hits": 2,
+   "misses": 3,
+   "false_alarms": 3,
+   "POD": 0.4,
+   "FAR": 0.6,
+   "CSI": 0.25
+  },
+  "rp5": {
+   "gauge_events": 3,
+   "hits": 1,
+   "misses": 2,
+   "false_alarms": 2,
+   "POD": 0.3333333333333333,
+   "FAR": 0.6666666666666666,
+   "CSI": 0.2
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Bualle",
+  "season": "Deyr",
+  "model": "GloFAS v5",
+  "adopted": true,
+  "rho": 0.83,
+  "lag_days": 3,
+  "gauge_years": 16,
+  "gauge_level_rp3": 7.2687570128987415,
+  "gauge_level_rp5": 7.392570408292774,
+  "rp3": {
+   "gauge_events": 5,
+   "hits": 3,
+   "misses": 2,
+   "false_alarms": 3,
+   "POD": 0.6,
+   "FAR": 0.5,
+   "CSI": 0.375
+  },
+  "rp5": {
+   "gauge_events": 3,
+   "hits": 1,
+   "misses": 2,
+   "false_alarms": 2,
+   "POD": 0.3333333333333333,
+   "FAR": 0.6666666666666666,
+   "CSI": 0.2
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Bualle",
+  "season": "Gu",
+  "model": "Google",
+  "adopted": true,
+  "rho": 0.88,
+  "lag_days": 4,
+  "gauge_years": 16,
+  "gauge_level_rp3": 6.612925149102344,
+  "gauge_level_rp5": 7.43296376196358,
+  "rp3": {
+   "gauge_events": 5,
+   "hits": 5,
+   "misses": 0,
+   "false_alarms": 1,
+   "POD": 1.0,
+   "FAR": 0.16666666666666666,
+   "CSI": 0.8333333333333334
+  },
+  "rp5": {
+   "gauge_events": 3,
+   "hits": 2,
+   "misses": 1,
+   "false_alarms": 3,
+   "POD": 0.6666666666666666,
+   "FAR": 0.6,
+   "CSI": 0.3333333333333333
+  }
+ },
+ {
+  "river": "juba",
+  "station": "Bualle",
+  "season": "Gu",
+  "model": "GloFAS v5",
+  "adopted": false,
+  "rho": 0.84,
+  "lag_days": -4,
+  "gauge_years": 16,
+  "gauge_level_rp3": 6.612925149102344,
+  "gauge_level_rp5": 7.43296376196358,
+  "rp3": {
+   "gauge_events": 5,
+   "hits": 4,
+   "misses": 1,
+   "false_alarms": 2,
+   "POD": 0.8,
+   "FAR": 0.3333333333333333,
+   "CSI": 0.5714285714285714
+  },
+  "rp5": {
+   "gauge_events": 3,
+   "hits": 2,
+   "misses": 1,
+   "false_alarms": 3,
+   "POD": 0.6666666666666666,
+   "FAR": 0.6,
+   "CSI": 0.3333333333333333
+  }
+ },
+ {
+  "river": "shabelle",
+  "station": "Belet Weyne",
+  "season": "Deyr",
+  "model": "Google",
+  "adopted": false,
+  "rho": 0.63,
+  "lag_days": 4,
+  "gauge_years": 22,
+  "gauge_level_rp3": 6.700000000000001,
+  "gauge_level_rp5": 7.778955080116552,
+  "rp3": {
+   "gauge_events": 6,
+   "hits": 6,
+   "misses": 0,
+   "false_alarms": 1,
+   "POD": 1.0,
+   "FAR": 0.14285714285714285,
+   "CSI": 0.8571428571428571
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 4,
+   "misses": 0,
+   "false_alarms": 1,
+   "POD": 1.0,
+   "FAR": 0.2,
+   "CSI": 0.8
+  }
+ },
+ {
+  "river": "shabelle",
+  "station": "Belet Weyne",
+  "season": "Deyr",
+  "model": "GloFAS v5",
+  "adopted": true,
+  "rho": 0.83,
+  "lag_days": 4,
+  "gauge_years": 22,
+  "gauge_level_rp3": 6.700000000000001,
+  "gauge_level_rp5": 7.778955080116552,
+  "rp3": {
+   "gauge_events": 6,
+   "hits": 5,
+   "misses": 1,
+   "false_alarms": 3,
+   "POD": 0.8333333333333334,
+   "FAR": 0.375,
+   "CSI": 0.5555555555555556
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 4,
+   "misses": 0,
+   "false_alarms": 1,
+   "POD": 1.0,
+   "FAR": 0.2,
+   "CSI": 0.8
+  }
+ },
+ {
+  "river": "shabelle",
+  "station": "Belet Weyne",
+  "season": "Gu",
+  "model": "Google",
+  "adopted": true,
+  "rho": 0.81,
+  "lag_days": 6,
+  "gauge_years": 22,
+  "gauge_level_rp3": 7.354442478527429,
+  "gauge_level_rp5": 8.298747279638036,
+  "rp3": {
+   "gauge_events": 7,
+   "hits": 6,
+   "misses": 1,
+   "false_alarms": 1,
+   "POD": 0.8571428571428571,
+   "FAR": 0.14285714285714285,
+   "CSI": 0.75
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 2,
+   "misses": 2,
+   "false_alarms": 3,
+   "POD": 0.5,
+   "FAR": 0.6,
+   "CSI": 0.2857142857142857
+  }
+ },
+ {
+  "river": "shabelle",
+  "station": "Belet Weyne",
+  "season": "Gu",
+  "model": "GloFAS v5",
+  "adopted": false,
+  "rho": 0.78,
+  "lag_days": -3,
+  "gauge_years": 22,
+  "gauge_level_rp3": 7.354442478527429,
+  "gauge_level_rp5": 8.298747279638036,
+  "rp3": {
+   "gauge_events": 7,
+   "hits": 6,
+   "misses": 1,
+   "false_alarms": 1,
+   "POD": 0.8571428571428571,
+   "FAR": 0.14285714285714285,
+   "CSI": 0.75
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 2,
+   "misses": 2,
+   "false_alarms": 3,
+   "POD": 0.5,
+   "FAR": 0.6,
+   "CSI": 0.2857142857142857
+  }
+ },
+ {
+  "river": "shabelle",
+  "station": "Bulo Burti",
+  "season": "Deyr",
+  "model": "Google",
+  "adopted": false,
+  "rho": 0.55,
+  "lag_days": 5,
+  "gauge_years": 22,
+  "gauge_level_rp3": 6.390563495462689,
+  "gauge_level_rp5": 7.192584692827081,
+  "rp3": {
+   "gauge_events": 7,
+   "hits": 5,
+   "misses": 2,
+   "false_alarms": 2,
+   "POD": 0.7142857142857143,
+   "FAR": 0.2857142857142857,
+   "CSI": 0.5555555555555556
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 3,
+   "misses": 1,
+   "false_alarms": 2,
+   "POD": 0.75,
+   "FAR": 0.4,
+   "CSI": 0.5
+  }
+ },
+ {
+  "river": "shabelle",
+  "station": "Bulo Burti",
+  "season": "Deyr",
+  "model": "GloFAS v5",
+  "adopted": true,
+  "rho": 0.78,
+  "lag_days": 6,
+  "gauge_years": 22,
+  "gauge_level_rp3": 6.390563495462689,
+  "gauge_level_rp5": 7.192584692827081,
+  "rp3": {
+   "gauge_events": 7,
+   "hits": 6,
+   "misses": 1,
+   "false_alarms": 2,
+   "POD": 0.8571428571428571,
+   "FAR": 0.25,
+   "CSI": 0.6666666666666666
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 3,
+   "misses": 1,
+   "false_alarms": 2,
+   "POD": 0.75,
+   "FAR": 0.4,
+   "CSI": 0.5
+  }
+ },
+ {
+  "river": "shabelle",
+  "station": "Bulo Burti",
+  "season": "Gu",
+  "model": "Google",
+  "adopted": true,
+  "rho": 0.79,
+  "lag_days": 5,
+  "gauge_years": 22,
+  "gauge_level_rp3": 6.365389064558114,
+  "gauge_level_rp5": 6.847839628479386,
+  "rp3": {
+   "gauge_events": 7,
+   "hits": 6,
+   "misses": 1,
+   "false_alarms": 1,
+   "POD": 0.8571428571428571,
+   "FAR": 0.14285714285714285,
+   "CSI": 0.75
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 2,
+   "misses": 2,
+   "false_alarms": 3,
+   "POD": 0.5,
+   "FAR": 0.6,
+   "CSI": 0.2857142857142857
+  }
+ },
+ {
+  "river": "shabelle",
+  "station": "Bulo Burti",
+  "season": "Gu",
+  "model": "GloFAS v5",
+  "adopted": false,
+  "rho": 0.77,
+  "lag_days": -6,
+  "gauge_years": 22,
+  "gauge_level_rp3": 6.365389064558114,
+  "gauge_level_rp5": 6.847839628479386,
+  "rp3": {
+   "gauge_events": 7,
+   "hits": 6,
+   "misses": 1,
+   "false_alarms": 1,
+   "POD": 0.8571428571428571,
+   "FAR": 0.14285714285714285,
+   "CSI": 0.75
+  },
+  "rp5": {
+   "gauge_events": 4,
+   "hits": 3,
+   "misses": 1,
+   "false_alarms": 2,
+   "POD": 0.75,
+   "FAR": 0.4,
+   "CSI": 0.5
+  }
+ },
+ {
+  "river": "shabelle",
+  "station": "Jowhar",
+  "season": "Deyr",
+  "model": "Google",
+  "adopted": false,
+  "rho": 0.58,
+  "lag_days": 5,
+  "gauge_years": 23,
+  "gauge_level_rp3": 5.1,
+  "gauge_level_rp5": 5.3,
+  "rp3": {
+   "gauge_events": 10,
+   "hits": 5,
+   "misses": 5,
+   "false_alarms": 3,
+   "POD": 0.5,
+   "FAR": 0.375,
+   "CSI": 0.38461538461538464
+  },
+  "rp5": {
+   "gauge_events": 6,
+   "hits": 2,
+   "misses": 4,
+   "false_alarms": 3,
+   "POD": 0.3333333333333333,
+   "FAR": 0.6,
+   "CSI": 0.2222222222222222
+  }
+ },
+ {
+  "river": "shabelle",
+  "station": "Jowhar",
+  "season": "Deyr",
+  "model": "GloFAS v5",
+  "adopted": true,
+  "rho": 0.8,
+  "lag_days": 7,
+  "gauge_years": 23,
+  "gauge_level_rp3": 5.1,
+  "gauge_level_rp5": 5.3,
+  "rp3": {
+   "gauge_events": 10,
+   "hits": 3,
+   "misses": 7,
+   "false_alarms": 4,
+   "POD": 0.3,
+   "FAR": 0.5714285714285714,
+   "CSI": 0.21428571428571427
+  },
+  "rp5": {
+   "gauge_events": 6,
+   "hits": 2,
+   "misses": 4,
+   "false_alarms": 3,
+   "POD": 0.3333333333333333,
+   "FAR": 0.6,
+   "CSI": 0.2222222222222222
+  }
+ },
+ {
+  "river": "shabelle",
+  "station": "Jowhar",
+  "season": "Gu",
+  "model": "Google",
+  "adopted": true,
+  "rho": 0.78,
+  "lag_days": 4,
+  "gauge_years": 24,
+  "gauge_level_rp3": 5.276531989532455,
+  "gauge_level_rp5": 5.3,
+  "rp3": {
+   "gauge_events": 8,
+   "hits": 3,
+   "misses": 5,
+   "false_alarms": 5,
+   "POD": 0.375,
+   "FAR": 0.625,
+   "CSI": 0.23076923076923078
+  },
+  "rp5": {
+   "gauge_events": 7,
+   "hits": 3,
+   "misses": 4,
+   "false_alarms": 2,
+   "POD": 0.42857142857142855,
+   "FAR": 0.4,
+   "CSI": 0.3333333333333333
+  }
+ },
+ {
+  "river": "shabelle",
+  "station": "Jowhar",
+  "season": "Gu",
+  "model": "GloFAS v5",
+  "adopted": false,
+  "rho": 0.75,
+  "lag_days": -9,
+  "gauge_years": 24,
+  "gauge_level_rp3": 5.276531989532455,
+  "gauge_level_rp5": 5.3,
+  "rp3": {
+   "gauge_events": 8,
+   "hits": 3,
+   "misses": 5,
+   "false_alarms": 5,
+   "POD": 0.375,
+   "FAR": 0.625,
+   "CSI": 0.23076923076923078
+  },
+  "rp5": {
+   "gauge_events": 7,
+   "hits": 2,
+   "misses": 5,
+   "false_alarms": 3,
+   "POD": 0.2857142857142857,
+   "FAR": 0.6,
+   "CSI": 0.2
+  }
+ }
+]

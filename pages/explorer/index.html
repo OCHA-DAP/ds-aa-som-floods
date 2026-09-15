@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Indicator explorer — Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Year-by-year behaviour of the three streamflow indicators (GloFAS, Google Flood Hub, GEOGloWS) against SWALIM river-gauge observations on the Juba and Shabelle.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+.hero.hero-sub { padding:40px 44px 34px; }
+.hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; }
+.crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+.crumb a:hover { text-decoration:underline; }
+.explorer { padding:24px 44px 8px; }
+.controls { display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin:0 0 6px; }
+.seg { display:inline-flex; border:1px solid #d7dede; border-radius:5px; overflow:hidden; }
+.seg button { border:0; background:#fff; padding:7px 16px; font:500 13px 'Roboto',sans-serif;
+              color:var(--n8); cursor:pointer; }
+.seg button + button { border-left:1px solid #d7dede; }
+.seg button.on { background:var(--b6); color:#fff; }
+.controls select { font:500 13px 'Roboto',sans-serif; color:var(--n8); padding:7px 10px;
+                   border:1px solid #d7dede; border-radius:5px; background:#fff; }
+.controls label { font-size:11px; font-weight:700; letter-spacing:.09em;
+                  text-transform:uppercase; color:var(--n7); }
+.yearnote { font-size:12.5px; color:var(--n7); }
+.yearnote b { color:var(--n8); font-weight:500; }
+.legend { display:flex; flex-wrap:wrap; gap:16px; margin:12px 0 4px; font-size:12px; color:var(--n8); }
+.legend span { display:inline-flex; align-items:center; gap:6px; }
+.legend i { width:14px; height:3px; border-radius:2px; display:inline-block; }
+.panel { margin:14px 0 2px; }
+.panel h3 { font:700 13px 'Roboto',sans-serif; color:var(--n9); margin:0 0 2px; }
+.panel .sub { font-size:11.5px; color:var(--n7); margin:0 0 4px; }
+.panel svg { width:100%; height:auto; display:block; }
+.tip { position:fixed; pointer-events:none; background:#fff; border:1px solid #d7dede;
+       border-radius:5px; box-shadow:0 4px 16px rgba(31,35,36,.12); padding:8px 11px;
+       font-size:11.5px; color:var(--n8); line-height:1.55; z-index:10; display:none;
+       min-width:150px; }
+.tip .d { font-weight:700; color:var(--n9); margin-bottom:2px; }
+.tip i { width:9px; height:9px; border-radius:2px; display:inline-block; margin-right:5px;
+         vertical-align:-1px; }
+.about { margin:26px 44px 40px; padding:13px 17px; border-radius:4px; background:var(--b05);
+         border-left:5px solid var(--b5); font-size:12.5px; color:var(--n8); line-height:1.65; }
+.about p { margin:0 0 9px; } .about p:last-child { margin-bottom:0; }
+.about a { color:var(--b6); }
+@media (max-width:640px) {
+  .hero.hero-sub { padding:32px 22px 28px; }
+  .explorer { padding:18px 22px 4px; }
+  .about { margin:22px 22px 32px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero hero-sub">
+    <canvas id="bg" aria-hidden="true"></canvas>
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / indicator explorer</p>
+      <h1>Indicator explorer</h1>
+      <p>Pick a basin and a year to see how each streamflow indicator behaved against the
+         SWALIM gauge record. Every source — GEOGloWS included, via its retrospective — is
+         judged against its own 1-in-6-year threshold: absolute discharge is never compared
+         across models.</p>
+    </div>
+  </header>
+
+  <div class="explorer">
+    <div class="controls">
+      <label>Basin</label>
+      <span class="seg" id="basinSeg" role="group" aria-label="basin">
+        <button data-b="juba">Juba</button>
+        <button data-b="shabelle">Shabelle</button>
+      </span>
+      <label for="yearSel">Year</label>
+      <select id="yearSel" aria-label="year"></select>
+      <span class="yearnote" id="yearNote"></span>
+    </div>
+
+    <div class="legend" id="legend"></div>
+
+    <div class="panel">
+      <h3 id="p1title"></h3>
+      <p class="sub">Observed water level (m). Dashed: official Moderate (amber) and High
+        (red) flood-risk levels. Shaded bands: the Gu and Deyr trigger windows.</p>
+      <svg id="p1" viewBox="0 0 960 190" role="img" aria-label="SWALIM level"></svg>
+    </div>
+    <div class="panel">
+      <h3>Stations over their own 1-in-6 threshold, per source</h3>
+      <p class="sub">Colored lines: per source, how many of the season's selected stations
+        exceed their own seasonal 1-in-6-year threshold that day (each source thresholded
+        on its own 1999–2023 climatology). Black line: <strong>the trigger's decision
+        variable</strong> — the number of pool (station, model) pairs over their adopted
+        thresholds (a station carried by two models counts twice). Dashed grey: the
+        required count. Amber ticks: days the trigger activates.</p>
+      <svg id="p2" viewBox="0 0 960 190" role="img" aria-label="station consensus counts"></svg>
+    </div>
+    <div class="panel">
+      <h3 id="p3title"></h3>
+      <p class="sub">Each source's discharge at the reference station divided by its own
+        seasonal 1-in-6-year threshold there — 1.0 (dashed) means "at threshold". This is
+        the bias-free way to overlay models whose absolute magnitudes differ by 5–10×.</p>
+      <svg id="p3" viewBox="0 0 960 210" role="img" aria-label="discharge relative to own threshold"></svg>
+    </div>
+  </div>
+
+  <div class="tip" id="tip"></div>
+
+  <div class="about">
+    <p><strong>Reading it.</strong> The top panel is the ground truth: the SWALIM gauge the
+       trigger is calibrated against. The middle panel is the trigger's actual decision
+       variable — the station consensus. The bottom panel shows the shape and timing of each
+       model's signal at the reference station. A model can track the river well (bottom)
+       yet peak days late or under-rank an extreme (middle) — GEOGloWS in Deyr 2023 on the
+       Shabelle is the canonical example.</p>
+    <p><strong>Method.</strong> Series are each model's reanalysis/retrospective (this
+       explorer is about indicator behaviour, not forecast lead time — see the
+       <a href="../trigger/">trigger report</a> for the reforecast backtests). Consensus
+       counts exist only inside the Gu (Mar–May) and Deyr (Oct–Dec) windows, because the
+       trigger does. Thresholds are Weibull plotting positions on each source's own seasonal
+       maxima, 1999–2023 — we assume bias between reanalysis and forecast for <em>all</em>
+       sources, so operational thresholds must likewise be refit on the operational
+       product's own climatology. Data baked by
+       <code>scripts/export_explorer_data.py</code>.</p>
+  </div>
+
+</div>
+
+<script src="../assets/hero.js" defer></script>
+<script>
+(function () {
+  "use strict";
+  var SRC = ["geoglows", "glofas_v5", "google_grrr"];
+  var SRC_LABEL = { geoglows: "GEOGloWS", glofas_v5: "GloFAS v5", google_grrr: "Google GRRR" };
+  var SRC_COLOR = { geoglows: "#8E5FA8", glofas_v5: "#B34036", google_grrr: "#2A78D6" };
+  var INK = "#1A2733", FAINT = "#6B7683", GRID = "#E4E8EC",
+      C_MOD = "#F4A93B", C_HIGH = "#B34036", C_BAND = "rgba(232,226,212,.45)";
+  var M = { l: 46, r: 12, t: 8, b: 22 };
+  var cache = {}, state = { basin: "juba", year: "2023" }, D = null;
+
+  function el(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  function load(basin, cb) {
+    if (cache[basin]) return cb(cache[basin]);
+    fetch("data/" + basin + ".json").then(function (r) { return r.json(); })
+      .then(function (d) { cache[basin] = d; cb(d); });
+  }
+
+  function monthStarts(year) {
+    var out = [], jan1 = Date.UTC(year, 0, 1);
+    for (var m = 0; m < 12; m++) out.push((Date.UTC(year, m, 1) - jan1) / 864e5);
+    return out;
+  }
+  function dayLabel(year, i) {
+    var d = new Date(Date.UTC(year, 0, 1) + i * 864e5);
+    return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+  }
+
+  // ---- generic panel scaffolding -------------------------------------
+  function scaffold(svg, n, y0, y1, W, H, year, yFmt) {
+    var iw = W - M.l - M.r, ih = H - M.t - M.b;
+    function x(i) { return M.l + (i / (n - 1)) * iw; }
+    function y(v) { return M.t + (1 - (v - y0) / (y1 - y0)) * ih; }
+    var g = [];
+    // season bands
+    var ms = monthStarts(+year);
+    [[2, 5], [9, 12]].forEach(function (b) {
+      var a = ms[b[0]], z = b[1] < 12 ? ms[b[1]] : n;
+      g.push('<rect x="' + x(a) + '" y="' + M.t + '" width="' + (x(z) - x(a)) +
+             '" height="' + ih + '" fill="' + C_BAND + '"/>');
+    });
+    // y grid + labels
+    var ticks = 4;
+    for (var i = 0; i <= ticks; i++) {
+      var v = y0 + (i / ticks) * (y1 - y0);
+      g.push('<line x1="' + M.l + '" x2="' + (W - M.r) + '" y1="' + y(v) + '" y2="' + y(v) +
+             '" stroke="' + GRID + '" stroke-width="1"/>');
+      g.push('<text x="' + (M.l - 6) + '" y="' + (y(v) + 3.5) + '" text-anchor="end" ' +
+             'font-size="10" fill="' + FAINT + '">' + yFmt(v) + "</text>");
+    }
+    // month labels
+    var MN = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+    ms.forEach(function (d, mi) {
+      g.push('<text x="' + x(d + 14) + '" y="' + (H - 6) + '" text-anchor="middle" ' +
+             'font-size="10" fill="' + FAINT + '">' + MN[mi] + "</text>");
+    });
+    return { x: x, y: y, parts: g, W: W, H: H, ih: ih };
+  }
+
+  function linePath(vals, sc, step) {
+    var d = "", pen = false;
+    for (var i = 0; i < vals.length; i++) {
+      var v = vals[i];
+      if (v === null || v === undefined) { pen = false; continue; }
+      var px = sc.x(i).toFixed(1), py = sc.y(v).toFixed(1);
+      if (!pen) { d += "M" + px + " " + py; pen = true; }
+      else if (step) { d += "H" + px + "V" + py; }
+      else { d += "L" + px + " " + py; }
+    }
+    return d;
+  }
+  function dash(sc, v, color, x0, x1) {
+    return '<line x1="' + sc.x(x0) + '" x2="' + sc.x(x1) + '" y1="' + sc.y(v) +
+           '" y2="' + sc.y(v) + '" stroke="' + color +
+           '" stroke-width="1.4" stroke-dasharray="5 4"/>';
+  }
+
+  // ---- render --------------------------------------------------------
+  function render() {
+    var Y = D.years[state.year], year = +state.year, n = Y.swalim.length;
+
+    el("p1title").textContent = "SWALIM observed level at " +
+      D.ref_gauge.replace("_", " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+    el("p3title").textContent = "Discharge at the reference station ÷ own 1-in-6 threshold";
+
+    // panel 1 — swalim level
+    var vals = Y.swalim, present = vals.filter(function (v) { return v !== null; });
+    var hi = Math.max(D.swalim_thresholds.high, present.length ? Math.max.apply(null, present) : 1);
+    var s1 = scaffold(el("p1"), n, 0, hi * 1.08, 960, 190, year,
+                      function (v) { return v.toFixed(1); });
+    s1.parts.push(dash(s1, D.swalim_thresholds.moderate, C_MOD, 0, n - 1));
+    s1.parts.push(dash(s1, D.swalim_thresholds.high, C_HIGH, 0, n - 1));
+    s1.parts.push('<path d="' + linePath(vals, s1) + '" fill="none" stroke="' + INK +
+                  '" stroke-width="1.8"/>');
+    el("p1").innerHTML = s1.parts.join("");
+
+    // panel 2 — consensus counts + the trigger's pair count
+    var ymax2 = Math.max(8, (D.pool && D.pool.gu) || 0, (D.pool && D.pool.deyr) || 0) + 0.4;
+    var s2 = scaffold(el("p2"), n, 0, ymax2, 960, 190, year,
+                      function (v) { return Math.round(v); });
+    var ms = monthStarts(year);
+    s2.parts.push(dash(s2, D.n_req.gu, FAINT, ms[2], ms[5]));
+    s2.parts.push(dash(s2, D.n_req.deyr, FAINT, ms[9], n - 1));
+    SRC.forEach(function (src) {
+      s2.parts.push('<path d="' + linePath(Y.counts[src], s2, true) + '" fill="none" stroke="' +
+                    SRC_COLOR[src] + '" stroke-width="1.4" stroke-linejoin="round" opacity="0.75"/>');
+    });
+    if (Y.trigger_pairs)
+      s2.parts.push('<path d="' + linePath(Y.trigger_pairs, s2, true) + '" fill="none" stroke="' +
+                    INK + '" stroke-width="2.2" stroke-linejoin="round"/>');
+    // amber ticks where the trigger's pair count meets the requirement
+    for (var i = 0; i < n; i++) {
+      var mo = new Date(Date.UTC(year, 0, 1) + i * 864e5).getUTCMonth() + 1;
+      var season = (mo >= 3 && mo <= 5) ? "gu" : (mo >= 10 ? "deyr" : null);
+      if (!season || !Y.trigger_pairs) continue;
+      var v = Y.trigger_pairs[i];
+      if (v !== null && v >= D.n_req[season]) {
+        s2.parts.push('<line x1="' + s2.x(i) + '" x2="' + s2.x(i) + '" y1="' + M.t +
+                      '" y2="' + (M.t + 7) + '" stroke="' + C_MOD + '" stroke-width="2"/>');
+      }
+    }
+    el("p2").innerHTML = s2.parts.join("");
+
+    // panel 3 — ratio to own threshold
+    var mx = 1.25;
+    SRC.forEach(function (src) {
+      Y.ratio[src].forEach(function (v) { if (v !== null && v > mx) mx = v; });
+    });
+    var s3 = scaffold(el("p3"), n, 0, mx * 1.06, 960, 210, year,
+                      function (v) { return v.toFixed(1); });
+    s3.parts.push(dash(s3, 1, FAINT, 0, n - 1));
+    SRC.forEach(function (src) {
+      s3.parts.push('<path d="' + linePath(Y.ratio[src], s3) + '" fill="none" stroke="' +
+                    SRC_COLOR[src] + '" stroke-width="1.8"/>');
+    });
+    el("p3").innerHTML = s3.parts.join("");
+
+    scales = { p1: s1, p2: s2, p3: s3, n: n };
+    renderNote();
+  }
+
+  function renderNote() {
+    var y = +state.year, tags = [];
+    ["gu", "deyr"].forEach(function (s) {
+      if (D.activation_years[s].indexOf(y) >= 0)
+        tags.push(s.charAt(0).toUpperCase() + s.slice(1) + " action trigger activates");
+    });
+    if (D.benchmark.severe_years.indexOf(y) >= 0) tags.push("gauge level ≥ 1-in-5-yr RP");
+    else if (D.benchmark.moderate_years.indexOf(y) >= 0) tags.push("gauge level ≥ 1-in-3-yr RP");
+    el("yearNote").innerHTML = tags.length ? "<b>" + esc(tags.join(" · ")) + "</b>"
+                                           : "gauge level under the 1-in-3-yr RP, no activation";
+  }
+
+  // ---- controls ------------------------------------------------------
+  function yearOption(y) {
+    var marks = [];
+    if (D.activation_years.gu.indexOf(y) >= 0 || D.activation_years.deyr.indexOf(y) >= 0)
+      marks.push("activated");
+    if (D.benchmark.severe_years.indexOf(y) >= 0) marks.push("5yr RP");
+    else if (D.benchmark.moderate_years.indexOf(y) >= 0) marks.push("3yr RP");
+    return y + (marks.length ? " — " + marks.join(", ") : "");
+  }
+  function fillControls() {
+    var seg = el("basinSeg");
+    Array.prototype.forEach.call(seg.querySelectorAll("button"), function (b) {
+      b.className = b.dataset.b === state.basin ? "on" : "";
+    });
+    var sel = el("yearSel"), years = Object.keys(D.years).sort();
+    sel.innerHTML = years.map(function (y) {
+      return '<option value="' + y + '"' + (y === state.year ? " selected" : "") + ">" +
+             esc(yearOption(+y)) + "</option>";
+    }).join("");
+    el("legend").innerHTML = SRC.map(function (s) {
+      return '<span><i style="background:' + SRC_COLOR[s] + '"></i>' + SRC_LABEL[s] + "</span>";
+    }).join("") +
+      '<span><i style="background:' + INK + '"></i>SWALIM level / trigger pair count</span>' +
+      '<span><i style="background:' + C_MOD + ';height:9px;width:3px"></i>trigger activates</span>';
+  }
+
+  function setBasin(b) { state.basin = b; boot(); }
+  el("basinSeg").addEventListener("click", function (e) {
+    if (e.target.dataset && e.target.dataset.b) setBasin(e.target.dataset.b);
+  });
+  el("yearSel").addEventListener("change", function (e) {
+    state.year = e.target.value; render();
+  });
+
+  // ---- hover ---------------------------------------------------------
+  var scales = null, tip = el("tip");
+  function hookHover(id, build) {
+    var svg = el(id);
+    svg.addEventListener("mousemove", function (ev) {
+      if (!scales) return;
+      var r = svg.getBoundingClientRect(), sc = scales[id];
+      var fx = (ev.clientX - r.left) / r.width * sc.W;
+      var i = Math.round((fx - M.l) / (sc.W - M.l - M.r) * (scales.n - 1));
+      if (i < 0 || i >= scales.n) { tip.style.display = "none"; return; }
+      tip.innerHTML = build(i);
+      tip.style.display = "block";
+      var tx = ev.clientX + 14, ty = ev.clientY + 12;
+      if (tx + tip.offsetWidth > window.innerWidth - 8) tx = ev.clientX - tip.offsetWidth - 10;
+      tip.style.left = tx + "px"; tip.style.top = ty + "px";
+    });
+    svg.addEventListener("mouseleave", function () { tip.style.display = "none"; });
+  }
+  function row(color, label, val) {
+    return '<div><i style="background:' + color + '"></i>' + label + ": <b>" +
+           (val === null || val === undefined ? "—" : val) + "</b></div>";
+  }
+  hookHover("p1", function (i) {
+    var Y = D.years[state.year];
+    return '<div class="d">' + dayLabel(+state.year, i) + " " + state.year + "</div>" +
+           row(INK, "level", Y.swalim[i] === null ? null : Y.swalim[i] + " m");
+  });
+  hookHover("p2", function (i) {
+    var Y = D.years[state.year];
+    return '<div class="d">' + dayLabel(+state.year, i) + " " + state.year + "</div>" +
+           row(INK, "trigger pairs", Y.trigger_pairs ? Y.trigger_pairs[i] : null) +
+           SRC.map(function (s) { return row(SRC_COLOR[s], SRC_LABEL[s], Y.counts[s][i]); }).join("");
+  });
+  hookHover("p3", function (i) {
+    var Y = D.years[state.year];
+    return '<div class="d">' + dayLabel(+state.year, i) + " " + state.year + "</div>" +
+           SRC.map(function (s) {
+             var v = Y.ratio[s][i];
+             return row(SRC_COLOR[s], SRC_LABEL[s], v === null ? null : v.toFixed(2) + "×");
+           }).join("");
+  });
+
+  function boot() {
+    load(state.basin, function (d) {
+      D = d;
+      if (!D.years[state.year]) state.year = "2023";
+      fillControls(); render();
+    });
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

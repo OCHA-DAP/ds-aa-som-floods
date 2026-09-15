@@ -1,0 +1,208 @@
+{
+ "deyr": {
+  "level": 96716.00000000003,
+  "rp": 3,
+  "n_seasons": 26,
+  "top8": [
+   {
+    "year": 2023,
+    "people": 200411,
+    "rp": 27.0,
+    "bench": "severe"
+   },
+   {
+    "year": 2017,
+    "people": 187583,
+    "rp": 13.5,
+    "bench": "flood"
+   },
+   {
+    "year": 2015,
+    "people": 179169,
+    "rp": 9.0,
+    "bench": ""
+   },
+   {
+    "year": 2004,
+    "people": 127428,
+    "rp": 6.8,
+    "bench": ""
+   },
+   {
+    "year": 2014,
+    "people": 111864,
+    "rp": 5.4,
+    "bench": "severe"
+   },
+   {
+    "year": 2011,
+    "people": 108798,
+    "rp": 4.5,
+    "bench": ""
+   },
+   {
+    "year": 2009,
+    "people": 98318,
+    "rp": 3.9,
+    "bench": ""
+   },
+   {
+    "year": 2012,
+    "people": 96866,
+    "rp": 3.4,
+    "bench": ""
+   }
+  ],
+  "benchmark": [
+   {
+    "year": 2006,
+    "rank": 11,
+    "people": 86169,
+    "severe": true
+   },
+   {
+    "year": 2008,
+    "rank": 24,
+    "people": 19527,
+    "severe": false
+   },
+   {
+    "year": 2014,
+    "rank": 5,
+    "people": 111864,
+    "severe": true
+   },
+   {
+    "year": 2017,
+    "rank": 2,
+    "people": 187583,
+    "severe": false
+   },
+   {
+    "year": 2019,
+    "rank": 14,
+    "people": 75610,
+    "severe": true
+   },
+   {
+    "year": 2020,
+    "rank": 17,
+    "people": 71293,
+    "severe": true
+   },
+   {
+    "year": 2023,
+    "rank": 1,
+    "people": 200411,
+    "severe": true
+   }
+  ],
+  "in_top8": 3,
+  "n_flood": 7,
+  "severe_in_top8": 2,
+  "n_severe": 5
+ },
+ "gu": {
+  "level": 93662.00000000004,
+  "rp": 3,
+  "n_seasons": 26,
+  "top8": [
+   {
+    "year": 2018,
+    "people": 263164,
+    "rp": 27.0,
+    "bench": "severe"
+   },
+   {
+    "year": 2002,
+    "people": 171453,
+    "rp": 13.5,
+    "bench": ""
+   },
+   {
+    "year": 2023,
+    "people": 171025,
+    "rp": 9.0,
+    "bench": "severe"
+   },
+   {
+    "year": 2006,
+    "people": 138974,
+    "rp": 6.8,
+    "bench": ""
+   },
+   {
+    "year": 2004,
+    "people": 120928,
+    "rp": 5.4,
+    "bench": ""
+   },
+   {
+    "year": 2010,
+    "people": 115780,
+    "rp": 4.5,
+    "bench": "flood"
+   },
+   {
+    "year": 2009,
+    "people": 115210,
+    "rp": 3.9,
+    "bench": ""
+   },
+   {
+    "year": 2022,
+    "people": 101617,
+    "rp": 3.4,
+    "bench": ""
+   }
+  ],
+  "benchmark": [
+   {
+    "year": 2003,
+    "rank": 21,
+    "people": 36517,
+    "severe": false
+   },
+   {
+    "year": 2005,
+    "rank": 18,
+    "people": 41850,
+    "severe": false
+   },
+   {
+    "year": 2010,
+    "rank": 6,
+    "people": 115780,
+    "severe": false
+   },
+   {
+    "year": 2016,
+    "rank": 13,
+    "people": 80053,
+    "severe": true
+   },
+   {
+    "year": 2018,
+    "rank": 1,
+    "people": 263164,
+    "severe": true
+   },
+   {
+    "year": 2020,
+    "rank": 22,
+    "people": 28375,
+    "severe": true
+   },
+   {
+    "year": 2023,
+    "rank": 3,
+    "people": 171025,
+    "severe": true
+   }
+  ],
+  "in_top8": 3,
+  "n_flood": 7,
+  "severe_in_top8": 2,
+  "n_severe": 4
+ }
+}
