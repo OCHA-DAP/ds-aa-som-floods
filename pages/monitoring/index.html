@@ -100,8 +100,8 @@ table.data td.none { color:#9aa4a6; }
         ensemble median.</figcaption>
     </figure>
 
-    <h2>Point by point</h2>
-    <p id="tables-intro">For each open window, the forecast peak at each point within the leg's lead band and inside the season months, against the point's level.</p>
+    <h2>Forecast peak at each station</h2>
+    <p id="tables-intro">For each open window, the forecast peak at each station within the leg's lead band and inside the season months, against the station's level.</p>
     <div id="tables"></div>
 
     <h2>How to read this page</h2>
@@ -161,7 +161,7 @@ function pointTable(w, leg, legName, titles) {
   const src = leg.source === "google" ? "Google Flood Hub" : "GloFAS ensemble median";
   return `<h3 style="font-size:15px;margin:22px 0 2px;font-family:Merriweather,Georgia,serif">${w.title} — ${legName}</h3>
     <p style="margin:0 0 6px;font-size:12.5px;color:var(--n7)">${src}, leads ${leg.leads[0]}–${leg.leads[1]} days, valid days in season · rule ${leg.n_req} of ${leg.n_of} over 1-in-${leg.rp} · max ${leg.max_votes} on ${fmtDate(leg.max_votes_date)}</p>
-    <div class="tablewrap"><table class="data"><thead><tr><th>Point</th><th>Forecast peak (m³/s)</th><th>On</th><th>% of level</th><th>Level (m³/s)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    <div class="tablewrap"><table class="data"><thead><tr><th>Station</th><th>Forecast peak (m³/s)</th><th>On</th><th>% of level</th><th>Level (m³/s)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.statusText); return r.json(); }).then(s => {
@@ -183,8 +183,8 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
   if (s.chart) { document.getElementById("chart").src = s.chart + "?v=" + encodeURIComponent(s.generated_at); document.getElementById("chartfig").hidden = false; }
   const shown = s.open_windows.length ? s.open_windows : Object.keys(s.windows);
   document.getElementById("tables-intro").textContent = s.open_windows.length
-    ? "For each open window, the forecast peak at each point within the leg's lead band and inside the season months, against the point's level."
-    : "No window is open. Shown for every window: the forecast peak at each point within the lead band, against the level, counting only valid days inside the season months (so most cells are empty outside the season months).";
+    ? "For each open window, the forecast peak at each station within the leg's lead band and inside the season months, against the station's level."
+    : "No window is open. Shown for every window: the forecast peak at each station within the lead band, against the level, counting only valid days inside the season months (so most cells are empty outside the season months).";
   document.getElementById("tables").innerHTML = shown.map(k => pointTable(s.windows[k], s.windows[k].action, "action", s.titles) + pointTable(s.windows[k], s.windows[k].readiness, "readiness", s.titles)).join("");
   document.getElementById("updated").textContent = ` Status generated ${fmtTs(s.generated_at)}.`;
 }).catch(err => {
