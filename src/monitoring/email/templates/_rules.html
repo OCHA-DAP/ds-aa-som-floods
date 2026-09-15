@@ -7,7 +7,7 @@
     <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;">Action rule</th>
     <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;">Today</th>
   </tr>
-  {% for key, w in windows.items() %}
+  {% for key, w in windows.items()|sort(attribute='1.open', reverse=true) %}
   <tr{% if not w.open %} style="color:#888;"{% endif %}>
     <td style="padding:4px 8px;border:1px solid #ddd;"><b>{{ w.title }}</b>{% if not w.open %} (closed){% endif %}</td>
     <td style="padding:4px 8px;border:1px solid #ddd;">{{ w.readiness.n_req }} of {{ w.readiness.n_of }} stations over 1-in-{{ w.readiness.rp }}</td>
