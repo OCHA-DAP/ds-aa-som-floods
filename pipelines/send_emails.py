@@ -81,6 +81,7 @@ def render(result, template_name, chart_url):
         readiness_titles=[result["windows"][k]["title"] for k in result["readiness_windows"]],
         source_title=cfg.SOURCE_TITLE, river_title=cfg.RIVER_TITLE, station_title=cfg.STATION_TITLE,
         open_sources=open_sources, source_url=SOURCE_URL,
+        open_season=" and ".join(sorted({result["windows"][k]["season"].capitalize() for k in result["open_windows"]})) or "no season",
         contact_name=cfg.CONTACT_NAME, contact_email=cfg.CONTACT_EMAIL,
         dashboard_url=DASHBOARD_URL, repo_url=cfg.REPO_URL, design_url=DESIGN_URL,
     )
