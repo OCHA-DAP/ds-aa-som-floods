@@ -177,7 +177,6 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
   document.getElementById("windows").innerHTML = Object.entries(s.windows).map(([k, w]) => windowCard(k, w)).join("");
   const notes = [];
   if (s.chart_stale) notes.push(`<div class="callout warn">The chart is from the last available run; today's is not published yet.</div>`);
-  if (s.n_google_gauges < 7) notes.push(`<div class="callout warn">Google Flood Hub's live API serves ${s.n_google_gauges} of the 7 monitored points. Dollow's gauge is not in the operational feed, so in Gu the Juba rule (3 of 4) can only be met if all three live Juba points cross.</div>`);
   notes.push(`<div class="callout">${s.swalim_note} <a href="https://frrims.faoswalim.org/">FAO SWALIM</a>.</div>`);
   document.getElementById("notes").innerHTML = notes.join("");
   if (s.chart) { document.getElementById("chart").src = s.chart + "?v=" + encodeURIComponent(s.generated_at); document.getElementById("chartfig").hidden = false; }
