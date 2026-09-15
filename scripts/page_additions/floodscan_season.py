@@ -15,7 +15,7 @@ RULE = {("juba", "deyr"): (4, 3), ("shabelle", "deyr"): (4, 2), ("juba", "gu"): 
 CAL = {"deyr": "glofas_v5", "gu": "google_grrr"}
 FC = {"deyr": "glofas_v4", "gu": "google_grrr"}
 ARCHIVE = {"google_grrr": (2016, 2023), "glofas_v4": (2003, 2023)}
-SFED_RP = 5
+SFED_RP = 3
 SPAN = list(range(1999, 2024))
 RIVERS = ("juba", "shabelle")
 m = json.load(open(S / "metrics.json")); win = {w["window"]: w for w in m["windows"]}
@@ -43,7 +43,7 @@ for season in ("deyr", "gu"):
     lev = weibull_level(am.values, SFED_RP)
     onsets = {y: g[g >= lev].index.min().normalize() for y, g in s.groupby(s.index.year) if (g >= lev).any() and y in SPAN}
     top = am.sort_values(ascending=False)
-    rank_out[season] = {"level": float(lev), "n_seasons": int(len(am)),
+    rank_out[season] = {"level": float(lev), "rp": SFED_RP, "n_seasons": int(len(am)),
                         "top8": [{"year": int(y), "people": int(v), "rp": round(float(rp[y]), 1), "bench": "severe" if y in sv else "flood" if y in fl else ""} for y, v in top.head(8).items()],
                         "benchmark": [{"year": int(y), "rank": int(rk[y]), "people": int(am[y]), "severe": y in sv} for y in sorted(fl) if y in rk.index],
                         "in_top8": sum(1 for y in fl if y in rk.index and rk[y] <= 8), "n_flood": len([y for y in fl if y in rk.index]),

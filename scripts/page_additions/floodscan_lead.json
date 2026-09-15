@@ -68,13 +68,13 @@
  {
   "season": "deyr",
   "year": 2023,
-  "inundation": "2023-11-01",
+  "inundation": "2023-10-31",
   "gauge_date": "2023-10-25",
-  "gauge_lead": 7,
+  "gauge_lead": 6,
   "reanalysis_date": "2023-10-29",
-  "reanalysis_lead": 3,
+  "reanalysis_lead": 2,
   "forecast_date": "2023-10-21",
-  "forecast_lead": 11
+  "forecast_lead": 10
  },
  {
   "season": "gu",
@@ -90,13 +90,13 @@
  {
   "season": "gu",
   "year": 2018,
-  "inundation": "2018-04-20",
+  "inundation": "2018-04-19",
   "gauge_date": "2018-04-17",
-  "gauge_lead": 3,
+  "gauge_lead": 2,
   "reanalysis_date": "2018-04-20",
-  "reanalysis_lead": 0,
+  "reanalysis_lead": -1,
   "forecast_date": "2018-04-15",
-  "forecast_lead": 5
+  "forecast_lead": 4
  },
  {
   "season": "gu",
