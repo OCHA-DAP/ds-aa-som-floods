@@ -29,7 +29,7 @@ STATION_COLORS = {
     "belet_weyne": "#065A82", "bulo_burti": "#0E8A7B", "jowhar": "#EB6834",
 }
 STATUS_COLORS = {"ACTION TRIGGER REACHED": "#B34036", "READINESS TRIGGER REACHED": "#D48F2A",
-                 "NOT ACTIVATED": "#2F9E6F", "OUT OF SEASON": FAINT}
+                 "NOT ACTIVATED": "#2F9E6F", "NO WINDOW OPEN": FAINT}
 PRODUCT_COLORS = {"google": C_GOOGLE, "glofas": C_GLOFAS4}
 
 plt.rcParams.update({
@@ -138,7 +138,7 @@ def monitoring_chart(df, result, levels_df=None):
     axes[1, 0].set_ylabel("% of the point's threshold")
     status = result["status"]
     fig.text(0.02, 0.975, f"Somalia riverine flood trigger · forecasts retrieved {monitoring_date:%-d %b %Y} · "
-                          f"{cfg.SEASON_TITLE[season]}{'' if is_open else ' (next window; out of season now)'}",
+                          f"{cfg.SEASON_TITLE[season]}{'' if is_open else ' (closed)'}",
              fontsize=11, color=BODY)
     label = fig.text(0.02, 0.945, "Status: ", fontsize=11, color=BODY)
     fig.canvas.draw()

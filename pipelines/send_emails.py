@@ -2,7 +2,7 @@
 
 Cadence: while at least one window is open, an informational email every
 Monday and an immediate email the day a readiness or action trigger is
-reached. Out of season nothing is sent. Campaigns render inside the Listmonk
+reached. When no window is open nothing is sent. Campaigns render inside the Listmonk
 instance's base_campaign template (branding, footer, unsubscribe); the Jinja
 templates here are the content fragment, and the chart is hosted in the
 Listmonk media library.
@@ -90,7 +90,7 @@ def main():
     print(f"{monitoring_date}: {result['status']}; open {result['open_windows']}")
 
     if not result["open_windows"]:
-        print("no window open: no email out of season")
+        print("no window open: no email")
         return
     is_monday = monitoring_date.weekday() == 0
     if not (result["action"] or result["readiness"] or is_monday):

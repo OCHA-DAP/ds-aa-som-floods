@@ -27,7 +27,7 @@ Daily GHA `monitoring.yml` at 20:00 UTC, four steps, all from repo root:
    (`ds-aa-som-floods` + `som:info` / `som:trigger` / `som:test`; created by
    `pipelines/setup_som_listmonk_lists.py`, ids 122/123/124 as observed, never hardcoded).
    Cadence: while a window is open, Monday informational + immediate on readiness/action.
-   **Out of season nothing is sent** (the pipeline still runs and the page still updates).
+   **When no window is open nothing is sent** (the pipeline still runs and the page still updates).
    Windows are open by calendar month (`config.MONITORING_OPEN_MONTHS`): Deyr September to
    January, Gu February to June; the trigger still counts only in-season forecast days.
 4. `pipelines/export_monitoring_status.py` — `status.json` + `latest.png` to the orphan
