@@ -1,6 +1,6 @@
 """Fetch the operational forecasts at the seven trigger points and keep them.
 
-Two products, one long table (projects.ds_aa_som_floods_monitoring, dev):
+Two products, one long table per day on blob (monitoring/forecasts/<date>.parquet):
 
 - GloFAS operational ensemble (EWDS cems-glofas-forecast, `operational`
   system version, 51 perturbed members, days 1-12) at the frozen river cells
@@ -14,12 +14,14 @@ backtest did: GloFAS "day n" (leadtime_days = n) describes calendar day
 issue+(n-1); Google leadtime_days = valid day - issue day (the API returns
 two days of hindsight, leads -2 and -1, which are kept for the chart).
 
-ocha_stratus reads DB credentials at import time, so load_dotenv() runs
+ocha_stratus reads the blob credentials at import time, so load_dotenv() runs
 first in every entry point that imports this module.
 """
 
+import io
 import json
 import os
+import re
 import tempfile
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -28,7 +30,6 @@ import numpy as np
 import pandas as pd
 import requests
 import xarray as xr
-from sqlalchemy import text
 
 import ocha_stratus as stratus
 from src.constants import ALL_TRIGGER_STATIONS, STATIONS
@@ -291,49 +292,52 @@ COLUMNS = ["monitoring_date", "source", "station", "valid_date", "river", "issue
            "n_members", "model_version"]
 
 
-def archive_day(df, result, monitoring_date):
-    """Keep the day's processed forecast rows and evaluation on blob, next to the raw
-    GRIB, the raw Google answer and the chart, so a day can be re-read without the DB
-    or the monitoring-status git branch."""
-    import io
-
-    buf = io.BytesIO()
+def save_rows(df, monitoring_date):
+    """The day's processed rows of both sources -> monitoring/forecasts/<date>.parquet.
+    This parquet is the pipeline's store: the later steps read it back with load_day."""
     out = df[COLUMNS].copy()
+    out["monitoring_date"] = pd.to_datetime(out["monitoring_date"])
+    out["valid_date"] = pd.to_datetime(out["valid_date"])
     out["issued_time"] = pd.to_datetime(out["issued_time"], utc=True)
+    buf = io.BytesIO()
     out.to_parquet(buf, index=False)
-    c = _container(write=True)
-    c.upload_blob(forecasts_blob(monitoring_date), buf.getvalue(), overwrite=True)
-    c.upload_blob(status_blob(monitoring_date), json.dumps(result, indent=1, default=str).encode(), overwrite=True)
-    return forecasts_blob(monitoring_date), status_blob(monitoring_date)
+    _container(write=True).upload_blob(forecasts_blob(monitoring_date), buf.getvalue(), overwrite=True)
+    return len(out)
 
 
-def upsert(df):
-    df = df[COLUMNS].copy()
-    df["issued_time"] = pd.to_datetime(df["issued_time"], utc=True)
-    engine = stratus.get_engine(stage=cfg.BLOB_STAGE, write=True)
-    df.to_sql(cfg.DB_TABLE, schema=cfg.DB_SCHEMA, con=engine, if_exists="append",
-              index=False, method=stratus.postgres_upsert)
-    return len(df)
+def save_status(result, monitoring_date):
+    """The evaluation (status.json content) -> monitoring/status/<date>.json."""
+    _container(write=True).upload_blob(status_blob(monitoring_date),
+                                       json.dumps(result, indent=1, default=str).encode(), overwrite=True)
+    return status_blob(monitoring_date)
 
 
 def load_day(monitoring_date):
-    engine = stratus.get_engine(stage=cfg.BLOB_STAGE)
-    with engine.connect() as con:
-        df = pd.read_sql(text(f"select * from {cfg.DB_SCHEMA}.{cfg.DB_TABLE} "
-                              "where monitoring_date = :d order by source, station, valid_date"),
-                         con, params={"d": monitoring_date})
-    if df.empty:
-        raise LookupError(f"no monitoring rows for {monitoring_date}")
+    from azure.core.exceptions import ResourceNotFoundError
+
+    try:
+        data = _container().get_blob_client(forecasts_blob(monitoring_date)).download_blob().readall()
+    except ResourceNotFoundError:
+        raise LookupError(f"no monitoring rows for {monitoring_date} on blob "
+                          f"({forecasts_blob(monitoring_date)}); run check_forecasts.py first")
+    df = pd.read_parquet(io.BytesIO(data))
     df["valid_date"] = pd.to_datetime(df["valid_date"])
     df["monitoring_date"] = pd.to_datetime(df["monitoring_date"])
-    return df
+    df["issued_time"] = pd.to_datetime(df["issued_time"], utc=True)
+    return df.sort_values(["source", "station", "valid_date"]).reset_index(drop=True)
 
 
 def latest_monitoring_date():
-    engine = stratus.get_engine(stage=cfg.BLOB_STAGE)
-    with engine.connect() as con:
-        d = con.execute(text(f"select max(monitoring_date) from {cfg.DB_SCHEMA}.{cfg.DB_TABLE}")).scalar()
-    return d
+    """Most recent day with rows on blob."""
+    prefix = f"{cfg.PROJECT_PREFIX}/monitoring/forecasts/"
+    days = []
+    for b in _container().list_blobs(name_starts_with=prefix):
+        m = re.fullmatch(r"(\d{4}-\d{2}-\d{2})\.parquet", b.name[len(prefix):])
+        if m:
+            days.append(date.fromisoformat(m.group(1)))
+    if not days:
+        raise LookupError("no monitoring day on blob yet")
+    return max(days)
 
 
 def monitoring_date_from_env():

@@ -8,7 +8,7 @@
 - Google Flood Hub at the six gauges the live API serves (Dollow's HYBAS
   gauge is not in the operational feed).
 
-Rows are upserted into projects.ds_aa_som_floods_monitoring (dev).
+Rows are written to blob as monitoring/forecasts/<date>.parquet (dev), the store the later steps read.
 MONITORING_DATE (YYYY-MM-DD) overrides today for re-runs; Google always
 returns its current forecast, so a re-run for a past date carries today's
 Google issue and is labelled as such by issued_time.
@@ -64,8 +64,8 @@ def main():
     if dry_run:
         print(f"DRY_RUN: not writing {len(df)} rows")
     else:
-        n = etl.upsert(df)
-        print(f"upserted {n} rows into {cfg.DB_SCHEMA}.{cfg.DB_TABLE}")
+        n = etl.save_rows(df, monitoring_date)
+        print(f"wrote {n} rows to blob {etl.forecasts_blob(monitoring_date)}")
 
 
 if __name__ == "__main__":

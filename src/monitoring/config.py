@@ -9,8 +9,6 @@ from src.constants import SEASONS, TRIGGER_CONFIG, TRIGGER_STATIONS
 
 PROJECT_PREFIX = "ds-aa-som-floods"
 BLOB_STAGE = "dev"
-DB_SCHEMA = "projects"
-DB_TABLE = "ds_aa_som_floods_monitoring"
 
 # ------------------------------------------------------------ GloFAS version
 # The trigger analysis fitted the Deyr thresholds on the GloFAS v5 reanalysis

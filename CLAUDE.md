@@ -18,9 +18,9 @@ at leads 8–12 d for every window (`src/monitoring/config.py: READINESS_RULES`)
 Daily GHA `monitoring.yml` at 16:00 UTC (first full hour after GloFAS lands on EWDS, ~14:15-15:30 UTC), four steps, all from repo root:
 
 1. `pipelines/check_forecasts.py` — GloFAS operational ensemble at the 7 frozen cells
-   (`src/monitoring/glofas_cells.json`) from EWDS, Google Flood Hub for the 6 live gauges,
-   upsert into `projects.ds_aa_som_floods_monitoring` (dev DB; PK monitoring_date, source,
-   station, valid_date). Ends with `os._exit(0)` (cfgrib teardown segfault on Linux).
+   (`src/monitoring/glofas_cells.json`) from EWDS, Google Flood Hub for the 7 gauges, written to
+   blob `monitoring/forecasts/<date>.parquet` (dev), the store every later step reads. No database.
+   Ends with `os._exit(0)` (cfgrib teardown segfault on Linux).
 2. `pipelines/save_plots.py` — `evaluate.evaluate` + chart → blob
    `projects/ds-aa-som-floods/monitoring/{date}.png` (dev).
 3. `pipelines/send_emails.py` — Listmonk via ocha-relay. Lists resolved by tag
@@ -36,7 +36,7 @@ Daily GHA `monitoring.yml` at 16:00 UTC (first full hour after GloFAS lands on E
 
 Blob (container `projects`, dev, prefix `ds-aa-som-floods/`): raw GloFAS GRIB `raw/glofas/monitoring/`, raw Google
 answer `raw/google/monitoring/`, processed rows `monitoring/forecasts/<date>.parquet`, evaluation
-`monitoring/status/<date>.json`, chart `monitoring/<date>.png`. The DB table holds the same rows.
+`monitoring/status/<date>.json`, chart `monitoring/<date>.png`. There is no database table.
 
 Run modes (KB `infrastructure/email-testing.md`): `TEST_EMAIL`, `DRY_RUN` default **true**;
 production needs repo vars `TEST_EMAIL=false`, `DRY_RUN=false`. `SIMULATE_TRIGGER=true` forces an
