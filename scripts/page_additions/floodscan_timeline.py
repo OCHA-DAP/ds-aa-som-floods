@@ -34,8 +34,7 @@ for i, (label, x2, xs) in enumerate(rows):
     ax.plot([x2], [i], "o", color=C_G2, ms=8, zorder=4)
     ax.plot([xs_c], [i], "s", color=C_SFED, ms=8, zorder=5)
     if xs != xs_c:
-        ax.annotate(f"{xs:+d} d", (xs_c, i), xytext=(-6 if xs < 0 else 6, 0), textcoords="offset points",
-                    ha="right" if xs < 0 else "left", va="center", fontsize=8, color=C_SFED)
+        ax.annotate(f"{xs:+d} d", (xs_c, i), xytext=(7, 7), textcoords="offset points", ha="left", va="bottom", fontsize=8, color=C_SFED)
 ax.set_yticks(range(len(rows))); ax.set_yticklabels([r[0] for r in rows]); ax.invert_yaxis()
 ax.axvline(0, color="#9ca3af", lw=1, ls=":")
 ax.set_xlim(-XMAX - 2, XMAX + 2)
