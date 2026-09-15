@@ -393,11 +393,11 @@ for river, season in WINDOWS:
         c2 = L.gauge_crossings(river, season, rp_, span=SPAN); c1 = L.gauge_crossings(river, season, rp_, n_req=1, span=SPAN)
         gaps = sorted((d2 - c1[y]).days for y, d2 in c2.items() if y <= 2023)
         mid = gaps[len(gaps) // 2] if len(gaps) % 2 else (gaps[len(gaps) // 2 - 1] + gaps[len(gaps) // 2]) / 2
-        cells_ += [n(f"{mid:.0f}"), c(f"{gaps[0]} to {gaps[-1]}"), n(str(len(gaps)))]
+        cells_ += [n(f"{mid:.0f}"), c(f"{gaps[0]} to {gaps[-1]}")]
     gap_rows.append(cells_)
 add("<p>The flood is dated from the second gauge. The first gauge on the river crosses earlier, by the following number of days.</p>")
-_gh = "".join(f"<th colspan='3' class='n' style='border-bottom:1px solid var(--rule)'>First to second gauge over 1-in-{rp_}</th>" for rp_ in (3, 5))
-_gs = "".join("<th class='n'>Median days</th><th>Range</th><th class='n'>Seasons</th>" for _ in (3, 5))
+_gh = "".join(f"<th colspan='2' class='n' style='border-bottom:1px solid var(--rule)'>First to second gauge over 1-in-{rp_}</th>" for rp_ in (3, 5))
+_gs = "".join("<th class='n'>Median days</th><th>Range</th>" for _ in (3, 5))
 _gb = "".join("<tr>" + "".join(f"<td{a}>{x}</td>" for x, a in r_) + "</tr>" for r_ in gap_rows)
 add(f"<div class='tw'><table><thead><tr><th></th>{_gh}</tr><tr><th>Window</th>{_gs}</tr></thead><tbody>{_gb}</tbody></table></div>")
 
