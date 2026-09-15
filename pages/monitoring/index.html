@@ -101,15 +101,15 @@ table.data td.none { color:#9aa4a6; }
     </figure>
 
     <h2>Forecast peak at each station</h2>
-    <p id="tables-intro">For each open window, the forecast peak at each station within the leg's lead band and inside the season months, against the station's level.</p>
+    <p id="tables-intro">For each open window, the forecast peak at each station within the leg's lead band and inside the window months, against the station's level.</p>
     <div id="tables"></div>
 
     <h2>How to read this page</h2>
     <ul>
-      <li><strong>Four windows, one source each.</strong> Gu (March to May) runs on Google Flood Hub, Deyr (October to December) on GloFAS. A window activates when, on a single forecast day, enough of the river's points are forecast at or above their own return-period level: Juba needs 3 of 4 points, Shabelle 2 of 3. Any one window activating releases the allocation.</li>
+      <li><strong>Four windows, one source each.</strong> Gu (window February to June) runs on Google Flood Hub, Deyr (window September to January) on GloFAS. A window activates when, on a single forecast day, enough of the river's points are forecast at or above their own return-period level: Juba needs 3 of 4 points, Shabelle 2 of 3. Any one window activating releases the allocation.</li>
       <li><strong>Action</strong> reads leads 1 to 7 days on the window's source. <strong>Readiness</strong> reads GloFAS at leads 8 to 12 days for every window, with levels fitted on that lead band, and releases only the mobilisation share.</li>
       <li><strong>SWALIM.</strong> A SWALIM moderate flood risk alert for either river also activates readiness. Bulletins are not read automatically: check <a href="https://frrims.faoswalim.org/">FAO SWALIM</a> alongside this page.</li>
-      <li><strong>A window is open</strong> by calendar month: Deyr from September to January, Gu from February to June. The trigger itself counts only forecast days inside the season, October to December and March to May, so an open window with no in-season forecast day yet reads as not activated. In July and August the pipeline still runs and this page still updates, but no email is sent.</li>
+      <li><strong>A window is open</strong> by calendar month: Deyr from September to January, Gu from February to June. Every forecast day inside the window counts, so monitoring for Deyr starts in September and for Gu in February. In July and August the pipeline still runs and this page still updates, but no email is sent.</li>
       <li>Full design and evidence: the <a href="../trigger-single-model/summary.html">trigger summary</a> and the <a href="../trigger-single-model/">analysis page</a>. Which GloFAS version is live, and what it does to the thresholds: <a href="../glofas-version/">GloFAS version switch</a>.</li>
     </ul>
   </article>
@@ -150,7 +150,7 @@ function windowCard(key, w) {
 function pointTable(w, leg, legName, titles) {
   const rows = Object.entries(leg.stations).map(([st, v]) => {
     if (!v.reporting) return `<tr><td>${titles.station[st]}</td><td class="none" colspan="3">not in the live feed</td><td class="n">${n0(v.threshold)}</td></tr>`;
-    if (v.max_value == null) return `<tr><td>${titles.station[st]}</td><td class="none" colspan="3">no forecast day inside the season months yet</td><td class="n">${n0(v.threshold)}</td></tr>`;
+    if (v.max_value == null) return `<tr><td>${titles.station[st]}</td><td class="none" colspan="3">no forecast day inside the window yet</td><td class="n">${n0(v.threshold)}</td></tr>`;
     const pct = Math.min(v.pct_of_threshold, 250);
     return `<tr><td>${titles.station[st]}</td>
       <td class="n ${v.exceeds ? "over" : ""}">${n0(v.max_value)}</td>
@@ -160,7 +160,7 @@ function pointTable(w, leg, legName, titles) {
   }).join("");
   const src = leg.source === "google" ? "Google Flood Hub" : "GloFAS ensemble median";
   return `<h3 style="font-size:15px;margin:22px 0 2px;font-family:Merriweather,Georgia,serif">${w.title} — ${legName}</h3>
-    <p style="margin:0 0 6px;font-size:12.5px;color:var(--n7)">${src}, leads ${leg.leads[0]}–${leg.leads[1]} days, valid days in season · rule ${leg.n_req} of ${leg.n_of} over 1-in-${leg.rp} · max ${leg.max_votes} on ${fmtDate(leg.max_votes_date)}</p>
+    <p style="margin:0 0 6px;font-size:12.5px;color:var(--n7)">${src}, leads ${leg.leads[0]}–${leg.leads[1]} days, valid days inside the window · rule ${leg.n_req} of ${leg.n_of} over 1-in-${leg.rp} · max ${leg.max_votes} on ${fmtDate(leg.max_votes_date)}</p>
     <div class="tablewrap"><table class="data"><thead><tr><th>Station</th><th>Forecast peak (m³/s)</th><th>On</th><th>% of level</th><th>Level (m³/s)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
@@ -183,8 +183,8 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
   if (s.chart) { document.getElementById("chart").src = s.chart + "?v=" + encodeURIComponent(s.generated_at); document.getElementById("chartfig").hidden = false; }
   const shown = s.open_windows.length ? s.open_windows : Object.keys(s.windows);
   document.getElementById("tables-intro").textContent = s.open_windows.length
-    ? "For each open window, the forecast peak at each station within the leg's lead band and inside the season months, against the station's level."
-    : "No window is open. Shown for every window: the forecast peak at each station within the lead band, against the level, counting only valid days inside the season months (so most cells are empty outside the season months).";
+    ? "For each open window, the forecast peak at each station within the leg's lead band and inside the window months, against the station's level."
+    : "No window is open. Shown for every window: the forecast peak at each station within the lead band, against the level, counting only valid days inside the window months (so most cells are empty).";
   document.getElementById("tables").innerHTML = shown.map(k => pointTable(s.windows[k], s.windows[k].readiness, "readiness", s.titles) + pointTable(s.windows[k], s.windows[k].action, "action", s.titles)).join("");
   document.getElementById("updated").textContent = ` Status generated ${fmtTs(s.generated_at)}.`;
 }).catch(err => {

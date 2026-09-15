@@ -44,11 +44,11 @@ ACTION_LEADS = (1, 7)
 READINESS_LEADS = (8, 12)
 
 # ------------------------------------------------------- monitoring windows
-# Calendar months in which each season's windows are open, i.e. the status is
-# evaluated and emails go out: Deyr from September to January, Gu from
-# February to June (decided 2026-09-15). The trigger itself still counts only
-# forecast days inside the season months (SEASONS in src.constants), so an
-# open window with no in-season forecast day yet reads "not activated".
+# Calendar months in which each season's windows are open: Deyr from September
+# to January, Gu from February to June (decided 2026-09-15). The status is
+# evaluated, emails go out, and every forecast valid day inside these months
+# counts towards the rule (not only the season months in SEASONS, which the
+# thresholds were fitted on). Monitoring for Deyr therefore starts in September.
 MONITORING_OPEN_MONTHS = {"deyr": (9, 10, 11, 12, 1), "gu": (2, 3, 4, 5, 6)}
 
 # ------------------------------------------------------------- windows
@@ -60,7 +60,7 @@ WINDOW_TITLE = {
     ("shabelle", "gu"): "Gu Shabelle",
     ("shabelle", "deyr"): "Deyr Shabelle",
 }
-SEASON_TITLE = {"gu": "Gu (March to May)", "deyr": "Deyr (October to December)"}
+SEASON_TITLE = {"gu": "Gu (window February to June)", "deyr": "Deyr (window September to January)"}
 RIVER_TITLE = {"juba": "Juba", "shabelle": "Shabelle"}
 STATION_TITLE = {
     "dollow": "Dollow", "luuq": "Luuq", "bardheere": "Bardheere", "bualle": "Bualle",

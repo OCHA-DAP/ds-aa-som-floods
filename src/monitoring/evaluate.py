@@ -5,9 +5,9 @@ READINESS_RULES): on any single forecast valid day, at least n_req of the
 river's points are at or above their own return-period threshold, reading
 the ensemble median for GloFAS and the deterministic value for Google.
 Action reads the window's source at leads 1-7; readiness reads GloFAS at
-leads 8-12 with the readiness thresholds. Only valid days inside the
-window's season months count, so a late-September forecast can already
-carry Deyr votes.
+leads 8-12 with the readiness thresholds. Every forecast valid day inside the
+window's open months counts (config.MONITORING_OPEN_MONTHS: Deyr September
+to January, Gu February to June), so monitoring for Deyr starts in September.
 
 The result is a plain dict of scalars, lists and dicts so the same object
 feeds the email template, the chart header and status.json; the status page
@@ -73,7 +73,7 @@ def evaluate(df, monitoring_date=None, levels_df=None):
     for w in cfg.WINDOWS:
         river, season = w
         stations = TRIGGER_STATIONS[river]
-        months = SEASONS[season]
+        months = cfg.MONITORING_OPEN_MONTHS[season]   # every forecast day inside the open window counts
         a = cfg.ACTION_RULES[w]
         r = cfg.READINESS_RULES[w]
         a_levels = thr.lookup(levels_df, cfg.threshold_source(a["source"]), season, a["rp"], stations)
@@ -86,7 +86,7 @@ def evaluate(df, monitoring_date=None, levels_df=None):
         is_open = _window_open(monitoring_date, season)
         windows[cfg.WINDOW_KEY[w]] = {
             "river": river, "season": season, "title": cfg.WINDOW_TITLE[w],
-            "open": is_open, "in_season": monitoring_date.month in months,
+            "open": is_open, "in_season": monitoring_date.month in SEASONS[season],
             "action": action, "readiness": ready,
         }
     open_w = [k for k, v in windows.items() if v["open"]]
