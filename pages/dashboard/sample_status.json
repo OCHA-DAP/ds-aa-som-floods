@@ -1,0 +1,430 @@
+{
+ "monitoring_date": "2026-10-20",
+ "open_windows": [
+  "juba_deyr",
+  "shabelle_deyr"
+ ],
+ "action": true,
+ "action_windows": [
+  "shabelle_deyr"
+ ],
+ "readiness": true,
+ "readiness_windows": [
+  "juba_deyr",
+  "shabelle_deyr"
+ ],
+ "status": "ACTION TRIGGER REACHED",
+ "glofas_version": "version_4_0 (v4.5 operational)",
+ "glofas_issue": "2026-10-20",
+ "google_issue": "2026-10-20 12:40 UTC",
+ "n_glofas_points": 7,
+ "n_google_gauges": 6,
+ "windows": {
+  "juba_deyr": {
+   "river": "juba",
+   "season": "deyr",
+   "title": "Deyr Juba",
+   "open": true,
+   "in_season": true,
+   "action": {
+    "n_req": 3,
+    "n_of": 4,
+    "votes_by_day": {
+     "2026-10-24": 2
+    },
+    "max_votes": 2,
+    "max_votes_date": "2026-10-24",
+    "activated": false,
+    "n_reporting": 4,
+    "stations": {
+     "dollow": {
+      "threshold": 1736,
+      "max_value": 1510,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 87.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "luuq": {
+      "threshold": 1734,
+      "max_value": 1790,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 103.2,
+      "exceeds": true,
+      "reporting": true
+     },
+     "bardheere": {
+      "threshold": 1730,
+      "max_value": 1760,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 101.7,
+      "exceeds": true,
+      "reporting": true
+     },
+     "bualle": {
+      "threshold": 1725,
+      "max_value": 1400,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 81.2,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "glofas",
+    "rp": 4,
+    "leads": [
+     1,
+     7
+    ]
+   },
+   "readiness": {
+    "n_req": 3,
+    "n_of": 4,
+    "votes_by_day": {
+     "2026-10-24": 3
+    },
+    "max_votes": 3,
+    "max_votes_date": "2026-10-24",
+    "activated": true,
+    "n_reporting": 4,
+    "stations": {
+     "dollow": {
+      "threshold": 1499,
+      "max_value": 1520,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 101.4,
+      "exceeds": true,
+      "reporting": true
+     },
+     "luuq": {
+      "threshold": 1517,
+      "max_value": 1600,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 105.5,
+      "exceeds": true,
+      "reporting": true
+     },
+     "bardheere": {
+      "threshold": 1532,
+      "max_value": 1580,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 103.1,
+      "exceeds": true,
+      "reporting": true
+     },
+     "bualle": {
+      "threshold": 1551,
+      "max_value": 1300,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 83.8,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "glofas",
+    "rp": 4,
+    "leads": [
+     8,
+     12
+    ]
+   }
+  },
+  "shabelle_deyr": {
+   "river": "shabelle",
+   "season": "deyr",
+   "title": "Deyr Shabelle",
+   "open": true,
+   "in_season": true,
+   "action": {
+    "n_req": 2,
+    "n_of": 3,
+    "votes_by_day": {
+     "2026-10-24": 2
+    },
+    "max_votes": 2,
+    "max_votes_date": "2026-10-24",
+    "activated": true,
+    "n_reporting": 3,
+    "stations": {
+     "belet_weyne": {
+      "threshold": 1079,
+      "max_value": 1210,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 112.1,
+      "exceeds": true,
+      "reporting": true
+     },
+     "bulo_burti": {
+      "threshold": 1079,
+      "max_value": 1140,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 105.7,
+      "exceeds": true,
+      "reporting": true
+     },
+     "jowhar": {
+      "threshold": 1122,
+      "max_value": 980,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 87.3,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "glofas",
+    "rp": 4,
+    "leads": [
+     1,
+     7
+    ]
+   },
+   "readiness": {
+    "n_req": 2,
+    "n_of": 3,
+    "votes_by_day": {
+     "2026-10-24": 2
+    },
+    "max_votes": 2,
+    "max_votes_date": "2026-10-24",
+    "activated": true,
+    "n_reporting": 3,
+    "stations": {
+     "belet_weyne": {
+      "threshold": 957,
+      "max_value": 1010,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 105.5,
+      "exceeds": true,
+      "reporting": true
+     },
+     "bulo_burti": {
+      "threshold": 968,
+      "max_value": 990,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 102.3,
+      "exceeds": true,
+      "reporting": true
+     },
+     "jowhar": {
+      "threshold": 990,
+      "max_value": 900,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 90.9,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "glofas",
+    "rp": 4,
+    "leads": [
+     8,
+     12
+    ]
+   }
+  },
+  "juba_gu": {
+   "river": "juba",
+   "season": "gu",
+   "title": "Gu Juba",
+   "open": false,
+   "in_season": false,
+   "action": {
+    "n_req": 3,
+    "n_of": 4,
+    "votes_by_day": {
+     "2026-10-24": 0
+    },
+    "max_votes": 0,
+    "max_votes_date": "2026-10-24",
+    "activated": false,
+    "n_reporting": 4,
+    "stations": {
+     "dollow": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "luuq": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bardheere": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bualle": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "google",
+    "rp": 5,
+    "leads": [
+     1,
+     7
+    ]
+   },
+   "readiness": {
+    "n_req": 3,
+    "n_of": 4,
+    "votes_by_day": {
+     "2026-10-24": 0
+    },
+    "max_votes": 0,
+    "max_votes_date": "2026-10-24",
+    "activated": false,
+    "n_reporting": 4,
+    "stations": {
+     "dollow": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "luuq": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bardheere": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bualle": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "glofas",
+    "rp": 5,
+    "leads": [
+     8,
+     12
+    ]
+   }
+  },
+  "shabelle_gu": {
+   "river": "shabelle",
+   "season": "gu",
+   "title": "Gu Shabelle",
+   "open": false,
+   "in_season": false,
+   "action": {
+    "n_req": 2,
+    "n_of": 3,
+    "votes_by_day": {
+     "2026-10-24": 0
+    },
+    "max_votes": 0,
+    "max_votes_date": "2026-10-24",
+    "activated": false,
+    "n_reporting": 3,
+    "stations": {
+     "belet_weyne": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bulo_burti": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "jowhar": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "google",
+    "rp": 5,
+    "leads": [
+     1,
+     7
+    ]
+   },
+   "readiness": {
+    "n_req": 2,
+    "n_of": 3,
+    "votes_by_day": {
+     "2026-10-24": 0
+    },
+    "max_votes": 0,
+    "max_votes_date": "2026-10-24",
+    "activated": false,
+    "n_reporting": 3,
+    "stations": {
+     "belet_weyne": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bulo_burti": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "jowhar": {
+      "threshold": 1,
+      "max_value": 0,
+      "max_date": "2026-10-24",
+      "pct_of_threshold": 0.0,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "glofas",
+    "rp": 5,
+    "leads": [
+     8,
+     12
+    ]
+   }
+  }
+ },
+ "generated_at": "2026-10-20T20:10:00Z",
+ "sample": true
+}

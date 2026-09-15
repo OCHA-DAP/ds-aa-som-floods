@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trigger status | Somalia riverine flood trigger</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1f2324;--body:#3f4748;--muted:#6b7683;--rule:#e2e7e7;--bg:#f6f8f8;--reached:#B34036;--ready:#D48F2A;--clear:#2E8B6E;--off:#9aa4a6;--river:#4a90c2}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.55 Roboto,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;color:var(--body);background:#fff}
+.wrap{max-width:980px;margin:0 auto;padding:28px 24px 40px}
+header h1{font-size:24px;font-weight:700;color:var(--ink);margin:0 0 4px}
+header p{margin:0;color:var(--muted);font-size:14px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:22px 0 18px}
+.tile{border:1px solid var(--rule);border-radius:8px;padding:16px 18px 14px;background:#fff;border-top:5px solid var(--off)}
+.tile.reached{border-top-color:var(--reached)} .tile.ready{border-top-color:var(--ready)} .tile.clear{border-top-color:var(--clear)}
+.tile .river{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.tile .state{font-size:22px;font-weight:700;color:var(--ink);margin:4px 0 8px;line-height:1.2}
+.tile.reached .state{color:var(--reached)} .tile.ready .state{color:#B0722B} .tile.clear .state{color:var(--clear)} .tile.off .state{color:var(--off)}
+.tile .legs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.tile .leg{border-top:1px solid var(--rule);padding-top:8px;font-size:13px;color:var(--body)}
+.tile .leg b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:500;margin-bottom:2px}
+.tile .leg .n{font-size:20px;font-weight:700;color:var(--ink)} .tile .leg .n.hit{color:var(--reached)} .tile .leg .n.rdy{color:#B0722B}
+.tile .meta{margin-top:10px;font-size:12px;color:var(--muted)}
+.maprow{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:20px;align-items:start}
+@media (max-width:760px){.maprow{grid-template-columns:1fr}}
+.map{border:1px solid var(--rule);border-radius:8px;background:var(--bg);overflow:hidden}
+svg{display:block;width:100%;height:auto}
+.district{fill:#ffffff;stroke:#c9d2d3;stroke-width:.7}
+.district.aa{fill:#e9eeee;stroke:#9aa4a6}
+.district.aa.reached{fill:rgba(179,64,54,.28);stroke:#B34036}
+.district.aa.ready{fill:rgba(212,143,42,.28);stroke:#D48F2A}
+.district.aa.clear{fill:rgba(46,139,110,.16);stroke:#2E8B6E}
+.river{fill:none;stroke:var(--river);stroke-width:1.4;stroke-linejoin:round;stroke-linecap:round;opacity:.75}
+.river.main{stroke-width:2.4;opacity:.95}
+.pt{stroke:#1f2324;stroke-width:1.2;fill:#fff} .pt.over{fill:var(--reached);stroke:#7A241C} .pt.rdy{fill:var(--ready);stroke:#8a5a15} .pt.na{fill:#e2e7e7;stroke:#9aa4a6;stroke-dasharray:2 1.5}
+.lbl{font:11px Roboto,sans-serif;fill:var(--ink);paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.dlbl{font:10px Roboto,sans-serif;fill:#5e6a6b;paint-order:stroke;stroke:#fff;stroke-width:2.5px}
+.rlbl{font:italic 11px Roboto,sans-serif;fill:#3b6f95;paint-order:stroke;stroke:#fff;stroke-width:3px}
+.legend{font-size:13px;color:var(--body)}
+.legend h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:0 0 8px}
+.legend .row{display:flex;align-items:center;gap:9px;margin:6px 0}
+.sw{width:14px;height:14px;border-radius:3px;border:1px solid #9aa4a6;flex:none}
+.dot{width:12px;height:12px;border-radius:50%;border:1.5px solid #1f2324;flex:none;background:#fff}
+.note{margin-top:18px;font-size:13px;color:var(--muted);max-width:820px}
+.banner{margin:18px 0 0;padding:10px 14px;border-radius:6px;background:#fdf3e7;border-left:5px solid #e0a04b;font-size:13px;color:var(--body)}
+.banner.info{background:#eef4f2;border-left-color:#2E8B6E}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Somalia riverine flood trigger: status</h1>
+  <p id="sub">Loading the latest monitoring run.</p>
+</header>
+<div id="banner" hidden></div>
+<div class="tiles" id="tiles"></div>
+<div class="maprow">
+  <div class="map"><svg id="map" viewBox="0 0 700 760" role="img" aria-label="Map of the Juba and Shabelle rivers with the fourteen anticipatory-action districts"></svg></div>
+  <div class="legend" id="legend"></div>
+</div>
+<p class="note" id="note"></p>
+</div>
+<script>
+(function () {
+  const STATIONS = {
+    dollow: {name: "Dollow", river: "juba", lat: 4.175, lon: 42.075},
+    luuq: {name: "Luuq", river: "juba", lat: 3.725, lon: 42.525},
+    bardheere: {name: "Bardheere", river: "juba", lat: 2.325, lon: 42.225},
+    bualle: {name: "Bualle", river: "juba", lat: 1.225, lon: 42.575},
+    belet_weyne: {name: "Belet Weyne", river: "shabelle", lat: 4.725, lon: 45.225},
+    bulo_burti: {name: "Bulo Burti", river: "shabelle", lat: 3.825, lon: 45.575},
+    jowhar: {name: "Jowhar", river: "shabelle", lat: 2.775, lon: 45.525},
+  };
+  const AA = {
+    SO2605: "juba", SO2606: "juba", SO2602: "juba", SO2703: "juba", SO2701: "juba", SO2702: "juba",
+    SO2001: "shabelle", SO2002: "shabelle", SO2003: "shabelle", SO2101: "shabelle", SO2103: "shabelle", SO2302: "shabelle", SO2305: "shabelle", SO2301: "shabelle",
+  };
+  const RIVER_TITLE = {juba: "Juba", shabelle: "Shabelle"};
+  const SEASON_TITLE = {deyr: "Deyr (October to December)", gu: "Gu (March to May)"};
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  // the map covers the two rivers from Dollow and Belet Weyne to the coast: lon 41.0 to 46.4, lat -0.9 to 5.5
+  const LON0 = 41.0, LON1 = 46.4, LAT0 = -0.9, LAT1 = 5.5, W = 700, PAD = 16;
+  const K = (W - 2 * PAD) / (LON1 - LON0), H = Math.round((LAT1 - LAT0) * K + 2 * PAD);
+  const X = lon => PAD + (lon - LON0) * K, Y = lat => PAD + (LAT1 - lat) * K;
+
+  function seasonFor(dateStr) {               // Sep to Jan: Deyr. Feb to Jun: Gu. Jul and Aug: no window.
+    const m = new Date(dateStr + "T00:00:00Z").getUTCMonth() + 1;
+    if (m >= 9 || m === 1) return "deyr";
+    if (m >= 2 && m <= 6) return "gu";
+    return null;
+  }
+  function stateOf(w) {                       // one word per river
+    if (!w || !w.open) return "off";
+    if (w.action.activated) return "reached";
+    if (w.readiness.activated) return "ready";
+    return "clear";
+  }
+  const STATE_TEXT = {reached: "Action trigger reached", ready: "Readiness trigger reached", clear: "Trigger not reached", off: "No window open"};
+
+  function pathOf(geom) {
+    const rings = geom.type === "Polygon" ? [geom.coordinates] : geom.type === "MultiPolygon" ? geom.coordinates
+                : geom.type === "LineString" ? [[geom.coordinates]] : geom.coordinates.map(l => [l]);
+    let d = "";
+    for (const poly of rings) for (const ring of poly) {
+      d += ring.map((c, i) => (i ? "L" : "M") + X(c[0]).toFixed(1) + " " + Y(c[1]).toFixed(1)).join("") + (geom.type.includes("Polygon") ? "Z" : "");
+    }
+    return d;
+  }
+  function centroid(geom) {
+    const pts = []; const walk = c => (typeof c[0] === "number") ? pts.push(c) : c.forEach(walk); walk(geom.coordinates);
+    return [pts.reduce((a, p) => a + p[0], 0) / pts.length, pts.reduce((a, p) => a + p[1], 0) / pts.length];
+  }
+  const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+
+  function tile(river, w, state, season) {
+    if (state === "off") {
+      return `<div class="tile off"><div class="river">${RIVER_TITLE[river]}</div><div class="state">No window open</div>
+        <div class="meta">Monitoring resumes for ${season ? SEASON_TITLE[season] : "Deyr in September"}.</div></div>`;
+    }
+    const a = w.action, r = w.readiness;
+    const leg = (l, cls, label) => `<div class="leg"><b>${label}</b><span class="n ${l.activated ? cls : ""}">${l.max_votes} of ${l.n_of}</span> points over their level, ${l.n_req} needed<br><span style="color:var(--muted)">${l.source === "google" ? "Google Flood Hub" : "GloFAS"}, ${l.leads[0]} to ${l.leads[1]} days ahead</span></div>`;
+    return `<div class="tile ${state}"><div class="river">${RIVER_TITLE[river]} · ${w.title}</div><div class="state">${STATE_TEXT[state]}</div>
+      <div class="legs">${leg(r, "rdy", "Readiness")}${leg(a, "hit", "Action")}</div>
+      <div class="meta">${a.n_reporting < a.n_of ? `${a.n_of - a.n_reporting} of ${a.n_of} points not served by the live feed. ` : ""}Levels are each point's own 1-in-${a.rp} (action) and 1-in-${r.rp} (readiness).</div></div>`;
+  }
+
+  async function getJSON(url) { const r = await fetch(url, {cache: "no-store"}); if (!r.ok) throw new Error(url + " " + r.status); return r.json(); }
+
+  async function main() {
+    const params = new URLSearchParams(location.search);
+    const [districts, rivers] = await Promise.all([getJSON("districts.json"), getJSON("rivers.json")]);
+    let status = null, sample = false;
+    try { status = await getJSON(params.get("sample") ? "sample_status.json" : "../monitoring/status.json"); sample = !!status.sample; }
+    catch (e) { status = null; }
+
+    const banner = document.getElementById("banner");
+    const date = status ? status.monitoring_date : new Date().toISOString().slice(0, 10);
+    const season = seasonFor(date);
+    const dObj = new Date(date + "T00:00:00Z");
+    const dateText = `${dObj.getUTCDate()} ${MONTHS[dObj.getUTCMonth()]} ${dObj.getUTCFullYear()}`;
+    if (!status) {
+      banner.hidden = false; banner.className = "banner"; banner.textContent = "No monitoring run has been published yet. The map shows the monitored points and districts without a status.";
+    } else if (sample) {
+      banner.hidden = false; banner.className = "banner"; banner.textContent = "Sample data for layout only. This is not a real monitoring run.";
+    }
+    document.getElementById("sub").textContent = status
+      ? `Latest run ${dateText}. ${season ? SEASON_TITLE[season] + " windows." : "No monitoring window is open in " + MONTHS[dObj.getUTCMonth()] + "."} Any one window activating releases the allocation.`
+      : `Season by calendar: ${season ? SEASON_TITLE[season] : "none open in " + MONTHS[dObj.getUTCMonth()]}.`;
+
+    // tiles, one per river
+    const riverState = {};
+    let tiles = "";
+    for (const river of ["juba", "shabelle"]) {
+      const w = status && season ? status.windows[`${river}_${season}`] : null;
+      const st = status ? stateOf(w) : "off";
+      riverState[river] = st;
+      tiles += tile(river, w, st, season);
+    }
+    document.getElementById("tiles").innerHTML = tiles;
+
+    // map
+    const svg = document.getElementById("map");
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    let g = "";
+    for (const f of districts.features) {                              // context districts first, AA districts on top
+      if (AA[f.properties.pcode]) continue;
+      g += `<path class="district" d="${pathOf(f.geometry)}"></path>`;
+    }
+    for (const f of districts.features) {
+      const river = AA[f.properties.pcode]; if (!river) continue;
+      const st = riverState[river];
+      g += `<path class="district aa ${st === "off" ? "" : st}" d="${pathOf(f.geometry)}"><title>${esc(f.properties.name)}, ${RIVER_TITLE[river]}: ${STATE_TEXT[st]}</title></path>`;
+    }
+    for (const f of rivers.features) {
+      const main = /jubba|shab|sheb/i.test(f.properties.name);
+      g += `<path class="river ${main ? "main" : ""}" d="${pathOf(f.geometry)}"></path>`;
+    }
+    const HAS_POINT = new Set(["SO2605", "SO2606", "SO2602", "SO2701", "SO2001", "SO2002", "SO2101"]);   // districts named by a point label
+    for (const f of districts.features) {
+      if (!AA[f.properties.pcode] || HAS_POINT.has(f.properties.pcode)) continue;
+      const [lon, lat] = centroid(f.geometry);
+      g += `<text class="dlbl" x="${X(lon).toFixed(1)}" y="${(Y(lat) + 3).toFixed(1)}" text-anchor="middle">${esc(f.properties.name)}</text>`;
+    }
+    g += `<text class="rlbl" x="${X(43.1).toFixed(1)}" y="${Y(0.2).toFixed(1)}">Juba</text><text class="rlbl" x="${X(46.0).toFixed(1)}" y="${Y(3.3).toFixed(1)}">Shabelle</text>`;
+    for (const [key, s] of Object.entries(STATIONS)) {
+      const w = status && season ? status.windows[`${s.river}_${season}`] : null;
+      let cls = "pt", title = s.name;
+      if (w && w.open) {
+        const a = w.action.stations[key], r = w.readiness.stations[key];
+        if (a && !a.reporting) { cls += " na"; title += ": not served by the live feed"; }
+        else if (a && a.exceeds) { cls += " over"; title += `: forecast over its action level (${a.pct_of_threshold}% of level)`; }
+        else if (r && r.exceeds) { cls += " rdy"; title += `: forecast over its readiness level (${r.pct_of_threshold}% of level)`; }
+        else if (a) { title += `: ${a.pct_of_threshold == null ? "no forecast" : a.pct_of_threshold + "% of its action level"}`; }
+      }
+      const x = X(s.lon), y = Y(s.lat), left = s.river === "juba";
+      g += `<circle class="${cls}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6.5"><title>${esc(title)}</title></circle>`;
+      g += `<text class="lbl" x="${(x + (left ? -10 : 10)).toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="${left ? "end" : "start"}">${esc(s.name)}</text>`;
+    }
+    svg.innerHTML = g;
+
+    // legend and note
+    document.getElementById("legend").innerHTML = `<h3>Districts</h3>
+      <div class="row"><span class="sw" style="background:rgba(179,64,54,.28);border-color:#B34036"></span>Action trigger reached</div>
+      <div class="row"><span class="sw" style="background:rgba(212,143,42,.28);border-color:#D48F2A"></span>Readiness trigger reached</div>
+      <div class="row"><span class="sw" style="background:rgba(46,139,110,.16);border-color:#2E8B6E"></span>Trigger not reached</div>
+      <div class="row"><span class="sw" style="background:#e9eeee"></span>No window open</div>
+      <h3 style="margin-top:16px">Monitored points</h3>
+      <div class="row"><span class="dot" style="background:#B34036;border-color:#7A241C"></span>Forecast over its action level</div>
+      <div class="row"><span class="dot" style="background:#D48F2A;border-color:#8a5a15"></span>Over its readiness level</div>
+      <div class="row"><span class="dot"></span>Below its levels</div>
+      <div class="row"><span class="dot" style="background:#e2e7e7;border:1.5px dashed #9aa4a6"></span>Not served by the live feed</div>`;
+    document.getElementById("note").textContent = "The fourteen shaded districts are those covered by the anticipatory action, coloured by the status of their river's window. A window activates when enough of the river's monitored points are forecast over their own return-period levels on the same day: action at 1 to 7 days ahead, readiness at 8 to 12. Deyr windows are shown from September to January and Gu windows from February to June; hover a district or point for detail." + (status && status.glofas_version ? ` GloFAS ${status.glofas_version}.` : "");
+  }
+  main().catch(e => { document.getElementById("sub").textContent = "The status could not be loaded: " + e.message; });
+})();
+</script>
+</body>
+</html>
