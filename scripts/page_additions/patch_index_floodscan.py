@@ -42,22 +42,21 @@ for k in ORDER:
     rows.append(f"<tr><td>{NAME[k]}</td><td>{len(r['years_both'])}</td><td>{cell(v2)}</td><td>{cell(v1)}</td><td>{yrs}</td><td>{so}</td><td>{go}</td></tr>")
 
 block = f'''        <h3 id="when-does-inundation-follow-the-gauges">When does inundation follow the gauges? (FloodScan)</h3>
-    <p>The benchmark dates a flood from the day the river's second gauge crosses its own 1-in-3
-      level. FloodScan gives an independent date for water on the ground: the daily flooded
+    <p>The benchmark dates a flood from the day the river's second SWALIM gauge crosses its own
+      1-in-3 level. FloodScan gives an independent date for water on the ground: the daily flooded
       fraction (SFED, about 10 km resolution) averaged over a 10-km buffer of the river's main
       stem, 1998&ndash;2023, the same series the flood-benchmark step validated against the
       gauges. Inundation is dated as the first day of the season on which the buffer's flooded
       fraction reaches its own 1-in-{RP} level (Weibull on seasonal maxima); 1-in-{RP} rather than
       1-in-3 so that ordinary seasonal ponding does not count. The table compares that day with
-      the gauge days in the seasons both records call a flood; a positive number means
+      the SWALIM gauge days in the seasons both records call a flood; a positive number means
       inundation showed after the gauge day.</p>
     <div class="tablewrap">
     <table class="data">
-    <thead><tr><th>window</th><th>seasons both call a flood</th><th>inundation vs 2nd gauge, median (range)</th><th>vs 1st gauge, median (range)</th><th>seasons</th><th>FloodScan only</th><th>gauges only</th></tr></thead>
+    <thead><tr><th>window</th><th>seasons both call a flood</th><th>inundation vs 2nd SWALIM gauge, median (range)</th><th>vs 1st SWALIM gauge, median (range)</th><th>seasons</th><th>FloodScan only</th><th>SWALIM gauges only</th></tr></thead>
     <tbody>{"".join(rows)}</tbody>
     </table>
     </div>
-    <figure><img src="figs/floodscan_timeline.png" alt="Timeline per flood season: first gauge, second gauge and FloodScan inundation"><figcaption>One row per season both records call a flood. Day 0 is the first SWALIM gauge on the river over its own 1-in-3 level; the black dot is the second gauge, the day the benchmark dates the flood; the teal square is the day the FloodScan flooded fraction along the river went over its own 1-in-{RP} level. Points beyond 35 days are drawn at the edge with their value.</figcaption></figure>
     <p><strong>On the Juba the second-gauge date holds.</strong> Inundation follows the second
       gauge by 1 to 13 days in Deyr and lands within three days of it in Gu, where the Juba's
       gauges cross within a day of each other. <strong>On the Shabelle it can come first.</strong>

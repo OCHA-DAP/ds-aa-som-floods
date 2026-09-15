@@ -1,6 +1,6 @@
-"""(Re)build the 'does the trigger catch the inundation seven days ahead?' block in the FloodScan
-subsection of the analysis page, for the two-gauge flood seasons only. Idempotent: removes any
-earlier version first. Reads floodscan_lead.json (floodscan_lead.py) and floodscan_timing.json."""
+"""(Re)build the 'does the trigger catch the inundation ahead of time?' block in the FloodScan
+subsection of the analysis page: the two-SWALIM-gauge flood seasons only, three records against
+inundation (SWALIM gauges, reanalysis, forecasts), each on either river. Idempotent."""
 import json
 import re
 from pathlib import Path
@@ -16,58 +16,69 @@ assert h.count(anchor) == 1
 h, n_removed = re.subn(r'\s*<p id="lead-to-inundation">.*?(?=    <p>The comparison is thin\. Only one to three seasons per window)', "\n", h, flags=re.S)
 
 NAME = {("juba", "gu"): "Juba Gu", ("juba", "deyr"): "Juba Deyr", ("shabelle", "gu"): "Shabelle Gu", ("shabelle", "deyr"): "Shabelle Deyr"}
-GREEN, AMBER, RED = 'rgba(14,138,123,.18)', 'rgba(244,169,59,.18)', 'rgba(179,64,54,.14)'
+GREEN, AMBER, RED = "rgba(14,138,123,.18)", "rgba(244,169,59,.18)", "rgba(179,64,54,.14)"
+RECORDS = (("gauge", "SWALIM gauges: second gauge over 1-in-3"), ("reanalysis", "Reanalysis: calibration record meets the action rule"), ("forecast", "Forecasts: first issue meeting the action rule"))
+with_in = [o for o in lead if o["inundation"]]
+n, n_in = len(lead), len(with_in)
 
 
 def shade(ld):
     return f' style="background:{GREEN if ld >= 8 else AMBER if ld >= 0 else RED}"'
 
 
-def lead_cells(o, key_issue, key_lead, key_gauge):
-    if o[key_issue] is None:
-        return "<td>never</td><td>&ndash;</td><td>&ndash;</td>"
-    inun = f"<td{shade(o[key_lead])}>{o[key_lead]:+d} d</td>" if o[key_lead] is not None else "<td>&ndash;</td>"
-    return f"<td>{o[key_issue]}</td>{inun}<td>{o[key_gauge]:+d} d</td>"
+def cells(o, key):
+    if o[key + "_date"] is None:
+        return "<td>never</td><td>&ndash;</td>"
+    ld = o[key + "_lead"]
+    return f"<td>{o[key + '_date']}</td>" + (f"<td{shade(ld)}>{ld:+d} d</td>" if ld is not None else "<td>&ndash;</td>")
 
 
-rows = "".join(
-    f"<tr><td>{NAME[(o['river'], o['season'])]} {o['year']}</td><td>{o['second_gauge']}</td>"
-    f"<td>{o['inundation'] if o['inundation'] else 'below 1-in-' + str(RP)}</td>"
-    f"{lead_cells(o, 'either_issue', 'either_lead', 'either_lead_vs_gauge')}</tr>"
-    for o in lead)
-n = len(lead); with_in = [o for o in lead if o["inundation"] is not None]; n_in = len(with_in)
-cnt = lambda key, f: sum(1 for o in with_in if o[key] is not None and f(o[key]))
-never = lambda key: sum(1 for o in with_in if o[key] is None)
-below = [f"{NAME[(o['river'], o['season'])]} {o['year']}" for o in lead if o["inundation"] is None]
+def count(key, f):
+    return sum(1 for o in with_in if o[key + "_lead"] is not None and f(o[key + "_lead"]))
 
-block = f'''    <p id="lead-to-inundation"><strong>Does the trigger catch the inundation seven days ahead?</strong> The question is
-      asked only for the seasons the two-gauge rule calls a flood, {n} of them with a forecast
+
+def never(key):
+    return sum(1 for o in with_in if o[key + "_lead"] is None)
+
+
+summary = "".join(f"<tr><td>{lab}</td><td>{count(k, lambda x: x >= 8)}</td><td>{count(k, lambda x: 0 <= x < 8)}</td><td>{count(k, lambda x: x < 0)}</td><td>{never(k)}</td></tr>" for k, lab in RECORDS)
+detail = "".join(f"<tr><td>{NAME[(o['river'], o['season'])]} {o['year']}</td><td>{o['inundation'] or 'below 1-in-' + str(RP)}</td>{cells(o, 'gauge')}{cells(o, 'reanalysis')}{cells(o, 'forecast')}</tr>" for o in lead)
+
+block = f'''    <p id="lead-to-inundation"><strong>Does the trigger catch the inundation ahead of time?</strong> The question is
+      asked only for the seasons the two-SWALIM-gauge rule calls a flood, {n} of them with a forecast
       archive (Google Flood Hub 2016&ndash;2023 in Gu, GloFAS v4 2003&ndash;2023 in Deyr). In {n_in} of
       the {n} FloodScan reached its own 1-in-{RP} level, so an inundation day exists; in the other
       {n - n_in} the whole-river flooded fraction stayed below it, including the severe Shabelle Deyr
       seasons of 2014, 2019 and 2020, which says more about a 10-km product over a narrow river
-      than about those floods. An activation on either river counts, as it does for the
-      mechanism. For the {n_in}: the action rule was met eight or more days before inundation in
-      <strong>{cnt("either_lead", lambda x: x >= 8)} of {n_in}</strong>, on the day or up to seven days before in {cnt("either_lead", lambda x: 0 <= x < 8)},
-      after the day in {cnt("either_lead", lambda x: x < 0)}, and never in {never("either_lead")}. The eight-day cases are all
-      Deyr, on GloFAS v4: the Juba in 2014 and 2023 and the Shabelle in 2023, the last two on the
-      Juba window's activation of 21 October. In Gu, Google met the rule one day before
-      inundation on the Juba in 2018 and four days before on the Shabelle the same season,
-      through the Juba window, and after inundation in 2023 on both rivers. The last column
-      gives the same lead measured against the second gauge, the page's usual reference.</p>
+      than about those floods. Three dated records are set against the inundation day, each
+      taken on either river as the mechanism does: the SWALIM gauges (the day the river's second
+      gauge went over its own 1-in-3 level, the page's benchmark), the reanalysis (the first day
+      the window's calibration record, Google's retrospective run in Gu and GloFAS version 5 in
+      Deyr, met the action rule) and the forecasts (the first issue on which the window's source,
+      Google in Gu and GloFAS v4 in Deyr, met the action rule at leads 1 to 7).</p>
     <div class="tablewrap">
     <table class="data">
-    <thead><tr><th>season</th><th>2nd gauge over 1-in-3</th><th>inundation (FloodScan 1-in-{RP})</th><th>rule met, either river</th><th>lead to inundation</th><th>lead to 2nd gauge</th></tr></thead>
-    <tbody>{rows}</tbody>
+    <thead><tr><th>record, either river</th><th>8 days or more before inundation</th><th>on the day or up to 7 days before</th><th>after</th><th>never</th></tr></thead>
+    <tbody>{summary}</tbody>
     </table>
     </div>
-    <p>So, where the ground is seen to flood, the trigger gave a week or more of warning in
-      Deyr and not in Gu: in Gu 2018 the forecasts came one to four days ahead of the water, and
-      in Gu 2023 after it on both rivers. The last column shows the same forecasts against the
-      second gauge: where the second gauge crossed weeks after the first, as on the Juba in Deyr,
-      the inundation reference gives the forecasts more credit than the gauge does, and on the
-      Shabelle in Gu less.</p>
+    <figure><img src="figs/floodscan_timeline.png" alt="Per flood season: SWALIM second gauge, reanalysis rule and first forecast issue, in days before or after FloodScan inundation"><figcaption>The {n_in} seasons with an inundation day. Day 0 is the day FloodScan's flooded fraction along the river went over its own 1-in-{RP} level; each mark is a record's date on either river, before the inundation to the left and after it to the right. Marks beyond 30 days are drawn at the edge with their value; a cross at the left edge means the record never met its rule that season.</figcaption></figure>
+    <p>The forecasts gave eight days or more in {count("forecast", lambda x: x >= 8)} of the {n_in} seasons, all Deyr on
+      GloFAS v4: the Juba in 2014 and 2023 and the Shabelle in 2023, the last two on the Juba
+      window's activation of 21 October. In Gu 2018 Google met the rule one day before inundation
+      on the Juba and four days before on the Shabelle, and in Gu 2023 after it on both rivers.
+      The SWALIM gauges themselves, the benchmark the rest of this page is scored against, sit
+      within a week of the inundation in most seasons and 15 to 24 days before it in Juba Deyr
+      2014 and Shabelle Gu 2023. The reanalysis, the record the windows were calibrated on, is
+      the weakest of the three here: it never met the rule in Gu 2023 on either river and met it
+      after the inundation in Gu 2018.</p>
+    <div class="tablewrap">
+    <table class="data">
+    <thead><tr><th>season</th><th>inundation (FloodScan 1-in-{RP})</th><th>SWALIM gauges</th><th>lead</th><th>reanalysis rule met</th><th>lead</th><th>forecast issue</th><th>lead</th></tr></thead>
+    <tbody>{detail}</tbody>
+    </table>
+    </div>
 '''
 h = h.replace(anchor, block + anchor)
 page.write_text(h, encoding="utf-8")
-print("removed", n_removed, "old block(s); inserted;", n, "rows,", n_in, "with inundation; below:", below)
+print("removed", n_removed, "old block(s); inserted;", n, "rows,", n_in, "with inundation")
