@@ -42,6 +42,14 @@ GOOGLE_NOT_SERVED = ["dollow"]
 ACTION_LEADS = (1, 7)
 READINESS_LEADS = (8, 12)
 
+# ------------------------------------------------------- monitoring windows
+# Calendar months in which each season's windows are open, i.e. the status is
+# evaluated and emails go out: Deyr from September to January, Gu from
+# February to June (decided 2026-09-15). The trigger itself still counts only
+# forecast days inside the season months (SEASONS in src.constants), so an
+# open window with no in-season forecast day yet reads "not activated".
+MONITORING_OPEN_MONTHS = {"deyr": (9, 10, 11, 12, 1), "gu": (2, 3, 4, 5, 6)}
+
 # ------------------------------------------------------------- windows
 WINDOWS = [("juba", "gu"), ("juba", "deyr"), ("shabelle", "gu"), ("shabelle", "deyr")]
 WINDOW_KEY = {w: f"{w[0]}_{w[1]}" for w in WINDOWS}

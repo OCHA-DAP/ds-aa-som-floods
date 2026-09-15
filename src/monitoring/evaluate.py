@@ -14,7 +14,6 @@ feeds the email template, the chart header and status.json; the status page
 therefore cannot disagree with the last email.
 """
 
-from datetime import timedelta
 
 import numpy as np
 import pandas as pd
@@ -25,11 +24,10 @@ from src.monitoring import thresholds as thr
 
 
 def _window_open(monitoring_date, season):
-    """Emails go out for a window while a forecast valid day can fall in it:
-    from 12 days before the season's first month to its last day."""
-    months = SEASONS[season]
-    horizon = [monitoring_date + timedelta(days=d) for d in range(0, cfg.READINESS_LEADS[1] + 1)]
-    return any(d.month in months for d in horizon)
+    """A window is open, so the status is evaluated and emails go out, in the
+    calendar months of cfg.MONITORING_OPEN_MONTHS: Deyr September to January,
+    Gu February to June."""
+    return monitoring_date.month in cfg.MONITORING_OPEN_MONTHS[season]
 
 
 def _leg(df, source, stations, levels, leads, months, n_req):
