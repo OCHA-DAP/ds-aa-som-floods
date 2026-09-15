@@ -20,7 +20,7 @@ GREEN, AMBER, RED = 'rgba(14,138,123,.18)', 'rgba(244,169,59,.18)', 'rgba(179,64
 
 
 def shade(ld):
-    return f' style="background:{GREEN if ld >= 7 else AMBER if ld > 0 else RED}"'
+    return f' style="background:{GREEN if ld >= 8 else AMBER if ld >= 0 else RED}"'
 
 
 def lead_cells(o, key_issue, key_lead, key_gauge):
@@ -47,9 +47,9 @@ block = f'''    <p id="lead-to-inundation"><strong>Does the trigger catch the in
       {n - n_in} the whole-river flooded fraction stayed below it, including the severe Shabelle Deyr
       seasons of 2014, 2019 and 2020, which says more about a 10-km product over a narrow river
       than about those floods. An activation on either river counts, as it does for the
-      mechanism. For the {n_in}: the action rule was met seven or more days before inundation in
-      <strong>{cnt("either_lead", lambda x: x >= 7)} of {n_in}</strong>, one to six days before in {cnt("either_lead", lambda x: 0 < x < 7)}, on or
-      after the day in {cnt("either_lead", lambda x: x <= 0)}, and never in {never("either_lead")}. The seven-day cases are all
+      mechanism. For the {n_in}: the action rule was met eight or more days before inundation in
+      <strong>{cnt("either_lead", lambda x: x >= 8)} of {n_in}</strong>, on the day or up to seven days before in {cnt("either_lead", lambda x: 0 <= x < 8)},
+      after the day in {cnt("either_lead", lambda x: x < 0)}, and never in {never("either_lead")}. The eight-day cases are all
       Deyr, on GloFAS v4: the Juba in 2014 and 2023 and the Shabelle in 2023, the last two on the
       Juba window's activation of 21 October. In Gu, Google met the rule one day before
       inundation on the Juba in 2018 and four days before on the Shabelle the same season,
