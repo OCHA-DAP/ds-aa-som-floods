@@ -174,7 +174,10 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
   b.innerHTML = `<span class="status">${s.status}</span>
     <span class="meta">Forecasts retrieved <b>${fmtDate(s.monitoring_date)}</b> · open window${s.open_windows.length === 1 ? "" : "s"}: ${openTitles}<br>
     GloFAS: ${s.glofas_version || "n/a"}, issue ${fmtDate(s.glofas_issue)}, ${s.n_glofas_points} points · Google Flood Hub: ${s.n_google_gauges} of 7 gauges, issue ${s.google_issue || "n/a"}</span>`;
-  document.getElementById("windows").innerHTML = Object.entries(s.windows).map(([k, w]) => windowCard(k, w)).join("");
+  // open season first (Deyr from September to January, Gu from February to June), Juba before Shabelle
+  const order = ["juba", "shabelle"];
+  const cards = Object.entries(s.windows).sort(([, a], [, b]) => (b.open - a.open) || (order.indexOf(a.river) - order.indexOf(b.river)));
+  document.getElementById("windows").innerHTML = cards.map(([k, w]) => windowCard(k, w)).join("");
   const notes = [];
   if (s.chart_stale) notes.push(`<div class="callout warn">The chart is from the last available run; today's is not published yet.</div>`);
   notes.push(`<div class="callout">${s.swalim_note} <a href="https://frrims.faoswalim.org/">FAO SWALIM</a>.</div>`);
