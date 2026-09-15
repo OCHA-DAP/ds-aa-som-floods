@@ -18,7 +18,7 @@ C_SFED, C_G, C_R, C_F = "#0E8A7B", "#111827", "#7C3AED", "#B34036"
 XMAX = 30
 MARK = (("gauge", "o", C_G, 8), ("reanalysis", "s", C_R, 7), ("forecast", "D", C_F, 7))
 
-fig, ax = plt.subplots(figsize=(8.4, 0.4 * len(lead) + 1.8))
+fig, ax = plt.subplots(figsize=(8.4, 0.4 * len(lead) + 2.1))
 for i, o in enumerate(lead):
     xs = []
     for key, m, col, ms in MARK:
@@ -34,13 +34,14 @@ for i, o in enumerate(lead):
     if xs:
         ax.plot([min(xs + [0]), max(xs + [0])], [i, i], color="#e5e7eb", lw=3, zorder=1, solid_capstyle="round")
 ax.axvline(0, color=C_SFED, lw=1.6)
-ax.set_yticks(range(len(lead))); ax.set_yticklabels([f"{NAME[(o['river'], o['season'])]} {o['year']}" for o in lead]); ax.invert_yaxis()
+ax.set_yticks(range(len(lead))); ax.set_yticklabels([f"{NAME[(o['river'], o['season'])]} {o['year']}" for o in lead])
+ax.set_ylim(len(lead) - 0.5, -1.9)                                                      # inverted, with headroom for the band labels
 ax.set_xlim(-XMAX - 3, XMAX + 2)
 ticks = [-30, -20, -10, 0, 10, 20, 30]
 ax.set_xticks(ticks); ax.set_xticklabels([f"{-t} d before" if t < 0 else "inundation" if t == 0 else f"{t} d after" for t in ticks], fontsize=8.5)
 ax.axvspan(-7.5, 0, color="#f0fdf4", zorder=0)
-ax.text(-3.75, -0.9, "up to 7 d", color="#4d7c0f", fontsize=8.5, ha="center")
-ax.text(-19, -0.9, "8 d or more before inundation", color="#166534", fontsize=8.5, ha="center")
+ax.text(-3.75, -1.2, "up to 7 d", color="#4d7c0f", fontsize=8.5, ha="center", va="center")
+ax.text(-19, -1.2, "8 d or more before inundation", color="#166534", fontsize=8.5, ha="center", va="center")
 ax.set_xlabel("days before (left) and after (right) FloodScan flood exposure in the river's AA districts went over its own 1-in-5 level", fontsize=8.8, color="#374151")
 ax.grid(axis="x", color="#f1f5f9"); ax.tick_params(length=0)
 for sp in ("top", "right"):
