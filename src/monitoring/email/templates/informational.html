@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-{% include "_advisory.html" %}
 <div>
   <p>Please see below today's streamflow forecasts at the seven monitored points on the Juba and Shabelle rivers from <a href="https://global-flood.emergency.copernicus.eu/">GloFAS</a> and <a href="https://sites.research.google/floods/">Google Flood Hub</a>. Open window{{ 's' if open_windows|length != 1 else '' }}: <b>{{ open_titles|join(', ') }}</b>.</p>
   {% include "_rules.html" %}
