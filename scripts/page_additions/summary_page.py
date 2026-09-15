@@ -282,9 +282,6 @@ def fig_leads():
     labels = []
     for i, (s, r) in enumerate(rows):
         labels.append(f"{SEASON[s][0]} {r['year']}{' *' if r['severe'] else ''}")
-        x1 = -min(r.get("first_gauge_before", 0), 21)
-        if x1 < 0:
-            ax.plot([x1, x1], [i - .45, i + .45], color=COL["swalim"], lw=1.1, ls=(0, (2, 1.6)), zorder=2.6)   # above the grid, below the markers
         for m, dy in (("google_grrr", .17), ("glofas_v4", -.17)):
             v = r[m]
             if v["kind"] == "na":
@@ -306,8 +303,7 @@ def fig_leads():
     ax.legend(handles=[Line2D([], [], marker="o", ls="none", color=COL["google_grrr"], label="Google Flood Hub forecast, first issue meeting the rule"),
                        Line2D([], [], marker="o", ls="none", color=COL["glofas_v4"], label="GloFAS v4 forecast (the version running live)"),
                        Line2D([], [], marker="|", ls="none", color="#6b7280", ms=9, mew=1.3, alpha=.6, label="every later issue that also met the rule"),
-                       Line2D([], [], marker="x", ls="none", color="#6b7280", mew=1.6, label="rule never met (shown at right edge)"),
-                       Line2D([], [], color=COL["swalim"], lw=1.1, ls=(0, (2, 1.6)), label="first gauge over 1-in-3, where earlier than the second")],
+                       Line2D([], [], marker="x", ls="none", color="#6b7280", mew=1.6, label="rule never met (shown at right edge)")],
               loc="lower left", frameon=False, ncol=2, bbox_to_anchor=(0, 1.02), fontsize=8.6)
     fig.tight_layout(); fig.savefig(FIGS / "s_leads.png", dpi=150, bbox_inches="tight", pad_inches=0.12); plt.close(fig)
 
@@ -390,6 +386,23 @@ add(table(["Window", "#Flood seasons", "#Severe", "Severe years"],
           [[c(wname(r, s)), n(str(len(flood[(r, s)]))), n(str(len(severe[(r, s)]))), c(yl(severe[(r, s)]))] for r, s in WINDOWS]))
 add(f"<p class=\"note\">Across both rivers there are {len(flood_all)} flood years, of which {len(severe_all)} are severe. Gauges are capped at bank full, so the largest floods record the same reading. A season in which only one gauge crosses does not count, as in Gu 2021 at Belet Weyne.</p>")
 
+gap_rows = []
+for river in ("juba", "shabelle"):
+    cells_ = [c(river.title())]
+    for rp_ in (3, 5):
+        gaps = []
+        for season in ("deyr", "gu"):
+            c2 = L.gauge_crossings(river, season, rp_, span=SPAN); c1 = L.gauge_crossings(river, season, rp_, n_req=1, span=SPAN)
+            gaps += [(d2 - c1[y]).days for y, d2 in c2.items() if y <= 2023]
+        gaps.sort(); mid = gaps[len(gaps) // 2] if len(gaps) % 2 else (gaps[len(gaps) // 2 - 1] + gaps[len(gaps) // 2]) / 2
+        cells_ += [n(f"{mid:.0f}"), c(f"{gaps[0]} to {gaps[-1]}"), n(str(len(gaps)))]
+    gap_rows.append(cells_)
+add("<p>The flood is dated from the second gauge. The first gauge on the river crosses earlier, by the following number of days.</p>")
+_gh = "".join(f"<th colspan='3' class='n' style='border-bottom:1px solid var(--rule)'>First to second gauge over 1-in-{rp_}</th>" for rp_ in (3, 5))
+_gs = "".join("<th class='n'>Median days</th><th>Range</th><th class='n'>Seasons</th>" for _ in (3, 5))
+_gb = "".join("<tr>" + "".join(f"<td{a}>{x}</td>" for x, a in r_) + "</tr>" for r_ in gap_rows)
+add(f"<div class='tw'><table><thead><tr><th></th>{_gh}</tr><tr><th>River</th>{_gs}</tr></thead><tbody>{_gb}</tbody></table></div>")
+
 add(f"<h2>Which source, and why</h2><p>Three global models were considered. GEOGloWS runs 4 to 10 times too high on the Shabelle and has no forecast archive, and was not taken further. Google Flood Hub and GloFAS were compared with the SWALIM gauges on their own records of the past, Google's retrospective run and GloFAS's version 5 reanalysis, using only the seasons in which the gauge reached its own 1-in-3 level between 2000 and 2023 ({rp3t.n_flood_seasons.min()} to {rp3t.n_flood_seasons.max()} seasons per gauge). Both measures are Spearman correlations, which compare ranks rather than raw values, and both are shown as the median across the river's gauges; ranking needs at least four seasons, which leaves Dollow out of it.</p>"
     "<ul><li><b>Tracking</b> correlates the model's daily flow with the gauge's daily level over every day of those seasons, allowing the model to run ahead of or behind the gauge (the best fit was within ten days for every gauge). A value of 1 means the model rises and falls exactly with the gauge, and 0 means no relation.</li>"
     "<li><b>Ranking</b> correlates how high the model went in each of those seasons with how high the gauge went. It tests whether the model orders the floods by size as the gauge did. A value of 1 means the same order, 0 means no relation, and a value below 0 means the wrong order.</li>"
@@ -471,7 +484,7 @@ document.getElementById("aiTable").innerHTML=h.join("");
 
 d, g = FB_D, FB_G
 add(f"<h2>Checked on the forecasts</h2><p>The tests above use each model's record of the past, whereas the trigger runs on forecasts. The historical forecasts were therefore replayed to find the day the alert would have gone out, 1 to 7 days ahead, and that day was compared with the day the flood season began at the gauges, which is the day the river's second gauge crossed its own 1-in-3 level (the first gauge may have crossed days earlier). Either river counts. Only Google Flood Hub (2016 to 2023) and GloFAS v4 (2003 to 2023, plus the live Gu 2024 forecasts) have archives. GloFAS's archive holds two issue days a week ({GLOFAS_ISSUES} a year) where Google's holds every day, so replayed GloFAS lead times are coarser by up to three days. The live GloFAS forecast is daily.</p>")
-add("<figure><img src=\"figs/s_leads.png\" alt=\"Lead time of the first forecast issue meeting the rule, per flood season\"><figcaption>One row per flood season, with severe seasons starred. The green band is the action window and the pale green band is readiness. The dotted amber line is the day the river's first gauge crossed its own 1-in-3 level, shown where it came before the second; the black line at zero is the second gauge, the reference used here. The dot is the first forecast issue that met the rule, and the ticks are every later issue that met it. Points left of the zero line went out before the second gauge crossed, and points to the right went out after it.</figcaption></figure>")
+add("<figure><img src=\"figs/s_leads.png\" alt=\"Lead time of the first forecast issue meeting the rule, per flood season\"><figcaption>One row per flood season, with severe seasons starred. The green band is the action window and the pale green band is readiness. The dot is the first forecast issue that met the rule, and the ticks are every later issue that met it. Points left of the zero line went out before the second gauge crossed, and points to the right went out after it.</figcaption></figure>")
 add(f"<p>In Deyr, GloFAS v4 activated before the second gauge crossed in {d['per_model']['glofas_v4'].get('before', 0)} of {d['n']} seasons and was first in {d['head_to_head']['glofas_v4']} of the {d['n_both']} seasons both archives cover. In Gu, Google was first in all {g['n_both']}. On the Shabelle it gave 10 to 13 days of warning in three of four seasons, where GloFAS v4 gave 3 days once and nothing in the other three. The lead-time comparison and the calibration were done independently and point the same way.</p>")
 rows6 = [[c(f"{SEASON[s][0]} {r['year']}{' *' if r['severe'] else ''}"), c(" and ".join(r["rivers"])), c(r["first_onset"]), c(pill(r["google_grrr"])), c(pill(r["glofas_v4"])), c(escape(r["first"]))] for s in ("deyr", "gu") for r in fb_rows[s]]
 add("<details><summary>Flood by flood</summary>" + table(["Season", "River(s) that flooded", "Second gauge over 1-in-3", "Google Flood Hub forecast", "GloFAS v4 forecast", "First"], rows6) + "</details>")
