@@ -126,7 +126,7 @@ STATIONS = {
     ),
     # ---- Juba, retained from the earlier registry ----
     "dollow": Station(
-        "Dollow", "juba", 4.175, 42.075, 110896800, "hybas_1121038740",
+        "Dollow", "juba", 4.175, 42.075, 110896800, "hybas_1121039440",
         "jb009", canonical=False,
         note="SWALIM gauge; best lead-time skill of any station. GEOGloWS "
              "reach set explicitly to 110896800 (141,124 km2) = the Juba "

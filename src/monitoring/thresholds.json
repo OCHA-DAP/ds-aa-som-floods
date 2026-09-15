@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-14",
+ "generated": "2026-09-15",
  "estimator": "Weibull plotting position, log-log interpolation, seasonal annual maxima",
  "rows": [
   {
@@ -9,7 +9,7 @@
    "river": "juba",
    "season": "gu",
    "rp": 3,
-   "threshold": 101.2436162230841,
+   "threshold": 438.41303105105357,
    "n_years": 25,
    "years": "1999-2023"
   },
@@ -20,7 +20,7 @@
    "river": "juba",
    "season": "gu",
    "rp": 4,
-   "threshold": 126.43629911473006,
+   "threshold": 472.59623792438936,
    "n_years": 25,
    "years": "1999-2023"
   },
@@ -31,7 +31,7 @@
    "river": "juba",
    "season": "gu",
    "rp": 5,
-   "threshold": 136.42066668638998,
+   "threshold": 508.13510410412243,
    "n_years": 25,
    "years": "1999-2023"
   },
@@ -42,7 +42,7 @@
    "river": "juba",
    "season": "gu",
    "rp": 6,
-   "threshold": 178.03134301890586,
+   "threshold": 608.0964600666813,
    "n_years": 25,
    "years": "1999-2023"
   },
@@ -53,7 +53,7 @@
    "river": "juba",
    "season": "deyr",
    "rp": 3,
-   "threshold": 90.74952302885542,
+   "threshold": 400.4114280195623,
    "n_years": 25,
    "years": "1999-2023"
   },
@@ -64,7 +64,7 @@
    "river": "juba",
    "season": "deyr",
    "rp": 4,
-   "threshold": 104.056649061622,
+   "threshold": 470.7447866012443,
    "n_years": 25,
    "years": "1999-2023"
   },
@@ -75,7 +75,7 @@
    "river": "juba",
    "season": "deyr",
    "rp": 5,
-   "threshold": 115.173466158072,
+   "threshold": 477.5689360466086,
    "n_years": 25,
    "years": "1999-2023"
   },
@@ -86,7 +86,7 @@
    "river": "juba",
    "season": "deyr",
    "rp": 6,
-   "threshold": 135.57607789337877,
+   "threshold": 510.2041449149836,
    "n_years": 25,
    "years": "1999-2023"
   },
@@ -2466,5 +2466,8 @@
    "n_years": 21,
    "years": "2003-2023"
   }
+ ],
+ "notes": [
+  "2026-09-15: google_grrr dollow rows refitted on the Juba main-stem gauge hybas_1121039440 (the design's hybas_1121038740 is the Dawa branch and is not served by the live API). A rebuild from data/processed/discharge_daily_google_grrr.parquet reverts them unless that parquet is refreshed."
  ]
 }

@@ -42,15 +42,17 @@ plt.rcParams.update({
 
 
 def season_shown(monitoring_date):
-    """The season whose window is open now or opens next."""
-    for season in ("gu", "deyr"):
-        months = SEASONS[season]
-        horizon = [monitoring_date + timedelta(days=d) for d in range(0, cfg.READINESS_LEADS[1] + 1)]
-        if any(d.month in months for d in horizon):
+    """The season whose monitoring window is open now (calendar months in
+    cfg.MONITORING_OPEN_MONTHS), else the one that opens next."""
+    for season, months in cfg.MONITORING_OPEN_MONTHS.items():
+        if monitoring_date.month in months:
             return season, True
-    # next season to come
-    m = monitoring_date.month
-    return ("gu" if m < 3 or m > 12 else "deyr" if m < 10 else "gu"), False
+    return ("gu" if monitoring_date.month == 1 else "deyr"), False
+
+
+def _day_month(d):
+    """15 Sep, without the platform-specific %-d / %#d flags."""
+    return f"{d.day} {d:%b}"
 
 
 def chart_blob_name(monitoring_date):
@@ -92,7 +94,7 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
     ax.set_ylim(top=max(ax.get_ylim()[1], 120))
     ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(decimals=0))
     ax.xaxis.set_major_locator(mdates.DayLocator(interval=2))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%-d %b"))
+    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, _: _day_month(mdates.num2date(x))))
     ax.grid(axis="y", color=GRID, lw=0.8)
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)
@@ -100,7 +102,7 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
     if result_window is not None:
         leg = result_window["action"] if role == "action" else result_window["readiness"]
         votes = (f"  ·  max {leg['max_votes']} of {leg['n_of']} points over"
-                 + (f" on {pd.Timestamp(leg['max_votes_date']):%-d %b}" if leg["max_votes_date"] else "")
+                 + (f" on {_day_month(pd.Timestamp(leg['max_votes_date']))}" if leg["max_votes_date"] else "")
                  + f" (rule: {leg['n_req']} of {leg['n_of']})")
     title = f"{cfg.RIVER_TITLE[river]} · {cfg.SOURCE_TITLE[product]} — {role}{votes}"
     ax.set_title(title, color=PRODUCT_COLORS[product], pad=8)
@@ -137,7 +139,7 @@ def monitoring_chart(df, result, levels_df=None):
     axes[0, 0].set_ylabel("% of the point's threshold")
     axes[1, 0].set_ylabel("% of the point's threshold")
     status = result["status"]
-    fig.text(0.02, 0.975, f"Somalia riverine flood trigger · forecasts retrieved {monitoring_date:%-d %b %Y} · "
+    fig.text(0.02, 0.975, f"Somalia riverine flood trigger · forecasts retrieved {_day_month(monitoring_date)} {monitoring_date:%Y} · "
                           f"{cfg.SEASON_TITLE[season]}{'' if is_open else ' (closed)'}",
              fontsize=11, color=BODY)
     label = fig.text(0.02, 0.945, "Status: ", fontsize=11, color=BODY)

@@ -25,7 +25,8 @@ article a { color:var(--b6); }
 .banner.error { border-left-color:#B34036; } .banner.error .status { color:#B34036; }
 .banner.off { border-left-color:#9aa4a6; } .banner.off .status { color:#5e6a6b; }
 .banner .meta { font-size:12.5px; color:var(--n7); line-height:1.6; }
-.grid4 { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin:18px 0 8px; }
+.grid4 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 8px; }
+@media (max-width:640px){.grid4{grid-template-columns:1fr}}
 .win { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5); border-radius:5px; padding:14px 16px 12px; }
 .win.closed { opacity:.62; border-top-color:#c8d0d1; }
 .win.act { border-top-color:#B34036; } .win.ready { border-top-color:#D48F2A; }
@@ -84,12 +85,10 @@ table.data td.none { color:#9aa4a6; }
     <div id="windows" class="grid4"></div>
     <div id="notes"></div>
 
-    <h2>Where</h2>
     <div class="maprow">
       <div class="map"><svg id="map" role="img" aria-label="Map of the Juba and Shabelle rivers with the fourteen anticipatory-action districts, coloured by the open window's status"></svg></div>
       <div class="legend" id="maplegend"></div>
     </div>
-    <p class="muted" style="font-size:12.5px;line-height:1.55;margin:8px 0 0">The fourteen shaded districts are those covered by the anticipatory action, coloured by the status of the open window on their river; grey when no window is open. Points show each monitored point against its levels on the latest forecasts. Hover a district or point for detail.</p>
     <!-- /map -->
 
     <h2>Today's forecasts</h2>
@@ -140,8 +139,7 @@ function legRow(name, leg, fired, cls) {
 function windowCard(key, w) {
   const a = w.action, r = w.readiness;
   const cls = !w.open ? "closed" : a.activated ? "act" : r.activated ? "ready" : "";
-  const src = (w.action.source === "google" ? "Google Flood Hub" : "GloFAS") + " · action" +
-              (w.open ? " · open now" : " · closed");
+  const src = (w.action.source === "google" ? "Google Flood Hub" : "GloFAS") + " · action";
   return `<div class="win ${cls}"><h3>${w.title}${w.open ? "" : '<span class="pill grey">closed</span>'}${a.activated && w.open ? '<span class="pill" style="background:#fbeeec;color:#B34036;border-color:#f3c9c4">action</span>' : ""}${!a.activated && r.activated && w.open ? '<span class="pill" style="background:#fdf3e7;color:#B0722B;border-color:#f3dcb8">readiness</span>' : ""}</h3>
     <div class="src">${src}</div>
     ${legRow("Readiness (GloFAS 8–12 d)", r, r.activated, "fired-r")}
@@ -173,7 +171,7 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
   const openTitles = s.open_windows.map(k => s.windows[k].title).join(", ") || "none";
   b.innerHTML = `<span class="status">${s.status}</span>
     <span class="meta">Forecasts retrieved <b>${fmtDate(s.monitoring_date)}</b> · open window${s.open_windows.length === 1 ? "" : "s"}: ${openTitles}<br>
-    GloFAS: ${s.glofas_version || "n/a"}, issue ${fmtDate(s.glofas_issue)}, ${s.n_glofas_points} points · Google Flood Hub: ${s.n_google_gauges} of 7 gauges, issue ${s.google_issue || "n/a"}</span>`;
+    GloFAS version ${s.glofas_operational === "glofas_v5" ? "5" : "4"} (operational), issue ${fmtDate(s.glofas_issue)}, ${s.n_glofas_points} points · Google Flood Hub: ${s.n_google_gauges} of 7 gauges, issue ${s.google_issue || "n/a"}</span>`;
   // open season first (Deyr from September to January, Gu from February to June), Juba before Shabelle
   const order = ["juba", "shabelle"];
   const cards = Object.entries(s.windows).sort(([, a], [, b]) => (b.open - a.open) || (order.indexOf(a.river) - order.indexOf(b.river)));
@@ -186,7 +184,7 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
   const shown = s.open_windows.length ? s.open_windows : Object.keys(s.windows);
   document.getElementById("tables-intro").textContent = s.open_windows.length
     ? "For each open window, the forecast peak at each point within the leg's lead band and inside the season months, against the point's level."
-    : "No window is open. Shown for every window: the forecast peak at each point within the lead band, against the level, counting only valid days inside the season months (so most cells are empty out of season).";
+    : "No window is open. Shown for every window: the forecast peak at each point within the lead band, against the level, counting only valid days inside the season months (so most cells are empty outside the season months).";
   document.getElementById("tables").innerHTML = shown.map(k => pointTable(s.windows[k], s.windows[k].action, "action", s.titles) + pointTable(s.windows[k], s.windows[k].readiness, "readiness", s.titles)).join("");
   document.getElementById("updated").textContent = ` Status generated ${fmtTs(s.generated_at)}.`;
 }).catch(err => {
@@ -246,8 +244,7 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
       const w = openFor[st.river]; let cls = "pt", title = st.name;
       if (w) {
         const a = w.action.stations[key], r = w.readiness.stations[key];
-        if (a && !a.reporting) { cls += " na"; title += ": not served by the live feed"; }
-        else if (a && a.exceeds) { cls += " over"; title += ": forecast over its action level (" + a.pct_of_threshold + "% of level)"; }
+        if (a && a.exceeds) { cls += " over"; title += ": forecast over its action level (" + a.pct_of_threshold + "% of level)"; }
         else if (r && r.exceeds) { cls += " rdy"; title += ": forecast over its readiness level (" + r.pct_of_threshold + "% of level)"; }
         else if (a) { title += ": " + (a.pct_of_threshold == null ? "no forecast in the lead band yet" : a.pct_of_threshold + "% of its action level"); }
       } else title += ": no window open";
@@ -264,8 +261,7 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
       '<h3 style="margin-top:16px">Monitored points</h3>' +
       '<div class="row"><span class="dot" style="background:#B34036;border-color:#7A241C"></span>Over its action level</div>' +
       '<div class="row"><span class="dot" style="background:#D48F2A;border-color:#8a5a15"></span>Over its readiness level</div>' +
-      '<div class="row"><span class="dot"></span>Below its levels</div>' +
-      '<div class="row"><span class="dot" style="background:#e2e7e7;border:1.5px dashed #9aa4a6"></span>Not served by the live feed</div>';
+      '<div class="row"><span class="dot"></span>Below its levels</div>';
   }).catch(e => { document.getElementById("maplegend").textContent = "Map data could not be loaded: " + e.message; });
 })();
 </script>

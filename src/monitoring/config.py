@@ -30,10 +30,11 @@ GLOFAS_EXPECTED_PROCESS = {"generatingProcessIdentifier": 5, "backgroundProcess"
 GLOFAS_LEADS = list(range(1, 13))  # days 1..12, GloFAS labelling
 GLOFAS_ENSEMBLE_MEMBERS_MIN = 40  # 51 expected; fewer means a truncated download
 
-# Dollow's HYBAS gauge exists in the Google retrospective the Gu levels were
-# fitted on but is not served by the live Flood Hub API (404, checked
-# 2026-09-14). Probed separately each day so it is picked up if it appears.
-GOOGLE_NOT_SERVED = ["dollow"]
+# Points the live Google API does not serve are listed here and probed each
+# day so they are picked up if they appear. Empty since 2026-09-15: Dollow now
+# reads the Juba main-stem gauge hybas_1121039440 (src/constants.py), which the
+# API serves; the design's Dawa-branch gauge hybas_1121038740 returned 404.
+GOOGLE_NOT_SERVED = []
 
 # ------------------------------------------------------------- lead bands
 # GloFAS "day n" describes calendar day issue+(n-1); Google lead n describes
