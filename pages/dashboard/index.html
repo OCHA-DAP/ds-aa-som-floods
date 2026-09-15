@@ -145,8 +145,10 @@ svg{display:block;width:100%;height:auto}
     } else if (sample) {
       banner.hidden = false; banner.className = "banner"; banner.textContent = "Sample data for layout only. This is not a real monitoring run.";
     }
+    const anyOpen = status && status.open_windows && status.open_windows.length > 0;
     document.getElementById("sub").textContent = status
-      ? `Latest run ${dateText}. ${season ? SEASON_TITLE[season] + " windows." : "No monitoring window is open in " + MONTHS[dObj.getUTCMonth()] + "."} Any one window activating releases the allocation.`
+      ? `Latest run ${dateText}. ${!season ? "No monitoring window is open in " + MONTHS[dObj.getUTCMonth()] + "."
+          : anyOpen ? SEASON_TITLE[season] + " windows." : SEASON_TITLE[season] + " windows are not yet open; they open 12 days before the season starts."} Any one window activating releases the allocation.`
       : `Season by calendar: ${season ? SEASON_TITLE[season] : "none open in " + MONTHS[dObj.getUTCMonth()]}.`;
 
     // tiles, one per river
@@ -187,9 +189,10 @@ svg{display:block;width:100%;height:auto}
     for (const [key, s] of Object.entries(STATIONS)) {
       const w = status && season ? status.windows[`${s.river}_${season}`] : null;
       let cls = "pt", title = s.name;
-      if (w && w.open) {
+      if (w) {
         const a = w.action.stations[key], r = w.readiness.stations[key];
         if (a && !a.reporting) { cls += " na"; title += ": not served by the live feed"; }
+        else if (!w.open) { title += ": window closed"; }
         else if (a && a.exceeds) { cls += " over"; title += `: forecast over its action level (${a.pct_of_threshold}% of level)`; }
         else if (r && r.exceeds) { cls += " rdy"; title += `: forecast over its readiness level (${r.pct_of_threshold}% of level)`; }
         else if (a) { title += `: ${a.pct_of_threshold == null ? "no forecast" : a.pct_of_threshold + "% of its action level"}`; }
