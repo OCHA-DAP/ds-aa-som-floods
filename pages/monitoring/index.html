@@ -131,7 +131,7 @@ function windowCard(key, w) {
   const a = w.action, r = w.readiness;
   const cls = !w.open ? "closed" : a.activated ? "act" : r.activated ? "ready" : "";
   const src = (w.action.source === "google" ? "Google Flood Hub" : "GloFAS") + " · action";
-  return `<div class="win ${cls}"><h3>${w.title}${w.open ? "" : '<span class="pill grey">closed</span>'}${a.activated && w.open ? '<span class="pill" style="background:#fbeeec;color:#B34036;border-color:#f3c9c4">action</span>' : ""}${!a.activated && r.activated && w.open ? '<span class="pill" style="background:#fdf3e7;color:#B0722B;border-color:#f3dcb8">readiness</span>' : ""}</h3>
+  return `<div class="win ${cls}"><h3>${w.title}${w.open ? "" : '<span class="pill grey">out of season</span>'}${a.activated && w.open ? '<span class="pill" style="background:#fbeeec;color:#B34036;border-color:#f3c9c4">action</span>' : ""}${!a.activated && r.activated && w.open ? '<span class="pill" style="background:#fdf3e7;color:#B0722B;border-color:#f3dcb8">readiness</span>' : ""}</h3>
     <div class="src">${src}</div>
     ${legRow("Readiness (GloFAS 8–12 d)", r, r.activated, "fired-r")}
     ${legRow("Action (1–7 d)", a, a.activated, "fired")}

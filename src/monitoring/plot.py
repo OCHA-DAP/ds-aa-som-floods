@@ -151,7 +151,7 @@ def monitoring_chart(df, result, levels_df=None):
         ax.set_ylabel("% of the point's threshold")
     status = result["status"]
     fig.text(0.02, head[0], f"Somalia riverine flood trigger · forecasts retrieved {_day_month(monitoring_date)} {monitoring_date:%Y} · "
-                            f"{cfg.SEASON_TITLE[season]}{'' if is_open else ' (closed)'}",
+                            f"{cfg.SEASON_TITLE[season]}{'' if is_open else ' (out of season)'}",
              fontsize=11, color=BODY)
     label = fig.text(0.02, head[1], "Status: ", fontsize=11, color=BODY)
     fig.canvas.draw()
