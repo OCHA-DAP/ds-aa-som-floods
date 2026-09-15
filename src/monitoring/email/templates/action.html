@@ -13,27 +13,27 @@
   {% for key in ordered %}{% set w = windows[key] %}
   <h3 style="font-weight:normal;font-size:15px;margin:18px 0 4px;">{{ w.title }}{% if key in action_windows %}: action trigger reached{% else %}: action trigger not reached{% endif %}</h3>
   <p style="margin:0 0 6px;font-size:13px;color:#555;">{{ source_title[w.action.source] }}, 1 to 7 days ahead, rule {{ w.action.n_req }} of {{ w.action.n_of }} stations over 1-in-{{ w.action.rp }}. Highest count on one day: {{ w.action.max_votes }} of {{ w.action.n_of }}{% if w.action.max_votes_date %} on {{ w.action.max_votes_date }}{% endif %}.</p>
-  <table style="border-collapse:collapse;font-size:13px;margin:0 0 6px;">
-    <tr style="background:#F0F0F0;">
-      <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;">Station</th>
-      <th style="text-align:right;padding:4px 8px;border:1px solid #ddd;">Forecast peak (m<sup>3</sup>/s)</th>
-      <th style="text-align:left;padding:4px 8px;border:1px solid #ddd;">Day of peak</th>
-      <th style="text-align:right;padding:4px 8px;border:1px solid #ddd;">Peak / threshold</th>
-      <th style="text-align:right;padding:4px 8px;border:1px solid #ddd;">Threshold (m<sup>3</sup>/s)</th>
+  <table width="90%" style="border:1px solid #000;border-collapse:collapse;font-size:0.9em;margin-bottom:20px;">
+    <tr style="background-color:#1BB580;color:white;">
+      <th style="padding:8px;border:1px solid transparent;">Station</th>
+      <th style="padding:8px;border:1px solid transparent;">Forecast peak (m<sup>3</sup>/s)</th>
+      <th style="padding:8px;border:1px solid transparent;">Day of peak</th>
+      <th style="padding:8px;border:1px solid transparent;">Peak / threshold</th>
+      <th style="padding:8px;border:1px solid transparent;">Threshold (m<sup>3</sup>/s)</th>
     </tr>
     {% for st, v in w.action.stations.items() %}
     <tr{% if v.exceeds %} style="color:#B34036;font-weight:bold;"{% endif %}>
-      <td style="padding:4px 8px;border:1px solid #ddd;">{{ station_title[st] }}</td>
+      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ station_title[st] }}</td>
       {% if not v.reporting %}
-      <td colspan="3" style="padding:4px 8px;border:1px solid #ddd;color:#888;">not in the live feed</td>
+      <td colspan="3" style="text-align:center;padding:8px;border:1px solid transparent;color:#888;">not in the live feed</td>
       {% elif v.max_value is none %}
-      <td colspan="3" style="padding:4px 8px;border:1px solid #ddd;color:#888;">no forecast day inside the window yet</td>
+      <td colspan="3" style="text-align:center;padding:8px;border:1px solid transparent;color:#888;">no forecast day inside the window yet</td>
       {% else %}
-      <td style="text-align:right;padding:4px 8px;border:1px solid #ddd;">{{ "{:,.0f}".format(v.max_value) }}</td>
-      <td style="padding:4px 8px;border:1px solid #ddd;">{{ v.max_date }}</td>
-      <td style="text-align:right;padding:4px 8px;border:1px solid #ddd;">{{ "%.2f"|format(v.pct_of_threshold / 100) }}×</td>
+      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "{:,.0f}".format(v.max_value) }}</td>
+      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ v.max_date }}</td>
+      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "%.2f"|format(v.pct_of_threshold / 100) }}×</td>
       {% endif %}
-      <td style="text-align:right;padding:4px 8px;border:1px solid #ddd;">{{ "{:,.0f}".format(v.threshold) }}</td>
+      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "{:,.0f}".format(v.threshold) }}</td>
     </tr>
     {% endfor %}
   </table>
