@@ -123,11 +123,13 @@ table.data tr.pick td { background:var(--b05); } .muted { color:#6b7683; font-si
 
     <h2>Also live, also different from the design</h2>
     <ul>
-      <li><strong>Dollow has no live Google gauge.</strong> The Flood Hub API serves six of the seven HYBAS gauges; Dollow's
-          (<code>hybas_1121038740</code>) returns not-found, although it exists in the retrospective archive the Gu levels
-          were fitted on. In Gu the Juba rule (3 of 4 points) can therefore only be met when all three live Juba points
-          cross. A neighbouring live HYBAS gauge (<code>hybas_1121039440</code>, 8 km east-south-east of Dollow, modelled)
-          is a candidate substitute if its retrospective matches Dollow's; that check has not been done.</li>
+      <li><strong>Dollow's Google point is not the design's.</strong> The design used HYBAS gauge
+          <code>hybas_1121038740</code>, which the live Flood Hub API does not serve (404) and which turns out to be
+          the Dawa branch (31 m³/s mean). Since 15 September 2026 Dollow reads <code>hybas_1121039440</code>, the Juba
+          main stem 8 km east-south-east (142 m³/s mean), which the API serves. Against the SWALIM Dollow gauge it
+          tracks as well as the design point did in Gu (Spearman 0.86), and the Gu Juba rule gives the same
+          activation years with either point. The Gu levels for Dollow on this page and in the pipeline are fitted
+          on the main-stem gauge; the trigger pages still show the design point's Dollow numbers until rebuilt.</li>
       <li><strong>Google's live horizon.</strong> The API returns daily values from two days before the issue to five
           days after it, so the action leg reads Google at leads 1&ndash;5, not 1&ndash;7 as in the archive.</li>
       <li><strong>Readiness levels</strong> were fitted on the version 4 reforecast at leads 8&ndash;12 (the only archive
