@@ -27,7 +27,7 @@ for k in ORDER:
         v1, v2 = r["vs_first"][str(y)], r["vs_second"][str(y)]
         o = lead.get((river, season, y))
         # forecast issue relative to the first gauge day: (onset - first) - (onset - issue)
-        fx = (v1 - o["same_lead"]) if (o and o["same_lead"] is not None) else None
+        fx = (v1 - o["either_lead"]) if (o and o["either_lead"] is not None) else None
         rows.append((f"{NAME[k]} {y}", v1 - v2, v1, fx, o is not None))
 
 fig, ax = plt.subplots(figsize=(8.4, 0.36 * len(rows) + 1.7))
@@ -58,7 +58,7 @@ for sp in ("top", "right"):
 ax.legend(handles=[Line2D([], [], marker="o", ls="none", color="white", mec=C_G1, mew=2, ms=8, label="first gauge over 1-in-3"),
                    Line2D([], [], marker="o", ls="none", color=C_G2, ms=8, label="second gauge over 1-in-3 (the benchmark date)"),
                    Line2D([], [], marker="s", ls="none", color=C_SFED, ms=8, label=f"inundation: FloodScan flooded fraction over its own 1-in-{SFED_RP}"),
-                   Line2D([], [], marker="D", ls="none", color=C_FC, ms=7, label="first forecast issue meeting the action rule, same river (x at right: never)")],
+                   Line2D([], [], marker="D", ls="none", color=C_FC, ms=7, label="first forecast issue meeting the action rule on either river (x at right: never)")],
           loc="lower left", frameon=False, ncol=1, bbox_to_anchor=(0, 1.0), fontsize=8.6)
 fig.tight_layout()
 out = S / "wt-trigger/pages/trigger-single-model/figs/floodscan_timeline.png"

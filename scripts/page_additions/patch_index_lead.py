@@ -33,7 +33,7 @@ def lead_cells(o, key_issue, key_lead, key_gauge):
 rows = "".join(
     f"<tr><td>{NAME[(o['river'], o['season'])]} {o['year']}</td><td>{o['second_gauge']}</td>"
     f"<td>{o['inundation'] if o['inundation'] else 'below 1-in-' + str(RP)}</td>"
-    f"{lead_cells(o, 'same_issue', 'same_lead', 'same_lead_vs_gauge')}{lead_cells(o, 'either_issue', 'either_lead', 'either_lead_vs_gauge')}</tr>"
+    f"{lead_cells(o, 'either_issue', 'either_lead', 'either_lead_vs_gauge')}</tr>"
     for o in lead)
 n = len(lead); with_in = [o for o in lead if o["inundation"] is not None]; n_in = len(with_in)
 cnt = lambda key, f: sum(1 for o in with_in if o[key] is not None and f(o[key]))
@@ -46,26 +46,26 @@ block = f'''    <p id="lead-to-inundation"><strong>Does the trigger catch the in
       the {n} FloodScan reached its own 1-in-{RP} level, so an inundation day exists; in the other
       {n - n_in} the whole-river flooded fraction stayed below it, including the severe Shabelle Deyr
       seasons of 2014, 2019 and 2020, which says more about a 10-km product over a narrow river
-      than about those floods. For the {n_in}: on the same river the action rule was met seven or
-      more days before inundation in <strong>{cnt("same_lead", lambda x: x >= 7)} of {n_in}</strong>, one to six days before
-      in {cnt("same_lead", lambda x: 0 < x < 7)}, on or after the day in {cnt("same_lead", lambda x: x <= 0)}, and never in
-      {never("same_lead")}. Counting an activation on either river, {cnt("either_lead", lambda x: x >= 7)} of {n_in} had seven
-      or more days. The seven-day cases are Deyr on the Juba, 2014 and 2023, on GloFAS v4. In
-      Gu, Google met the rule one day before inundation on the Juba in 2018 and eight days after
-      it on the Shabelle in 2018 and 2023. The last column of each pair gives the same lead
-      measured against the second gauge, the page's usual reference, for comparison.</p>
+      than about those floods. An activation on either river counts, as it does for the
+      mechanism. For the {n_in}: the action rule was met seven or more days before inundation in
+      <strong>{cnt("either_lead", lambda x: x >= 7)} of {n_in}</strong>, one to six days before in {cnt("either_lead", lambda x: 0 < x < 7)}, on or
+      after the day in {cnt("either_lead", lambda x: x <= 0)}, and never in {never("either_lead")}. The seven-day cases are all
+      Deyr, on GloFAS v4: the Juba in 2014 and 2023 and the Shabelle in 2023, the last two on the
+      Juba window's activation of 21 October. In Gu, Google met the rule one day before
+      inundation on the Juba in 2018 and four days before on the Shabelle the same season,
+      through the Juba window, and after inundation in 2023 on both rivers. The last column
+      gives the same lead measured against the second gauge, the page's usual reference.</p>
     <div class="tablewrap">
     <table class="data">
-    <thead><tr><th>season</th><th>2nd gauge over 1-in-3</th><th>inundation (FloodScan 1-in-{RP})</th><th>rule met, same river</th><th>lead to inundation</th><th>lead to 2nd gauge</th><th>rule met, either river</th><th>lead to inundation</th><th>lead to 2nd gauge</th></tr></thead>
+    <thead><tr><th>season</th><th>2nd gauge over 1-in-3</th><th>inundation (FloodScan 1-in-{RP})</th><th>rule met, either river</th><th>lead to inundation</th><th>lead to 2nd gauge</th></tr></thead>
     <tbody>{rows}</tbody>
     </table>
     </div>
-    <p>So, where the ground is seen to flood, the trigger gave a week's warning on the Juba in
-      Deyr and did not on the Shabelle or in Gu: on the Shabelle the floodplain was under water
-      before the forecasts saw the river reach its levels, and on the Juba in Gu the two came
-      within a day. The last column of each pair shows the same forecasts against the second gauge:
-      where the second gauge crossed weeks after the first, as on the Juba in Deyr, the
-      inundation reference gives the forecasts more credit than the gauge does, and on the
+    <p>So, where the ground is seen to flood, the trigger gave a week or more of warning in
+      Deyr and not in Gu: in Gu 2018 the forecasts came one to four days ahead of the water, and
+      in Gu 2023 after it on both rivers. The last column shows the same forecasts against the
+      second gauge: where the second gauge crossed weeks after the first, as on the Juba in Deyr,
+      the inundation reference gives the forecasts more credit than the gauge does, and on the
       Shabelle in Gu less.</p>
 '''
 h = h.replace(anchor, block + anchor)
