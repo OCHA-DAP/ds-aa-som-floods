@@ -8,9 +8,9 @@ name: Deploy pages site to GitHub Pages
 #
 # The repo is public, so the site is public at https://ocha-dap.github.io/ds-aa-som-floods/.
 #
-# The monitoring pipeline (monitoring.yml, 16:00 UTC) pushes status.json + latest.png to
-# the orphan `monitoring-status` branch; the scheduled run here ~45 min later overlays
-# them into pages/monitoring/ so the public status page is never far behind the data.
+# The monitoring pipeline (monitoring.yml, from 12:00 UTC) pushes status.json + latest.png to
+# the orphan `monitoring-status` branch; this workflow runs when that one completes and
+# overlays them into pages/monitoring/, so the public status page follows the data directly.
 #
 # workflow_dispatch exists for manual redeploys (including from a branch, pre-merge).
 # configure-pages with enablement: true creates/switches the site to workflow builds on
@@ -20,8 +20,9 @@ on:
   push:
     branches: [main]
     paths: ["pages/**", ".github/workflows/deploy-pages.yml"]
-  schedule:
-    - cron: "45 16 * * *"
+  workflow_run:
+    workflows: ["Monitor Somalia riverine flooding"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:

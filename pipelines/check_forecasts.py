@@ -16,6 +16,8 @@ Google issue and is labelled as such by issued_time.
 
 import os
 import sys
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -28,6 +30,23 @@ import pandas as pd  # noqa: E402
 from src.monitoring import config as cfg  # noqa: E402
 from src.monitoring import etl  # noqa: E402
 from src.monitoring.flags import env_flag  # noqa: E402
+
+
+def fetch_glofas_waiting(monitoring_date):
+    """Ask EWDS for the day's own GloFAS issue; while it is not published yet, retry every
+    15 minutes until WAIT_FOR_ISSUE_UNTIL_UTC (hour, default 16), then accept the previous
+    day's issue. Runs for a past date do not wait."""
+    deadline_h = int(os.getenv("WAIT_FOR_ISSUE_UNTIL_UTC", "16"))
+    while True:
+        try:
+            return etl.fetch_glofas(monitoring_date, max_days_back=0)
+        except RuntimeError as exc:
+            now = datetime.now(timezone.utc)
+            if monitoring_date != now.date() or now.hour >= deadline_h:
+                print(f"  {monitoring_date} issue not on EWDS ({str(exc)[:80]}); taking the previous issue")
+                return etl.fetch_glofas(monitoring_date, max_days_back=1)
+            print(f"  {now:%H:%M} UTC: today's issue not on EWDS yet; retrying in 15 min, until {deadline_h}:00 UTC")
+            time.sleep(900)
 
 
 def main():
@@ -46,7 +65,7 @@ def main():
         print("WARNING: " + msg)
 
     print("fetching GloFAS ...")
-    df_glofas, meta = etl.fetch_glofas(monitoring_date)
+    df_glofas, meta = fetch_glofas_waiting(monitoring_date)
     print(f"  issue {meta['issue_date']} ({meta['days_back']} d back), {len(df_glofas)} rows, "
           f"process ids {meta['process_ids']}, expected {cfg.GLOFAS_EXPECTED_PROCESS}")
     if not meta["version_ok"]:
