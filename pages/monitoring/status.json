@@ -1,0 +1,1428 @@
+{
+ "monitoring_date": "2026-09-16",
+ "open_windows": [
+  "juba_deyr",
+  "shabelle_deyr"
+ ],
+ "action": false,
+ "action_windows": [],
+ "readiness": false,
+ "readiness_windows": [],
+ "status": "NOT ACTIVATED",
+ "glofas_version": "glofas_v4 (gpi5/bp21)",
+ "glofas_issue": "2026-09-15",
+ "google_issue": "2026-09-16 00:46 UTC",
+ "n_glofas_points": 7,
+ "n_google_gauges": 7,
+ "windows": {
+  "juba_gu": {
+   "river": "juba",
+   "season": "gu",
+   "title": "Gu Juba",
+   "open": false,
+   "in_season": false,
+   "action": {
+    "n_req": 3,
+    "n_of": 4,
+    "votes_by_day": {},
+    "max_votes": 0,
+    "max_votes_date": null,
+    "activated": false,
+    "n_reporting": 4,
+    "stations": {
+     "dollow": {
+      "threshold": 508.1,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     },
+     "luuq": {
+      "threshold": 433.1,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bardheere": {
+      "threshold": 377.0,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bualle": {
+      "threshold": 390.5,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "google",
+    "rp": 5,
+    "leads": [
+     1,
+     7
+    ]
+   },
+   "readiness": {
+    "n_req": 3,
+    "n_of": 4,
+    "votes_by_day": {},
+    "max_votes": 0,
+    "max_votes_date": null,
+    "activated": false,
+    "n_reporting": 4,
+    "stations": {
+     "dollow": {
+      "threshold": 1861.7,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     },
+     "luuq": {
+      "threshold": 1881.0,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bardheere": {
+      "threshold": 1921.1,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bualle": {
+      "threshold": 1966.1,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "glofas",
+    "rp": 5,
+    "leads": [
+     8,
+     12
+    ]
+   }
+  },
+  "juba_deyr": {
+   "river": "juba",
+   "season": "deyr",
+   "title": "Deyr Juba",
+   "open": true,
+   "in_season": false,
+   "action": {
+    "n_req": 3,
+    "n_of": 4,
+    "votes_by_day": {
+     "2026-09-15": 0,
+     "2026-09-16": 0,
+     "2026-09-17": 0,
+     "2026-09-18": 0,
+     "2026-09-19": 0,
+     "2026-09-20": 0,
+     "2026-09-21": 0
+    },
+    "max_votes": 0,
+    "max_votes_date": null,
+    "activated": false,
+    "n_reporting": 4,
+    "stations": {
+     "dollow": {
+      "threshold": 1735.8,
+      "max_value": 560.3,
+      "max_date": "2026-09-16",
+      "pct_of_threshold": 32.3,
+      "exceeds": false,
+      "reporting": true
+     },
+     "luuq": {
+      "threshold": 1733.8,
+      "max_value": 560.3,
+      "max_date": "2026-09-17",
+      "pct_of_threshold": 32.3,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bardheere": {
+      "threshold": 1730.0,
+      "max_value": 559.0,
+      "max_date": "2026-09-18",
+      "pct_of_threshold": 32.3,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bualle": {
+      "threshold": 1724.8,
+      "max_value": 563.7,
+      "max_date": "2026-09-15",
+      "pct_of_threshold": 32.7,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "glofas",
+    "rp": 4,
+    "leads": [
+     1,
+     7
+    ]
+   },
+   "readiness": {
+    "n_req": 3,
+    "n_of": 4,
+    "votes_by_day": {
+     "2026-09-22": 0,
+     "2026-09-23": 0,
+     "2026-09-24": 0,
+     "2026-09-25": 0,
+     "2026-09-26": 0
+    },
+    "max_votes": 0,
+    "max_votes_date": null,
+    "activated": false,
+    "n_reporting": 4,
+    "stations": {
+     "dollow": {
+      "threshold": 1498.8,
+      "max_value": 545.6,
+      "max_date": "2026-09-22",
+      "pct_of_threshold": 36.4,
+      "exceeds": false,
+      "reporting": true
+     },
+     "luuq": {
+      "threshold": 1517.2,
+      "max_value": 549.6,
+      "max_date": "2026-09-22",
+      "pct_of_threshold": 36.2,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bardheere": {
+      "threshold": 1532.3,
+      "max_value": 552.8,
+      "max_date": "2026-09-22",
+      "pct_of_threshold": 36.1,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bualle": {
+      "threshold": 1551.3,
+      "max_value": 553.0,
+      "max_date": "2026-09-22",
+      "pct_of_threshold": 35.7,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "glofas",
+    "rp": 4,
+    "leads": [
+     8,
+     12
+    ]
+   }
+  },
+  "shabelle_gu": {
+   "river": "shabelle",
+   "season": "gu",
+   "title": "Gu Shabelle",
+   "open": false,
+   "in_season": false,
+   "action": {
+    "n_req": 2,
+    "n_of": 3,
+    "votes_by_day": {},
+    "max_votes": 0,
+    "max_votes_date": null,
+    "activated": false,
+    "n_reporting": 3,
+    "stations": {
+     "belet_weyne": {
+      "threshold": 346.4,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bulo_burti": {
+      "threshold": 361.7,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     },
+     "jowhar": {
+      "threshold": 361.4,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "google",
+    "rp": 6,
+    "leads": [
+     1,
+     7
+    ]
+   },
+   "readiness": {
+    "n_req": 2,
+    "n_of": 3,
+    "votes_by_day": {},
+    "max_votes": 0,
+    "max_votes_date": null,
+    "activated": false,
+    "n_reporting": 3,
+    "stations": {
+     "belet_weyne": {
+      "threshold": 512.0,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bulo_burti": {
+      "threshold": 518.7,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     },
+     "jowhar": {
+      "threshold": 589.5,
+      "max_value": null,
+      "max_date": null,
+      "pct_of_threshold": null,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "glofas",
+    "rp": 5,
+    "leads": [
+     8,
+     12
+    ]
+   }
+  },
+  "shabelle_deyr": {
+   "river": "shabelle",
+   "season": "deyr",
+   "title": "Deyr Shabelle",
+   "open": true,
+   "in_season": false,
+   "action": {
+    "n_req": 2,
+    "n_of": 3,
+    "votes_by_day": {
+     "2026-09-15": 0,
+     "2026-09-16": 0,
+     "2026-09-17": 0,
+     "2026-09-18": 0,
+     "2026-09-19": 0,
+     "2026-09-20": 0,
+     "2026-09-21": 0
+    },
+    "max_votes": 0,
+    "max_votes_date": null,
+    "activated": false,
+    "n_reporting": 3,
+    "stations": {
+     "belet_weyne": {
+      "threshold": 1078.9,
+      "max_value": 442.0,
+      "max_date": "2026-09-15",
+      "pct_of_threshold": 41.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bulo_burti": {
+      "threshold": 1078.6,
+      "max_value": 442.1,
+      "max_date": "2026-09-16",
+      "pct_of_threshold": 41.0,
+      "exceeds": false,
+      "reporting": true
+     },
+     "jowhar": {
+      "threshold": 1122.0,
+      "max_value": 440.7,
+      "max_date": "2026-09-17",
+      "pct_of_threshold": 39.3,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "glofas",
+    "rp": 4,
+    "leads": [
+     1,
+     7
+    ]
+   },
+   "readiness": {
+    "n_req": 2,
+    "n_of": 3,
+    "votes_by_day": {
+     "2026-09-22": 0,
+     "2026-09-23": 0,
+     "2026-09-24": 0,
+     "2026-09-25": 0,
+     "2026-09-26": 0
+    },
+    "max_votes": 0,
+    "max_votes_date": null,
+    "activated": false,
+    "n_reporting": 3,
+    "stations": {
+     "belet_weyne": {
+      "threshold": 956.6,
+      "max_value": 413.6,
+      "max_date": "2026-09-22",
+      "pct_of_threshold": 43.2,
+      "exceeds": false,
+      "reporting": true
+     },
+     "bulo_burti": {
+      "threshold": 967.9,
+      "max_value": 417.1,
+      "max_date": "2026-09-22",
+      "pct_of_threshold": 43.1,
+      "exceeds": false,
+      "reporting": true
+     },
+     "jowhar": {
+      "threshold": 978.3,
+      "max_value": 419.4,
+      "max_date": "2026-09-22",
+      "pct_of_threshold": 42.9,
+      "exceeds": false,
+      "reporting": true
+     }
+    },
+    "source": "glofas",
+    "rp": 4,
+    "leads": [
+     8,
+     12
+    ]
+   }
+  }
+ },
+ "generated_at": "2026-09-16T07:43:13.402205+00:00",
+ "chart": "latest.png",
+ "chart_stale": false,
+ "glofas_operational": "glofas_v4",
+ "lead_bands": {
+  "action": [
+   1,
+   7
+  ],
+  "readiness": [
+   8,
+   12
+  ]
+ },
+ "levels": {
+  "juba_gu": {
+   "action": {
+    "dollow": 508.13510410412243,
+    "luuq": 433.1346849510389,
+    "bardheere": 376.9829927459044,
+    "bualle": 390.53437184869034
+   },
+   "readiness": {
+    "dollow": 1861.724677306886,
+    "luuq": 1880.9901840868824,
+    "bardheere": 1921.0593388153852,
+    "bualle": 1966.0573973259686
+   }
+  },
+  "juba_deyr": {
+   "action": {
+    "dollow": 1735.7763150815033,
+    "luuq": 1733.7810619796273,
+    "bardheere": 1729.9563377788854,
+    "bualle": 1724.8390627464744
+   },
+   "readiness": {
+    "dollow": 1498.7734586995648,
+    "luuq": 1517.1690866604038,
+    "bardheere": 1532.3083988161593,
+    "bualle": 1551.2901992431405
+   }
+  },
+  "shabelle_gu": {
+   "action": {
+    "belet_weyne": 346.3782832871798,
+    "bulo_burti": 361.69671635261426,
+    "jowhar": 361.39353334936214
+   },
+   "readiness": {
+    "belet_weyne": 512.0266102091765,
+    "bulo_burti": 518.6760775971597,
+    "jowhar": 589.4903128997518
+   }
+  },
+  "shabelle_deyr": {
+   "action": {
+    "belet_weyne": 1078.8578558999077,
+    "bulo_burti": 1078.5754615901237,
+    "jowhar": 1121.9800784221795
+   },
+   "readiness": {
+    "belet_weyne": 956.6003512131074,
+    "bulo_burti": 967.8788458961216,
+    "jowhar": 978.3174011840774
+   }
+  }
+ },
+ "series": {
+  "glofas": {
+   "bardheere": {
+    "issued": "2026-09-15T00:00Z",
+    "dates": [
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21",
+     "2026-09-22",
+     "2026-09-23",
+     "2026-09-24",
+     "2026-09-25",
+     "2026-09-26"
+    ],
+    "leads": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "value": [
+     552.4,
+     549.2,
+     555.8,
+     559.0,
+     554.9,
+     551.9,
+     553.5,
+     552.8,
+     548.5,
+     537.6,
+     529.0,
+     525.7
+    ],
+    "p25": [
+     552.3,
+     549.1,
+     555.7,
+     558.5,
+     553.5,
+     547.1,
+     544.8,
+     541.6,
+     535.2,
+     526.1,
+     515.0,
+     509.7
+    ],
+    "p75": [
+     552.4,
+     549.2,
+     555.9,
+     559.4,
+     557.8,
+     556.5,
+     560.1,
+     564.1,
+     558.9,
+     548.5,
+     541.3,
+     539.0
+    ]
+   },
+   "belet_weyne": {
+    "issued": "2026-09-15T00:00Z",
+    "dates": [
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21",
+     "2026-09-22",
+     "2026-09-23",
+     "2026-09-24",
+     "2026-09-25",
+     "2026-09-26"
+    ],
+    "leads": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "value": [
+     442.0,
+     441.9,
+     436.2,
+     429.7,
+     425.4,
+     422.5,
+     419.1,
+     413.6,
+     405.9,
+     397.7,
+     390.6,
+     384.0
+    ],
+    "p25": [
+     442.0,
+     441.8,
+     435.9,
+     428.7,
+     423.3,
+     419.4,
+     415.8,
+     411.1,
+     403.3,
+     396.0,
+     388.4,
+     380.3
+    ],
+    "p75": [
+     442.1,
+     442.0,
+     436.6,
+     430.6,
+     426.7,
+     424.1,
+     421.9,
+     417.2,
+     410.6,
+     403.1,
+     394.6,
+     386.3
+    ]
+   },
+   "bualle": {
+    "issued": "2026-09-15T00:00Z",
+    "dates": [
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21",
+     "2026-09-22",
+     "2026-09-23",
+     "2026-09-24",
+     "2026-09-25",
+     "2026-09-26"
+    ],
+    "leads": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "value": [
+     563.7,
+     552.5,
+     549.7,
+     554.9,
+     557.7,
+     554.4,
+     552.1,
+     553.0,
+     551.9,
+     547.8,
+     537.2,
+     529.2
+    ],
+    "p25": [
+     563.7,
+     552.4,
+     549.5,
+     554.8,
+     557.2,
+     552.9,
+     546.8,
+     544.7,
+     541.1,
+     534.6,
+     526.4,
+     515.8
+    ],
+    "p75": [
+     563.8,
+     552.6,
+     549.9,
+     555.1,
+     558.3,
+     557.6,
+     556.2,
+     559.7,
+     563.1,
+     557.8,
+     548.0,
+     541.5
+    ]
+   },
+   "bulo_burti": {
+    "issued": "2026-09-15T00:00Z",
+    "dates": [
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21",
+     "2026-09-22",
+     "2026-09-23",
+     "2026-09-24",
+     "2026-09-25",
+     "2026-09-26"
+    ],
+    "leads": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "value": [
+     440.0,
+     442.1,
+     439.6,
+     433.2,
+     427.7,
+     423.8,
+     421.1,
+     417.1,
+     410.6,
+     402.8,
+     394.9,
+     388.1
+    ],
+    "p25": [
+     440.0,
+     442.0,
+     439.4,
+     432.8,
+     426.1,
+     421.3,
+     418.2,
+     414.0,
+     407.6,
+     400.5,
+     393.3,
+     385.2
+    ],
+    "p75": [
+     440.1,
+     442.2,
+     439.7,
+     433.7,
+     428.7,
+     425.3,
+     423.0,
+     419.8,
+     414.8,
+     407.6,
+     399.9,
+     391.4
+    ]
+   },
+   "dollow": {
+    "issued": "2026-09-15T00:00Z",
+    "dates": [
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21",
+     "2026-09-22",
+     "2026-09-23",
+     "2026-09-24",
+     "2026-09-25",
+     "2026-09-26"
+    ],
+    "leads": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "value": [
+     551.1,
+     560.3,
+     559.8,
+     553.6,
+     552.5,
+     553.7,
+     552.4,
+     545.6,
+     532.0,
+     527.6,
+     525.0,
+     527.5
+    ],
+    "p25": [
+     551.1,
+     560.3,
+     559.2,
+     551.7,
+     545.7,
+     545.5,
+     541.0,
+     531.4,
+     520.6,
+     511.0,
+     508.9,
+     508.5
+    ],
+    "p75": [
+     551.1,
+     560.3,
+     560.6,
+     557.7,
+     557.5,
+     562.8,
+     565.6,
+     555.3,
+     543.4,
+     539.2,
+     539.8,
+     546.1
+    ]
+   },
+   "jowhar": {
+    "issued": "2026-09-15T00:00Z",
+    "dates": [
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21",
+     "2026-09-22",
+     "2026-09-23",
+     "2026-09-24",
+     "2026-09-25",
+     "2026-09-26"
+    ],
+    "leads": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "value": [
+     438.4,
+     440.4,
+     440.7,
+     436.1,
+     429.9,
+     425.1,
+     422.3,
+     419.4,
+     414.3,
+     406.9,
+     400.4,
+     393.2
+    ],
+    "p25": [
+     438.3,
+     440.2,
+     440.5,
+     435.6,
+     429.1,
+     423.4,
+     419.6,
+     416.2,
+     411.5,
+     404.2,
+     396.8,
+     389.2
+    ],
+    "p75": [
+     438.6,
+     440.6,
+     441.1,
+     436.4,
+     430.8,
+     426.7,
+     424.1,
+     421.5,
+     418.0,
+     411.6,
+     404.0,
+     396.2
+    ]
+   },
+   "luuq": {
+    "issued": "2026-09-15T00:00Z",
+    "dates": [
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21",
+     "2026-09-22",
+     "2026-09-23",
+     "2026-09-24",
+     "2026-09-25",
+     "2026-09-26"
+    ],
+    "leads": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    "value": [
+     548.1,
+     555.7,
+     560.3,
+     556.1,
+     551.9,
+     553.4,
+     553.9,
+     549.6,
+     539.2,
+     528.9,
+     525.7,
+     525.6
+    ],
+    "p25": [
+     548.0,
+     555.6,
+     560.0,
+     554.7,
+     548.0,
+     544.5,
+     542.4,
+     536.5,
+     526.8,
+     515.1,
+     509.1,
+     507.7
+    ],
+    "p75": [
+     548.1,
+     555.7,
+     560.5,
+     558.2,
+     556.4,
+     560.2,
+     564.7,
+     561.0,
+     550.1,
+     541.1,
+     539.2,
+     542.4
+    ]
+   }
+  },
+  "google": {
+   "bardheere": {
+    "issued": "2026-09-15T23:38Z",
+    "dates": [
+     "2026-09-14",
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21"
+    ],
+    "leads": [
+     -1,
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "value": [
+     37.7,
+     36.7,
+     38.1,
+     38.0,
+     38.8,
+     38.4,
+     38.5,
+     38.8
+    ],
+    "p25": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "p75": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   "belet_weyne": {
+    "issued": "2026-09-16T00:46Z",
+    "dates": [
+     "2026-09-14",
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21"
+    ],
+    "leads": [
+     -2,
+     -1,
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "value": [
+     55.2,
+     49.9,
+     52.4,
+     52.0,
+     53.2,
+     53.0,
+     53.0,
+     51.0
+    ],
+    "p25": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "p75": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   "bualle": {
+    "issued": "2026-09-16T00:11Z",
+    "dates": [
+     "2026-09-14",
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21"
+    ],
+    "leads": [
+     -2,
+     -1,
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "value": [
+     32.6,
+     31.9,
+     33.8,
+     32.9,
+     33.9,
+     33.6,
+     34.0,
+     34.4
+    ],
+    "p25": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "p75": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   "bulo_burti": {
+    "issued": "2026-09-15T23:49Z",
+    "dates": [
+     "2026-09-14",
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21"
+    ],
+    "leads": [
+     -1,
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "value": [
+     45.2,
+     42.0,
+     42.9,
+     42.8,
+     42.8,
+     42.9,
+     43.7,
+     44.5
+    ],
+    "p25": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "p75": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   "dollow": {
+    "issued": "2026-09-16T00:23Z",
+    "dates": [
+     "2026-09-14",
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21"
+    ],
+    "leads": [
+     -2,
+     -1,
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "value": [
+     52.4,
+     53.0,
+     54.3,
+     54.4,
+     54.7,
+     54.9,
+     55.1,
+     57.1
+    ],
+    "p25": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "p75": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   "jowhar": {
+    "issued": "2026-09-16T00:38Z",
+    "dates": [
+     "2026-09-14",
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21"
+    ],
+    "leads": [
+     -2,
+     -1,
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "value": [
+     45.9,
+     42.4,
+     43.3,
+     43.2,
+     42.9,
+     43.3,
+     44.1,
+     44.7
+    ],
+    "p25": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "p75": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   "luuq": {
+    "issued": "2026-09-16T00:06Z",
+    "dates": [
+     "2026-09-14",
+     "2026-09-15",
+     "2026-09-16",
+     "2026-09-17",
+     "2026-09-18",
+     "2026-09-19",
+     "2026-09-20",
+     "2026-09-21"
+    ],
+    "leads": [
+     -2,
+     -1,
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "value": [
+     46.3,
+     42.8,
+     42.9,
+     42.6,
+     42.4,
+     42.4,
+     42.3,
+     42.5
+    ],
+    "p25": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "p75": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   }
+  }
+ },
+ "stations": {
+  "juba": [
+   "dollow",
+   "luuq",
+   "bardheere",
+   "bualle"
+  ],
+  "shabelle": [
+   "belet_weyne",
+   "bulo_burti",
+   "jowhar"
+  ]
+ },
+ "titles": {
+  "station": {
+   "dollow": "Dollow",
+   "luuq": "Luuq",
+   "bardheere": "Bardheere",
+   "bualle": "Bualle",
+   "belet_weyne": "Belet Weyne",
+   "bulo_burti": "Bulo Burti",
+   "jowhar": "Jowhar"
+  },
+  "river": {
+   "juba": "Juba",
+   "shabelle": "Shabelle"
+  },
+  "source": {
+   "google": "Google Flood Hub",
+   "glofas": "GloFAS"
+  },
+  "season": {
+   "gu": "Gu (window February to June)",
+   "deyr": "Deyr (window September to January)"
+  }
+ },
+ "swalim_note": "Readiness may also be activated by a SWALIM moderate flood risk alert for either river. SWALIM bulletins are not read automatically."
+}
