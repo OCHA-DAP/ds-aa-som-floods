@@ -99,7 +99,7 @@ def evaluate(df, monitoring_date=None, levels_df=None):
         "open_windows": open_w,
         "action": bool(action_hit), "action_windows": action_hit,
         "readiness": bool(ready_hit), "readiness_windows": ready_hit,
-        "status": ("ACTION TRIGGER REACHED" if action_hit else
+        "status": ("ACTIVATION TRIGGER REACHED" if action_hit else
                    "READINESS TRIGGER REACHED" if ready_hit else
                    "TRIGGER NOT REACHED" if open_w else "NO WINDOW OPEN"),
         "glofas_version": glofas.model_version.iloc[0] if len(glofas) else None,

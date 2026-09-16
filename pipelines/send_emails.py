@@ -1,7 +1,7 @@
 """Step 3 of the daily run: send the day's email through Listmonk.
 
 Cadence: while at least one window is open, an informational email every
-Monday and an immediate email the day a readiness or action trigger is
+Monday and an immediate email the day a readiness or activation trigger is
 reached. When no window is open nothing is sent. Campaigns render inside the Listmonk
 instance's base_campaign template (branding, footer, unsubscribe); the Jinja
 templates here are the content fragment, and the chart is hosted in the
@@ -58,7 +58,7 @@ def simulate(result):
                   "max_date": v["max_date"] or result["monitoring_date"],
                   "pct_of_threshold": max(v["pct_of_threshold"] or 0, 120.0), "reporting": True})
     result.update({"open_windows": sorted(set(result["open_windows"]) | {key}),
-                   "action": True, "action_windows": [key], "status": "ACTION TRIGGER REACHED"})
+                   "action": True, "action_windows": [key], "status": "ACTIVATION TRIGGER REACHED"})
     return result
 
 
