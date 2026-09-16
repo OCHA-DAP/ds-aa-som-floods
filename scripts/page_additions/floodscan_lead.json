@@ -1,0 +1,123 @@
+[
+ {
+  "season": "deyr",
+  "year": 2006,
+  "inundation": null,
+  "gauge_date": "2006-10-30",
+  "gauge_lead": null,
+  "reanalysis_date": "2006-10-29",
+  "reanalysis_lead": null,
+  "forecast_date": null,
+  "forecast_lead": null
+ },
+ {
+  "season": "deyr",
+  "year": 2008,
+  "inundation": null,
+  "gauge_date": "2008-11-15",
+  "gauge_lead": null,
+  "reanalysis_date": null,
+  "reanalysis_lead": null,
+  "forecast_date": null,
+  "forecast_lead": null
+ },
+ {
+  "season": "deyr",
+  "year": 2014,
+  "inundation": "2014-10-30",
+  "gauge_date": "2014-10-20",
+  "gauge_lead": 10,
+  "reanalysis_date": "2014-10-16",
+  "reanalysis_lead": 14,
+  "forecast_date": "2014-10-07",
+  "forecast_lead": 23
+ },
+ {
+  "season": "deyr",
+  "year": 2017,
+  "inundation": "2017-11-04",
+  "gauge_date": "2017-11-07",
+  "gauge_lead": -3,
+  "reanalysis_date": null,
+  "reanalysis_lead": null,
+  "forecast_date": "2017-10-19",
+  "forecast_lead": 16
+ },
+ {
+  "season": "deyr",
+  "year": 2019,
+  "inundation": null,
+  "gauge_date": "2019-10-14",
+  "gauge_lead": null,
+  "reanalysis_date": "2019-10-11",
+  "reanalysis_lead": null,
+  "forecast_date": "2019-10-02",
+  "forecast_lead": null
+ },
+ {
+  "season": "deyr",
+  "year": 2020,
+  "inundation": null,
+  "gauge_date": "2020-10-01",
+  "gauge_lead": null,
+  "reanalysis_date": "2020-10-10",
+  "reanalysis_lead": null,
+  "forecast_date": "2020-10-02",
+  "forecast_lead": null
+ },
+ {
+  "season": "deyr",
+  "year": 2023,
+  "inundation": "2023-10-31",
+  "gauge_date": "2023-10-25",
+  "gauge_lead": 6,
+  "reanalysis_date": "2023-10-29",
+  "reanalysis_lead": 2,
+  "forecast_date": "2023-10-21",
+  "forecast_lead": 10
+ },
+ {
+  "season": "gu",
+  "year": 2016,
+  "inundation": null,
+  "gauge_date": "2016-05-01",
+  "gauge_lead": null,
+  "reanalysis_date": "2016-05-07",
+  "reanalysis_lead": null,
+  "forecast_date": "2016-04-30",
+  "forecast_lead": null
+ },
+ {
+  "season": "gu",
+  "year": 2018,
+  "inundation": "2018-04-19",
+  "gauge_date": "2018-04-17",
+  "gauge_lead": 2,
+  "reanalysis_date": "2018-04-20",
+  "reanalysis_lead": -1,
+  "forecast_date": "2018-04-15",
+  "forecast_lead": 4
+ },
+ {
+  "season": "gu",
+  "year": 2020,
+  "inundation": null,
+  "gauge_date": "2020-04-22",
+  "gauge_lead": null,
+  "reanalysis_date": "2020-04-29",
+  "reanalysis_lead": null,
+  "forecast_date": "2020-04-22",
+  "forecast_lead": null
+ },
+ {
+  "season": "gu",
+  "year": 2023,
+  "inundation": "2023-04-07",
+  "gauge_date": "2023-03-25",
+  "gauge_lead": 13,
+  "reanalysis_date": null,
+  "reanalysis_lead": null,
+  "forecast_date": "2023-04-26",
+  "forecast_lead": -19
+ }
+]
