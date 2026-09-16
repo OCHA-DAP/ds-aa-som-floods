@@ -28,7 +28,7 @@ STATION_COLORS = {
     "dollow": "#065A82", "luuq": "#1C7293", "bardheere": "#2A78D6", "bualle": "#8E5FA8",
     "belet_weyne": "#065A82", "bulo_burti": "#0E8A7B", "jowhar": "#EB6834",
 }
-STATUS_COLORS = {"ACTION TRIGGER REACHED": "#B34036", "READINESS TRIGGER REACHED": "#D48F2A",
+STATUS_COLORS = {"ACTIVATION TRIGGER REACHED": "#B34036", "READINESS TRIGGER REACHED": "#D48F2A",
                  "TRIGGER NOT REACHED": "#2F9E6F", "NO WINDOW OPEN": FAINT}
 PRODUCT_COLORS = {"google": C_GOOGLE, "glofas": C_GLOFAS4}
 
@@ -76,7 +76,7 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
         else:
             a0, a1 = issue + pd.Timedelta(days=cfg.ACTION_LEADS[0]), issue + pd.Timedelta(days=cfg.ACTION_LEADS[1])
         ax.axvspan(a0 - pd.Timedelta(hours=12), a1 + pd.Timedelta(hours=12), color="#E6EEF7", zorder=0)
-        ax.text(a0, 0.97, "action 1 to 7 d", transform=ax.get_xaxis_transform(), fontsize=8,
+        ax.text(a0, 0.97, "activation 1 to 7 d", transform=ax.get_xaxis_transform(), fontsize=8,
                 color=FAINT, va="top")
     for st in stations:
         s = sub[sub.station == st].sort_values("valid_date")
@@ -100,7 +100,7 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
         ax.spines[sp].set_visible(False)
     votes = ""
     if result_window is not None:
-        leg = result_window["action"] if role == "action" else result_window["readiness"]
+        leg = result_window["action"] if role == "activation" else result_window["readiness"]
         votes = (f"  ·  max {leg['max_votes']} of {leg['n_of']} points over"
                  + (f" on {_day_month(pd.Timestamp(leg['max_votes_date']))}" if leg["max_votes_date"] else "")
                  + f" (rule: {leg['n_req']} of {leg['n_of']})")
@@ -138,11 +138,11 @@ def monitoring_chart(df, result, levels_df=None):
         col = 0
         if a["source"] == "google":
             g_levels = thr.lookup(levels_df, "google_grrr", season, a["rp"], stations)
-            _panel(ax_of(i, 0), df, "google", river, season, g_levels, result["windows"][key], "action")
+            _panel(ax_of(i, 0), df, "google", river, season, g_levels, result["windows"][key], "activation")
             col = 1
         if a["source"] == "glofas":
             gl_levels = thr.lookup(levels_df, cfg.GLOFAS_OPERATIONAL, season, a["rp"], stations)
-            role = "action"
+            role = "activation"
         else:
             gl_levels = thr.lookup(levels_df, cfg.GLOFAS_OPERATIONAL, season, r["rp"], stations, basis="readiness_band")
             role = "readiness"

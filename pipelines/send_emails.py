@@ -1,7 +1,7 @@
 """Step 3 of the daily run: send the day's email through Listmonk.
 
 Cadence: while at least one window is open, an informational email every
-Monday and an immediate email the day a readiness or action trigger is
+Monday and an immediate email the day a readiness or activation trigger is
 reached. When no window is open nothing is sent. Campaigns render inside the Listmonk
 instance's base_campaign template (branding, footer, unsubscribe); the Jinja
 templates here are the content fragment, and the chart is hosted in the

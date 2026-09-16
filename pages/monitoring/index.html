@@ -94,7 +94,7 @@ table.data td.none { color:#9aa4a6; }
     <figure id="chartfig" hidden>
       <img id="chart" alt="Forecast at each monitored point as a share of its own threshold">
       <figcaption>Each line is one monitored point, as a percentage of its own trigger threshold for the
-        season being watched; the dashed line is the threshold that counts as a vote. Darker band: action
+        season being watched; the dashed line is the threshold that counts as a vote. Darker band: activation
         leads (1 to 7 days). Lighter band: readiness leads (8 to 12 days). GloFAS lines are the
         ensemble median.</figcaption>
     </figure>
@@ -106,8 +106,8 @@ table.data td.none { color:#9aa4a6; }
     <h2>How to read this page</h2>
     <ul>
       <li><strong>Four windows, one source each.</strong> Gu (window February to June) runs on Google Flood Hub, Deyr (window September to January) on GloFAS. A window's trigger is reached when, on a single forecast day, enough of the river's stations are forecast at or above their own return-period threshold: Juba needs 3 of 4 stations, Shabelle 2 of 3. Any one window reaching its trigger releases the allocation.</li>
-      <li><strong>Action</strong> reads leads 1 to 7 days on the window's source. <strong>Readiness</strong> reads GloFAS at leads 8 to 12 days for every window, with thresholds fitted on that lead band, and releases only the mobilisation share.</li>
-      <li><strong>SWALIM.</strong> A SWALIM moderate flood risk alert for either river also counts as the readiness trigger being reached. Bulletins are not read automatically: check <a href="https://frrims.faoswalim.org/">FAO SWALIM</a> alongside this page.</li>
+      <li><strong>Activation</strong> reads leads 1 to 7 days on the window's source. <strong>Readiness</strong> reads GloFAS at leads 8 to 12 days for every window, with thresholds fitted on that lead band, and releases only the mobilisation share.</li>
+      <li><strong>SWALIM.</strong> A SWALIM moderate flood risk alert for either river also counts as the readiness trigger being reached. Bulletins are not read automatically: check <a href="https://frrims.faoswalim.org/">FAO SWALIM</a> and the <a href="https://frrims.faoswalim.org/rivers/levels">SWALIM river levels</a> alongside this page.</li>
       <li><strong>A window is open</strong> by calendar month: Deyr from September to January, Gu from February to June. Every forecast day inside the window counts, so monitoring for Deyr starts in September and for Gu in February. In July and August the pipeline still runs and this page still updates, but no email is sent.</li>
       <li>Full design and evidence: the <a href="../trigger-single-model/summary.html">trigger summary</a> and the <a href="../trigger-single-model/">analysis page</a>. Which GloFAS version is live, and what it does to the thresholds: <a href="../glofas-version/">GloFAS version switch</a>.</li>
     </ul>
@@ -130,11 +130,11 @@ function legRow(name, leg, fired, cls) {
 function windowCard(key, w) {
   const a = w.action, r = w.readiness;
   const cls = !w.open ? "closed" : a.activated ? "act" : r.activated ? "ready" : "";
-  const src = (w.action.source === "google" ? "Google Flood Hub" : "GloFAS") + " · action";
-  return `<div class="win ${cls}"><h3>${w.title}${w.open ? "" : '<span class="pill grey">out of season</span>'}${a.activated && w.open ? '<span class="pill" style="background:#fbeeec;color:#B34036;border-color:#f3c9c4">action</span>' : ""}${!a.activated && r.activated && w.open ? '<span class="pill" style="background:#fdf3e7;color:#B0722B;border-color:#f3dcb8">readiness</span>' : ""}</h3>
+  const src = (w.action.source === "google" ? "Google Flood Hub" : "GloFAS") + " · activation";
+  return `<div class="win ${cls}"><h3>${w.title}${w.open ? "" : '<span class="pill grey">out of season</span>'}${a.activated && w.open ? '<span class="pill" style="background:#fbeeec;color:#B34036;border-color:#f3c9c4">activation</span>' : ""}${!a.activated && r.activated && w.open ? '<span class="pill" style="background:#fdf3e7;color:#B0722B;border-color:#f3dcb8">readiness</span>' : ""}</h3>
     <div class="src">${src}</div>
     ${legRow("Readiness (GloFAS 8 to 12 d)", r, r.activated, "fired-r")}
-    ${legRow("Action (1 to 7 d)", a, a.activated, "fired")}
+    ${legRow("Activation (1 to 7 d)", a, a.activated, "fired")}
   </div>`;
 }
 
@@ -174,14 +174,14 @@ fetch("status.json?v=" + Date.now(), {cache: "no-store"}).then(r => { if (!r.ok)
   document.getElementById("windows").innerHTML = cards.map(([k, w]) => windowCard(k, w)).join("");
   const notes = [];
   if (s.chart_stale) notes.push(`<div class="callout warn">The chart is from the last available run; today's is not published yet.</div>`);
-  notes.push(`<div class="callout">${s.swalim_note} <a href="https://frrims.faoswalim.org/">FAO SWALIM</a>.</div>`);
+  notes.push(`<div class="callout">${s.swalim_note} <a href="https://frrims.faoswalim.org/">FAO SWALIM</a> · <a href="https://frrims.faoswalim.org/rivers/levels">SWALIM river levels</a>.</div>`);
   document.getElementById("notes").innerHTML = notes.join("");
   if (s.chart) { document.getElementById("chart").src = s.chart + "?v=" + encodeURIComponent(s.generated_at); document.getElementById("chartfig").hidden = false; }
   const shown = s.open_windows.length ? s.open_windows : Object.keys(s.windows);
   document.getElementById("tables-intro").textContent = s.open_windows.length
     ? "For each window of the season being monitored, the forecast peak at each station within the leg's lead band and inside the window months, against the station's threshold. A ratio of 1.00× or more means the peak reaches the threshold and the station votes."
     : "No window is open. Shown for every window: the forecast peak at each station within the lead band, against the threshold, counting only valid days inside the window months (so most cells are empty).";
-  document.getElementById("tables").innerHTML = shown.map(k => pointTable(s.windows[k], s.windows[k].readiness, "readiness", s.titles) + pointTable(s.windows[k], s.windows[k].action, "action", s.titles)).join("");
+  document.getElementById("tables").innerHTML = shown.map(k => pointTable(s.windows[k], s.windows[k].readiness, "readiness", s.titles) + pointTable(s.windows[k], s.windows[k].action, "activation", s.titles)).join("");
 }).catch(err => {
   document.getElementById("banner").innerHTML = `<span class="status">No status yet</span><span class="meta">Could not load status.json (${err.message}). The monitoring pipeline writes it after its first run.</span>`;
 });
@@ -198,7 +198,7 @@ fetch("status.json?v=" + Date.now(), {cache: "no-store"}).then(r => { if (!r.ok)
               SO2001: "shabelle", SO2002: "shabelle", SO2003: "shabelle", SO2101: "shabelle", SO2103: "shabelle", SO2302: "shabelle", SO2305: "shabelle", SO2301: "shabelle"};
   const HAS_POINT = new Set(["SO2605", "SO2606", "SO2602", "SO2701", "SO2001", "SO2002", "SO2101"]);
   const RIVER_TITLE = {juba: "Juba", shabelle: "Shabelle"};
-  const STATE_TEXT = {reached: "action trigger reached", ready: "readiness trigger reached", clear: "trigger not reached", off: "no window open"};
+  const STATE_TEXT = {reached: "activation trigger reached", ready: "readiness trigger reached", clear: "trigger not reached", off: "no window open"};
   const LON0 = 41.0, LON1 = 46.4, LAT0 = -0.9, LAT1 = 5.5, W = 700, PAD = 16;
   const K = (W - 2 * PAD) / (LON1 - LON0), H = Math.round((LAT1 - LAT0) * K + 2 * PAD);
   const X = lon => PAD + (lon - LON0) * K, Y = lat => PAD + (LAT1 - lat) * K;
@@ -239,9 +239,9 @@ fetch("status.json?v=" + Date.now(), {cache: "no-store"}).then(r => { if (!r.ok)
       const w = openFor[st.river]; let cls = "pt", title = st.name;
       if (w) {
         const a = w.action.stations[key], r = w.readiness.stations[key];
-        if (a && a.exceeds) { cls += " over"; title += ": forecast over its action threshold (" + (a.pct_of_threshold / 100).toFixed(2) + "× threshold)"; }
+        if (a && a.exceeds) { cls += " over"; title += ": forecast over its activation threshold (" + (a.pct_of_threshold / 100).toFixed(2) + "× threshold)"; }
         else if (r && r.exceeds) { cls += " rdy"; title += ": forecast over its readiness threshold (" + (r.pct_of_threshold / 100).toFixed(2) + "× threshold)"; }
-        else if (a) { title += ": " + (a.pct_of_threshold == null ? "no forecast in the lead band yet" : (a.pct_of_threshold / 100).toFixed(2) + "× its action threshold"); }
+        else if (a) { title += ": " + (a.pct_of_threshold == null ? "no forecast in the lead band yet" : (a.pct_of_threshold / 100).toFixed(2) + "× its activation threshold"); }
       } else title += ": no window open";
       const x = X(st.lon), y = Y(st.lat), left = st.river === "juba";
       g += '<circle class="' + cls + '" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="6.5"><title>' + esc(title) + "</title></circle>";
@@ -249,12 +249,12 @@ fetch("status.json?v=" + Date.now(), {cache: "no-store"}).then(r => { if (!r.ok)
     }
     svg.innerHTML = g;
     document.getElementById("maplegend").innerHTML = '<h3>Districts</h3>' +
-      '<div class="row"><span class="sw" style="background:rgba(179,64,54,.28);border-color:#B34036"></span>Action trigger reached</div>' +
+      '<div class="row"><span class="sw" style="background:rgba(179,64,54,.28);border-color:#B34036"></span>Activation trigger reached</div>' +
       '<div class="row"><span class="sw" style="background:rgba(212,143,42,.28);border-color:#D48F2A"></span>Readiness trigger reached</div>' +
       '<div class="row"><span class="sw" style="background:rgba(46,139,110,.16);border-color:#2E8B6E"></span>Trigger not reached</div>' +
       '<div class="row"><span class="sw" style="background:#e9eeee"></span>No window open</div>' +
       '<h3 style="margin-top:16px">Monitored points</h3>' +
-      '<div class="row"><span class="dot" style="background:#B34036;border-color:#7A241C"></span>Over its action threshold</div>' +
+      '<div class="row"><span class="dot" style="background:#B34036;border-color:#7A241C"></span>Over its activation threshold</div>' +
       '<div class="row"><span class="dot" style="background:#D48F2A;border-color:#8a5a15"></span>Over its readiness threshold</div>' +
       '<div class="row"><span class="dot"></span>Below its thresholds</div>';
   }).catch(e => { document.getElementById("maplegend").textContent = "Map data could not be loaded: " + e.message; });
