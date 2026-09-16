@@ -8,7 +8,7 @@
  "action_windows": [],
  "readiness": false,
  "readiness_windows": [],
- "status": "NOT ACTIVATED",
+ "status": "TRIGGER NOT REACHED",
  "glofas_version": "glofas_v4 (gpi5/bp21)",
  "glofas_issue": "2026-09-15",
  "google_issue": "2026-09-16 00:46 UTC",
@@ -432,7 +432,7 @@
    }
   }
  },
- "generated_at": "2026-09-16T08:17:46.015609+00:00",
+ "generated_at": "2026-09-16T08:43:41.201009+00:00",
  "chart": "latest.png",
  "chart_stale": false,
  "glofas_operational": "glofas_v4",
@@ -1424,5 +1424,5 @@
    "deyr": "Deyr (window September to January)"
   }
  },
- "swalim_note": "Readiness may also be activated by a SWALIM moderate flood risk alert for either river. SWALIM bulletins are not read automatically."
+ "swalim_note": "The readiness trigger is also reached on a SWALIM moderate flood risk alert for either river. SWALIM bulletins are not read automatically."
 }
