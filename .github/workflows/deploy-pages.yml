@@ -8,7 +8,7 @@ name: Deploy pages site to GitHub Pages
 #
 # The repo is public, so the site is public at https://ocha-dap.github.io/ds-aa-som-floods/.
 #
-# The monitoring pipeline (monitoring.yml, from 12:00 UTC) pushes status.json + latest.png to
+# The monitoring pipeline (monitoring.yml, from 10:00 UTC) pushes status.json + latest.png to
 # the orphan `monitoring-status` branch; this workflow runs when that one completes and
 # overlays them into pages/monitoring/, so the public status page follows the data directly.
 #

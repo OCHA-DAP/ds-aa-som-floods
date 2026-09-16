@@ -32,21 +32,45 @@ from src.monitoring import etl  # noqa: E402
 from src.monitoring.flags import env_flag  # noqa: E402
 
 
-def fetch_glofas_waiting(monitoring_date):
-    """Ask EWDS for the day's own GloFAS issue; while it is not published yet, retry every
-    15 minutes until WAIT_FOR_ISSUE_UNTIL_UTC (hour, default 16), then accept the previous
-    day's issue. Runs for a past date do not wait."""
-    deadline_h = int(os.getenv("WAIT_FOR_ISSUE_UNTIL_UTC", "16"))
+def _deadline(monitoring_date):
+    """WAIT_FOR_ISSUE_UNTIL_UTC as HH:MM (or HH) on the monitoring day, default 15:45 UTC."""
+    raw = os.getenv("WAIT_FOR_ISSUE_UNTIL_UTC", "15:45").strip()
+    hh, _, mm = raw.partition(":")
+    return datetime(monitoring_date.year, monitoring_date.month, monitoring_date.day,
+                    int(hh), int(mm or 0), tzinfo=timezone.utc)
+
+
+def fetch_todays_forecasts(monitoring_date):
+    """Fetch both sources, waiting for the day's own issues.
+
+    GloFAS: ask EWDS for the monitoring day's issue; Google: accept the latest issue only
+    once it is dated the monitoring day. While either is missing, retry every 15 minutes
+    until the deadline, then take what exists (previous GloFAS issue, latest Google issue).
+    Runs for a past date do not wait."""
+    deadline = _deadline(monitoring_date)
+    glofas = google = None
     while True:
-        try:
-            return etl.fetch_glofas(monitoring_date, max_days_back=0)
-        except RuntimeError as exc:
-            now = datetime.now(timezone.utc)
-            if monitoring_date != now.date() or now.hour >= deadline_h:
-                print(f"  {monitoring_date} issue not on EWDS ({str(exc)[:80]}); taking the previous issue")
-                return etl.fetch_glofas(monitoring_date, max_days_back=1)
-            print(f"  {now:%H:%M} UTC: today's issue not on EWDS yet; retrying in 15 min, until {deadline_h}:00 UTC")
-            time.sleep(900)
+        now = datetime.now(timezone.utc)
+        waiting = monitoring_date == now.date() and now < deadline
+        if glofas is None:
+            try:
+                glofas = etl.fetch_glofas(monitoring_date, max_days_back=0)
+            except RuntimeError as exc:
+                if not waiting:
+                    print(f"  {monitoring_date} GloFAS issue not on EWDS ({str(exc)[:80]}); taking the previous issue")
+                    glofas = etl.fetch_glofas(monitoring_date, max_days_back=1)
+        if google is None:
+            df_g, gmeta = etl.fetch_google(monitoring_date)
+            latest = pd.to_datetime(df_g.issued_time).max().date() if len(df_g) else None
+            if latest is not None and latest >= monitoring_date or not waiting:
+                if latest is not None and latest < monitoring_date:
+                    print(f"  Google's latest issue is {latest}; taking it")
+                google = (df_g, gmeta)
+        if glofas is not None and google is not None:
+            return glofas, google
+        missing = " and ".join(n for n, v in (("GloFAS", glofas), ("Google", google)) if v is None)
+        print(f"  {now:%H:%M} UTC: today's {missing} issue not out yet; retrying in 15 min, until {deadline:%H:%M} UTC")
+        time.sleep(900)
 
 
 def main():
@@ -64,8 +88,8 @@ def main():
             raise SystemExit("ERROR: " + msg)
         print("WARNING: " + msg)
 
-    print("fetching GloFAS ...")
-    df_glofas, meta = fetch_glofas_waiting(monitoring_date)
+    print("fetching GloFAS and Google Flood Hub ...")
+    (df_glofas, meta), (df_google, gmeta) = fetch_todays_forecasts(monitoring_date)
     print(f"  issue {meta['issue_date']} ({meta['days_back']} d back), {len(df_glofas)} rows, "
           f"process ids {meta['process_ids']}, expected {cfg.GLOFAS_EXPECTED_PROCESS}")
     if not meta["version_ok"]:
@@ -75,8 +99,6 @@ def main():
             raise SystemExit("ERROR: " + msg)
         print("WARNING: " + msg)
 
-    print("fetching Google Flood Hub ...")
-    df_google, gmeta = etl.fetch_google(monitoring_date)
     print(f"  {gmeta['n_gauges']} gauges, {len(df_google)} rows; missing: {gmeta['missing']}")
 
     df = pd.concat([df_glofas, df_google], ignore_index=True)

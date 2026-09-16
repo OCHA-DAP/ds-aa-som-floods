@@ -5,11 +5,11 @@ name: Monitor Somalia riverine flooding
 # pushed to the orphan `monitoring-status` branch for the public page at
 # /monitoring/ (deploy-pages.yml runs when this workflow completes and overlays it).
 #
-# 12:00 UTC (15:00 Nairobi): Google issues its daily forecast around 12:00-13:00 UTC and
-# the GloFAS 00Z run is expected on EWDS from about 11:00 UTC, though 14:15-15:30 UTC was
-# seen on 2026-09-14/15. check_forecasts.py therefore asks for the day's own GloFAS issue
-# and, while EWDS has not published it, retries every 15 minutes until 16:00 UTC
-# (WAIT_FOR_ISSUE_UNTIL_UTC) before accepting the previous day's issue.
+# 10:00 UTC (13:00 Nairobi): check_forecasts.py asks for the day's own GloFAS issue on
+# EWDS and for a Google issue dated today, retrying every 15 minutes while either is
+# missing, until 15:45 UTC (WAIT_FOR_ISSUE_UNTIL_UTC; the job must stay under GitHub's
+# 6 h limit), then takes what exists. GloFAS was seen on EWDS between ~14:15 and ~15:30
+# UTC on 2026-09-14/15 and Google issues around 12:00-13:00 UTC.
 #
 # Run modes (KB infrastructure/email-testing.md): TEST_EMAIL / DRY_RUN default
 # to true in the code; production is the explicit `false` set from repo
@@ -38,7 +38,7 @@ on:
         options: ["false", "true"]
         default: "false"
   schedule:
-    - cron: "0 12 * * *"
+    - cron: "0 10 * * *"
 
 permissions:
   contents: write
@@ -46,9 +46,9 @@ permissions:
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 330
+    timeout-minutes: 355
     env:
-      WAIT_FOR_ISSUE_UNTIL_UTC: "16"
+      WAIT_FOR_ISSUE_UNTIL_UTC: "15:45"
       DSCI_AZ_BLOB_DEV_SAS: ${{ secrets.DSCI_AZ_BLOB_DEV_SAS }}
       DSCI_AZ_BLOB_DEV_SAS_WRITE: ${{ secrets.DSCI_AZ_BLOB_DEV_SAS_WRITE }}
       GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
