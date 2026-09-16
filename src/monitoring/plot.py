@@ -150,7 +150,12 @@ def monitoring_chart(df, result, levels_df=None):
     for ax in left:
         ax.set_ylabel("% of the point's threshold")
     status = result["status"]
-    fig.text(0.02, head[0], f"Somalia riverine flood trigger · forecasts retrieved {_day_month(monitoring_date)} {monitoring_date:%Y} · "
+    gi = pd.Timestamp(result["glofas_issue"]) if result.get("glofas_issue") else None
+    issued = f"GloFAS issue {_day_month(gi)} {gi:%Y}" if gi is not None else "no GloFAS issue"
+    if two_sources and result.get("google_issue"):
+        go = pd.Timestamp(result["google_issue"][:10])
+        issued += f", Google issue {_day_month(go)} {go:%Y}"
+    fig.text(0.02, head[0], f"Somalia riverine flood trigger · {issued} · "
                             f"{cfg.SEASON_TITLE[season]}{'' if is_open else ' (out of season)'}",
              fontsize=11, color=BODY)
     label = fig.text(0.02, head[1], "Status: ", fontsize=11, color=BODY)

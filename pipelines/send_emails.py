@@ -73,6 +73,8 @@ def render(result, template_name, chart_url):
         open_sources.append("glofas")
     ctx = dict(
         pub_date=result["monitoring_date"], trigger_status=result["status"], chart_url=chart_url,
+        glofas_issue=result.get("glofas_issue"),
+        google_issue=(result.get("google_issue") or "")[:10] if any(result["windows"][k]["action"]["source"] == "google" for k in result["open_windows"]) else None,
         windows=result["windows"], open_windows=result["open_windows"],
         open_titles=[result["windows"][k]["title"] for k in result["open_windows"]],
         action_windows=result["action_windows"],
