@@ -1,0 +1,33 @@
+{
+ "_note": "GloFAS 0.05deg river cells for the seven trigger points, frozen from data/glofas/channel_cells.json (src.datasources.glofas.channel_cells, v4 network; v5 shares it). The runner has no reanalysis to recompute them.",
+ "cells": {
+  "dollow": {
+   "lat": 4.175,
+   "lon": 42.075
+  },
+  "luuq": {
+   "lat": 3.725,
+   "lon": 42.525
+  },
+  "bardheere": {
+   "lat": 2.325,
+   "lon": 42.225
+  },
+  "bualle": {
+   "lat": 1.225,
+   "lon": 42.575
+  },
+  "belet_weyne": {
+   "lat": 4.725,
+   "lon": 45.225
+  },
+  "bulo_burti": {
+   "lat": 3.825,
+   "lon": 45.575
+  },
+  "jowhar": {
+   "lat": 2.775,
+   "lon": 45.525
+  }
+ }
+}
