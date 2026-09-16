@@ -107,7 +107,7 @@ table.data td.none { color:#9aa4a6; }
     <ul>
       <li><strong>Four windows, one source each.</strong> Gu (window February to June) runs on Google Flood Hub, Deyr (window September to January) on GloFAS. A window's trigger is reached when, on a single forecast day, enough of the river's stations are forecast at or above their own return-period threshold: Juba needs 3 of 4 stations, Shabelle 2 of 3. Any one window reaching its trigger releases the allocation.</li>
       <li><strong>Activation</strong> reads leads 1 to 7 days on the window's source. <strong>Readiness</strong> reads GloFAS at leads 8 to 12 days for every window, with thresholds fitted on that lead band, and releases only the mobilisation share.</li>
-      <li><strong>SWALIM.</strong> A SWALIM moderate flood risk alert for either river also counts as the readiness trigger being reached. Bulletins are not read automatically: check <a href="https://frrims.faoswalim.org/">FAO SWALIM</a> and the <a href="https://frrims.faoswalim.org/rivers/levels">SWALIM river levels</a> alongside this page.</li>
+      <li><strong>SWALIM.</strong> A SWALIM moderate flood risk alert for either river also counts as the readiness trigger being reached. Bulletins are not read automatically: check the <a href="https://frrims.faoswalim.org/rivers/levels">SWALIM river levels</a> alongside this page.</li>
       <li><strong>A window is open</strong> by calendar month: Deyr from September to January, Gu from February to June. Every forecast day inside the window counts, so monitoring for Deyr starts in September and for Gu in February. In July and August the pipeline still runs and this page still updates, but no email is sent.</li>
       <li>Full design and evidence: the <a href="../trigger-single-model/summary.html">trigger summary</a> and the <a href="../trigger-single-model/">analysis page</a>. Which GloFAS version is live, and what it does to the thresholds: <a href="../glofas-version/">GloFAS version switch</a>.</li>
     </ul>
@@ -174,7 +174,7 @@ fetch("status.json?v=" + Date.now(), {cache: "no-store"}).then(r => { if (!r.ok)
   document.getElementById("windows").innerHTML = cards.map(([k, w]) => windowCard(k, w)).join("");
   const notes = [];
   if (s.chart_stale) notes.push(`<div class="callout warn">The chart is from the last available run; today's is not published yet.</div>`);
-  notes.push(`<div class="callout">${s.swalim_note} <a href="https://frrims.faoswalim.org/">FAO SWALIM</a> · <a href="https://frrims.faoswalim.org/rivers/levels">SWALIM river levels</a>.</div>`);
+  notes.push(`<div class="callout">${s.swalim_note} <a href="https://frrims.faoswalim.org/rivers/levels">SWALIM river levels</a>.</div>`);
   document.getElementById("notes").innerHTML = notes.join("");
   if (s.chart) { document.getElementById("chart").src = s.chart + "?v=" + encodeURIComponent(s.generated_at); document.getElementById("chartfig").hidden = false; }
   const shown = s.open_windows.length ? s.open_windows : Object.keys(s.windows);
