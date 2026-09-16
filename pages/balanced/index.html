@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The balanced trigger &mdash; Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Open multi-model consensus on the five still-reporting SWALIM gauges, with probability balanced across basins and seasons as an explicit constraint.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+.hero.hero-sub { padding:40px 44px 34px; }
+.hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; }
+.crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+.crumb a:hover { text-decoration:underline; }
+article { padding:8px 44px 24px; max-width:920px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9);
+             margin:38px 0 10px; line-height:1.25; }
+article h3 { font-size:15px; color:var(--n9); margin:26px 0 8px; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; }
+article ul, article ol { padding-left:22px; }
+article strong { color:var(--n9); }
+article a { color:var(--b6); }
+article code { background:var(--n05); border:1px solid #e2e7e7; padding:1px 5px;
+               border-radius:3px; font-size:12.5px; color:var(--b7); }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(168px,1fr));
+         gap:14px; margin:26px 0 6px; }
+.stat { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5);
+        border-radius:5px; padding:14px 16px 12px; }
+.stat .v { display:block; font-family:'Merriweather',Georgia,serif; font-size:25px;
+           font-weight:700; color:var(--b6); line-height:1.1; }
+.stat .l { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+           color:var(--n7); margin-top:6px; line-height:1.45; }
+.callout { margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05);
+           border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
+.callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
+.tablewrap { overflow-x:auto; }
+table.data { border-collapse:collapse; width:100%; margin:16px 0; font-size:13px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em;
+                color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1);
+                padding:7px 10px 6px; }
+table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8);
+                vertical-align:top; }
+table.data td em { font-style:normal; color:var(--b6); font-weight:500; }
+table.cmp { table-layout:fixed; width:100%; border-collapse:collapse; font-size:11px;
+            font-variant-numeric:tabular-nums; }
+table.cmp th { font-size:9px; letter-spacing:.04em; padding:5px 2px; text-align:center;
+               color:var(--n7); text-transform:uppercase; font-weight:700;
+               border-bottom:2px solid var(--b1); }
+table.cmp td { padding:4px 2px; text-align:center; border-bottom:1px solid #eef1f1;
+               color:var(--n8); }
+table.cmp .gl { border-left:2px solid var(--b1); }
+table.cmp .yr { font-weight:700; color:var(--n9); }
+table.cmp td.fire { background:rgba(30,121,95,.30); font-weight:700; color:#12513e; }
+.bsev { background:rgba(179,64,54,.13); color:#B34036; font-weight:700; }
+.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
+.zero { color:#c9cfd6; }
+.balgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px;
+           margin:18px 0; }
+.balbox { border:1px solid #e2e7e7; border-radius:5px; padding:12px 14px; background:#fff; }
+.balbox h4 { margin:0 0 8px; font-size:11px; text-transform:uppercase; letter-spacing:.08em;
+             color:var(--n7); }
+.balrow { display:flex; justify-content:space-between; font-size:13px; padding:3px 0;
+          color:var(--n8); }
+.balrow b { color:var(--n9); font-variant-numeric:tabular-nums; }
+.provenance { margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7;
+              font-size:12px; color:var(--n7); line-height:1.7; }
+.provenance a { color:var(--b6); }
+@media (max-width:640px) {
+  article { padding:4px 22px 16px; }
+  .hero.hero-sub { padding:32px 22px 28px; }
+  .provenance { margin:28px 22px 32px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero hero-sub">
+    <canvas id="bg" aria-hidden="true"></canvas>
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / balanced design</p>
+      <h1>The balanced trigger</h1>
+      <p>Open multi-model consensus on the five SWALIM gauges that still report, with any
+         product free to compete at any point, and the activation probability balanced
+         across basins and seasons as an explicit constraint rather than left to fall out
+         of the optimisation. August 2026.</p>
+    </div>
+  </header>
+
+  <article>
+
+    <div class="stats">
+      <div class="stat"><span class="v">1-in-3.2</span><span class="l">envelope return period</span></div>
+      <div class="stat"><span class="v">7 of 7</span><span class="l">severe years caught</span></div>
+      <div class="stat"><span class="v">none</span><span class="l">activations outside the benchmark</span></div>
+      <div class="stat"><span class="v">Gu = Deyr</span><span class="l">seasons exactly level at 1-in-6.5</span></div>
+    </div>
+
+    <h2>What this design is</h2>
+    <p>Three constraints, applied together:</p>
+    <ul>
+      <li><strong>Only the five gauges that still report</strong> &mdash; Belet Weyne, Bulo
+        Burti and Jowhar on the Shabelle, Luuq and Dollow on the Juba. Every activation is
+        checkable against a live observation at the point the forecast speaks for.</li>
+      <li><strong>Any model combination.</strong> Every (station, product) pair competes
+        on merit; a station may carry more than one product and a window may mix them.
+        Selection is model-blind: a &minus;3 day timing guard, then every pair within
+        0.10&nbsp;&#961; of the window's best.</li>
+      <li><strong>Balance is a constraint, not an outcome.</strong> The search minimises
+        the gap between the basins and between the seasons, subject to the envelope
+        staying at or rarer than 1-in-3 and to catching every severe year.</li>
+    </ul>
+
+    <div class="tablewrap">
+      <table class="data" id="mech"><tr><td>loading&hellip;</td></tr></table>
+    </div>
+
+    <h2>How the probability comes out</h2>
+    <div class="balgrid" id="balance"></div>
+
+    <div class="callout">
+      <strong>The seasons come out exactly level and the basins within one activation.</strong>
+      Gu and Deyr each release once every 6.5 years. The Shabelle runs at 1-in-4.3 against
+      the Juba's 1-in-5.2 &mdash; a difference of a single activation across 25 years. Both
+      basins do real work: the Juba releases on its own in <span id="ju"></span> and the
+      Shabelle in <span id="su"></span>, so neither leg is redundant.
+    </div>
+
+    <div class="callout warn">
+      <strong>Exact basin parity is reachable, and it costs a severe year.</strong>
+      Searching the whole option space, the best configuration with the basins exactly
+      equal puts both at 5 activations, moves the envelope to 1-in-3.7 and catches
+      <strong>6 of 7</strong> severe years instead of 7. Perfect parity is therefore
+      available but not free: it buys symmetry by giving up a flood the mechanism
+      currently catches. Within one activation is as balanced as this station set gets
+      without paying for it, which is why that is what is adopted here.
+    </div>
+
+    <h2>Year by year</h2>
+    <p>The number is how many pairs in that window were over their own thresholds at once;
+       the cell is shaded when it reaches the requirement in the column header, which is
+       when that window activates. <em>bench</em> is what the gauges recorded that
+       season.</p>
+    <div class="tablewrap">
+      <table class="cmp" id="yearTable"><tr><td>loading&hellip;</td></tr></table>
+    </div>
+
+    <h2>How it compares</h2>
+    <div class="tablewrap">
+    <table class="data">
+      <tr><th>design</th><th>stations</th><th>models</th><th>Juba</th><th>Shabelle</th>
+          <th>Gu</th><th>Deyr</th><th>envelope</th><th>severe</th><th>false</th></tr>
+      <tr><td><strong>This page</strong> &mdash; balanced</td><td>5 active</td><td>any mix</td>
+          <td>1-in-5.2</td><td>1-in-4.3</td><td>1-in-6.5</td><td>1-in-6.5</td>
+          <td>1-in-3.2</td><td>7 of 7</td><td>none</td></tr>
+      <tr><td><a href="../trigger/">Multi-source</a> (as published)</td><td>5 active</td><td>any mix</td>
+          <td>1-in-5.2</td><td>1-in-4.3</td><td>1-in-6.5</td><td>1-in-6.5</td>
+          <td>1-in-3.2</td><td>7 of 7</td><td>none</td></tr>
+      <tr><td><a href="../trigger-single-model/">One model per window</a></td><td>7</td><td>one per window</td>
+          <td>1-in-4.3</td><td><strong>1-in-3.2</strong></td><td>1-in-6.5</td>
+          <td><strong>1-in-4.3</strong></td><td>1-in-3.2</td><td>7 of 7</td><td>2013</td></tr>
+      <tr><td>Balanced, 25 Aug (superseded)</td><td>18 points</td><td>any mix</td>
+          <td>1-in-4.3</td><td>1-in-4.3</td><td>1-in-6.5</td><td>1-in-6.5</td>
+          <td>1-in-3.2</td><td>7 of 7</td><td>2013</td></tr>
+    </table>
+    </div>
+
+    <div class="callout">
+      <strong>Where the balance went, and how much of it comes back.</strong> The 25 August
+      configuration was exactly balanced on both axes, but it drew on all 18 registry
+      points including several with no gauge at all. Restricting to the five that still
+      report &mdash; so that an activation can always be checked against an observation
+      &mdash; is what cost the exact basin match. Applying the balance constraint
+      explicitly on that restricted set recovers the seasons completely and holds the
+      basins to a single activation apart, while removing the 2013 activation the
+      25 August version carried outside the benchmark. It is the same configuration the
+      published multi-source page already adopts, now with the balance stated as a design
+      requirement and its cost quantified rather than left implicit.
+    </div>
+
+    <h2>Caveats</h2>
+    <ul>
+      <li><strong>Shabelle Gu is unanimous.</strong> Its pool is four pairs and the rule
+        needs all four, so a single product failing on the right day silences the window.
+        That is forced by the pool size on this station set, not chosen.</li>
+      <li><strong>Juba Deyr is very rare</strong> at 1-in-26 on its own; the Juba's
+        activation rate is carried almost entirely by Gu.</li>
+      <li><strong>GEOGloWS units are scored on the retrospective</strong> at lead 0, since
+        its forecast archive begins July 2024. Any lead-time claim resting on them is
+        unproven, and its live forecasts run at 0.89&times; its own retrospective &mdash;
+        so a level set as 1-in-5 behaves like a median 1-in-13 unless the thresholds are
+        refit or the forecast is debiased.</li>
+      <li><strong>Scored on the corrected benchmark</strong> (branch
+        <code>fix/corrected-benchmark-and-lag</code>): return levels fitted strictly
+        within 1999&ndash;2023, which removes 2008 from the severe set.</li>
+    </ul>
+
+  </article>
+
+  <div class="provenance">
+    <p><strong>Provenance.</strong> Selection from the station-vs-gauge correlation table
+      (P. Wairimu, notebook 06) restricted to the five reporting SNRFA gauges; thresholds
+      are Weibull plotting positions on each product's own seasonal maxima, 1999&ndash;2023;
+      the benchmark is the two-gauge consensus rule with return levels fitted strictly
+      inside the backtest window. Compare against the
+      <a href="../comparison/">design comparison</a>, the
+      <a href="../trigger/">multi-source mechanism</a> and the
+      <a href="../trigger-single-model/">one-model-per-window mechanism</a>.</p>
+  </div>
+
+</div>
+
+<script src="../assets/hero.js" defer></script>
+<script>
+(function () {
+  "use strict";
+  var WIN = [["juba_gu","Juba Gu"],["juba_deyr","Juba Deyr"],
+             ["shabelle_gu","Shabelle Gu"],["shabelle_deyr","Shabelle Deyr"]];
+  fetch("data.json").then(function (r) { return r.json(); }).then(function (D) {
+
+    // ---- mechanism table ----
+    var m = ['<tr><th>window</th><th>consensus rule</th><th>pool</th><th>leg RP</th><th>activations</th></tr>'];
+    WIN.forEach(function (w) {
+      var x = D.meta[w[0]];
+      m.push("<tr><td><em>" + w[1] + "</em></td>" +
+        "<td>" + x.label + ": <strong>" + x.n_req + " of " + x.pool +
+        "</strong> pairs over their own 1-in-" + x.rp + "-yr thresholds" +
+        (x.unanimous ? ' <span style="color:#b3703a">(unanimous)</span>' : "") + "</td>" +
+        "<td>" + x.pool + " pairs</td><td>1-in-" + x.leg_rp + "</td>" +
+        "<td>" + (x.years.length ? x.years.join(", ") : "&mdash;") + "</td></tr>");
+    });
+    document.getElementById("mech").innerHTML = m.join("");
+
+    // ---- balance boxes ----
+    function box(title, rows) {
+      return '<div class="balbox"><h4>' + title + "</h4>" + rows.map(function (r) {
+        return '<div class="balrow"><span>' + r[0] + "</span><b>" + r[1] + "</b></div>";
+      }).join("") + "</div>";
+    }
+    document.getElementById("balance").innerHTML =
+      box("By basin", [["Juba", D.basins.juba.n + " &mdash; 1-in-" + D.basins.juba.rp],
+                       ["Shabelle", D.basins.shabelle.n + " &mdash; 1-in-" + D.basins.shabelle.rp],
+                       ["gap", Math.abs(D.basins.juba.n - D.basins.shabelle.n) + " activation"]]) +
+      box("By season", [["Gu", D.seasons.gu.n + " &mdash; 1-in-" + D.seasons.gu.rp],
+                        ["Deyr", D.seasons.deyr.n + " &mdash; 1-in-" + D.seasons.deyr.rp],
+                        ["gap", Math.abs(D.seasons.gu.n - D.seasons.deyr.n) + " activations"]]) +
+      box("Envelope", [["releases", D.envelope.n + " of 25 years"],
+                       ["return period", "1-in-" + D.envelope.rp],
+                       ["severe caught", D.envelope.severe_caught + " of " + D.envelope.n_severe]]);
+    document.getElementById("ju").textContent = D.basins.juba.unique.join(" and ");
+    document.getElementById("su").textContent = D.basins.shabelle.unique.join(", ");
+
+    // ---- year table ----
+    var idx = {};
+    D.table.forEach(function (r) { idx[r.year + "|" + r.window] = r; });
+    var h = [];
+    h.push("<colgroup><col style='width:40px'>" + WIN.map(function () {
+      return "<col style='width:44px'><col style='width:34px'>";
+    }).join("") + "</colgroup>");
+    h.push('<tr><th rowspan="2" style="vertical-align:bottom">year</th>' +
+      WIN.map(function (w) {
+        return '<th colspan="2" class="gl">' + w[1] + "</th>";
+      }).join("") + "</tr>");
+    h.push("<tr>" + WIN.map(function (w) {
+      return '<th class="gl">&ge;' + D.meta[w[0]].n_req + " of " + D.meta[w[0]].pool +
+             "</th><th>bench</th>";
+    }).join("") + "</tr>");
+    D.years.slice().reverse().forEach(function (y) {
+      var cells = ['<td class="yr">' + y + "</td>"];
+      WIN.forEach(function (w) {
+        var r = idx[y + "|" + w[0]] || {n:0,fire:false};
+        cells.push('<td class="gl ' + (r.fire ? "fire" : "") + '">' +
+                   (r.n ? r.n : '<span class="zero">0</span>') + "</td>");
+        var b = D.bench[w[0]];
+        var cls = b.sev.indexOf(y) >= 0 ? "bsev" : (b.mod.indexOf(y) >= 0 ? "bmod" : "");
+        var txt = b.sev.indexOf(y) >= 0 ? "5yr" : (b.mod.indexOf(y) >= 0 ? "3yr" : "");
+        cells.push('<td class="' + cls + '">' + txt + "</td>");
+      });
+      h.push("<tr>" + cells.join("") + "</tr>");
+    });
+    document.getElementById("yearTable").innerHTML = h.join("");
+  });
+})();
+</script>
+</body>
+</html>

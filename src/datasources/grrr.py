@@ -24,7 +24,6 @@ os.environ.setdefault("GRPC_VERBOSITY", "NONE")
 os.environ.setdefault("GLOG_minloglevel", "3")
 
 import pandas as pd
-import zarr
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "google"
 
@@ -35,6 +34,10 @@ RETURN_PERIODS_ZARR = f"{BASE}/return_periods.zarr"
 
 
 def _open(url):
+    # imported lazily: zarr (+ gcsfs) is only needed for live store reads,
+    # not for loading already-downloaded data
+    import zarr
+
     return zarr.open_group(url, mode="r", storage_options={"token": "anon"})
 
 

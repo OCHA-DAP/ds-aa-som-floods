@@ -1,0 +1,172 @@
+[
+ {
+  "season": "Deyr 2006",
+  "river": "Juba",
+  "model": "GloFAS v5",
+  "swalim_first": "2006-10-31",
+  "trigger": "2006-10-29",
+  "v4_issue": null,
+  "vs_trigger": "GloFAS v5 2 d before SWALIM",
+  "vs_v4": "SWALIM only; v4 forecast issue never crossed"
+ },
+ {
+  "season": "Deyr 2006",
+  "river": "Shabelle",
+  "model": "GloFAS v5",
+  "swalim_first": "2006-10-31",
+  "trigger": "2006-11-02",
+  "v4_issue": null,
+  "vs_trigger": "SWALIM 2 d before GloFAS v5",
+  "vs_v4": "SWALIM only; v4 forecast issue never crossed"
+ },
+ {
+  "season": "Deyr 2014",
+  "river": "Juba",
+  "model": "GloFAS v5",
+  "swalim_first": "2014-10-15",
+  "trigger": null,
+  "v4_issue": "2014-10-23",
+  "vs_trigger": "SWALIM only; GloFAS v5 never crossed",
+  "vs_v4": "SWALIM 8 d before v4 forecast issue"
+ },
+ {
+  "season": "Deyr 2014",
+  "river": "Shabelle",
+  "model": "GloFAS v5",
+  "swalim_first": "2014-10-15",
+  "trigger": "2014-10-16",
+  "v4_issue": "2014-10-07",
+  "vs_trigger": "SWALIM 1 d before GloFAS v5",
+  "vs_v4": "v4 forecast issue 8 d before SWALIM"
+ },
+ {
+  "season": "Deyr 2019",
+  "river": "Juba",
+  "model": "GloFAS v5",
+  "swalim_first": "2019-10-22",
+  "trigger": null,
+  "v4_issue": null,
+  "vs_trigger": "SWALIM only; GloFAS v5 never crossed",
+  "vs_v4": "SWALIM only; v4 forecast issue never crossed"
+ },
+ {
+  "season": "Deyr 2019",
+  "river": "Shabelle",
+  "model": "GloFAS v5",
+  "swalim_first": "2019-10-22",
+  "trigger": "2019-10-11",
+  "v4_issue": "2019-10-02",
+  "vs_trigger": "GloFAS v5 11 d before SWALIM",
+  "vs_v4": "v4 forecast issue 20 d before SWALIM"
+ },
+ {
+  "season": "Deyr 2020",
+  "river": "Shabelle",
+  "model": "GloFAS v5",
+  "swalim_first": "2020-09-08",
+  "trigger": "2020-10-10",
+  "v4_issue": "2020-10-02",
+  "vs_trigger": "no bulletin for the October rise",
+  "vs_v4": "(September flood bulletin only)"
+ },
+ {
+  "season": "Deyr 2023",
+  "river": "Juba",
+  "model": "GloFAS v5",
+  "swalim_first": "2023-10-20",
+  "trigger": "2023-10-29",
+  "v4_issue": "2023-10-21",
+  "vs_trigger": "SWALIM 9 d before GloFAS v5",
+  "vs_v4": "SWALIM 1 d before v4 forecast issue"
+ },
+ {
+  "season": "Deyr 2023",
+  "river": "Shabelle",
+  "model": "GloFAS v5",
+  "swalim_first": "2023-10-21",
+  "trigger": "2023-11-09",
+  "v4_issue": null,
+  "vs_trigger": "SWALIM 19 d before GloFAS v5",
+  "vs_v4": "SWALIM only; v4 forecast issue never crossed"
+ },
+ {
+  "season": "Gu 2016",
+  "river": "Shabelle",
+  "model": "Google",
+  "swalim_first": null,
+  "trigger": "2016-05-12",
+  "v4_issue": "2016-05-08",
+  "vs_trigger": "no SWALIM bulletin; Google 12 May",
+  "vs_v4": ""
+ },
+ {
+  "season": "Gu 2020",
+  "river": "Juba",
+  "model": "Google",
+  "swalim_first": "2020-04-27",
+  "trigger": "2020-04-29",
+  "v4_issue": "2020-05-01",
+  "vs_trigger": "SWALIM 2 d before Google",
+  "vs_v4": ""
+ },
+ {
+  "season": "Gu 2020",
+  "river": "Shabelle",
+  "model": "Google",
+  "swalim_first": "2020-04-27",
+  "trigger": "2020-04-30",
+  "v4_issue": null,
+  "vs_trigger": "SWALIM 3 d before Google",
+  "vs_v4": ""
+ },
+ {
+  "season": "Gu 2021",
+  "river": "Juba",
+  "model": "Google",
+  "swalim_first": "2021-05-10",
+  "trigger": null,
+  "v4_issue": null,
+  "vs_trigger": "SWALIM only; Google never crossed",
+  "vs_v4": ""
+ },
+ {
+  "season": "Gu 2021",
+  "river": "Shabelle",
+  "model": "Google",
+  "swalim_first": "2021-05-10",
+  "trigger": null,
+  "v4_issue": null,
+  "vs_trigger": "SWALIM only; Google never crossed",
+  "vs_v4": ""
+ },
+ {
+  "season": "Gu 2023",
+  "river": "Shabelle",
+  "model": "Google",
+  "swalim_first": "2023-05-08",
+  "trigger": null,
+  "v4_issue": null,
+  "vs_trigger": "SWALIM only; Google never crossed",
+  "vs_v4": ""
+ },
+ {
+  "season": "Gu 2024",
+  "river": "Juba",
+  "model": "Google",
+  "swalim_first": "2024-05-09",
+  "trigger": "n/a",
+  "v4_issue": "2024-05-05",
+  "vs_trigger": "Google record ends 2023",
+  "vs_v4": ""
+ },
+ {
+  "season": "Gu 2024",
+  "river": "Shabelle",
+  "model": "Google",
+  "swalim_first": "2024-04-19",
+  "trigger": "n/a",
+  "v4_issue": null,
+  "vs_trigger": "Google record ends 2023",
+  "vs_v4": ""
+ }
+]

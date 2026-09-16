@@ -14,6 +14,7 @@ the org's pa-aa-toolbox — rather than blocking on one request at a time.
 """
 
 import json
+import os
 import time
 import zipfile
 from pathlib import Path
@@ -26,7 +27,12 @@ from src.constants import STATIONS as _REGISTRY
 
 EWDS_URL = "https://ewds.climate.copernicus.eu/api"
 
-DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "glofas"
+# SOM_DATA_DIR overrides the repo-local data root on ephemeral runners
+# (Databricks pulls the code via git_source into a read-only checkout)
+DATA_DIR = (
+    Path(os.getenv("SOM_DATA_DIR") or Path(__file__).resolve().parents[2] / "data")
+    / "glofas"
+)
 
 
 def _snap(v):
@@ -83,6 +89,10 @@ def _station_area(station_key, buffer=0.1):
 
 
 def _key():
+    # Databricks Job Compute injects CDSAPI_KEY from the dsci secret scope
+    key = os.getenv("CDSAPI_KEY")
+    if key:
+        return key
     rc = Path.home() / ".cdsapirc"
     lines = dict(
         line.strip().split(": ", 1) for line in rc.read_text().splitlines() if ":" in line
@@ -262,24 +272,30 @@ def _plan_chunks(coll, request, out_prefix):
     return [(request, out_prefix)]
 
 
-def _submit_rolling(client, jobs, log_prefix=""):
+def _submit_rolling(client, jobs, log_prefix="", skip=None, on_downloaded=None):
     """Run jobs through EWDS with a rolling window of in-flight requests.
 
     jobs: list of (collection_id, request, out_path). Existing out_paths are
     skipped, so this is resumable. Keeping only MAX_IN_FLIGHT submitted at a
     time avoids flooding the shared per-user queue while still overlapping
     enough requests to saturate the processing slots.
+
+    skip: optional predicate on out_path marking a chunk already done
+    elsewhere (e.g. present in blob when local disk is ephemeral).
+    on_downloaded: optional callback on out_path after each finished chunk
+    (e.g. upload to blob as the run goes, so partial runs persist).
     """
     pending = []
     for collection_id, request, out_path in jobs:
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        if out_path.exists():
+        if out_path.exists() or (skip and skip(out_path)):
             print(f"{log_prefix}{out_path.stem}: already downloaded, skipping")
             continue
         pending.append((collection_id, request, out_path))
 
     total = len(pending)
     done = 0
+    failed = []
     in_flight = {}
     while pending or in_flight:
         while pending and len(in_flight) < MAX_IN_FLIGHT:
@@ -289,6 +305,7 @@ def _submit_rolling(client, jobs, log_prefix=""):
                 print(f"{log_prefix}{out_path.stem}: submitted ({len(pending)} queued locally)")
             except Exception as e:
                 print(f"{log_prefix}{out_path.stem}: submission FAILED - {e}")
+                failed.append(out_path.stem)
         for out_path, remote in list(in_flight.items()):
             try:
                 remote.update()
@@ -301,11 +318,21 @@ def _submit_rolling(client, jobs, log_prefix=""):
                 del in_flight[out_path]
                 done += 1
                 print(f"{log_prefix}{out_path.stem}: downloaded [{done}/{total}]")
+                if on_downloaded:
+                    on_downloaded(out_path)
             elif status == "failed":
                 print(f"{log_prefix}{out_path.stem}: FAILED - {remote.get_receipt()}")
                 del in_flight[out_path]
+                failed.append(out_path.stem)
         if pending or in_flight:
             time.sleep(POLL_INTERVAL_SECONDS)
+    if failed:
+        # Fail loudly AFTER draining the queue: everything downloadable was
+        # downloaded, but a green run must mean a complete one (an EWDS
+        # schema flip mid-run once 400'd 28 chunks behind a 0 exit code).
+        raise RuntimeError(
+            f"{log_prefix}{len(failed)}/{total} chunks failed: {', '.join(failed)}"
+        )
     return done
 
 
@@ -316,30 +343,43 @@ FLOOD_SEASON_MONTHS = ["03", "04", "05", "06", "10", "11", "12"]
 REFORECAST_YEARS = [str(y) for y in range(2003, 2024)]
 
 
-def _reforecast_valid_days():
-    """Valid hday values per (hyear, hmonth) for the global_lisflood reforecast.
+def _reforecast_schema():
+    """Detect the live EWDS reforecast schema; return (base_fields, valid_days).
 
-    EWDS restructured cems-glofas-reforecast (observed 2026-08-06):
-    system_version is gone, the v4.2 reforecast lives under
-    hydrological_model=global_lisflood pinned to the forecast cycle
-    year=2022/month=10/day=01, and hday is strictly validated against the
-    twice-weekly reforecast dates, which vary by month and year.
+    EWDS has flipped cems-glofas-reforecast between two schemas: the
+    2026-08-06 restructure dropped system_version and put the v4.2 set
+    under hydrological_model=global_lisflood pinned to the forecast cycle
+    year=2022/month=10/day=01; on 2026-08-11 it reverted mid-flight to the
+    old system_version=version_4_0 + hydrological_model=lisflood scheme
+    (requests in the other spelling get 400s). Inspect constraints.json and
+    build requests to match whichever is live. Under both schemas hday is
+    strictly validated against the twice-weekly reforecast dates, which
+    vary by month and year — valid_days maps (hyear, hmonth) to them.
     """
     import requests
 
     url = ("https://ewds.climate.copernicus.eu/api/catalogue/v1/"
            "collections/cems-glofas-reforecast/constraints.json")
     blocks = requests.get(url, timeout=60).json()
+    if any("global_lisflood" in b.get("hydrological_model", []) for b in blocks):
+        base = {"hydrological_model": "global_lisflood", **REFORECAST_CYCLE}
+
+        def keep(b):
+            return "global_lisflood" in b.get("hydrological_model", [])
+    else:
+        base = {"system_version": "version_4_0", "hydrological_model": "lisflood"}
+
+        def keep(b):
+            return "version_4_0" in b.get("system_version", [])
+
     days = {}
     for b in blocks:
-        if "global_lisflood" not in b.get("hydrological_model", []):
-            continue
-        if not all(k in b for k in ("hyear", "hmonth", "hday")):
+        if not keep(b) or not all(k in b for k in ("hyear", "hmonth", "hday")):
             continue
         for y in b["hyear"]:
             for mo in b["hmonth"]:
                 days.setdefault((y, mo), set()).update(b["hday"])
-    return {k: sorted(v) for k, v in days.items()}
+    return base, {k: sorted(v) for k, v in days.items()}
 
 
 # forecast-cycle pin selecting the frozen GloFAS v4.2 reforecast set
@@ -347,7 +387,7 @@ REFORECAST_CYCLE = {"year": ["2022"], "month": ["10"], "day": ["01"]}
 
 
 def download_reforecast_box(years=None, months=None, leadtime_days=(1, 2, 3, 4, 5, 6, 7),
-                            dir_suffix=""):
+                            dir_suffix="", blob_sync=False):
     """Download GloFAS v4.2 reforecast for the all-stations box at daily leads.
 
     Defaults: 2003-2023, Gu + Deyr months, leads 1-7 days, control plus
@@ -358,19 +398,50 @@ def download_reforecast_box(years=None, months=None, leadtime_days=(1, 2, 3, 4, 
     dir_suffix separates lead-band downloads (the readiness band 8-12 d
     lands in reforecast_som_ext_lead8_12/).
 
-    API note (2026-08-06): the old system_version=4_0 + hday=ALL_DAYS scheme
-    is rejected since the EWDS restructure; see _reforecast_valid_days.
+    blob_sync=True uploads each chunk to blob as it finishes and skips
+    chunks already in blob — required on ephemeral runners (Databricks),
+    where nothing on local disk survives the run. Blob names mirror the
+    scripts/upload_to_blob.py convention:
+    ds-aa-som-floods/raw/glofas/raw/reforecast_som_ext{dir_suffix}/<file>.
+
+    API note: EWDS has flipped the reforecast request schema twice
+    (2026-08-06 and back on 2026-08-11); requests follow whichever schema
+    is live, see _reforecast_schema.
     """
     years = list(years or REFORECAST_YEARS)
     months = list(months or FLOOD_SEASON_MONTHS)
     raw_dir = DATA_DIR / "raw" / f"reforecast_som_ext{dir_suffix}"
 
+    skip = on_downloaded = None
+    if blob_sync:
+        import ocha_stratus as stratus
+
+        from src.constants import BLOB_STAGE
+
+        blob_prefix = f"ds-aa-som-floods/raw/glofas/raw/reforecast_som_ext{dir_suffix}/"
+        existing = set(
+            stratus.list_container_blobs(name_starts_with=blob_prefix, stage=BLOB_STAGE)
+        )
+        print(f"[reforecast/som-box] blob sync on: {len(existing)} chunks already in blob")
+
+        def skip(out_path):
+            return blob_prefix + out_path.name in existing
+
+        def on_downloaded(out_path):
+            stratus.upload_blob_data(
+                out_path.read_bytes(),
+                blob_prefix + out_path.name,
+                stage=BLOB_STAGE,
+                content_type="application/zip",
+            )
+            out_path.unlink()  # keep the ephemeral disk from filling
+            print(f"[reforecast/som-box] {out_path.name}: uploaded to blob")
+
     client = _client(wait_until_complete=False)
     coll = client.client.get_collection("cems-glofas-reforecast")
-    valid_days = _reforecast_valid_days()
+    schema_base, valid_days = _reforecast_schema()
     base = {
-        "hydrological_model": "global_lisflood",
-        **REFORECAST_CYCLE,
+        **schema_base,
         "product_type": ["control_reforecast", "ensemble_perturbed_reforecast"],
         "variable": "river_discharge_in_the_last_24_hours",
         "leadtime_hour": [str(int(d) * 24) for d in leadtime_days],
@@ -391,7 +462,10 @@ def download_reforecast_box(years=None, months=None, leadtime_days=(1, 2, 3, 4, 
             for creq, prefix in chunks:
                 jobs.append(("cems-glofas-reforecast", creq, raw_dir / f"{prefix}.zip"))
     print(f"[reforecast/som-box] {len(jobs)} chunks planned across {len(years)} years")
-    return _submit_rolling(client, jobs, log_prefix="[reforecast/som-box] ")
+    return _submit_rolling(
+        client, jobs, log_prefix="[reforecast/som-box] ",
+        skip=skip, on_downloaded=on_downloaded,
+    )
 def download_reforecast_months(station_key, year_months):
     """Download GloFAS reforecast for one station, for specific (year, month) pairs.
 
@@ -583,11 +657,16 @@ def load_reanalysis(station_key, version=DEFAULT_VERSION):
     return series.sort_index().dropna()
 
 
-def load_reforecast_box(version=DEFAULT_VERSION):
+def load_reforecast_box(version=DEFAULT_VERSION, dir_suffix=None):
     """Load the all-stations reforecast as one long DataFrame.
 
     Columns: station, issued_time, lead_hours, leadtime_days, valid_day,
     member, discharge. Members are 0 (control) plus 1-10 (perturbed).
+
+    dir_suffix selects a lead-band download made by download_reforecast_box
+    (e.g. "_lead8_12" reads reforecast_som_ext_lead8_12/, the readiness
+    band). With the default None, keeps the historical behaviour: extended
+    box if complete enough, else the legacy leads-1-7 box.
 
     Two lead conventions are kept deliberately:
       * leadtime_days = lead_hours / 24, i.e. GloFAS's own labelling
@@ -599,14 +678,22 @@ def load_reforecast_box(version=DEFAULT_VERSION):
     """
     cells = channel_cells(version=version)
 
-    # Prefer the extended box only once it has at least as many chunks as the
-    # legacy one — a partially downloaded _ext dir must not silently replace a
-    # complete legacy archive (ties go to _ext, which covers juba_07/08).
-    ext_dir = DATA_DIR / "raw" / "reforecast_som_ext"
-    leg_dir = DATA_DIR / "raw" / "reforecast_som"
-    n_ext, n_leg = len(list(ext_dir.glob("*.zip"))), len(list(leg_dir.glob("*.zip")))
-    rf_dir = ext_dir if n_ext >= max(n_leg, 1) else leg_dir
-    print(f"  reforecast source: {rf_dir.name} ({max(n_ext, n_leg)} chunks; ext={n_ext}, legacy={n_leg})")
+    if dir_suffix is not None:
+        rf_dir = DATA_DIR / "raw" / f"reforecast_som_ext{dir_suffix}"
+        n_chunks = len(list(rf_dir.glob("*.zip")))
+        print(f"  reforecast source: {rf_dir.name} ({n_chunks} chunks)")
+        if not n_chunks:
+            return None
+    else:
+        # Prefer the extended box only once it has at least as many chunks as
+        # the legacy one — a partially downloaded _ext dir must not silently
+        # replace a complete legacy archive (ties go to _ext, which covers
+        # juba_07/08).
+        ext_dir = DATA_DIR / "raw" / "reforecast_som_ext"
+        leg_dir = DATA_DIR / "raw" / "reforecast_som"
+        n_ext, n_leg = len(list(ext_dir.glob("*.zip"))), len(list(leg_dir.glob("*.zip")))
+        rf_dir = ext_dir if n_ext >= max(n_leg, 1) else leg_dir
+        print(f"  reforecast source: {rf_dir.name} ({max(n_ext, n_leg)} chunks; ext={n_ext}, legacy={n_leg})")
 
     # Extent guard, same as the reanalysis path: channel cells can lie outside
     # this file set's box (the legacy zips stop at S 0.2), and

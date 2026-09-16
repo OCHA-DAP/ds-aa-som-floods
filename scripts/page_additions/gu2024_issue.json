@@ -1,0 +1,48 @@
+{
+ "juba": {
+  "v4_fc_issue": [
+   "05 May",
+   "06 May",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere"
+   ],
+   4,
+   "06 May",
+   "07 May",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   13
+  ],
+  "n_points": 4,
+  "thr_v4": {
+   "Dollow": 2176.8,
+   "Luuq": 2176.1,
+   "Bardheere": 2175.4,
+   "Bualle": 2239.9
+  }
+ },
+ "shabelle": {
+  "v4_fc_issue": [
+   null,
+   null,
+   [],
+   0,
+   null,
+   null,
+   [],
+   0
+  ],
+  "n_points": 3,
+  "thr_v4": {
+   "Belet Weyne": 673.2,
+   "Bulo Burti": 659.6,
+   "Jowhar": 676.1
+  }
+ }
+}
