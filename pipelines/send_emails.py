@@ -58,7 +58,7 @@ def simulate(result):
                   "max_date": v["max_date"] or result["monitoring_date"],
                   "pct_of_threshold": max(v["pct_of_threshold"] or 0, 120.0), "reporting": True})
     result.update({"open_windows": sorted(set(result["open_windows"]) | {key}),
-                   "action": True, "action_windows": [key], "status": "ACTION TRIGGER REACHED"})
+                   "action": True, "action_windows": [key], "status": "ACTIVATION TRIGGER REACHED"})
     return result
 
 
