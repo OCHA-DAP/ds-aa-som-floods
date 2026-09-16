@@ -8,7 +8,7 @@ site under `pages/`) and, since September 2026, the daily **monitoring pipeline*
 
 `TRIGGER_CONFIG` is the adopted mechanism: four river-season windows, one source and one rule
 each. Gu (Mar–May) on Google Flood Hub, Deyr (Oct–Dec) on GloFAS; Juba needs 3 of 4 points over
-their own return-period level on the same forecast day, Shabelle 2 of 3. Any window activating
+their own return-period level on the same forecast day, Shabelle 2 of 3. Any window reaching its trigger
 releases the allocation. Action reads leads 1–7 d on the window's source; readiness reads GloFAS
 at leads 8–12 d for every window (`src/monitoring/config.py: READINESS_RULES`). Design pages:
 `pages/trigger-single-model/summary.html` (summary) and `pages/trigger-single-model/` (analysis).

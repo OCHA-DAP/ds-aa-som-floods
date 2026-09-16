@@ -80,7 +80,7 @@ def main():
         "stations": {r: list(s) for r, s in TRIGGER_STATIONS.items()},
         "titles": {"station": cfg.STATION_TITLE, "river": cfg.RIVER_TITLE, "source": cfg.SOURCE_TITLE,
                    "season": cfg.SEASON_TITLE},
-        "swalim_note": ("Readiness may also be activated by a SWALIM moderate flood risk alert for "
+        "swalim_note": ("The readiness trigger is also reached on a SWALIM moderate flood risk alert for "
                         "either river. SWALIM bulletins are not read automatically."),
     }
     (OUT_DIR / "status.json").write_text(json.dumps(status, indent=1, default=str) + "\n")
