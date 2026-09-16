@@ -162,10 +162,12 @@ fetch("status.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.s
   const cap = x => x.charAt(0).toUpperCase() + x.slice(1);
   const seasonNow = [...new Set(s.open_windows.map(k => s.windows[k].season))].map(cap).join(" and ") || "no season";
   b.innerHTML = `<span class="status">${s.status}</span>
-    <span class="meta">Forecasts retrieved <b>${fmtDate(s.monitoring_date)}</b> · currently monitoring <b>${seasonNow}</b><br>
+    <span class="meta">${s.open_windows.some(k => s.windows[k].action.source === "google")
+      ? `Forecasts issued <b>${fmtDate(s.glofas_issue)}</b> (GloFAS) and <b>${fmtDate((s.google_issue || "").slice(0, 10))}</b> (Google Flood Hub)`
+      : `Forecast issued <b>${fmtDate(s.glofas_issue)}</b> (GloFAS)`} · currently monitoring <b>${seasonNow}</b><br>
     ${s.open_windows.some(k => s.windows[k].action.source === "google")
-      ? `Google Flood Hub: ${s.n_google_gauges} of 7 gauges, issue ${s.google_issue || "n/a"} · GloFAS version ${s.glofas_operational === "glofas_v5" ? "5" : "4"} (operational), issue ${fmtDate(s.glofas_issue)}, ${s.n_glofas_points} stations`
-      : `GloFAS only this season: version ${s.glofas_operational === "glofas_v5" ? "5" : "4"} (operational), issue ${fmtDate(s.glofas_issue)}, ${s.n_glofas_points} stations`}</span>`;
+      ? `Google Flood Hub: ${s.n_google_gauges} of 7 gauges · GloFAS version ${s.glofas_operational === "glofas_v5" ? "5" : "4"} (operational), ${s.n_glofas_points} stations · checked ${fmtDate(s.monitoring_date)}`
+      : `GloFAS only this season: version ${s.glofas_operational === "glofas_v5" ? "5" : "4"} (operational), ${s.n_glofas_points} stations · checked ${fmtDate(s.monitoring_date)}`}</span>`;
   // open season first (Deyr from September to January, Gu from February to June), Juba before Shabelle
   const order = ["juba", "shabelle"];
   const cards = Object.entries(s.windows).sort(([, a], [, b]) => (b.open - a.open) || (order.indexOf(a.river) - order.indexOf(b.river)));

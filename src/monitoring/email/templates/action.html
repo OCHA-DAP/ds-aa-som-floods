@@ -6,7 +6,7 @@
     {% for key in action_windows %}{% set w = windows[key] %}
     {{ source_title[w.action.source] }} forecasts <b>{{ w.action.max_votes }} of {{ w.action.n_of }}</b> monitored stations on the {{ river_title[w.river] }} at or above their 1-in-{{ w.action.rp }} threshold on {{ w.action.max_votes_date }} (rule: {{ w.action.n_req }} of {{ w.action.n_of }}){{ '; ' if not loop.last else '.' }}
     {% endfor %}
-    Forecasts retrieved on {{ pub_date }}.
+    GloFAS issue of {{ glofas_issue }}{% if google_issue %}, Google Flood Hub issue of {{ google_issue }}{% endif %}.
   </p>
   {% set ordered = action_windows + (open_windows|reject('in', action_windows)|list) %}
   {% for key in ordered %}{% set w = windows[key] %}

@@ -5,7 +5,7 @@
     {% for key in readiness_windows %}{% set w = windows[key] %}
     the <a href="https://global-flood.emergency.copernicus.eu/">GloFAS</a> ensemble median forecasts <b>{{ w.readiness.max_votes }} of {{ w.readiness.n_of }}</b> monitored points on the {{ river_title[w.river] }} at or above their 1-in-{{ w.readiness.rp }} threshold on {{ w.readiness.max_votes_date }}, 8 to 12 days ahead{{ '; ' if not loop.last else '.' }}
     {% endfor %}
-    Based on forecasts retrieved on {{ pub_date }}.
+    GloFAS issue of {{ glofas_issue }}.
   </p>
   <p>The action trigger has not been reached. We will continue monitoring for the action trigger daily.</p>
   {% include "_rules.html" %}
