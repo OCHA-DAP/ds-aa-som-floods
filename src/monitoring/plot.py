@@ -29,7 +29,7 @@ STATION_COLORS = {
     "belet_weyne": "#065A82", "bulo_burti": "#0E8A7B", "jowhar": "#EB6834",
 }
 STATUS_COLORS = {"ACTION TRIGGER REACHED": "#B34036", "READINESS TRIGGER REACHED": "#D48F2A",
-                 "NOT ACTIVATED": "#2F9E6F", "NO WINDOW OPEN": FAINT}
+                 "TRIGGER NOT REACHED": "#2F9E6F", "NO WINDOW OPEN": FAINT}
 PRODUCT_COLORS = {"google": C_GOOGLE, "glofas": C_GLOFAS4}
 
 plt.rcParams.update({

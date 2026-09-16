@@ -101,7 +101,7 @@ def evaluate(df, monitoring_date=None, levels_df=None):
         "readiness": bool(ready_hit), "readiness_windows": ready_hit,
         "status": ("ACTION TRIGGER REACHED" if action_hit else
                    "READINESS TRIGGER REACHED" if ready_hit else
-                   "NOT ACTIVATED" if open_w else "NO WINDOW OPEN"),
+                   "TRIGGER NOT REACHED" if open_w else "NO WINDOW OPEN"),
         "glofas_version": glofas.model_version.iloc[0] if len(glofas) else None,
         "glofas_issue": (pd.Timestamp(glofas.issued_time.iloc[0]).strftime("%Y-%m-%d")
                          if len(glofas) else None),
