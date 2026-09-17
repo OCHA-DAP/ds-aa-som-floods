@@ -15,7 +15,7 @@ at leads 8–12 d for every window (`src/monitoring/config.py: READINESS_RULES`)
 
 ## Monitoring pipeline (runbook)
 
-Daily GHA `monitoring.yml` at 10:00 UTC (13:00 Nairobi); step 1 waits for the day's own GloFAS issue on EWDS and a Google issue dated today, retrying every 15 min until 15:45 UTC (`WAIT_FOR_ISSUE_UNTIL_UTC`) before taking what exists. Four steps, all from repo root:
+Daily GHA `monitoring.yml` at 10:00 UTC (13:00 EAT); step 1 waits for the day's own GloFAS issue on EWDS and a Google issue dated today, retrying every 15 min until 15:45 UTC (`WAIT_FOR_ISSUE_UNTIL_UTC`) before taking what exists. Four steps, all from repo root:
 
 1. `pipelines/check_forecasts.py` — GloFAS operational ensemble at the 7 frozen cells
    (`src/monitoring/glofas_cells.json`) from EWDS, Google Flood Hub for the 7 gauges, written to
