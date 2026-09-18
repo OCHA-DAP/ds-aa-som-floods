@@ -2,23 +2,25 @@
 {% block content %}
 <div>
   <p>
-    The activation trigger of the anticipatory action framework for riverine flooding in Somalia has been reached for the <b>{{ action_titles|join(' and ') }}</b> window{{ 's' if action_titles|length != 1 else '' }}:
+    The <b>activation trigger</b> of the anticipatory action framework for riverine flooding in
+    Somalia has been reached for the <b>{{ season_title[action_windows[0]] }}</b> season.
     {% for key in action_windows %}{% set w = windows[key] %}
-    {{ source_title[w.action.source] }} forecasts <b>{{ w.action.max_votes }} of {{ w.action.n_of }}</b> monitored stations on the {{ river_title[w.river] }} at or above their 1-in-{{ w.action.rp }} threshold on {{ w.action.max_votes_date }} (rule: {{ w.action.n_req }} of {{ w.action.n_of }}){{ '; ' if not loop.last else '.' }}
+    The {{ source_title[w.action.source] }} forecasts issued on {{ glofas_issue|longdate }} indicate that
+    <b>{{ w.action.max_votes }} of {{ w.action.n_of }}</b> stations on the {{ river_title[w.river] }} will
+    exceed their 1-in-{{ w.action.rp }} year discharge return levels within {{ w.action.leads[1] }} days.
     {% endfor %}
-    GloFAS issue of {{ glofas_issue }}{% if google_issue %}, Google Flood Hub issue of {{ google_issue }}{% endif %}.
   </p>
   {% set ordered = action_windows + (open_windows|reject('in', action_windows)|list) %}
   {% for key in ordered %}{% set w = windows[key] %}
-  <h3 style="font-weight:normal;font-size:15px;margin:24px 0 6px;">{{ w.title }}{% if key in action_windows %}: activation trigger reached{% else %}: activation trigger not reached{% endif %}</h3>
-  <p style="margin:0 0 8px;font-size:13px;color:#555;">{{ source_title[w.action.source] }}, 1 to 7 days ahead, rule {{ w.action.n_req }} of {{ w.action.n_of }} stations over 1-in-{{ w.action.rp }}. Highest count on one day: {{ w.action.max_votes }} of {{ w.action.n_of }}{% if w.action.max_votes_date %} on {{ w.action.max_votes_date }}{% endif %}.</p>
-  <table width="90%" style="border:1px solid #000;border-collapse:collapse;font-size:0.9em;margin:0 0 8px;">
-    <tr style="background-color:#1BB580;color:white;">
+  <h3 style="font-weight:normal;font-size:15px;margin:24px 0 6px;">{{ river_title[w.river] }}{% if key in action_windows %}: activation trigger reached{% else %}: activation trigger not reached{% endif %}</h3>
+  <p style="margin:0 0 8px;font-size:13px;color:#555;">{{ source_title[w.action.source] }}, 1 to 7 days ahead, rule {{ w.action.n_req }} of {{ w.action.n_of }} stations over the 1-in-{{ w.action.rp }} year discharge return level.</p>
+  <table width="90%" align="center" style="border:1px solid #000;border-collapse:collapse;font-size:0.9em;margin-left:auto;margin-right:auto;margin:0 0 8px;">
+    <tr style="background-color:#1e795f;color:white;">
       <th style="padding:8px;border:1px solid transparent;">Station</th>
       <th style="padding:8px;border:1px solid transparent;">Forecast peak (m<sup>3</sup>/s)</th>
       <th style="padding:8px;border:1px solid transparent;">Day of peak</th>
-      <th style="padding:8px;border:1px solid transparent;">Peak / threshold</th>
-      <th style="padding:8px;border:1px solid transparent;">Threshold (m<sup>3</sup>/s)</th>
+      <th style="padding:8px;border:1px solid transparent;">Peak / return level</th>
+      <th style="padding:8px;border:1px solid transparent;">Return level (m<sup>3</sup>/s)</th>
     </tr>
     {% for st, v in w.action.stations.items() %}
     <tr{% if v.exceeds %} style="color:#B34036;font-weight:bold;"{% endif %}>
@@ -29,14 +31,13 @@
       <td colspan="3" style="text-align:center;padding:8px;border:1px solid transparent;color:#888;">no forecast day inside the window yet</td>
       {% else %}
       <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "{:,.0f}".format(v.max_value) }}</td>
-      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ v.max_date }}</td>
-      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "%.2f"|format(v.pct_of_threshold / 100) }}×</td>
+      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ v.max_date|longdate }}</td>
+      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "%.2f"|format(v.pct_of_threshold / 100) }}&times;</td>
       {% endif %}
       <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "{:,.0f}".format(v.threshold) }}</td>
     </tr>
     {% endfor %}
   </table>
-  <p style="margin:0;font-size:13px;color:#555;">Readiness (GloFAS, 8 to 12 days ahead): {{ w.readiness.max_votes }} of {{ w.readiness.n_of }} stations over their 1-in-{{ w.readiness.rp }} threshold{% if w.readiness.max_votes_date %} on {{ w.readiness.max_votes_date }}{% endif %}.</p>
   {% endfor %}
   <p style="margin-top:24px;">The live status page is at <a href="{{ dashboard_url }}">{{ dashboard_url }}</a>.</p>
 </div>
