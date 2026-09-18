@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Timing of activations &mdash; Somalia Riverine Flood Trigger</title>
-<meta name="description" content="When the Somalia riverine flood trigger activates, season by season, against the river gauges and the flood exposure that followed. Deyr and Gu.">
+<meta name="description" content="Dates on which the Somalia riverine flood trigger is met in each season, with the river gauges and flood exposure in the 14 anticipatory-action districts. Deyr and Gu.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -36,19 +36,23 @@ figure img { width:100%; height:auto; display:block; border:1px solid #e2e7e7; b
     <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / timing of activations</p>
     <h1>Timing of activations</h1>
     <p>Dates on which the trigger is met in each season, shown alongside the river gauges and
-       flood exposure in the 14 anticipatory-action districts. Activation runs on GloFAS in Deyr and
-       Google Flood Hub in Gu. Either river can meet the trigger.</p>
+       flood exposure in the 14 anticipatory-action districts. Activation runs on GloFAS in Deyr
+       and Google Flood Hub in Gu. Either river can meet the trigger.</p>
   </header>
   <article>
     <div class="key">
-      <p style="margin:0 0 6px"><b>How to read the charts.</b> Shaded bands are the window's own activation
-      source, discharge stacked by station. Lines are observed SWALIM river levels on the right axis,
-      with each gauge's own 1-in-3 dashed. The lower panel is flood exposure across the 14
-      anticipatory-action districts. Red marks the activation.</p>
-      <p style="margin:0 0 6px"><b>What each marker is.</b> The forecast date is the first issue on which
-      the activation rule is met at leads 1 to 7 days. The reanalysis date is the first day the same
-      rule is met in the model's historical run. The two-gauge benchmark onset is the day the second
-      gauge on a river reaches its own 1-in-3 level.</p>
+      <p style="margin:0 0 6px"><b>How to read the charts.</b> Filled areas are the window's own
+      activation source, each station as a share of its own return-period level. Lines are the
+      observed SWALIM river levels, each as a share of that gauge's own 1-in-3. The dashed line is
+      100%, so anything above it is over its own level. The lower panel is flood exposure across
+      the 14 anticipatory-action districts. Red marks the activation.</p>
+      <p style="margin:0 0 6px"><b>What each marker is.</b> The forecast date is the first issue on
+      which the activation rule is met at leads 1 to 7 days. The reanalysis date is the first day the
+      same rule is met in the model's historical run. The two-gauge benchmark onset is the day the
+      second gauge on a river reaches its own 1-in-3 level. The three-district level is the day the
+      third of the 14 districts reaches its own 1-in-5 seasonal flood exposure, exposure being
+      FloodScan flood extent combined with WorldPop population, and each district's level fitted by
+      Weibull plotting position on its own seasonal maxima.</p>
       <p style="margin:0"><b>Reading the exposure panel.</b> FloodScan derives flood extent from
       satellite observations, and single-day spikes that fall back immediately can occur. Exposure
       sustained over several days is the more reliable signal.</p>
@@ -57,11 +61,16 @@ figure img { width:100%; height:auto; display:block; border:1px solid #e2e7e7; b
     <h2>Deyr</h2>
     <p>Activation reads GloFAS version 4 at leads 1 to 7 days, three of four points on the Juba and
        two of three on the Shabelle, each against its own 1-in-4. Forecast archive: 2003 to 2023, about two issues a week.</p>
-    <p>Seasons shown: 18, of which 17 have a forecast archive. The trigger is met in 10. Exposure reaches the three-district level in 12, and in 5 of those the trigger is also met. Median days from the trigger being met to that exposure date: +18 d. To the second gauge reaching its 1-in-3: +12 d.</p>
+    <p>The Deyr rules were calibrated on the GloFAS version 5 reanalysis, and the operational system
+       has been version 4 since July 2023. The dates here are the version 4 ones, which is what the
+       live system reads, so the count of Deyr activations differs from the
+       <a href="../trigger-single-model/summary.html">trigger summary</a>, which reports the version 5
+       figures. <a href="../glofas-version/">GloFAS version switch</a> sets out the difference.</p>
+    <p>Seasons shown: 18, of which 17 have a forecast archive. The trigger is met in 10. The three-district level is reached in 12, and in 5 of those the trigger is also met. Median days from the trigger being met to that date: +18 d. To the second gauge reaching its 1-in-3: +12 d.</p>
 <section class="yr" id="deyr2023">
 <h3>Deyr 2023</h3>
 <dl><dt>Activation</dt><dd>Juba 21 Oct</dd>
-<dt>Two-gauge benchmark onset</dt><dd>Juba 25 Oct, Shabelle 07 Nov</dd></dl>
+<dt>Two-gauge benchmark onset</dt><dd>Juba 25 Oct, Shabelle 06 Nov</dd></dl>
 <figure><img src="figs/deyr_2023.png" alt="Deyr 2023" loading="lazy"></figure>
 </section>
 <section class="yr" id="deyr2022">
@@ -91,7 +100,7 @@ figure img { width:100%; height:auto; display:block; border:1px solid #e2e7e7; b
 <section class="yr" id="deyr2017">
 <h3>Deyr 2017</h3>
 <dl><dt>Activation</dt><dd>Juba 19 Oct</dd>
-<dt>Two-gauge benchmark onset</dt><dd>Juba 08 Nov</dd></dl>
+<dt>Two-gauge benchmark onset</dt><dd>Juba 07 Nov</dd></dl>
 <figure><img src="figs/deyr_2017.png" alt="Deyr 2017" loading="lazy"></figure>
 </section>
 <section class="yr" id="deyr2016">
@@ -169,13 +178,13 @@ figure img { width:100%; height:auto; display:block; border:1px solid #e2e7e7; b
 
     <h2>Gu</h2>
     <p>Activation reads Google Flood Hub at leads 1 to 7 days, three of four points on the Juba against
-       its own 1-in-5 and two of three on the Shabelle against its own 1-in-6. Forecast archive: 2016 to 2023, daily,
-       so seasons before 2016 show the reanalysis, gauges and exposure only.</p>
-    <p>Seasons shown: 15, of which 6 have a forecast archive. The trigger is met in 4. Exposure reaches the three-district level in 11, and in 3 of those the trigger is also met. Median days from the trigger being met to that exposure date: -1 d. To the second gauge reaching its 1-in-3: +0 d.</p>
+       its own 1-in-5 and two of three on the Shabelle against its own 1-in-6. Forecast archive:
+       2016 to 2023, daily, so seasons before 2016 show the reanalysis, gauges and exposure only.</p>
+    <p>Seasons shown: 15, of which 6 have a forecast archive. The trigger is met in 4. The three-district level is reached in 11, and in 3 of those the trigger is also met. Median days from the trigger being met to that date: +0 d. To the second gauge reaching its 1-in-3: +0 d.</p>
 <section class="yr" id="gu2023">
 <h3>Gu 2023</h3>
 <dl><dt>Activation</dt><dd>Shabelle 26 Apr</dd>
-<dt>Two-gauge benchmark onset</dt><dd>Juba 25 Mar, Shabelle 09 May</dd></dl>
+<dt>Two-gauge benchmark onset</dt><dd>Juba 25 Mar, Shabelle 17 Apr</dd></dl>
 <figure><img src="figs/gu_2023.png" alt="Gu 2023" loading="lazy"></figure>
 </section>
 <section class="yr" id="gu2022">
@@ -187,13 +196,13 @@ figure img { width:100%; height:auto; display:block; border:1px solid #e2e7e7; b
 <section class="yr" id="gu2020">
 <h3>Gu 2020</h3>
 <dl><dt>Activation</dt><dd>Juba 24 Apr, Shabelle 22 Apr</dd>
-<dt>Two-gauge benchmark onset</dt><dd>Juba 22 Apr, Shabelle 11 May</dd></dl>
+<dt>Two-gauge benchmark onset</dt><dd>Juba 22 Apr, Shabelle 05 May</dd></dl>
 <figure><img src="figs/gu_2020.png" alt="Gu 2020" loading="lazy"></figure>
 </section>
 <section class="yr" id="gu2018">
 <h3>Gu 2018</h3>
-<dl><dt>Activation</dt><dd>Juba 16 Apr, Shabelle 27 Apr</dd>
-<dt>Two-gauge benchmark onset</dt><dd>Juba 17 Apr, Shabelle 08 May</dd></dl>
+<dl><dt>Activation</dt><dd>Juba 15 Apr, Shabelle 27 Apr</dd>
+<dt>Two-gauge benchmark onset</dt><dd>Juba 17 Apr, Shabelle 07 May</dd></dl>
 <figure><img src="figs/gu_2018.png" alt="Gu 2018" loading="lazy"></figure>
 </section>
 <section class="yr" id="gu2017">
@@ -204,8 +213,8 @@ figure img { width:100%; height:auto; display:block; border:1px solid #e2e7e7; b
 </section>
 <section class="yr" id="gu2016">
 <h3>Gu 2016</h3>
-<dl><dt>Activation</dt><dd>Juba 04 May, Shabelle 30 Apr</dd>
-<dt>Two-gauge benchmark onset</dt><dd>Juba 01 May, Shabelle 18 May</dd></dl>
+<dl><dt>Activation</dt><dd>Juba 01 May, Shabelle 30 Apr</dd>
+<dt>Two-gauge benchmark onset</dt><dd>Juba 01 May, Shabelle 11 May</dd></dl>
 <figure><img src="figs/gu_2016.png" alt="Gu 2016" loading="lazy"></figure>
 </section>
 <section class="yr" id="gu2015">
@@ -217,7 +226,7 @@ figure img { width:100%; height:auto; display:block; border:1px solid #e2e7e7; b
 <section class="yr" id="gu2010">
 <h3>Gu 2010</h3>
 <dl><dt>Activation</dt><dd>no activation</dd>
-<dt>Two-gauge benchmark onset</dt><dd>Juba 18 May</dd></dl>
+<dt>Two-gauge benchmark onset</dt><dd>Juba 18 May, Shabelle 29 May</dd></dl>
 <figure><img src="figs/gu_2010.png" alt="Gu 2010" loading="lazy"></figure>
 </section>
 <section class="yr" id="gu2009">
@@ -235,7 +244,7 @@ figure img { width:100%; height:auto; display:block; border:1px solid #e2e7e7; b
 <section class="yr" id="gu2005">
 <h3>Gu 2005</h3>
 <dl><dt>Activation</dt><dd>no activation</dd>
-<dt>Two-gauge benchmark onset</dt><dd>Juba 25 May, Shabelle 18 May</dd></dl>
+<dt>Two-gauge benchmark onset</dt><dd>Juba 25 May, Shabelle 12 May</dd></dl>
 <figure><img src="figs/gu_2005.png" alt="Gu 2005" loading="lazy"></figure>
 </section>
 <section class="yr" id="gu2004">
