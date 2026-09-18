@@ -24,6 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / ".env")
 
+import pandas as pd  # noqa: E402
 from jinja2 import Environment, FileSystemLoader  # noqa: E402
 from ocha_relay.listmonk import ListmonkClient  # noqa: E402
 
@@ -62,8 +63,26 @@ def simulate(result):
     return result
 
 
+def _long_date(x):
+    """2026-09-17 -> 17 September 2026 (no platform-specific %-d)."""
+    if not x:
+        return None
+    d = pd.Timestamp(str(x)[:10])
+    return f"{d.day} {d:%B %Y}"
+
+
+def _days_from(valid, issue):
+    """'8 days' / '1 day' between a forecast issue and the day it describes."""
+    if not valid or not issue:
+        return None
+    n = (pd.Timestamp(str(valid)[:10]) - pd.Timestamp(str(issue)[:10])).days
+    return f"{n} day" + ("" if n == 1 else "s")
+
+
 def render(result, template_name, chart_url):
     env = Environment(loader=FileSystemLoader(TEMPLATES))
+    env.filters["longdate"] = _long_date
+    env.filters["daysfrom"] = _days_from
     open_sources = []                      # the action source of each open window, then GloFAS (readiness)
     for k in result["open_windows"]:
         src = result["windows"][k]["action"]["source"]
@@ -74,6 +93,7 @@ def render(result, template_name, chart_url):
     ctx = dict(
         pub_date=result["monitoring_date"], trigger_status=result["status"], chart_url=chart_url,
         glofas_issue=result.get("glofas_issue"),
+        season_title={k: cfg.SEASON_TITLE[v["season"]].split(" (")[0] for k, v in result["windows"].items()},
         google_issue=(result.get("google_issue") or "")[:10] if any(result["windows"][k]["action"]["source"] == "google" for k in result["open_windows"]) else None,
         windows=result["windows"], open_windows=result["open_windows"],
         open_titles=[result["windows"][k]["title"] for k in result["open_windows"]],
@@ -105,19 +125,34 @@ def main():
         print("no window open: no email")
         return
     is_monday = monitoring_date.weekday() == 0
-    if not (result["action"] or result["readiness"] or is_monday):
-        print("no trigger and not Monday: no email today")
+
+    # each trigger is announced once per season. Readiness is also skipped when activation has
+    # already been reached, whether today or earlier: the activation email supersedes it.
+    season = result["windows"][result["open_windows"][0]]["season"]
+    year = etl.season_year(monitoring_date, season)
+    notified = etl.load_notified(season, year)
+    leg = None
+    if result["action"] and not notified.get("action"):
+        template, email_type, leg = "action", "trigger", "action"
+    elif result["readiness"] and not (notified.get("readiness") or notified.get("action") or result["action"]):
+        template, email_type, leg = "readiness", "info", "readiness"
+    elif is_monday:
+        template, email_type = "informational", "info"
+    else:
+        for name in ("action", "readiness"):
+            if result[name] and notified.get(name):
+                print(f"{name} already announced this {season} season on {notified[name]}: no email today")
+                return
+        if result["readiness"] and notified.get("action"):
+            print(f"activation already announced on {notified['action']}: no readiness email")
+            return
+        print("no new trigger and not Monday: no email today")
         return
 
-    if result["action"]:
-        template, email_type = "action", "trigger"
-    elif result["readiness"]:
-        template, email_type = "readiness", "info"
-    else:
-        template, email_type = "informational", "info"
-
     tags = ("[TEST] " if flags["TEST_EMAIL"] else "") + ("[SIM] " if flags["SIMULATE_TRIGGER"] else "")
-    subject = f"{tags}{cfg.EMAIL_SUBJECT_PREFIX} · {result['status']} {monitoring_date}"
+    headline = result["status"].capitalize()
+    # the subject carries the day the email goes out; the forecast issue date is in the body
+    subject = f"{tags}{cfg.EMAIL_SUBJECT_PREFIX} - {headline} | {_long_date(datetime.now(timezone.utc).date())}"
     name = (f"{cfg.LISTMONK_PROJECT_TAG} {template} {monitoring_date} "
             f"{datetime.now(timezone.utc):%Y%m%dT%H%M}"
             + (" [test]" if flags["TEST_EMAIL"] else "") + (" [sim]" if flags["SIMULATE_TRIGGER"] else ""))
@@ -141,6 +176,9 @@ def main():
     campaign_id = client.create_campaign(name=name, subject=subject, body=body, list_ids=[list_id])
     client.send_campaign(campaign_id, skip_confirmation=True)
     print(f"sent campaign {campaign_id} ({name}) to list {list_id}")
+    if leg and not flags["TEST_EMAIL"] and not flags["SIMULATE_TRIGGER"]:
+        etl.record_notified(season, year, leg, monitoring_date)
+        print(f"recorded {leg} as announced for the {season} {year} season")
 
 
 if __name__ == "__main__":

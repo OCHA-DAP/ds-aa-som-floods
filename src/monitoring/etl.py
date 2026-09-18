@@ -54,6 +54,35 @@ def google_raw_blob(monitoring_date):
     return f"{cfg.PROJECT_PREFIX}/raw/google/monitoring/google_forecast_{monitoring_date}.json"
 
 
+def season_year(monitoring_date, season):
+    """The year a season belongs to. Deyr runs September to January, so a January day
+    belongs to the Deyr of the previous calendar year."""
+    return monitoring_date.year - 1 if (season == "deyr" and monitoring_date.month == 1) else monitoring_date.year
+
+
+def notified_blob(season, year):
+    """What has already been emailed this season, so a trigger is announced once."""
+    return f"{cfg.PROJECT_PREFIX}/monitoring/notified/{season}_{year}.json"
+
+
+def load_notified(season, year):
+    from azure.core.exceptions import ResourceNotFoundError
+
+    try:
+        raw = _container().get_blob_client(notified_blob(season, year)).download_blob().readall()
+    except ResourceNotFoundError:
+        return {}
+    return json.loads(raw)
+
+
+def record_notified(season, year, leg, monitoring_date):
+    state = load_notified(season, year)
+    state[leg] = str(monitoring_date)
+    _container(write=True).upload_blob(notified_blob(season, year),
+                                       json.dumps(state, indent=1).encode(), overwrite=True)
+    return state
+
+
 def forecasts_blob(monitoring_date):
     """Processed rows of both sources for one monitoring day (same columns as the DB table)."""
     return f"{cfg.PROJECT_PREFIX}/monitoring/forecasts/{monitoring_date}.parquet"

@@ -2,8 +2,8 @@
 {% block content %}
 <div>
   <p>Please see below today's streamflow forecasts at the seven monitored stations on the Juba and Shabelle rivers from {% for src in open_sources %}<a href="{{ source_url[src] }}">{{ source_title[src] }}</a>{{ " and " if not loop.last else "" }}{% endfor %}. Currently monitoring <b>{{ open_season }}</b>.</p>
-  {% include "_rules.html" %}
-  <p>Neither trigger has been reached today. The chart shows each monitored station as a percentage of its own trigger threshold; the dashed line is the threshold that counts as a vote, and the shaded bands are the activation (1 to 7 days) and readiness (8 to 12 days) lead windows.</p>
+  {% with show_activation = true %}{% include "_rules.html" %}{% endwith %}
+  <p>Neither trigger has been reached today. The chart shows each monitored station as a percentage of its own return level; the dashed line is the level that counts as a vote, and the shaded bands are the activation (1 to 7 days) and readiness (8 to 12 days) lead windows.</p>
   <img src="{{ chart_url }}" width="640" style="max-width:100%;height:auto;"/>
   <p>The live status page is at <a href="{{ dashboard_url }}">{{ dashboard_url }}</a>. Code and documentation are available <a href="{{ repo_url }}">on GitHub</a>; the trigger design is described <a href="{{ design_url }}">here</a>.</p>
 </div>
