@@ -1,7 +1,7 @@
 """(Re)build the FloodScan inundation subsection on the analysis page (index.html), by season with
 both rivers together: removes any existing version (including the seven-day block inside it), then
 inserts the current one before 'Calibrated on the reanalysis'. Reads floodscan_rank.json
-(floodscan_season.py). Run patch_index_lead.py afterwards."""
+(floodscan_season.py). Run patch_index_lead.py and then toc_inject.py afterwards."""
 import json
 import re
 from pathlib import Path
@@ -14,7 +14,11 @@ RP = rank["deyr"].get("rp", 5)
 
 anchor = '<h3 id="calibrated-on-the-reanalysis-checked-on-the-forecasts">'
 assert h.count(anchor) == 1
-h, n_removed = re.subn(r'\s*<h3 id="when-does-inundation-follow-the-gauges">.*?(?=<h3 id="calibrated-on-the-reanalysis-checked-on-the-forecasts">)', "\n", h, flags=re.S)
+# the heading id is whatever toc_inject last wrote (it slugs the heading text), so match on
+# either id; a non-greedy span from the first match to the anchor removes every earlier copy
+h, n_removed = re.subn(r'\s*<h3 id="(?:when-does-inundation-follow-the-gauges|does-the-trigger-catch-the-inundation-floodscan)">.*?(?=<h3 id="calibrated-on-the-reanalysis-checked-on-the-forecasts">)', "\n", h, flags=re.S)
+# the contents rail also carries the heading text, so count headings only
+assert h.count("Does the trigger catch the inundation? (FloodScan)</h3>") == 0, "an older FloodScan block survived the removal"
 
 
 def k(v):
@@ -29,7 +33,7 @@ for season in ("deyr", "gu"):
     rows.append(f"<tr><td>{season.title()}</td><td>{top}</td><td>{bench}</td><td>{r['in_top8']} of {r['n_flood']}</td><td>{r['severe_in_top8']} of {r['n_severe']}</td></tr>")
 
 d, g = rank["deyr"], rank["gu"]
-block = f'''        <h3 id="when-does-inundation-follow-the-gauges">Does the trigger catch the inundation? (FloodScan)</h3>
+block = f'''        <h3 id="does-the-trigger-catch-the-inundation-floodscan">Does the trigger catch the inundation? (FloodScan)</h3>
     <p>The benchmark dates a flood from the day the river's second SWALIM gauge crosses its own
       1-in-3 level. FloodScan gives an independent record of water on the ground. The series used
       here is flood exposure, people living in flooded cells (FloodScan SFED at about 10 km times
@@ -40,8 +44,8 @@ block = f'''        <h3 id="when-does-inundation-follow-the-gauges">Does the tri
       first day of the season on which that exposure reaches its own 1-in-{RP} level (Weibull on
       seasonal maxima), the same convention as the gauges.</p>
     <p><strong>Do the two-gauge flood years show high inundation?</strong> Partly. The largest floods
-      do: Deyr 2023, the largest exposure season on record with {k(d['top8'][0]['people'])} people, Gu 2018 with
-      {k(g['top8'][0]['people'])}, and Deyr 2014, Deyr 2017 and Gu 2023 all in the top six of 26 seasons. But
+      do: Deyr 2023, the largest Deyr exposure season on record with {k(d['top8'][0]['people'])} people, Gu 2018,
+      the largest Gu season, with {k(g['top8'][0]['people'])}, and Deyr 2014, Deyr 2017 and Gu 2023 all in the top six of 26 seasons. But
       several severe gauge seasons do not: Deyr 2006, 2019 and 2020 rank 11th, 14th and 17th, Gu
       2016 13th and Gu 2020 22nd. And several of the largest exposure seasons were not gauge
       floods: Deyr 2015 ({k(d['top8'][2]['people'])}), Deyr 2004, Gu 2002 ({k(g['top8'][1]['people'])}) and Gu 2006. In all,
