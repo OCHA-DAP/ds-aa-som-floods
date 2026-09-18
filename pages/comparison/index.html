@@ -111,16 +111,13 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
 
     <div class="callout">
       <strong>What is held constant, so that only the mixing rule differs.</strong>
-      <strong>GEOGloWS is excluded from both</strong> &mdash; its forecast archive begins
-      July 2024, too short to fit thresholds on or to validate a debias against.
+      <strong>GEOGloWS is excluded from both</strong>: its forecast archive begins July 2024, too short to fit thresholds on or to validate a debias against.
       <strong>Both use the five gauges that still report</strong> (Belet Weyne, Bulo Burti
       and Jowhar on the Shabelle; Luuq and Dollow on the Juba), so every activation is
       checkable against a live observation. <strong>Both are balanced</strong>: the search
       minimises the spread of the four basin-season activation counts, subject to the
       envelope landing between 1-in-3.0 and 1-in-3.6, and prefers non-unanimous rules
-      wherever the result ties. Both land on 8 activations in 25 years, 1-in-3.2. Scored
-      on the corrected benchmark (branch <code>fix/corrected-benchmark-and-lag</code>,
-      return levels fitted strictly inside 1999&ndash;2023).
+      wherever the result ties. Both land on 8 activations in 25 years, 1-in-3.2. Scored on the corrected benchmark (<code>scripts/envelope_search.py</code>, gauge return levels fitted strictly inside 2000&ndash;2023).
     </div>
 
     <div class="callout">
@@ -128,8 +125,7 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
       <strong>1. Select the best station-models.</strong> A unit is dropped if its signal
       trails the reference gauge by more than 3 days (a &le; 6-day trigger cannot spare
       that), or if its rank correlation against the gauge falls below 0.50. What survives
-      is then cut to everything within <strong>0.10 &#961; of the window's best</strong>
-      &mdash; on a 25-year record, units that close are statistically interchangeable, so
+      is then cut to everything within <strong>0.10 &#961; of the window's best</strong>; on a 25-year record, units that close are statistically interchangeable, so
       they all get a vote. For the mixed setup this runs model-blind across every
       (station, product) pair; for the one-model setup it runs within each product, so a
       product is judged on its own best stations rather than being crowded out of a window
@@ -142,8 +138,7 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
     <div class="stats" id="stats"></div>
 
     <h2>The two configurations</h2>
-    <p>Each window's voting units are listed under its rule &mdash; a gauge paired with
-       the product read at it, with its rank correlation against the reference gauge and
+    <p>Each window's voting units are listed under its rule: a gauge paired with the product read at it, with its rank correlation against the reference gauge and
        its best lag in days. These are what survived selection; the count of candidates
        considered is shown beside each rule.</p>
     <p><strong>One asymmetry worth naming.</strong> Because the relative floor runs within
@@ -151,8 +146,7 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
        rejects as unfit. It bites in exactly one window: in Shabelle Deyr, Google's three
        gauges sit at &#961; 0.62&ndash;0.64 against GloFAS at Belet Weyne's 0.83, so the
        mixed pool cuts all three (3 of 6 candidates) while the one-model setup is offered
-       Google as a complete three-gauge option. <em>It declined it</em> &mdash; both setups
-       adopt the same three GloFAS units there, so nothing on this page turns on the
+       Google as a complete three-gauge option. <em>It declined it</em>: both setups adopt the same three GloFAS units there, so nothing on this page turns on the
        choice. The absolute &#961; &ge; 0.50 floor applies either way, so the per-product
        floor can admit a mediocre unit but never a poor one.</p>
     <div class="tablewrap"><table class="data" id="cfg"><tr><td>loading&hellip;</td></tr></table></div>
@@ -179,9 +173,7 @@ table.cmp td.bmod { background:rgba(244,169,59,.18); color:#8a6212; }
     </div>
 
     <h2>2. Summary statistics</h2>
-    <p>Scored two ways. Against the <strong>gauge benchmark</strong> &mdash; the years in
-       which two or more of a river's gauges reached a 1-in-5 level in that season &mdash;
-       and against a <strong>constructed target list</strong> of years the framework
+    <p>Scored two ways. Against the <strong>gauge benchmark</strong> (the years in which two or more of a river's gauges reached a 1-in-5 level in that season) and against a <strong>constructed target list</strong> of years the framework
        arguably should have paid out in: <span id="tgtRule"></span>. Both are computed per
        basin-season and then for the envelope. Lead time is the mean number of days between
        the first forecast alert at leads 1&ndash;7 and the reference gauge crossing its own

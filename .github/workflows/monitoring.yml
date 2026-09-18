@@ -28,7 +28,7 @@ on:
         options: ["true", "false"]
         default: "true"
       dry_run:
-        description: "Fetch and evaluate only; no DB write, no blob, no email"
+        description: "Fetch and evaluate only; no blob write, no email"
         type: choice
         options: ["true", "false"]
         default: "false"

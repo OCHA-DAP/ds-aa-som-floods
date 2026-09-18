@@ -18,15 +18,13 @@ archive is too short to fit or validate thresholds on).
   required, per window, for the balanced and most accurate combination that keeps
   the envelope between 1-in-3.0 and 1-in-3.6.
 
-Run it with the project interpreter, from a checkout that carries the corrected
-benchmark:
+Run it with the project interpreter:
 
-    git checkout fix/corrected-benchmark-and-lag
     .venv/bin/python scripts/build_comparison_page.py
 
-The guard below enforces that.  It matters: this script imports
-scripts/envelope_search.py, and the uncorrected copy fits return levels on
-2000-2026 while counting crossings inside 1999-2023.  That lookahead alone moves
+The guard below checks that scripts/envelope_search.py fits the gauge return levels on
+a closed window (2000 to the last backtest year). It matters: an earlier copy fitted the
+levels on 2000-2026 while counting crossings inside 1999-2023.  That lookahead alone moves
 the truth set from 7 severe years to 8 and silently changes every score on the
 page - it produced a spurious mixed F1 of 0.75 once already.
 """
@@ -44,7 +42,7 @@ if "max(SPAN)" not in inspect.getsource(es.gauge_consensus_years):
         "REFUSING TO RUN: scripts/envelope_search.py still fits return levels on an\n"
         "open-ended window, so the benchmark would carry a lookahead (8 severe years\n"
         "instead of 7) and every score on the page would be wrong.\n"
-        "Check out fix/corrected-benchmark-and-lag (or merge it) and rerun."
+        "Fix the fit window in scripts/envelope_search.py and rerun."
     )
 
 import os
