@@ -329,7 +329,7 @@ html { scroll-behavior:smooth; }
 <tr><td>Gu 2018</td><td>20 Apr</td><td>5 May</td><td>Juba first, 15 d</td></tr>
 <tr><td>Gu 2020</td><td>29 Apr</td><td>30 Apr</td><td>Juba first, 1 d</td></tr>
 <tr><td>Deyr 2006</td><td>29 Oct</td><td>2 Nov</td><td>Juba first, 4 d</td></tr>
-<tr><td>Deyr 2023</td><td>29 Oct</td><td>9 Nov</td><td>Juba first, 11 d</td></tr>
+<tr><td>Deyr 2023</td><td>29 Oct</td><td>10 Nov</td><td>Juba first, 12 d</td></tr>
 </tbody>
 </table>
 </div>
@@ -419,14 +419,17 @@ html { scroll-behavior:smooth; }
       </ul>
     </div>
     <h2 id="how-the-model-was-chosen-one-per-river-and-season">How the model was chosen, one per river and season</h2>
-<div class="rvw" id="R5"><span class="tag">Review R5</span><span class="hd">The per-window search does not beat a rule with no search in it: partly answered.</span><p>Applying one model, one return period and one vote count uniformly to all four windows: <code>Google GRRR, 1-in-6, 3 of 4</code> reproduces the adopted result exactly (8 activations, 1-in-3.2, every severe year caught, the 2013 false alarm). <code>GloFAS v5, 1-in-5, 3 of 4</code> gives 9 activations at 1-in-2.9 with the same severe-year coverage and <em>zero</em> activations outside the benchmark. The roughly 41,000 admissible per-window combinations recover nothing a one-line rule does not. This is consistent with the page&#39;s own statement that many assignments tie, but it is stronger: the per-window freedom is not adding measurable value. <strong>Partly answered by the swap test added 1 September</strong>, which I have reproduced and which holds: at the adopted return periods and vote counts, neither model alone can carry all four windows without breaching the 1-in-3 ceiling, since GloFAS v5 everywhere and Google everywhere both land at 1-in-2.6, so the mixed assignment is doing real work, and the Deyr case for GloFAS v5 is clear (Google brings three false activations on the Juba and misses a Shabelle severe year). Those conclusions are unchanged on the corrected benchmark. What remains of this note is narrower: the swap test holds the thresholds fixed at the adopted values, so it shows the <em>assignment</em> is defensible given those settings, not that the configuration as a whole beats a simpler one. A uniform rule at different settings, Google GRRR at 1-in-6 with 3 of 4 in every window, still reproduces the adopted envelope exactly. Both are true: the assignment is justified, and the tuning around it is not what produces the result.</p></div>
+<div class="rvw" id="R5"><span class="tag">Review R5</span><span class="hd">The per-window search does not beat a rule with no search in it: partly answered.</span><p>Applying one model, one return period and one vote count uniformly to all four windows: <code>Google GRRR, 1-in-6, 3 of 4</code> reproduces the adopted result exactly (8 activations, 1-in-3.2, every severe year caught, the 2013 false alarm). <code>GloFAS v5, 1-in-5, 3 of 4</code> gives 9 activations at 1-in-2.9 with the same severe-year coverage and <em>zero</em> activations outside the benchmark. The roughly 41,000 admissible per-window combinations recover nothing a one-line rule does not. This is consistent with the page&#39;s own statement that many assignments tie, but it is stronger: the per-window freedom is not adding measurable value. <strong>Partly answered by the swap test added 1 September</strong>, which I have reproduced and which holds: at the adopted return periods and vote counts, neither model alone can carry all four windows without breaching the 1-in-3 ceiling, since Google everywhere lands at 1-in-2.6 and GloFAS v5 everywhere at 1-in-2.9, so the mixed
+      assignment is doing real work, and the Deyr case for GloFAS v5 rests on the Juba (Google brings
+      three activations outside the benchmark there; on the Shabelle both models miss the 2020 severe
+      year at 1-in-5). Those conclusions are unchanged on the corrected benchmark. What remains of this note is narrower: the swap test holds the thresholds fixed at the adopted values, so it shows the <em>assignment</em> is defensible given those settings, not that the configuration as a whole beats a simpler one. A uniform rule at different settings, Google GRRR at 1-in-6 with 3 of 4 in every window, still reproduces the adopted envelope exactly. Both are true: the assignment is justified, and the tuning around it is not what produces the result.</p></div>
 
     <p>One source per river and season, so four choices. Four steps:</p>
-<div class="rvw" id="R6"><span class="tag">Review R6</span><span class="hd">One model per window comes from WFP, and it costs nothing measurable.</span><p>The constraint is a stakeholder requirement, not a data-driven one: <strong>WFP raised concerns about mixing models</strong> within a window. On this record it costs nothing measurable. Allowing every model to compete at every point inside a window (a mixed consensus over the same seven points) reaches 7 of 8 severe years at 1-in-3.7; the best single-model configuration reaches the same coverage at 1-in-3.2. Mixing buys no additional severe year, so the requirement can be honoured without giving anything up, and it simplifies operations, since one model per window means one threshold transfer to validate rather than several.</p></div>
+<div class="rvw" id="R6"><span class="tag">Review R6</span><span class="hd">One model per window comes from WFP, and it costs nothing measurable.</span><p>The constraint is a stakeholder requirement, not a data-driven one: <strong>WFP raised concerns about mixing models</strong> within a window. On this record it costs nothing measurable. Allowing every model to compete at every point inside a window (a mixed consensus over the same seven points) reaches the same severe-year coverage at 1-in-3.7 that the best single-model configuration reaches at 1-in-3.2. Mixing buys no additional severe year, so the requirement can be honoured without giving anything up, and it simplifies operations, since one model per window means one threshold transfer to validate rather than several.</p></div>
 
 <ol>
 <li><strong>Build the candidate rules.</strong> For a window and a candidate model, put a threshold at every one of the river's points, taken from that model's own annual maxima (1-in-3 to 1-in-6). The window activates in a year when at least N points cross in that season.</li>
-<li><strong>Score the envelope, not the window.</strong> The money is released when any of the four windows activates, so candidates are judged on that union: how often it activates, how many of the 8 severe years it catches, and how often it activates in a year with no recorded flood.</li>
+<li><strong>Score the envelope, not the window.</strong> The money is released when any of the four windows activates, so candidates are judged on that union: how often it activates, how many of the severe years it catches, and how often it activates in a year with no recorded flood.</li>
 <li><strong>Apply the constraints.</strong> Thresholds never below 1-in-3 nor above a quarter of the record; all seven points monitored; at least two must agree but never all of them; every window must activate at least twice in 25 years.</li>
 <li><strong>Pick.</strong> Nearest 1-in-3 overall with the most severe years caught. Ties break on fewer no-flood activations, then on tracking correlation.</li>
 </ol>
@@ -467,7 +470,7 @@ html { scroll-behavior:smooth; }
       <li><strong>GloFAS v5 is the closest to the observations:</strong> 1.12 to 1.25 at
         Belet Weyne, 1.24 to 1.42 at Bulo Burti, 0.83 to 0.87 at Luuq. Its predecessor v4
         ran 1.7 to 3.8 times too high, and v5 improves the daily rank correlation at the
-        same time (Belet Weyne 0.65 to 0.77), so the gain is not just a rescaling. v4 is not a candidate for the action leg. It appears as the readiness leg's reforecast, the sole archive covering the 8-to-12-day readiness leads (the archive is cut at leads 7 to 12; the leg reads 8 to 12), and in the skill scores and the forecast-issue comparisons, because it is the model that runs live.</li>
+        same time (Belet Weyne 0.65 to 0.77), so the gain is not just a rescaling. v4 is not a candidate for the action leg. It appears as the readiness leg's reforecast, the sole archive covering the 8-to-12-day readiness leads (the archive covers leads 8 to 12), and in the skill scores and the forecast-issue comparisons, because it is the model that runs live.</li>
       <li><strong>Google GRRR is close on the Shabelle</strong> (0.78 to 1.11) and runs
         about 0.4 times observed at Luuq.</li>
       <li><strong>Bardheere disagrees with everything</strong> (0.14 to 1.53 across the
@@ -798,8 +801,7 @@ html { scroll-behavior:smooth; }
       add 2018, 2019, 2015 and 2004, and Juba Gu would add 2010. The envelope would move
       from <strong>1-in-3.2 to 1-in-2.4</strong> (8 activations to 11) and activations in
       years two gauges did not record a flood would go from one (2013) to three (2004,
-      2013, 2015). Severe-year coverage would <em>not</em> improve, staying at 7 of 8,
-      because 2018 and 2019 are already covered by the Shabelle windows. Widening beyond
+      2013, 2015). Severe-year coverage would <em>not</em> improve, staying at all seven severe years, because 2018 and 2019 are already covered by the Shabelle windows. Widening beyond
       5 days changes nothing further: crossings are either within 5 days or 20 days
       apart. The same-day rule is therefore kept, and a tolerance is a lever for later if
       the activation rate is allowed to rise.
@@ -815,8 +817,8 @@ html { scroll-behavior:smooth; }
       first day of the season on which that exposure reaches its own 1-in-3 level (Weibull on
       seasonal maxima), the same convention as the gauges.</p>
     <p><strong>Do the two-gauge flood years show high inundation?</strong> Partly. The largest floods
-      do: Deyr 2023, the largest exposure season on record with 200k people, Gu 2018 with
-      263k, and Deyr 2014, Deyr 2017 and Gu 2023 all in the top six of 26 seasons. But
+      do: Deyr 2023, the largest Deyr exposure season on record with 200k people, Gu 2018,
+      the largest Gu season, with 263k, and Deyr 2014, Deyr 2017 and Gu 2023 all in the top six of 26 seasons. But
       several severe gauge seasons do not: Deyr 2006, 2019 and 2020 rank 11th, 14th and 17th, Gu
       2016 13th and Gu 2020 22nd. And several of the largest exposure seasons were not gauge
       floods: Deyr 2015 (179k), Deyr 2004, Gu 2002 (171k) and Gu 2006. In all,
@@ -897,7 +899,7 @@ html { scroll-behavior:smooth; }
 <thead><tr><th>window</th><th>source</th><th>gauge threshold</th><th>points that must agree</th><th>would have activated in</th></tr></thead>
 <tbody><tr><td>Juba Gu</td><td>GloFAS v4</td><td>1-in-3</td><td>2 of 4</td><td>2005, 2010, 2013, 2016, 2018, 2020, 2023</td></tr><tr><td>Juba Deyr</td><td>GloFAS v4</td><td>1-in-5</td><td>3 of 4</td><td>2015, 2017, 2023</td></tr><tr><td>Shabelle Gu</td><td>GloFAS v4</td><td>1-in-4</td><td>2 of 3</td><td>2005, 2010, 2016, 2018</td></tr><tr><td>Shabelle Deyr</td><td>GloFAS v4</td><td>1-in-5</td><td>2 of 3</td><td>2010, 2013, 2019, 2020</td></tr></tbody>
 </table>
-</div><p><strong>Envelope 1-in-2.2</strong> (10 of 21 years), catching 5 of the 8 severe years. This is the closest rate the forecast record supports; nothing lands on 1-in-3.</p>
+</div><p><strong>Envelope 1-in-2.2</strong> (10 of 21 years), catching 5 of the 7 severe years (2006 and 2014 missed). This is the closest rate the forecast record supports; nothing lands on 1-in-3.</p>
 <details class="supp"><summary>Supporting evidence: the tuning surface</summary>
 <div class="supp-body">
 <h3 id="the-tuning-surface">The tuning surface</h3>
@@ -991,7 +993,7 @@ html { scroll-behavior:smooth; }
       period capped at 1-in-5, against the same reanalysis levels as the action leg. Across
       the four windows it is reached in 8 of the 21 archive years (1-in-2.8): 2005, 2010,
       2013, 2016, 2017, 2019, 2020 and 2023.
-<div class="rvw" id="R9"><span class="tag">Review R9</span><span class="hd">The two lead bands overlap, and &ldquo;covers&rdquo; does not check ordering.</span><p>Resolved 2026-09-07 for the overlap: readiness is stated as 8 to 12 days everywhere on the page. Since 2026-09-18 the readiness leg reads the reanalysis levels, so the 7-to-12-day archive band no longer enters the thresholds. Original note: action runs at leads 1&ndash;7 and readiness at leads 7&ndash;12, both inclusive, so <strong>lead 7 sits in both bands</strong> and the same forecast day can serve either leg. The original specification was action under 6 days. Separately, the &ldquo;covers action years&rdquo; column is a season-year set intersection: it records that both legs activated in the same season, not that readiness came first.</p></div>
+<div class="rvw" id="R9"><span class="tag">Review R9</span><span class="hd">The two lead bands overlap, and &ldquo;covers&rdquo; does not check ordering.</span><p>Resolved 2026-09-07 for the overlap: readiness is stated as 8 to 12 days everywhere on the page. Since 2026-09-18 the readiness leg reads the reanalysis levels, so the 8-to-12-day forecast archive no longer enters the thresholds. Original note: action runs at leads 1&ndash;7 and readiness at leads 7&ndash;12, both inclusive, so <strong>lead 7 sits in both bands</strong> and the same forecast day can serve either leg. The original specification was action under 6 days. Separately, the &ldquo;covers action years&rdquo; column is a season-year set intersection: it records that both legs activated in the same season, not that readiness came first.</p></div>
  It is not tuned to precede activation:
       an action trigger may activate with no readiness phase ahead of it, which is accepted
       (decision 2026-08-27). The last column reports how often readiness did lead an
