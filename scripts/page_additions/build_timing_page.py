@@ -62,6 +62,8 @@ def build():
     parts = {s: (lambda d: (d, sections(s, d), summary(s, d)))(collect(s)) for s in ("deyr", "gu")}
     deyr_src = sc.SOURCE_TITLE[sc.rule("juba", "deyr")[0]]
     gu_src = sc.SOURCE_TITLE[sc.rule("juba", "gu")[0]]
+    rp = {(riv, se): sc.rule(riv, se)[1] for riv in ("juba", "shabelle")
+          for se in ("deyr", "gu")}
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -123,8 +125,9 @@ figure img {{ width:100%; height:auto; display:block; border:1px solid #e2e7e7; 
     </div>
 
     <h2>Deyr</h2>
-    <p>Activation reads {deyr_src} at leads 1 to 7 days, three of four points on the Juba and
-       two of three on the Shabelle, each against its own 1-in-4. Forecast archive: {ARCH['deyr']}.</p>
+    <p>Activation reads {deyr_src} at leads 1 to 7 days, three of four points on the Juba
+       against its own 1-in-{rp[('juba', 'deyr')]} and two of three on the Shabelle against its
+       own 1-in-{rp[('shabelle', 'deyr')]}. Forecast archive: {ARCH['deyr']}.</p>
     <p>The Deyr rules were calibrated on the GloFAS version 5 reanalysis, and the operational system
        has been version 4 since July 2023. The dates here are the version 4 ones, which is what the
        live system reads, so the count of Deyr activations differs from the
@@ -135,7 +138,8 @@ figure img {{ width:100%; height:auto; display:block; border:1px solid #e2e7e7; 
 
     <h2>Gu</h2>
     <p>Activation reads {gu_src} at leads 1 to 7 days, three of four points on the Juba against
-       its own 1-in-5 and two of three on the Shabelle against its own 1-in-6. Forecast archive:
+       its own 1-in-{rp[('juba', 'gu')]} and two of three on the Shabelle against its own
+       1-in-{rp[('shabelle', 'gu')]}. Forecast archive:
        {ARCH['gu']}, so seasons before 2016 show the reanalysis, gauges and exposure only.</p>
     {parts['gu'][2]}
 {parts['gu'][1]}

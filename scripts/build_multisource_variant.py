@@ -93,7 +93,7 @@ SET_MODELS = {
 
 FC_MODELS = ["google_grrr", "glofas_v4"]
 READINESS_MODEL = "glofas_v4"
-READINESS_LEADS = (7, 12)
+READINESS_LEADS = (8, 12)
 ACTION_LEADS = (1, 7)
 RP_FLOOR = 3
 NICE = {"google_grrr": "Google GRRR", "glofas_v5": "GloFAS v5",
@@ -214,7 +214,7 @@ def action_leg(basis, drop_google=False, drop_geoglows=False):
                           f"a 1-in-{RP_FLOOR} threshold, and 1-in-2 is not allowed")}
     cands = {k: model_selection.window_candidates(
         frame, lv, k[0], k[1], models=models, span=span, rps=rps) for k in WINDOWS}
-    pinned = False  # one model per RIVER is searched, not read from constants
+    pinned = True  # read the adopted configuration from constants
     off_target = False
     if pinned:
         combo = []
@@ -277,7 +277,7 @@ for k, v in action.items():
 
 # ---------------------------------------------------------- the readiness leg
 def readiness_leg(action_ref):
-    """Leads 7-12 on GloFAS v4, carrying the action window's own rule shape.
+    """Leads 8-12 on GloFAS v4, carrying the action window's own rule shape.
 
     Readiness is not required to precede activation (directive 2026-08-27), so
     nothing is tuned to cover the action years: the window keeps its votes and
@@ -285,11 +285,11 @@ def readiness_leg(action_ref):
     often it happens to lead an activation is simply reported.
     """
     if fc_ready is None:
-        return {"error": "no reforecast covers leads 7-12"}
+        return {"error": "no reforecast covers leads 8-12"}
     span = fc_ready_spans.get(READINESS_MODEL, set()) & SPAN
     rps = rp_choices(len(span))
     if not rps:
-        return {"error": (f"{len(span)} years at leads 7-12 cannot carry a "
+        return {"error": (f"{len(span)} years at leads 8-12 cannot carry a "
                           f"1-in-{RP_FLOOR} threshold")}
     rows = {}
     for k in WINDOWS:
@@ -984,7 +984,8 @@ def glance_table():
             + "</tr>"
         )
     head = ("<th>window</th><th>action trigger (leads 1-7 d)</th><th>leg RP</th>"
-            "<th>readiness (leads 7-12 d)</th><th>readiness RP</th>")
+            "<th>readiness (leads "
+            f"{READINESS_LEADS[0]}-{READINESS_LEADS[1]} d)</th><th>readiness RP</th>")
     return ('<div class="tablewrap">\n<table class="data">\n'
             f"<thead><tr>{head}</tr></thead>\n<tbody>"
             + "".join(rows) + "</tbody>\n</table>\n</div>")
@@ -1149,7 +1150,7 @@ SECTIONS = {
 
 
 
-    "The readiness leg (7–12 days)": f"""
+    "The readiness leg (8–12 days)": f"""
     <p>Readiness runs on {NICE[READINESS_MODEL]} ensemble-median forecasts at leads 7 to
       12, the only archive covering that band, over the same full set of points, with
       thresholds refitted on that series. It releases only the mobilisation share and is
@@ -1198,7 +1199,7 @@ SECTIONS = {
         record ends 2023-11-30 and Bualle's 2024-03-14. Both can still be forecast at,
         but neither can be checked against observations from here on.</li>
       <li><strong>Readiness coverage is uneven by season,</strong> which is accepted
-        rather than solved: at 7 to 12 days GloFAS v4 leads Gu activations more reliably
+        rather than solved: at 8 to 12 days GloFAS v4 leads Gu activations more reliably
         than Deyr ones, so a Deyr activation may arrive with no readiness phase.</li>
     </ul>
 """,
@@ -1486,6 +1487,7 @@ body = body.replace(
     1,
 )
 # a note for the third state, alongside the template's no-Google one
+_ng = action[("reanalysis", ALT2_SET)]
 _ng_note = ""
 if "error" not in _ng:
     _nge = _ng["envelope"]
@@ -1511,11 +1513,11 @@ body = body.replace('    <div class="stats">', _ng_note + '    <div class="stats
 
 # the head is the template's, so its hero blurb, provider note and stat tiles
 # all describe the mixed-model mechanism and have to be restated
-per_basin = {}
-for river in TRIGGER_STATIONS:
+per_season = {}
+for season in ("deyr", "gu"):
     for tag, a in (("std", std), ("alt", alt)):
-        yrs = {y for k, w in a["windows"].items() if k[0] == river for y in w["years"]}
-        per_basin[(river, tag)] = (N_YEARS + 1) / len(yrs) if yrs else 0
+        yrs = {y for k, w in a["windows"].items() if k[1] == season for y in w["years"]}
+        per_season[(season, tag)] = (N_YEARS + 1) / len(yrs) if yrs else 0
 
 # the hero paragraph carries no class, so anchor on its opening words
 body = re.sub(
@@ -1573,15 +1575,15 @@ stats_new = (
     f'data-alt="1-in-{env_alt["env_rp"]}">1-in-{env["env_rp"]}</span>'
     '<span class="l">overall action return period (either river)</span></div>\n'
     '      <div class="stat"><span class="v vswap" '
-    f'data-alt="1-in-{per_basin[("shabelle", "alt")]:.1f} / '
-    f'1-in-{per_basin[("juba", "alt")]:.1f}">'
-    f'1-in-{per_basin[("shabelle", "std")]:.1f} / '
-    f'1-in-{per_basin[("juba", "std")]:.1f}</span>'
-    '<span class="l">per river, Shabelle / Juba</span></div>\n'
+    f'data-alt="1-in-{per_season[("deyr", "alt")]:.1f} / '
+    f'1-in-{per_season[("gu", "alt")]:.1f}">'
+    f'1-in-{per_season[("deyr", "std")]:.1f} / '
+    f'1-in-{per_season[("gu", "std")]:.1f}</span>'
+    '<span class="l">per season, Deyr / Gu</span></div>\n'
     '      <div class="stat"><span class="v">'
     f'{len(TRIGGER_STATIONS["juba"])} + {len(TRIGGER_STATIONS["shabelle"])}</span>'
     '<span class="l">points monitored, Juba and Shabelle</span></div>\n'
-    '      <div class="stat"><span class="v">7&ndash;12 d</span>'
+    f'      <div class="stat"><span class="v">{READINESS_LEADS[0]}&ndash;{READINESS_LEADS[1]} d</span>'
     '<span class="l">readiness lead time (action at 1&ndash;7 days)</span></div>\n'
     '    </div>'
 )

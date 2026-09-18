@@ -213,7 +213,7 @@ def main():
             ax.plot(s.index, s, color=COL[v], lw=1.6, label=f"{VERSIONS[v]} reanalysis")
             ax.axhline(lvl, color=COL[v], ls="--", lw=1, label=f"{VERSIONS[v]} 1-in-{rp} level ({lvl:,.0f})")
         ax.set_title(f"Deyr 2023 at {ST[st]} ({cfg.RIVER_TITLE[river]})"); ax.set_ylabel("m³/s")
-        ax.xaxis.set_major_locator(matplotlib.dates.MonthLocator()); ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter("%-d %b %Y"))
+        ax.xaxis.set_major_locator(matplotlib.dates.MonthLocator()); ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter("%d %b %Y"))
         ax.grid(axis="y", color=GRID, lw=.6); ax.legend(fontsize=8, frameon=False)
         for sp in ("top", "right"): ax.spines[sp].set_visible(False)
     fig.tight_layout(); fig.savefig(FIGS / "deyr2023.png", bbox_inches="tight"); plt.close(fig)

@@ -9,9 +9,9 @@
   {% for key, w in windows.items() if w.open %}
   <tr>
     <td style="text-align:center;padding:8px;border:1px solid transparent;"><b>{{ river_title[w.river] }}</b></td>
-    <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ w.readiness.n_req }} of {{ w.readiness.n_of }} stations over their levels</td>
+    <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ w.readiness.n_req }} of {{ w.readiness.n_of }} stations over their discharge return level thresholds</td>
     {% if show_activation %}<td style="text-align:center;padding:8px;border:1px solid transparent;">{{ source_title[w.action.source] }}</td>
-    <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ w.action.n_req }} of {{ w.action.n_of }} stations over their levels</td>{% endif %}
+    <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ w.action.n_req }} of {{ w.action.n_of }} stations over their discharge return level thresholds</td>{% endif %}
     <td style="text-align:center;padding:8px;border:1px solid transparent;">
       readiness {{ w.readiness.max_votes }}/{{ w.readiness.n_of }}{% if show_activation %}, activation {{ w.action.max_votes }}/{{ w.action.n_of }}{% if w.action.n_reporting < w.action.n_of %} ({{ w.action.n_reporting }} of {{ w.action.n_of }} reporting){% endif %}{% endif %}
     </td>
