@@ -1,8 +1,17 @@
 """Lead time of each flag against the flood onset: days between the flag and the
 gauges' first two-gauge 1-in-3 crossing (not the peak), for SWALIM's first bulletin,
 the trigger's first day and the GloFAS v4 forecast's first issue. The action
-window is 1 to 7 days before the onset, readiness 8 to 12."""
+window is 1 to 7 days before the onset, readiness 8 to 12.
+
+Gauge dates (onset = second gauge over its own 1-in-3, and the 1-in-5 crossing) come
+from somlib.gauge_crossings, the same two-gauge benchmark as every other page section
+(levels fitted 2000-2023). SWALIM, trigger and v4 issue dates are the hand-checked
+record from the bulletin archive and the forecast replays.
+
+    SOM_DATA_REPO=<checkout with data/processed> python scripts/page_additions/swalim_window.py
+"""
 import json
+import sys
 from datetime import date
 from pathlib import Path
 
@@ -13,30 +22,46 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
 S = Path(__file__).parent
-OUT = S / "wt-trigger/pages/trigger-single-model/figs/k_swalim_window.png"
+sys.path.insert(0, str(S))
+import somlib as L  # noqa: E402
+
+OUT = S.parents[1] / "pages" / "trigger-single-model" / "figs" / "k_swalim_window.png"
 
 
 def D(s):
     return date.fromisoformat(s) if s else None
 
 
-# season, river, onset (two-gauge 1-in-3), 1-in-5, SWALIM first bulletin, trigger, v4 issue, note
-ROWS = [
- ("Deyr 2006", "Juba",     "2006-10-30", "2006-10-30", "2006-10-31", "2006-10-29", None,         "onset taken as the 1-in-5 date; 1-in-3 date not in the record"),
- ("Deyr 2006", "Shabelle", "2006-11-02", "2006-11-18", "2006-10-31", "2006-11-02", None,         None),
- ("Deyr 2014", "Juba",     "2014-10-22", "2014-10-24", "2014-10-15", None,         "2014-10-23", None),
- ("Deyr 2014", "Shabelle", "2014-10-20", "2014-10-29", "2014-10-15", "2014-10-16", "2014-10-07", None),
- ("Deyr 2019", "Shabelle", "2019-10-14", "2019-10-24", "2019-10-22", "2019-10-11", "2019-10-02", None),
- ("Deyr 2020", "Shabelle", "2020-10-01", "2020-10-06", None,         "2020-10-10", "2020-10-02", "SWALIM's bulletin was for the September flood"),
- ("Deyr 2023", "Juba",     "2023-10-25", "2023-10-25", "2023-10-20", "2023-10-29", "2023-10-21", None),
- ("Deyr 2023", "Shabelle", "2023-11-07", "2023-11-20", "2023-10-21", "2023-11-09", None,         None),
- ("Gu 2016",   "Shabelle", "2016-05-11", "2016-05-18", None,         "2016-05-12", "2016-05-08", None),
- ("Gu 2020",   "Juba",     "2020-04-22", "2020-05-12", "2020-04-27", "2020-04-29", "2020-05-01", None),
- ("Gu 2020",   "Shabelle", "2020-05-06", "2020-05-12", "2020-04-27", "2020-04-30", None,         None),
- ("Gu 2023",   "Shabelle", "2023-04-17", "2023-05-23", "2023-05-08", None,         None,         None),
- ("Gu 2024",   "Juba",     "2024-05-10", None,         "2024-05-09", "n/a",        "2024-05-05", None),
- ("Gu 2024",   "Shabelle", "2024-05-08", "2024-05-20", "2024-04-19", "n/a",        None,         None),
+def gauge_date(season, river, rp):
+    """Date the river's second gauge reached its own 1-in-rp level that season (somlib)."""
+    name, year = season.split()
+    d = L.gauge_crossings(river.lower(), name.lower(), rp, span=range(1999, 2025)).get(int(year))
+    return d.date().isoformat() if d is not None else None
+
+
+# season, river, SWALIM first bulletin, trigger (window's model on its own record), v4 issue, note
+FLAGS = [
+ ("Deyr 2006", "Juba",     "2006-10-31", "2006-10-29", None,         "onset taken as the 1-in-5 date; 1-in-3 date not in the record"),
+ ("Deyr 2006", "Shabelle", "2006-10-31", "2006-11-02", None,         None),
+ ("Deyr 2014", "Juba",     "2014-10-15", None,         "2014-10-23", None),
+ ("Deyr 2014", "Shabelle", "2014-10-15", "2014-10-16", "2014-10-07", None),
+ ("Deyr 2019", "Shabelle", "2019-10-22", "2019-10-11", "2019-10-02", None),
+ ("Deyr 2020", "Shabelle", None,         "2020-10-10", "2020-10-02", "SWALIM's bulletin was for the September flood"),
+ ("Deyr 2023", "Juba",     "2023-10-20", "2023-10-29", "2023-10-21", None),
+ ("Deyr 2023", "Shabelle", "2023-10-21", "2023-11-09", None,         None),
+ ("Gu 2016",   "Shabelle", None,         "2016-05-12", "2016-05-08", None),
+ ("Gu 2020",   "Juba",     "2020-04-27", "2020-04-29", "2020-05-01", None),
+ ("Gu 2020",   "Shabelle", "2020-04-27", "2020-04-30", None,         None),
+ ("Gu 2023",   "Shabelle", "2023-05-08", None,         None,         None),
+ ("Gu 2024",   "Juba",     "2024-05-09", "n/a",        "2024-05-05", None),
+ ("Gu 2024",   "Shabelle", "2024-04-19", "n/a",        None,         None),
 ]
+ROWS = []
+for season, river, sw, trig, v4, note in FLAGS:
+    onset = gauge_date(season, river, 3) or gauge_date(season, river, 5)
+    g5 = gauge_date(season, river, 5)
+    ROWS.append((season, river, onset, g5, sw, trig, v4, note))
+    print(f"{season:10s}{river:9s} onset {onset}  1-in-5 {g5}")
 C_SW, C_TR, C_V4 = "#d97706", "#1d4ed8", "#0f766e"
 
 

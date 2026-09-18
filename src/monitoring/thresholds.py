@@ -4,10 +4,10 @@ Exactly the estimator the trigger analysis used (scripts/page_additions/
 somlib.model_threshold): for one model, station and season, take the
 seasonal maximum of the model's own daily record in each year of
 TRIGGER_YEARS and read the return level off the Weibull plotting position
-(log-log interpolation, no extrapolation). Readiness thresholds are fitted
-the same way on the readiness-band forecast series (per valid day, the
-ensemble median at each lead, then the most alarming lead in the band), as
-the trigger page describes.
+(log-log interpolation, no extrapolation). Both legs read these reanalysis
+rows (src/monitoring/config.py READINESS_RULES caps the readiness return
+period). The readiness_band rows, fitted the same way on the 8-12 day
+reforecast series, are kept for reference and are not read by the pipeline.
 
 `build()` needs the processed parquets in data/processed/ (restore with
 scripts/restore_from_blob.py) and is run by

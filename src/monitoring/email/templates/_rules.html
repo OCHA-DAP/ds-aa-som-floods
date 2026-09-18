@@ -1,8 +1,9 @@
+{% set w0 = (windows.values()|selectattr('open')|list)[0] %}
 <table width="90%" align="center" style="border:1px solid #000;border-collapse:collapse;font-size:0.9em;margin-left:auto;margin-right:auto;margin:8px 0 8px;">
   <tr style="background-color:#1e795f;color:white;">
     <th style="padding:8px;border:1px solid transparent;">River</th>
-    <th style="padding:8px;border:1px solid transparent;">Readiness rule (GloFAS, 8 to 12 days ahead)</th>
-    {% if show_activation %}<th style="padding:8px;border:1px solid transparent;">Activation source (1 to 7 days ahead)</th>
+    <th style="padding:8px;border:1px solid transparent;">Readiness rule (GloFAS, {{ w0.readiness.leads[0] }} to {{ w0.readiness.leads[1] }} days ahead)</th>
+    {% if show_activation %}<th style="padding:8px;border:1px solid transparent;">Activation source ({{ w0.action.leads[0] }} to {{ w0.action.leads[1] }} days ahead)</th>
     <th style="padding:8px;border:1px solid transparent;">Activation rule</th>{% endif %}
     <th style="padding:8px;border:1px solid transparent;">Today</th>
   </tr>

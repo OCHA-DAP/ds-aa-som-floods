@@ -14,6 +14,9 @@ Run from this directory with the repo venv (`../../.venv/Scripts/python.exe`), i
 `swalim_station_timeline.py` draws the station-level charts. `swalim_timeline.py` and
 `swalim_window.py` draw the river-level SWALIM charts; the SWALIM section
 itself was written from bulletin texts (see the page) and its generator depends on session files.
+`ensemble_agreement_figs.py`, with `scripts/prob_sweep.py`, makes the figures and the years table for
+`pages/ensemble-agreement/`. `swalim_seasons.json` is the per-season SWALIM flood-risk level record
+(2006-2023) that `summary_page.py` reads for the SWALIM readiness route.
 `somlib.py` holds the shared conventions: local parquet under `data/processed/`, the two-gauge
 benchmark as `scripts/envelope_search.py` computes it (levels fitted 2000-2023), activation dates
 by flow day and by forecast issue date. Intermediate JSON/HTML land next to the scripts.

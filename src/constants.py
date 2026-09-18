@@ -195,7 +195,8 @@ SOURCE_COLORS = {
 
 # ------------------------------------------------- trigger station restriction
 # Decision 2026-08-26: the trigger is built ONLY on SWALIM gauges that are
-# still reporting, and ONE model carries each river (not one per season).
+# still reporting. One model carries each river-season WINDOW (TRIGGER_CONFIG
+# below, directive 2026-08-27).
 #
 # Four gauges on the Juba and three on the Shabelle carry the trigger. Only
 # five still report daily (Luuq, Dollow, Belet Weyne, Bulo Burti, Jowhar):
@@ -213,11 +214,14 @@ TRIGGER_STATIONS = {
 }
 ALL_TRIGGER_STATIONS = [s for v in TRIGGER_STATIONS.values() for s in v]
 
+# Earlier per-river design (one model per river), kept only because notebooks
+# 07 and 10 read it. The adopted design is TRIGGER_CONFIG below.
 RIVER_MODEL = {"juba": "google_grrr", "shabelle": "glofas_v5"}
 
-# Google's forecast horizon is 7 days, so a 7-12 day readiness leg cannot run
-# on it. Readiness therefore stays on GloFAS, whose reforecast covers those
-# leads (notebook 10).
+# Google's forecast horizon is 7 days, so the 8-12 day readiness leg cannot run
+# on it. Readiness therefore runs on GloFAS, whose reforecast covers those
+# leads, against the same reanalysis levels as the action leg
+# (src/monitoring/config.py READINESS_RULES).
 READINESS_MODEL = "glofas_v4"
 
 
@@ -226,7 +230,7 @@ READINESS_MODEL = "glofas_v4"
 # notebook 09 and the summary-page generator cannot drift apart.
 # Calibrated on the ENVELOPE, not window by window (see ENVELOPE_TARGET_RP
 # above and scripts/envelope_search.py): these settings put the union at
-# 1-in-3.2 and catch 7 of the 8 severe years, with one activation (2013) in a
+# 1-in-3.2 and catch all 7 severe years, with one activation (2013) in a
 # year two gauges did not record a flood. Majority consensus everywhere, so no
 # single
 # gauge can release the money and no single quiet gauge can block it.
@@ -241,9 +245,12 @@ READINESS_MODEL = "glofas_v4"
 # begins in July 2024. Google carries Gu, GloFAS v5 carries Deyr.
 #
 # Calibrated to activate no more often than 1-in-3 (directive 2026-08-27): 8
-# activations in 25 years, 1-in-3.2, catching 7 of the 8 severe years (2008 is
-# the miss). The 9-activation alternative sits at 1-in-2.9 with the same severe
-# coverage; this one drops 2010, which was not a severe year.
+# activations in 25 years, 1-in-3.2, catching all 7 severe years on the
+# benchmark fitted 2000-2023 (the earlier fit counted 2008 as an eighth severe
+# year and the one miss). The 9-activation alternative sits at 1-in-2.9 with
+# the same severe coverage; this one drops 2010, which was not a severe year.
+# Shabelle Deyr moved from 1-in-4 to 1-in-5 on 2026-09-18 so that the envelope
+# releases in 8 river-seasons, not 10: the full amount is released per season.
 #
 # Verified independently 2026-08-31 by recomputing from the daily series: the
 # envelope activates in 2006, 2013, 2014, 2016, 2018, 2019, 2020, 2023, and

@@ -47,7 +47,9 @@ if "max(SPAN)" not in inspect.getsource(es.gauge_consensus_years):
         "Check out fix/corrected-benchmark-and-lag (or merge it) and rerun."
     )
 
-D = str(ROOT / "data/processed")
+import os
+# processed parquets live in the main checkout; SOM_DATA_REPO points at it from a worktree
+D = str(pathlib.Path(os.environ.get("SOM_DATA_REPO", ROOT)) / "data/processed")
 SRCS=["glofas_v5","google_grrr"]; ACTIVE={"belet_weyne","bulo_burti","jowhar","luuq","dollow"}
 LAG_GUARD, MIN_RHO, REL_TOL = -3, 0.5, 0.10
 W=[("juba","gu"),("juba","deyr"),("shabelle","gu"),("shabelle","deyr")]
@@ -140,7 +142,7 @@ def leads(units,r,s,rp,n):
         am=base.groupby(base.index.year).max().dropna()
         if not len(am): continue
         t=weibull_threshold(am.values,rp)
-        d=rf[fcm]; d=d[(d.station==st)&(d.leadtime_days>=1)&(d.leadtime_days<=6)
+        d=rf[fcm]; d=d[(d.station==st)&(d.leadtime_days>=1)&(d.leadtime_days<=7)
                        &(d.valid_time.dt.month.isin(SEASONS[s]))]
         if not len(d): continue
         agg=(d.groupby(["issued_time","valid_time"])["discharge"].median() if fcm=="glofas_v4"

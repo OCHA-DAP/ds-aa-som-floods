@@ -52,7 +52,7 @@ def levels_for_page(levels_df):
         a, r = cfg.ACTION_RULES[w], cfg.READINESS_RULES[w]
         out[cfg.WINDOW_KEY[w]] = {
             "action": thr.lookup(levels_df, cfg.threshold_source(a["source"]), season, a["rp"], stations),
-            "readiness": thr.lookup(levels_df, cfg.GLOFAS_OPERATIONAL, season, r["rp"], stations, basis="readiness_band"),
+            "readiness": thr.lookup(levels_df, cfg.GLOFAS_OPERATIONAL, season, r["rp"], stations),
         }
     return out
 

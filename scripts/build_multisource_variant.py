@@ -470,7 +470,7 @@ def rp3_detection(season=None):
             obs = lv[lv.station == st].set_index("date")["level_m"].dropna().sort_index()
             if months:
                 obs = obs[obs.index.month.isin(months)]
-            modern = obs[obs.index.year >= 2000]
+            modern = obs[(obs.index.year >= 2000) & (obs.index.year <= Y1)]  # fit closed at Y1, as the benchmark
             am = modern.groupby(modern.index.year).max().dropna()
             base = weibull_level(am.values, RP_FLOOR)
             if np.isnan(base):
@@ -698,7 +698,7 @@ def event_mask(station, season, pad_days=10):
     """Days inside an observed RP3-or-rarer event at this gauge, widened by pad."""
     obs = lv[lv.station == station].set_index("date")["level_m"].dropna().sort_index()
     seas = obs[obs.index.month.isin(SEASONS[season])]
-    modern = seas[seas.index.year >= 2000]
+    modern = seas[(seas.index.year >= 2000) & (seas.index.year <= Y1)]  # fit closed at Y1, as the benchmark
     am = modern.groupby(modern.index.year).max().dropna()
     base = weibull_level(am.values, RP_FLOOR)
     if np.isnan(base):
@@ -743,7 +743,7 @@ def draw_model_choice(path, models=None, chosen_from=None):
                     continue
                 full = lv[lv.station == st].set_index("date")["level_m"].dropna()
                 full = full[full.index.month.isin(SEASONS[season])].sort_index()
-                fam = full[full.index.year >= 2000]
+                fam = full[(full.index.year >= 2000) & (full.index.year <= Y1)]  # fit closed at Y1, as the benchmark
                 fam = fam.groupby(fam.index.year).max().dropna()
                 base = weibull_level(fam.values, RP_FLOOR)
                 if np.isnan(base):
