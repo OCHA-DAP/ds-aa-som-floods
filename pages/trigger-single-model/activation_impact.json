@@ -24,13 +24,13 @@
     "label": "GloFAS v5 at 3 points",
     "n_req": 2,
     "pool": 3,
-    "rp": 4
+    "rp": 5
    }
   },
   "windows_v": {
    "juba_gu": {
-    "label": "GEOGloWS v2 at 4 points",
-    "n_req": 2,
+    "label": "Google GRRR at 4 points",
+    "n_req": 3,
     "pool": 4,
     "rp": 5
    },
@@ -41,7 +41,7 @@
     "rp": 4
    },
    "shabelle_gu": {
-    "label": "GloFAS v5 at 3 points",
+    "label": "Google GRRR at 3 points",
     "n_req": 2,
     "pool": 3,
     "rp": 6
@@ -110,11 +110,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 3500,
-       "deaths": 0,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -123,11 +119,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 150000,
-       "deaths": 0,
-       "multi": false
-      },
+      "emdat": null,
       "cerf": null
      }
     },
@@ -138,11 +130,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 3500,
-       "deaths": 0,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -176,11 +164,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 6500,
-       "deaths": 0,
-       "multi": false
-      },
+      "emdat": null,
       "cerf": null
      }
     },
@@ -261,11 +245,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 0,
-       "deaths": 0,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -285,11 +265,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "moderate",
-      "emdat": {
-       "aff": 0,
-       "deaths": 0,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -354,16 +330,12 @@
    "basins": {
     "juba": {
      "gu": {
-      "n": 0,
+      "n": 1,
       "nv": 1,
       "adopted": false,
       "adopted_v": false,
       "bench": "moderate",
-      "emdat": {
-       "aff": 7520,
-       "deaths": 12,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -379,15 +351,11 @@
     "shabelle": {
      "gu": {
       "n": 0,
-      "nv": 3,
+      "nv": 0,
       "adopted": false,
-      "adopted_v": true,
+      "adopted_v": false,
       "bench": "moderate",
-      "emdat": {
-       "aff": 5020,
-       "deaths": 5,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -421,15 +389,8 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": {
-       "aff": 155500,
-       "deaths": 35,
-       "multi": false
-      },
-      "cerf": {
-       "usd": 10437041,
-       "unattr": true
-      }
+      "emdat": null,
+      "cerf": null
      }
     },
     "shabelle": {
@@ -448,15 +409,8 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": {
-       "aff": 299000,
-       "deaths": 52,
-       "multi": false
-      },
-      "cerf": {
-       "usd": 10437041,
-       "unattr": true
-      }
+      "emdat": null,
+      "cerf": null
      }
     }
    }
@@ -500,11 +454,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 8000,
-       "deaths": 4,
-       "multi": false
-      },
+      "emdat": null,
       "cerf": null
      }
     }
@@ -529,11 +479,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "severe",
-      "emdat": {
-       "aff": 52000,
-       "deaths": 0,
-       "multi": false
-      },
+      "emdat": null,
       "cerf": null
      }
     },
@@ -578,11 +524,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 1750,
-       "deaths": 0,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      }
     },
@@ -602,11 +544,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 1750,
-       "deaths": 0,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      }
     }
@@ -618,7 +556,7 @@
     "juba": {
      "gu": {
       "n": 2,
-      "nv": 1,
+      "nv": 2,
       "adopted": false,
       "adopted_v": false,
       "bench": "moderate",
@@ -646,7 +584,7 @@
       "cerf": null
      },
      "deyr": {
-      "n": 1,
+      "n": 0,
       "nv": 0,
       "adopted": false,
       "adopted_v": false,
@@ -741,11 +679,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 32200,
-       "deaths": 31,
-       "multi": false
-      },
+      "emdat": null,
       "cerf": null
      }
     }
@@ -757,15 +691,11 @@
     "juba": {
      "gu": {
       "n": 4,
-      "nv": 1,
+      "nv": 4,
       "adopted": true,
-      "adopted_v": false,
+      "adopted_v": true,
       "bench": "",
-      "emdat": {
-       "aff": 50000,
-       "deaths": 7,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -781,21 +711,17 @@
     "shabelle": {
      "gu": {
       "n": 3,
-      "nv": 0,
+      "nv": 3,
       "adopted": true,
-      "adopted_v": false,
+      "adopted_v": true,
       "bench": "",
-      "emdat": {
-       "aff": 50000,
-       "deaths": 7,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
-      "n": 3,
+      "n": 1,
       "nv": 1,
-      "adopted": true,
+      "adopted": false,
       "adopted_v": false,
       "bench": "",
       "emdat": null,
@@ -823,11 +749,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "severe",
-      "emdat": {
-       "aff": 90000,
-       "deaths": 0,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      }
     },
@@ -847,11 +769,7 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": {
-       "aff": 90000,
-       "deaths": 0,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      }
     }
@@ -887,11 +805,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 16296,
-       "deaths": 0,
-       "multi": false
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -912,15 +826,11 @@
     "juba": {
      "gu": {
       "n": 4,
-      "nv": 1,
+      "nv": 4,
       "adopted": true,
-      "adopted_v": false,
+      "adopted_v": true,
       "bench": "moderate",
-      "emdat": {
-       "aff": 0,
-       "deaths": 9,
-       "multi": false
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -1006,19 +916,12 @@
     "juba": {
      "gu": {
       "n": 4,
-      "nv": 2,
+      "nv": 4,
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": {
-       "aff": 700000,
-       "deaths": 5,
-       "multi": true
-      },
-      "cerf": {
-       "usd": 5133588,
-       "unattr": true
-      }
+      "emdat": null,
+      "cerf": null
      },
      "deyr": {
       "n": 2,
@@ -1037,15 +940,8 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "moderate",
-      "emdat": {
-       "aff": 700000,
-       "deaths": 5,
-       "multi": true
-      },
-      "cerf": {
-       "usd": 5133588,
-       "unattr": true
-      }
+      "emdat": null,
+      "cerf": null
      },
      "deyr": {
       "n": 0,
@@ -1078,15 +974,8 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 500000,
-       "deaths": 17,
-       "multi": true
-      },
-      "cerf": {
-       "usd": 8000222,
-       "unattr": false
-      }
+      "emdat": null,
+      "cerf": null
      }
     },
     "shabelle": {
@@ -1105,15 +994,8 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": {
-       "aff": 500000,
-       "deaths": 17,
-       "multi": true
-      },
-      "cerf": {
-       "usd": 8000222,
-       "unattr": false
-      }
+      "emdat": null,
+      "cerf": null
      }
     }
    }
@@ -1124,15 +1006,11 @@
     "juba": {
      "gu": {
       "n": 4,
-      "nv": 3,
+      "nv": 4,
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": {
-       "aff": 1191020,
-       "deaths": 32,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -1152,20 +1030,13 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": {
-       "aff": 1191020,
-       "deaths": 32,
-       "multi": true
-      },
-      "cerf": {
-       "usd": 7100529,
-       "unattr": false
-      }
+      "emdat": null,
+      "cerf": null
      },
      "deyr": {
-      "n": 2,
+      "n": 0,
       "nv": 0,
-      "adopted": true,
+      "adopted": false,
       "adopted_v": false,
       "bench": "severe",
       "emdat": null,
@@ -1184,11 +1055,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 400000,
-       "deaths": 25,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -1208,11 +1075,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": {
-       "aff": 400000,
-       "deaths": 25,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -1277,16 +1140,12 @@
    "basins": {
     "juba": {
      "gu": {
-      "n": 1,
+      "n": 0,
       "nv": 0,
       "adopted": false,
       "adopted_v": false,
       "bench": "severe",
-      "emdat": {
-       "aff": 568003,
-       "deaths": 43,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -1295,15 +1154,8 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": {
-       "aff": 2758000,
-       "deaths": 122,
-       "multi": true
-      },
-      "cerf": {
-       "usd": 10000009,
-       "unattr": false
-      }
+      "emdat": null,
+      "cerf": null
      }
     },
     "shabelle": {
@@ -1313,11 +1165,7 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "severe",
-      "emdat": {
-       "aff": 568003,
-       "deaths": 43,
-       "multi": true
-      },
+      "emdat": null,
       "cerf": null
      },
      "deyr": {
@@ -1326,15 +1174,8 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": {
-       "aff": 2758000,
-       "deaths": 122,
-       "multi": true
-      },
-      "cerf": {
-       "usd": 10000009,
-       "unattr": false
-      }
+      "emdat": null,
+      "cerf": null
      }
     }
    }

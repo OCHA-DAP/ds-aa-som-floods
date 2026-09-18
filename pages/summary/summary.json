@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-01",
+ "generated": "2026-09-18",
  "years": [
   1999,
   2023
@@ -93,22 +93,21 @@
    "river": "shabelle",
    "season": "deyr",
    "source": "glofas_v5",
-   "rp": 4,
+   "rp": 5,
    "n_req": 2,
    "n_of": 3,
-   "pod": 0.83,
-   "far": 0.17,
-   "act_rp": 4.3,
+   "pod": 0.67,
+   "far": 0.0,
+   "act_rp": 6.5,
    "activations": [
     2006,
-    2013,
     2014,
     2019,
-    2020,
     2023
    ],
    "missed": [
-    2008
+    2008,
+    2020
    ]
   }
  ],
@@ -153,7 +152,7 @@
   {
    "river": "juba",
    "source": "google_grrr",
-   "gu": 0.86,
+   "gu": 0.87,
    "deyr": 0.53,
    "worst": 0.53
   },
@@ -251,7 +250,7 @@
    "source": "google_grrr",
    "n_events": 3,
    "POD": 1.0,
-   "FAR": 0.5
+   "FAR": 0.4
   },
   {
    "station": "dollow",
@@ -586,9 +585,9 @@
      "n_of": 4,
      "stations": [
       "bardheere",
+      "dollow",
       "luuq",
-      "bualle",
-      "dollow"
+      "bualle"
      ],
      "years": [
       2013,
@@ -638,7 +637,7 @@
      "river": "shabelle",
      "season": "deyr",
      "source": "glofas_v5",
-     "rp": 4,
+     "rp": 5,
      "n_req": 2,
      "n_of": 3,
      "stations": [
@@ -648,10 +647,8 @@
      ],
      "years": [
       2006,
-      2013,
       2014,
       2019,
-      2020,
       2023
      ]
     }
@@ -901,7 +898,7 @@
    "source": "google_grrr",
    "n_events": 2,
    "POD": 1.0,
-   "FAR": 0.33
+   "FAR": 0.0
   },
   {
    "station": "luuq",
@@ -1005,7 +1002,7 @@
   "skill",
   "thresholds"
  ],
- "n_tied_assignments": 21,
+ "n_tied_assignments": 14,
  "no_google": {
   "envelope": {
    "fires": 9,

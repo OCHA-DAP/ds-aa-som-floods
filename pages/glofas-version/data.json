@@ -1,7 +1,7 @@
 {
- "generated": "2026-09-15",
+ "generated": "2026-09-18",
  "operational": "glofas_v4",
- "ratio_median_deyr_rp": 2.4778618543157687,
+ "ratio_median_deyr_rp": 2.326975414224572,
  "deyr_levels": [
   {
    "river": "juba",
@@ -54,38 +54,38 @@
   {
    "river": "shabelle",
    "station": "belet_weyne",
-   "rp": 4,
-   "v4": 1078.9,
-   "v5": 435.4,
-   "ratio": 2.5,
+   "rp": 5,
+   "v4": 1109.0,
+   "v5": 476.6,
+   "ratio": 2.3,
    "mean4": 471.1000061035156,
    "mean5": 149.10000610351562,
-   "readiness_rp": 4,
-   "readiness_band": 956.6
+   "readiness_rp": 5,
+   "readiness_band": 989.0
   },
   {
    "river": "shabelle",
    "station": "bulo_burti",
-   "rp": 4,
-   "v4": 1078.6,
-   "v5": 365.5,
-   "ratio": 3.0,
+   "rp": 5,
+   "v4": 1109.3,
+   "v5": 388.8,
+   "ratio": 2.9,
    "mean4": 475.6000061035156,
    "mean5": 115.5,
-   "readiness_rp": 4,
-   "readiness_band": 967.9
+   "readiness_rp": 5,
+   "readiness_band": 1000.6
   },
   {
    "river": "shabelle",
    "station": "jowhar",
-   "rp": 4,
-   "v4": 1122.0,
-   "v5": 337.0,
+   "rp": 5,
+   "v4": 1159.3,
+   "v5": 351.4,
    "ratio": 3.3,
    "mean4": 486.79998779296875,
    "mean5": 104.0999984741211,
-   "readiness_rp": 4,
-   "readiness_band": 978.3
+   "readiness_rp": 5,
+   "readiness_band": 1013.0
   }
  ],
  "activations": {
@@ -132,7 +132,6 @@
    2023
   ],
   "shabelle_deyr|fit=glofas_v4|flow=glofas_v4": [
-   2007,
    2010,
    2013,
    2014,
@@ -169,10 +168,8 @@
   ],
   "shabelle_deyr|fit=glofas_v5|flow=glofas_v5": [
    2006,
-   2013,
    2014,
    2019,
-   2020,
    2023
   ]
  },
@@ -195,7 +192,6 @@
    "years": [
     2001,
     2005,
-    2007,
     2010,
     2013,
     2014,
@@ -207,8 +203,8 @@
     2020,
     2023
    ],
-   "n": 13,
-   "rp": 1.9230769230769231,
+   "n": 12,
+   "rp": 2.0833333333333335,
    "severe_caught": [
     2014,
     2016,
@@ -222,7 +218,6 @@
    ],
    "no_flood": [
     2001,
-    2007,
     2013,
     2015
    ]
@@ -595,7 +590,7 @@
    "severe": 3,
    "n_severe": 5,
    "false": 3,
-   "adopted": true
+   "adopted": false
   },
   {
    "window": "Deyr Shabelle",
@@ -630,7 +625,7 @@
    "severe": 3,
    "n_severe": 5,
    "false": 2,
-   "adopted": false
+   "adopted": true
   },
   {
    "window": "Deyr Shabelle",
