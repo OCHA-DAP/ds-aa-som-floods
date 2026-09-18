@@ -509,9 +509,11 @@ html { scroll-behavior:smooth; }
       <ul>
         <li><strong>On severe years, Gu is a tie.</strong> Both models catch 2018 and 2020
           on the Juba and 2016 and 2020 on the Shabelle, and both miss Gu 2023.</li>
-        <li><strong>Deyr on Google is worse on both counts:</strong> three false
-          activations on the Juba and a missed severe year (2020) on the Shabelle.
-          GloFAS v5's Deyr record is clean.</li>
+        <li><strong>Deyr on Google is worse on the Juba:</strong> three activations outside the
+          benchmark (2013, 2015, 2019) against none for GloFAS v5, with both models missing 2014.
+          On the Shabelle the two models catch the same four severe years and both miss 2020 at
+          1-in-5; Google adds 2008, a 1-in-3 flood year. GloFAS v5's Deyr record has no activation
+          outside the benchmark.</li>
         <li><strong>GloFAS v5 alone cannot meet the 1-in-3 ceiling.</strong> No v5-only
           configuration reaches 8 activations, and its nearest envelope activates once
           every 2.9 years. Some windows therefore have to run on Google, and Gu is where the
@@ -768,8 +770,9 @@ html { scroll-behavior:smooth; }
       <img src="figs/c_backtest_strip.png?v=202609011455" class="vswap" data-alt-src="figs/c_backtest_strip_all.png?v=202609011455" data-alt2-src="figs/c_backtest_strip_nogoogle.png?v=202609011455" alt="Heat strip of activation years per trigger leg, per river versus severe years, and overall, 1999 to 2023">
       <figcaption><span class="stdonly">The adopted configuration's backtest. River rows
         compare activations with the severe (1-in-5) years of the two-gauge benchmark.
-        The envelope catches 7 of the 8 severe years, missing only 2008, and activates
-        once outside the benchmark, in 2013. The Juba river adds nothing to the envelope:
+        On the benchmark fitted 2000&ndash;2023 the envelope catches all 7 severe years and
+        activates once outside the benchmark, in 2013; the figure was generated on the earlier
+        fit and still shows 2008 as an eighth severe year and the one miss. The Juba river adds nothing to the envelope:
         every year it activates, the Shabelle activates too (review note R4).</span><span
         class="altonly">The all-providers configuration, same layout, with GEOGloWS
         carrying Juba Gu: the same envelope (8 years, 1-in-3.2) and the same severe-year coverage, but no activation outside the benchmark: it does not activate in 2013.</span> With 25-year records, one hit moves coverage by about 12 to 15 points, so differences under about 0.15 are noise.</figcaption>
