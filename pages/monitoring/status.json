@@ -11,7 +11,7 @@
  "status": "TRIGGER NOT REACHED",
  "glofas_version": "glofas_v4 (gpi5/bp21)",
  "glofas_issue": "2026-09-18",
- "google_issue": "2026-09-18 00:52 UTC",
+ "google_issue": "2026-09-18 12:54 UTC",
  "n_glofas_points": 7,
  "n_google_gauges": 7,
  "windows": {
@@ -80,7 +80,7 @@
     "n_reporting": 4,
     "stations": {
      "dollow": {
-      "threshold": 1861.7,
+      "threshold": 2176.8,
       "max_value": null,
       "max_date": null,
       "pct_of_threshold": null,
@@ -88,7 +88,7 @@
       "reporting": true
      },
      "luuq": {
-      "threshold": 1881.0,
+      "threshold": 2176.1,
       "max_value": null,
       "max_date": null,
       "pct_of_threshold": null,
@@ -96,7 +96,7 @@
       "reporting": true
      },
      "bardheere": {
-      "threshold": 1921.1,
+      "threshold": 2175.4,
       "max_value": null,
       "max_date": null,
       "pct_of_threshold": null,
@@ -104,7 +104,7 @@
       "reporting": true
      },
      "bualle": {
-      "threshold": 1966.1,
+      "threshold": 2239.9,
       "max_value": null,
       "max_date": null,
       "pct_of_threshold": null,
@@ -199,34 +199,34 @@
     "n_reporting": 4,
     "stations": {
      "dollow": {
-      "threshold": 1498.8,
+      "threshold": 1735.8,
       "max_value": 566.6,
       "max_date": "2026-09-29",
-      "pct_of_threshold": 37.8,
+      "pct_of_threshold": 32.6,
       "exceeds": false,
       "reporting": true
      },
      "luuq": {
-      "threshold": 1517.2,
+      "threshold": 1733.8,
       "max_value": 560.0,
       "max_date": "2026-09-29",
-      "pct_of_threshold": 36.9,
+      "pct_of_threshold": 32.3,
       "exceeds": false,
       "reporting": true
      },
      "bardheere": {
-      "threshold": 1532.3,
+      "threshold": 1730.0,
       "max_value": 543.2,
       "max_date": "2026-09-29",
-      "pct_of_threshold": 35.5,
+      "pct_of_threshold": 31.4,
       "exceeds": false,
       "reporting": true
      },
      "bualle": {
-      "threshold": 1551.3,
+      "threshold": 1724.8,
       "max_value": 532.6,
       "max_date": "2026-09-25",
-      "pct_of_threshold": 34.3,
+      "pct_of_threshold": 30.9,
       "exceeds": false,
       "reporting": true
      }
@@ -296,7 +296,7 @@
     "n_reporting": 3,
     "stations": {
      "belet_weyne": {
-      "threshold": 512.0,
+      "threshold": 662.7,
       "max_value": null,
       "max_date": null,
       "pct_of_threshold": null,
@@ -304,7 +304,7 @@
       "reporting": true
      },
      "bulo_burti": {
-      "threshold": 518.7,
+      "threshold": 644.8,
       "max_value": null,
       "max_date": null,
       "pct_of_threshold": null,
@@ -312,7 +312,7 @@
       "reporting": true
      },
      "jowhar": {
-      "threshold": 589.5,
+      "threshold": 646.9,
       "max_value": null,
       "max_date": null,
       "pct_of_threshold": null,
@@ -352,32 +352,32 @@
     "n_reporting": 3,
     "stations": {
      "belet_weyne": {
-      "threshold": 1078.9,
+      "threshold": 1109.0,
       "max_value": 435.6,
       "max_date": "2026-09-18",
-      "pct_of_threshold": 40.4,
+      "pct_of_threshold": 39.3,
       "exceeds": false,
       "reporting": true
      },
      "bulo_burti": {
-      "threshold": 1078.6,
+      "threshold": 1109.3,
       "max_value": 436.5,
       "max_date": "2026-09-18",
-      "pct_of_threshold": 40.5,
+      "pct_of_threshold": 39.4,
       "exceeds": false,
       "reporting": true
      },
      "jowhar": {
-      "threshold": 1122.0,
+      "threshold": 1159.3,
       "max_value": 436.9,
       "max_date": "2026-09-18",
-      "pct_of_threshold": 38.9,
+      "pct_of_threshold": 37.7,
       "exceeds": false,
       "reporting": true
      }
     },
     "source": "glofas",
-    "rp": 4,
+    "rp": 5,
     "leads": [
      1,
      7
@@ -399,32 +399,32 @@
     "n_reporting": 3,
     "stations": {
      "belet_weyne": {
-      "threshold": 956.6,
+      "threshold": 1109.0,
       "max_value": 395.2,
       "max_date": "2026-09-25",
-      "pct_of_threshold": 41.3,
+      "pct_of_threshold": 35.6,
       "exceeds": false,
       "reporting": true
      },
      "bulo_burti": {
-      "threshold": 967.9,
+      "threshold": 1109.3,
       "max_value": 400.1,
       "max_date": "2026-09-25",
-      "pct_of_threshold": 41.3,
+      "pct_of_threshold": 36.1,
       "exceeds": false,
       "reporting": true
      },
      "jowhar": {
-      "threshold": 978.3,
+      "threshold": 1159.3,
       "max_value": 405.0,
       "max_date": "2026-09-25",
-      "pct_of_threshold": 41.4,
+      "pct_of_threshold": 34.9,
       "exceeds": false,
       "reporting": true
      }
     },
     "source": "glofas",
-    "rp": 4,
+    "rp": 5,
     "leads": [
      8,
      12
@@ -432,7 +432,7 @@
    }
   }
  },
- "generated_at": "2026-09-18T10:16:28.296375+00:00",
+ "generated_at": "2026-09-18T17:19:11.997045+00:00",
  "chart": "latest.png",
  "chart_stale": false,
  "glofas_operational": "glofas_v4",
@@ -489,14 +489,14 @@
   },
   "shabelle_deyr": {
    "action": {
-    "belet_weyne": 1078.8578558999077,
-    "bulo_burti": 1078.5754615901237,
-    "jowhar": 1121.9800784221795
+    "belet_weyne": 1108.9948414364385,
+    "bulo_burti": 1109.3185922369203,
+    "jowhar": 1159.2677713186442
    },
    "readiness": {
-    "belet_weyne": 956.6003512131074,
-    "bulo_burti": 967.8788458961216,
-    "jowhar": 978.3174011840774
+    "belet_weyne": 988.9944412845817,
+    "bulo_burti": 1000.5855829473131,
+    "jowhar": 1012.9958212815347
    }
   }
  },
@@ -1016,7 +1016,7 @@
   },
   "google": {
    "bardheere": {
-    "issued": "2026-09-17T23:42Z",
+    "issued": "2026-09-18T11:41Z",
     "dates": [
      "2026-09-16",
      "2026-09-17",
@@ -1028,14 +1028,14 @@
      "2026-09-23"
     ],
     "leads": [
+     -2,
      -1,
      0,
      1,
      2,
      3,
      4,
-     5,
-     6
+     5
     ],
     "value": [
      37.8,
@@ -1069,7 +1069,7 @@
     ]
    },
    "belet_weyne": {
-    "issued": "2026-09-18T00:52Z",
+    "issued": "2026-09-18T12:54Z",
     "dates": [
      "2026-09-16",
      "2026-09-17",
@@ -1122,7 +1122,7 @@
     ]
    },
    "bualle": {
-    "issued": "2026-09-18T00:15Z",
+    "issued": "2026-09-18T12:15Z",
     "dates": [
      "2026-09-16",
      "2026-09-17",
@@ -1175,7 +1175,7 @@
     ]
    },
    "bulo_burti": {
-    "issued": "2026-09-17T23:53Z",
+    "issued": "2026-09-18T11:53Z",
     "dates": [
      "2026-09-16",
      "2026-09-17",
@@ -1187,14 +1187,14 @@
      "2026-09-23"
     ],
     "leads": [
+     -2,
      -1,
      0,
      1,
      2,
      3,
      4,
-     5,
-     6
+     5
     ],
     "value": [
      44.1,
@@ -1228,7 +1228,7 @@
     ]
    },
    "dollow": {
-    "issued": "2026-09-18T00:29Z",
+    "issued": "2026-09-18T12:27Z",
     "dates": [
      "2026-09-16",
      "2026-09-17",
@@ -1281,7 +1281,7 @@
     ]
    },
    "jowhar": {
-    "issued": "2026-09-18T00:42Z",
+    "issued": "2026-09-18T12:45Z",
     "dates": [
      "2026-09-16",
      "2026-09-17",
@@ -1334,7 +1334,7 @@
     ]
    },
    "luuq": {
-    "issued": "2026-09-18T00:10Z",
+    "issued": "2026-09-18T12:10Z",
     "dates": [
      "2026-09-16",
      "2026-09-17",
@@ -1424,5 +1424,5 @@
    "deyr": "Deyr (window September to January)"
   }
  },
- "swalim_note": "The readiness trigger is also reached on a SWALIM moderate flood risk alert for either river. SWALIM bulletins are not read automatically."
+ "swalim_note": "The framework also allows the readiness trigger to be reached on a SWALIM moderate flood risk alert for either river. Bulletins are not read by this pipeline."
 }
