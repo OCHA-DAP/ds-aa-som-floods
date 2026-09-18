@@ -6,7 +6,8 @@ import pandas as pd
 import somlib as L
 
 WINDOWS = [("juba", "deyr"), ("shabelle", "deyr"), ("juba", "gu"), ("shabelle", "gu")]
-RULE = {("juba", "deyr"): (4, 3), ("shabelle", "deyr"): (4, 2), ("juba", "gu"): (5, 3), ("shabelle", "gu"): (6, 2)}
+from src.constants import TRIGGER_CONFIG as _TC
+RULE = {k: (v["rp"], v["n_req"]) for k, v in _TC.items()}
 CAL = {"deyr": "glofas_v5", "gu": "google_grrr"}
 FC = {"deyr": "glofas_v4", "gu": "google_grrr"}
 SPAN = set(range(1999, 2024))
