@@ -7,7 +7,7 @@ import re
 from pathlib import Path
 
 S = Path(__file__).parent
-page = S / "wt-trigger/pages/trigger-single-model/index.html"
+page = S.parents[1] / "pages/trigger-single-model/index.html"
 h = page.read_text(encoding="utf-8")
 lead = json.load(open(S / "floodscan_lead.json"))
 RP = json.load(open(S / "floodscan_rank.json"))["deyr"].get("rp", 5)

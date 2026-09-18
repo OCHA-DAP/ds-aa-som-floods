@@ -10,7 +10,7 @@
   "swalim_band": "on or after onset",
   "trigger_band": "action window",
   "v4_band": null,
-  "note": "onset taken as the 1-in-5 date; 1-in-3 date not in the record"
+  "note": "the second gauge crossed 1-in-3 and 1-in-5 on the same day"
  },
  {
   "season": "Deyr 2006",
@@ -44,11 +44,11 @@
   "onset": "2014-10-20",
   "severe": "2014-10-29",
   "swalim_lead": 5,
-  "trigger_lead": 4,
-  "v4_lead": 13,
+  "trigger_lead": 3,
+  "v4_lead": 8,
   "swalim_band": "action window",
   "trigger_band": "action window",
-  "v4_band": "earlier than readiness",
+  "v4_band": "readiness window",
   "note": null
  },
  {
@@ -57,7 +57,7 @@
   "onset": "2019-10-14",
   "severe": "2019-10-22",
   "swalim_lead": -8,
-  "trigger_lead": 3,
+  "trigger_lead": 1,
   "v4_lead": 12,
   "swalim_band": "on or after onset",
   "trigger_band": "action window",
@@ -70,10 +70,10 @@
   "onset": "2020-10-01",
   "severe": "2020-10-06",
   "swalim_lead": null,
-  "trigger_lead": -9,
+  "trigger_lead": null,
   "v4_lead": -1,
   "swalim_band": null,
-  "trigger_band": "on or after onset",
+  "trigger_band": null,
   "v4_band": "on or after onset",
   "note": "SWALIM's bulletin was for the September flood"
  },
@@ -96,7 +96,7 @@
   "onset": "2023-11-06",
   "severe": "2023-11-19",
   "swalim_lead": 16,
-  "trigger_lead": -3,
+  "trigger_lead": -4,
   "v4_lead": null,
   "swalim_band": "earlier than readiness",
   "trigger_band": "on or after onset",

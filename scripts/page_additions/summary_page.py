@@ -233,9 +233,11 @@ assert track[("juba", "gu")]["google_grrr"] > track[("juba", "gu")]["glofas_v5"]
 assert abs(track[("shabelle", "gu")]["google_grrr"] - track[("shabelle", "gu")]["glofas_v5"]) <= 0.05, "prose says the two are level on the Shabelle in Gu"
 lead_band = json.load(open(S / "lead_band_design.json"))
 FADE = {int(k_): v for k_, v in lead_band["fade_share_of_day1"].items()}
-BAND13 = {k_: len(v) for k_, v in lead_band["bands_to_2013"].items()}
+BAND = {k_: (v["n"], v["severe"]) for k_, v in lead_band["bands"].items()}
+BAND_SPAN = lead_band["span"]; BAND_SEVERE = len(lead_band["severe"])
+assert BAND_SPAN == [2003, 2023] and lead_band["fade_years"] == [2003, 2023], (BAND_SPAN, lead_band["fade_years"])
 assert 0.85 <= FADE[7] <= 0.92 and 0.68 <= FADE[12] <= 0.78, FADE
-assert BAND13["1-7"] > BAND13["8-12"], BAND13
+assert BAND["1-7"][0] > BAND["8-12"][0] and BAND["1-7"][1] > BAND["8-12"][1], BAND
 _iss4 = L.reforecast("glofas_v4").issued_time.drop_duplicates(); GLOFAS_ISSUES = int(_iss4.groupby(_iss4.dt.year).size().median())
 _issg = L.reforecast("google_grrr").issued_time.drop_duplicates(); GOOGLE_ISSUES = int(_issg.groupby(_issg.dt.year).size().median())
 assert 100 <= GLOFAS_ISSUES <= 110 and GOOGLE_ISSUES >= 360, (GLOFAS_ISSUES, GOOGLE_ISSUES)
@@ -410,7 +412,7 @@ add(table(["Window", "Readiness rule, GloFAS forecast", f"Years reached, {min(RS
           [[c(wname(r, s)), c(f"{RULE[(r, s)][1]} of {4 if r == 'juba' else 3} gauges forecast over their own 1-in-{min(RULE[(r, s)][0], READINESS_RP_CAP)} level on the same day, {READINESS_LEADS[0]} to {READINESS_LEADS[1]} days ahead"), c(yl(ready_by_window[(r, s)]) if ready_by_window[(r, s)] else "none")] for r, s in WINDOWS]))
 add(table(["Readiness, GloFAS forecast", "Readiness, GloFAS forecast or SWALIM alert", "Action"], [[c(rate_ready), c(rate_ready_sw), c(rate_env)]]))
 add(f"<p class=\"note\">Return periods of the trigger, Weibull (years + 1) over activations. Action: {n_act} activations in 25 years, 1999 to 2023. Readiness on the GloFAS forecast: {len(ready_years)} activations in the {len(RSPAN)} years of forecast archive at leads {READINESS_LEADS[0]} to {READINESS_LEADS[1]}, {min(RSPAN)} to {max(RSPAN)} ({yl(sorted(ready_years))}). Readiness on either route: SWALIM published a moderate or higher flood risk statement in {len(swalim_years)} of the {len(SW_SPAN)} years {min(SW_SPAN)} to {max(SW_SPAN)} that the bulletin archive covers, and the GloFAS forecast adds {yl(sorted(ready_sw_years - swalim_years)) if ready_sw_years - swalim_years else 'no year'}, so readiness is reached in {len(ready_sw_years)} of those {len(SW_SPAN)} years. Neither route reaches readiness in {yl(sorted(SW_SPAN - ready_sw_years))}; no SWALIM bulletin was located for those years.</p>")
-add(f"<p><b>Why action stops at 7 days.</b> Google Flood Hub, the Gu source, forecasts 7 days ahead and no further. GloFAS forecasts run longer, but the ensemble's high flows are lower at longer lead times. By day 7 they are about {round((1 - FADE[7]) * 100):d} per cent below the day-1 forecast, and by day 12 about {round((1 - FADE[12]) * 100):d} per cent below. Over the years both GloFAS archives cover, the same rule activated {BAND13['1-7']} times at 1 to 7 days and {'once' if BAND13['8-12'] == 1 else str(BAND13['8-12']) + ' times'} at 8 to 12 days. Days 8 to 12 are therefore used for readiness rather than action.</p>")
+add(f"<p><b>Why action stops at 7 days.</b> Google Flood Hub, the Gu source, forecasts 7 days ahead and no further. GloFAS forecasts run longer, but the ensemble's high flows are lower at longer lead times. By day 7 they are about {round((1 - FADE[7]) * 100):d} per cent below the day-1 forecast, and by day 12 about {round((1 - FADE[12]) * 100):d} per cent below. On the GloFAS v4 reforecast run on all four windows over the {BAND_SPAN[1] - BAND_SPAN[0] + 1} years its archive covers at both bands, {BAND_SPAN[0]} to {BAND_SPAN[1]}, the rule activated in {BAND['1-7'][0]} years at 1 to 7 days and in {BAND['8-12'][0]} years at 8 to 12 days; it caught {BAND['1-7'][1]} of the {BAND_SEVERE} severe years at 1 to 7 days and {BAND['8-12'][1]} at 8 to 12 days. Days 8 to 12 are used for readiness rather than action.</p>")
 
 add("<h2>What counts as a flood</h2><p>The trigger is scored against the SWALIM gauge record. A river has a flood season when two of its gauges reach their own 1-in-3 level, and a severe season when two reach their 1-in-5 level. Each gauge's levels are fitted on its own record from 2000 to 2023.</p>")
 gap = {}
@@ -493,8 +495,8 @@ D.rows.slice().reverse().forEach(function(r){
   var cells=["<td><b>"+r.year+"</b></td>"];
   groups.forEach(function(g){
     var w=r.basins[g[0]][g[1]];var m=D.meta.windows[g[0]+"_"+g[1]];
-    if(w.adopted)cells.push('<td class="gl" style="background:rgba(179,64,54,.30)" title="trigger activates: '+w.n+" of "+m.pool+' pairs over threshold (requires '+m.n_req+')"><b style="color:#7A241C">'+w.n+"</b></td>");
-    else cells.push('<td class="gl"'+(w.n?' title="'+w.n+" of "+m.pool+' pairs over threshold"':"")+">"+(w.n?w.n:'<span style="color:#c9cfd6">0</span>')+"</td>");
+    if(w.adopted)cells.push('<td class="gl" style="background:rgba(179,64,54,.30)" title="trigger activates: '+w.n+" of "+m.pool+' points over their thresholds (requires '+m.n_req+')"><b style="color:#7A241C">'+w.n+"</b></td>");
+    else cells.push('<td class="gl"'+(w.n?' title="'+w.n+" of "+m.pool+' points over their thresholds"':"")+">"+(w.n?w.n:'<span style="color:#c9cfd6">0</span>')+"</td>");
     if(w.bench==="severe")cells.push('<td style="background:rgba(179,64,54,.14)" title="two of the river&#39;s gauges over their own 1-in-5 level"><span style="color:#B34036;font-weight:700">5yr</span></td>');
     else if(w.bench==="moderate")cells.push('<td style="background:rgba(244,169,59,.18)" title="two of the river&#39;s gauges over their own 1-in-3 level"><span style="color:#B8860B;font-weight:500">3yr</span></td>');
     else cells.push('<td style="color:#c9cfd6"></td>');

@@ -5,9 +5,12 @@ READINESS_RULES): on any single forecast valid day, at least n_req of the
 river's points are at or above their own return-period threshold, reading
 the ensemble median for GloFAS and the deterministic value for Google.
 Action reads the window's source at leads 1-7; readiness reads GloFAS at
-leads 8-12 with the readiness thresholds. Every forecast valid day inside the
-window's open months counts (config.MONITORING_OPEN_MONTHS: Deyr September
-to January, Gu February to June), so monitoring for Deyr starts in September.
+leads 8-12 against the same reanalysis thresholds at the capped return period.
+Every forecast valid day inside the window's open months counts
+(config.MONITORING_OPEN_MONTHS: Deyr September to January, Gu February to
+June), so monitoring for Deyr starts in September. The thresholds themselves
+are fitted on the three season months only (src.constants.SEASONS); the extra
+months are a surveillance buffer.
 
 The result is a plain dict of scalars, lists and dicts so the same object
 feeds the email template, the chart header and status.json; the status page

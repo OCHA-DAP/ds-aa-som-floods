@@ -53,6 +53,6 @@ ax.legend(handles=[Line2D([], [], marker="o", ls="none", color=C_G, ms=8, label=
                    Line2D([], [], marker="x", ls="none", color="#6b7280", mew=1.6, label="never (shown at the left edge)")],
           loc="lower left", frameon=False, ncol=2, bbox_to_anchor=(0, 1.0), fontsize=8.4)
 fig.tight_layout()
-out = S / "wt-trigger/pages/trigger-single-model/figs/floodscan_timeline.png"
+out = S.parents[1] / "pages/trigger-single-model/figs/floodscan_timeline.png"
 fig.savefig(out, dpi=150, bbox_inches="tight", pad_inches=0.12); plt.close(fig)
 print("wrote", out, len(lead), "rows")

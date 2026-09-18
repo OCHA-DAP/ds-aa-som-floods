@@ -135,7 +135,7 @@ def fig_thresholds(ctx, figdir):
                         zorder=3)
         for season, months in SEASONS.items():
             ss = s[s.index.month.isin(months)]
-            ss = ss[ss.index.year >= 2000]
+            ss = ss[(ss.index.year >= 2000) & (ss.index.year <= ctx["Y1"])]  # fit closed at Y1
             am = ss.groupby(ss.index.year).max().dropna()
             rp3 = weibull_level(am.values, 3)
             if not np.isnan(rp3):
@@ -167,7 +167,7 @@ def _season_rows(ctx):
         s = lv[lv.station == st].set_index("date")["level_m"].sort_index()
         for season, months in SEASONS.items():
             ss = s[s.index.month.isin(months)]
-            modern = ss[ss.index.year >= 2000]
+            modern = ss[(ss.index.year >= 2000) & (ss.index.year <= ctx["Y1"])]  # fit closed at Y1
             am = modern.groupby(modern.index.year).max().dropna()
             out.append((river, st, season, weibull_level(am.values, 3), ss))
     return out

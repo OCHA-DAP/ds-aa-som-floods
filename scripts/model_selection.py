@@ -49,18 +49,23 @@ from src.constants import (  # noqa: E402
 )
 from src.utils import weibull_threshold  # noqa: E402
 
+sys.path.insert(0, str(REPO / "scripts"))
+import envelope_search as es  # noqa: E402  the two-gauge benchmark, as every page uses
+
 PREFIX, STAGE = "ds-aa-som-floods/processed", "dev"
 MODELS = ["google_grrr", "glofas_v4", "glofas_v5", "geoglows"]
 # No model is excluded for want of a forecast archive (directive 2026-08-27).
-# GloFAS runs operationally as v5, so v5 reanalysis is the right basis for its
-# thresholds and the v4 reforecast supplies the lead-time evidence. What each
-# choice does carry is a note on where its thresholds come from and what can
-# be verified at lead time.
+# The Deyr windows were designed on the v5 reanalysis; the operational GloFAS
+# forecast is v4 (checked 2026-09-14, v5 pre-operational), so the live pipeline
+# refits the levels on v4 (src/monitoring/config.py) and the v4 reforecast
+# supplies the lead-time evidence. What each choice does carry is a note on
+# where its thresholds come from and what can be verified at lead time.
 NOTES = {
-    "glofas_v5": "thresholds from v5 reanalysis, operational forecast is v5, "
-                 "lead-time evidence from the v4 reforecast",
-    "glofas_v4": "thresholds and lead-time evidence both from v4, which is no "
-                 "longer the operational version",
+    "glofas_v5": "thresholds from v5 reanalysis; the operational forecast is v4 "
+                 "until v5 goes live, so live levels are refit on v4; lead-time "
+                 "evidence from the v4 reforecast",
+    "glofas_v4": "thresholds and lead-time evidence both from v4, the version "
+                 "that runs operationally",
     "google_grrr": "thresholds from the retrospective, 2016-2023 reforecast, "
                    "7-day horizon",
     "geoglows": "forecasts run below its own retrospective, so thresholds must "
@@ -303,11 +308,9 @@ def main():
                    ignore_index=True)
     dd["date"] = pd.to_datetime(dd["date"])
 
-    any_flood, severe = set(), set()
-    for river, season in WINDOWS:
-        af, sv = benchmark_years(bench, river, season)
-        any_flood |= af
-        severe |= sv
+    # two-gauge benchmark, levels fitted 2000-2023 (envelope_search), not the
+    # single reference-gauge table from notebook 05
+    any_flood, severe = es.benchmark_years_from_gauges(lv)
 
     print("building single-model candidates per window ...")
     cands = {}

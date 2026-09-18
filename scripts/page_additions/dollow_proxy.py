@@ -2,8 +2,11 @@
 discharge downloaded from the public GRRR store, compared with Dollow's own series (magnitude and
 day-to-day correlation over Gu). Writes dollow_proxy.csv."""
 import os, sys
+from pathlib import Path
 os.environ.setdefault("GRPC_VERBOSITY", "NONE")
-sys.path.insert(0, r"C:\Users\pauni\Desktop\Work\OCHA\GitHub\ds-aa-som-floods")
+REPO = Path(__file__).resolve().parents[2]
+DATA_REPO = Path(os.environ.get("SOM_DATA_REPO", REPO))   # the checkout that holds data/ (see somlib)
+sys.path.insert(0, str(REPO))
 import pandas as pd
 from src.datasources import grrr
 
@@ -11,7 +14,7 @@ cand = pd.read_csv("dollow_candidates.csv")
 ids = [g for g in cand.gauge_id if g != "hybas_1121038740"][:14]
 print("downloading", len(ids), "candidate gauges from the GRRR reanalysis store", flush=True)
 df = grrr.download_reanalysis(ids)                       # date x gauge_id
-dollow = pd.read_parquet(r"C:\Users\pauni\Desktop\Work\OCHA\GitHub\ds-aa-som-floods\data\google\reanalysis_dollow.parquet")
+dollow = pd.read_parquet(DATA_REPO / "data" / "google" / "reanalysis_dollow.parquet")
 dcol = [c for c in dollow.columns if "discharge" in c.lower() or "value" in c.lower()]
 d = dollow.set_index(pd.to_datetime(dollow["date"]))[dcol[0]] if "date" in dollow.columns else dollow.iloc[:, 0]
 d = d[(d.index.year >= 1999) & (d.index.year <= 2023)]

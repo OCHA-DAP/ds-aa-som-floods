@@ -10,7 +10,7 @@ from pathlib import Path
 S = Path(__file__).parent
 PAGE_DIR = Path(__file__).resolve().parents[2] / "pages" / "trigger-single-model"
 PAGE = PAGE_DIR / "index.html"
-V = "?v=202609072"
+V = "?v=202609190000"
 t = PAGE.read_text(encoding="utf-8")
 
 metrics = json.loads((S / "metrics.json").read_text(encoding="utf-8"))
@@ -128,9 +128,8 @@ skill = f"""    <h2>Skill scores beyond POD, FAR and F1</h2>
       largest area on the Shabelle in Deyr (0.99; Google 0.93, v4 0.75). Google has the
       largest on the Juba in Gu (0.95) and ties with v5 on the Shabelle in Gu (0.89). On the
       Juba in Deyr no model separates the years well (0.80 to 0.88, v4 ahead of v5). Against
-      the 1-in-3 flood years GloFAS v5 and v4 rank the Gu years better than Google (0.96 to
-      0.99 against 0.92 to 0.95); the difference is the single-station false alarms in the
-      Google Gu windows.</p>
+      the 1-in-3 flood years GloFAS v5 ranks the Gu years better than Google (0.98 and 0.96
+      against 0.95 and 0.92); v4 does so on the Juba (0.99) but not on the Shabelle (0.82).</p>
     <div class="callout warn">
       <strong>Benchmark note.</strong> These tables use the two-gauge benchmark as the repo's
       code now computes it, with gauge levels fitted on 2000 to 2023. On that record there
@@ -303,14 +302,13 @@ fallback = f"""    <h2>An observational fallback: bank full at the gauges</h2>
 """ + obs_table + f"""
     </div></details>
     <p>Where a gauge reached bank full in a benchmark flood, it did so between 9 days before
-      and 9 days after the 1-in-5 crossing: Deyr Shabelle 2006, 2019 and 2023 at 7 days
-      before, 1 day before and 3 days after; Gu Shabelle 2016, 2020 and 2023 at 9 days before
-      and twice on the day; Deyr Juba 2023 at 9 days after. In every one of those seasons
-      except Gu 2023 on the Shabelle the forecast trigger had already crossed, 2 to 19 days
-      earlier. No Juba gauge has read bank full in Gu in the record. Bank full confirms a
+      and 9 days after the 1-in-5 crossing: Deyr Shabelle 2006, 2019 and 2023 at 1 day before, 3 days after and 7 days
+      before; Gu Shabelle 2016 and 2020 on the day and Gu Shabelle 2023 at 9 days before; Deyr
+      Juba 2023 at 9 days after. In every one of those seasons except Gu 2023 on the Shabelle the
+      forecast trigger had already crossed, 2 to 12 days earlier. No Juba gauge has read bank full in Gu in the record. Bank full confirms a
       flood; it does not warn of one.</p>
     <p>Behind the adopted trigger the fallback recovers one benchmark season, Gu 2023 on the
-      Shabelle (Belet Weyne at bank full on 23 May, the day the gauges crossed 1-in-5). It
+      Shabelle (Belet Weyne at bank full on 9 May, 9 days before the gauges crossed 1-in-5 on 18 May). It
       adds three seasons the two-gauge benchmark does not call floods: Deyr 2015 and Gu 2015
       on the Shabelle, and Gu 2021 at Belet Weyne. All three had flooding. Gu 2021 is the
       flood the benchmark misses because the gauge is censored at bank full; SWALIM reported
@@ -320,13 +318,14 @@ fallback = f"""    <h2>An observational fallback: bank full at the gauges</h2>
       forecast trigger did not (Gu 2015, Deyr 2015, Gu 2021 and Gu 2023, all on the
       Shabelle), each time at or after the point where the river was already over its banks.
       In 2015 and 2021 no window activated at all, so the envelope's activation rate would
-      rise from 8 to 10 years in 25, about 1-in-2.5.</p>
+      rise from 8 to 10 years in 25, about 1-in-2.6.</p>
     <p>The high-risk level is too loose to release funds on its own. Two Juba gauges at the
       high-risk level occurs in seven Deyr seasons (2006, 2011, 2014, 2017, 2019, 2022,
-      2023), four of them without a benchmark flood. Two Shabelle gauges at the high-risk
+      2023), three of them (2011, 2019, 2022) in seasons without a two-gauge flood. Two Shabelle gauges at the high-risk
       level in Deyr matches the five severe years exactly; in Gu it adds 2005, 2010 and 2018.
       It is the level at which SWALIM's own bulletins escalate, and the SWALIM section above
-      shows that step arriving 1 to 7 days before onset in most seasons. On this record the
+      shows that step arriving 1 to 7 days before onset in six of the twelve seasons with a
+      bulletin and a gauge event. On this record the
       fallback would be: bank full at any monitored gauge releases the action funds when no
       forecast window has activated, and two gauges at the high-risk level counts as a
       readiness signal, not a release. SWALIM publishes the gauge readings daily with about

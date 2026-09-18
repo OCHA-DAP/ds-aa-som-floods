@@ -3,26 +3,27 @@
 Answers the working-group objection to Google Flood Hub in Gu. Prints, per configuration,
 the envelope activation years, severe-year coverage, activations with no 1-in-3 flood
 behind them, and the per-window activation years. Return periods and vote counts are held
-at the adopted settings in every configuration, so the comparison isolates the model.
+at the adopted settings in every configuration (TRIGGER_CONFIG, 2026-09-18: Shabelle Deyr
+1-in-5), so the comparison isolates the model.
 """
 import somlib as L
 
 CONFIGS = {
     "adopted (Google in Gu, v5 in Deyr)": {
         ("juba", "gu"): ("google_grrr", 5, 3), ("juba", "deyr"): ("glofas_v5", 4, 3),
-        ("shabelle", "gu"): ("google_grrr", 6, 2), ("shabelle", "deyr"): ("glofas_v5", 4, 2)},
+        ("shabelle", "gu"): ("google_grrr", 6, 2), ("shabelle", "deyr"): ("glofas_v5", 5, 2)},
     "no Google: GEOGloWS on Juba Gu, v5 elsewhere": {
         ("juba", "gu"): ("geoglows", 5, 3), ("juba", "deyr"): ("glofas_v5", 4, 3),
-        ("shabelle", "gu"): ("glofas_v5", 6, 2), ("shabelle", "deyr"): ("glofas_v5", 4, 2)},
+        ("shabelle", "gu"): ("glofas_v5", 6, 2), ("shabelle", "deyr"): ("glofas_v5", 5, 2)},
     "GloFAS v5 in Gu too": {
         ("juba", "gu"): ("glofas_v5", 5, 3), ("juba", "deyr"): ("glofas_v5", 4, 3),
-        ("shabelle", "gu"): ("glofas_v5", 6, 2), ("shabelle", "deyr"): ("glofas_v5", 4, 2)},
+        ("shabelle", "gu"): ("glofas_v5", 6, 2), ("shabelle", "deyr"): ("glofas_v5", 5, 2)},
     "GloFAS v4 in Gu (what runs live)": {
         ("juba", "gu"): ("glofas_v4", 5, 3), ("juba", "deyr"): ("glofas_v5", 4, 3),
-        ("shabelle", "gu"): ("glofas_v4", 6, 2), ("shabelle", "deyr"): ("glofas_v5", 4, 2)},
+        ("shabelle", "gu"): ("glofas_v4", 6, 2), ("shabelle", "deyr"): ("glofas_v5", 5, 2)},
     "GloFAS v4 everywhere": {
         ("juba", "gu"): ("glofas_v4", 5, 3), ("juba", "deyr"): ("glofas_v4", 4, 3),
-        ("shabelle", "gu"): ("glofas_v4", 6, 2), ("shabelle", "deyr"): ("glofas_v4", 4, 2)},
+        ("shabelle", "gu"): ("glofas_v4", 6, 2), ("shabelle", "deyr"): ("glofas_v4", 5, 2)},
 }
 
 sev_all, flood_all = set(), set()

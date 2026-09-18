@@ -1,9 +1,15 @@
 """Timeline of who flagged first, SWALIM or the window's model, per river-season.
 Dates are the dates the information was available: SWALIM bulletin issue dates
-(first flag, then the ladder steps), the first day the window's model crossed on its
-reanalysis (GloFAS v5 in Deyr, Google in Gu), the GloFAS v4 forecast's first issue
-with enough points over, and the gauges' two-gauge 1-in-3 / 1-in-5 crossings."""
+(first flag, then the ladder steps, hand-read from the bulletin archive), the first
+day the window's model crossed on its reanalysis (GloFAS v5 in Deyr, Google in Gu),
+the GloFAS v4 forecast's first issue with enough points over at leads 1-7, and the
+gauges' two-gauge 1-in-3 / 1-in-5 crossings. The model, forecast and gauge dates are
+computed here from somlib (TRIGGER_CONFIG rules, levels fitted on the season months
+2000-2023 for gauges and TRIGGER_YEARS for models); Gu 2024's v4 issue comes from
+gu2024_issue.json (operational forecasts). Writes figs/k_swalim_timeline.png and
+swalim_timeline.json, read by swalim_window.py and swalim_section.py."""
 import json
+import sys
 from datetime import date
 from pathlib import Path
 
@@ -13,8 +19,13 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
-S = Path(__file__).parent
-OUT = S / "wt-trigger/pages/trigger-single-model/figs/k_swalim_timeline.png"
+S = Path(__file__).resolve().parent
+sys.path.insert(0, str(S))
+import somlib as L  # noqa: E402
+from src.constants import TRIGGER_CONFIG  # noqa: E402
+
+OUT = S.parents[1] / "pages/trigger-single-model/figs/k_swalim_timeline.png"
+G24 = json.loads((S / "gu2024_issue.json").read_text(encoding="utf-8"))
 
 
 def D(s):
@@ -25,26 +36,52 @@ def fmt(d):
     return d.strftime("%d %b").lstrip("0")
 
 
-# season, river, SWALIM first flag, moderate, high, bank full | model reanalysis crossing | v4 issue | gauge 1-in-3, 1-in-5
-ROWS = [
- ("Deyr 2006", "Juba",     "2006-10-31", None,         "2006-10-31", "2006-10-31", "2006-10-29", None,         None,         "2006-10-30"),
- ("Deyr 2006", "Shabelle", "2006-10-31", None,         "2006-10-31", "2006-10-31", "2006-11-02", None,         "2006-11-02", "2006-11-18"),
- ("Deyr 2014", "Juba",     "2014-10-15", "2014-10-15", "2014-10-21", "2014-10-28", None,         "2014-10-23", "2014-10-22", "2014-10-24"),
- ("Deyr 2014", "Shabelle", "2014-10-15", "2014-10-15", "2014-10-20", "2014-10-24", "2014-10-16", "2014-10-07", "2014-10-20", "2014-10-29"),
- ("Deyr 2019", "Juba",     "2019-10-22", None,         "2019-10-22", "2019-10-22", None,         None,         None,         None),
- ("Deyr 2019", "Shabelle", "2019-10-22", None,         "2019-10-22", "2019-10-22", "2019-10-11", "2019-10-02", "2019-10-14", "2019-10-24"),
- ("Deyr 2020", "Shabelle", "2020-09-08", None,         "2020-09-08", "2020-09-08", "2020-10-10", "2020-10-02", "2020-10-01", "2020-10-06"),
- ("Deyr 2023", "Juba",     "2023-10-20", "2023-10-20", "2023-10-23", "2023-11-13", "2023-10-29", "2023-10-21", "2023-10-25", "2023-10-25"),
- ("Deyr 2023", "Shabelle", "2023-10-21", "2023-10-29", "2023-11-02", "2023-11-13", "2023-11-09", None,         "2023-11-07", "2023-11-20"),
- ("Gu 2016",   "Shabelle", None,         None,         None,         None,         "2016-05-12", "2016-05-08", "2016-05-11", "2016-05-18"),
- ("Gu 2020",   "Juba",     "2020-04-27", None,         "2020-04-27", "2020-04-27", "2020-04-29", "2020-05-01", "2020-04-22", "2020-05-12"),
- ("Gu 2020",   "Shabelle", "2020-04-27", "2020-05-04", "2020-05-04", "2020-05-18", "2020-04-30", None,         "2020-05-06", "2020-05-12"),
- ("Gu 2021",   "Juba",     "2021-05-10", "2021-05-10", None,         None,         None,         None,         None,         None),
- ("Gu 2021",   "Shabelle", "2021-05-10", "2021-05-10", "2021-05-19", "2021-05-25", None,         None,         None,         None),
- ("Gu 2023",   "Shabelle", "2023-05-08", None,         "2023-05-08", None,         None,         None,         "2023-04-17", "2023-05-23"),
- ("Gu 2024",   "Juba",     "2024-05-09", "2024-05-09", "2024-05-09", None,         "n/a",        "2024-05-05", "2024-05-10", None),
- ("Gu 2024",   "Shabelle", "2024-04-19", "2024-05-01", "2024-04-19", "2024-05-22", "n/a",        None,         "2024-05-08", "2024-05-20"),
+# season, river, SWALIM first flag, moderate, high, bank full (bulletin issue dates, hand-read)
+SWALIM = [
+ ("Deyr 2006", "Juba", "2006-10-31", None,         "2006-10-31", "2006-10-31"),
+ ("Deyr 2006", "Shabelle", "2006-10-31", None,         "2006-10-31", "2006-10-31"),
+ ("Deyr 2014", "Juba", "2014-10-15", "2014-10-15", "2014-10-21", "2014-10-28"),
+ ("Deyr 2014", "Shabelle", "2014-10-15", "2014-10-15", "2014-10-20", "2014-10-24"),
+ ("Deyr 2019", "Juba", "2019-10-22", None,         "2019-10-22", "2019-10-22"),
+ ("Deyr 2019", "Shabelle", "2019-10-22", None,         "2019-10-22", "2019-10-22"),
+ ("Deyr 2020", "Shabelle", "2020-09-08", None,         "2020-09-08", "2020-09-08"),
+ ("Deyr 2023", "Juba", "2023-10-20", "2023-10-20", "2023-10-23", "2023-11-13"),
+ ("Deyr 2023", "Shabelle", "2023-10-21", "2023-10-29", "2023-11-02", "2023-11-13"),
+ ("Gu 2016", "Shabelle", None,         None,         None,         None),
+ ("Gu 2020", "Juba", "2020-04-27", None,         "2020-04-27", "2020-04-27"),
+ ("Gu 2020", "Shabelle", "2020-04-27", "2020-05-04", "2020-05-04", "2020-05-18"),
+ ("Gu 2021", "Juba", "2021-05-10", "2021-05-10", None,         None),
+ ("Gu 2021", "Shabelle", "2021-05-10", "2021-05-10", "2021-05-19", "2021-05-25"),
+ ("Gu 2023", "Shabelle", "2023-05-08", None,         "2023-05-08", None),
+ ("Gu 2024", "Juba", "2024-05-09", "2024-05-09", "2024-05-09", None),
+ ("Gu 2024", "Shabelle", "2024-04-19", "2024-05-01", "2024-04-19", "2024-05-22"),
 ]
+
+
+def iso(d):
+    return d.date().isoformat() if d is not None else None
+
+
+def computed(season, river):
+    """(model reanalysis first day, v4 forecast first issue, gauge 1-in-3, gauge 1-in-5) as ISO dates."""
+    name, year = season.split(); year = int(year); r, s = river.lower(), name.lower()
+    cfg = TRIGGER_CONFIG[(r, s)]; rp, n = cfg["rp"], cfg["n_req"]
+    span = range(2000, 2025)
+    g3, g5 = L.gauge_crossings(r, s, 3, span=span).get(year), L.gauge_crossings(r, s, 5, span=span).get(year)
+    if year > L.Y1:                                        # beyond the model records
+        v4 = G24[r]["v4_fc_issue"][0]
+        v4 = date(year, *__import__("datetime").datetime.strptime(v4, "%d %b").timetuple()[1:3]).isoformat() if v4 else None
+        return "n/a", v4, iso(g3), iso(g5)
+    md = L.first_crossing_dates(cfg["source"], r, s, rp, n, span=span).get(year)
+    v4 = L.first_issue_dates("glofas_v4", r, s, rp, n, span=span).get(year)
+    return iso(md), iso(v4[0]) if v4 else None, iso(g3), iso(g5)
+
+
+ROWS = []
+for season, river, first, mod, high, bank in SWALIM:
+    ROWS.append((season, river, first, mod, high, bank, *computed(season, river)))
+    print(f"{season:10s}{river:9s} model {ROWS[-1][6]}  v4 issue {ROWS[-1][7]}  gauge 1-in-3 {ROWS[-1][8]}  1-in-5 {ROWS[-1][9]}")
+
 MODEL = {"Deyr": "GloFAS v5", "Gu": "Google"}          # the window's model, on reanalysis
 C_SW, C_SWD, C_G, C_V5, C_V4, C_GAUGE = "#d97706", "#92400e", "#1d4ed8", "#0f766e", "#6b7280", "#9ca3af"
 C_MODEL = {"Deyr": C_V5, "Gu": C_G}

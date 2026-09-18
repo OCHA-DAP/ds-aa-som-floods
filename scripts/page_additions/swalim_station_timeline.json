@@ -1,0 +1,1221 @@
+[
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2006,
+  "station": "dollow",
+  "rp": 4,
+  "swalim": {},
+  "gauge3": null,
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2006,
+  "station": "luuq",
+  "rp": 4,
+  "swalim": {
+   "1": [
+    "2006-10-31",
+    null,
+    false
+   ],
+   "2": [
+    "2006-10-31",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2006-10-26",
+  "gauge5": "2006-10-26",
+  "google": "2006-10-31",
+  "glofas_v5": "2006-10-28",
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2006,
+  "station": "bardheere",
+  "rp": 4,
+  "swalim": {},
+  "gauge3": "2006-10-30",
+  "gauge5": "2006-10-30",
+  "google": "2006-11-01",
+  "glofas_v5": "2006-10-28",
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2006,
+  "station": "bualle",
+  "rp": 4,
+  "swalim": {},
+  "gauge3": null,
+  "gauge5": null,
+  "google": "2006-11-03",
+  "glofas_v5": "2006-10-29",
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2014,
+  "station": "dollow",
+  "rp": 4,
+  "swalim": {},
+  "gauge3": null,
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": "2014-10-23"
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2014,
+  "station": "luuq",
+  "rp": 4,
+  "swalim": {
+   "1": [
+    "2014-10-24",
+    6.0,
+    true
+   ],
+   "2": [
+    "2014-10-24",
+    6.0,
+    true
+   ]
+  },
+  "gauge3": "2014-10-12",
+  "gauge5": "2014-10-24",
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": "2014-10-23"
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2014,
+  "station": "bardheere",
+  "rp": 4,
+  "swalim": {},
+  "gauge3": "2014-10-22",
+  "gauge5": "2014-10-24",
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": "2014-10-23"
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2014,
+  "station": "bualle",
+  "rp": 4,
+  "swalim": {},
+  "gauge3": "2014-10-27",
+  "gauge5": "2014-10-28",
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": "2014-10-23"
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2019,
+  "station": "dollow",
+  "rp": 4,
+  "swalim": {},
+  "gauge3": null,
+  "gauge5": null,
+  "google": "2019-10-07",
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2019,
+  "station": "luuq",
+  "rp": 4,
+  "swalim": {
+   "1": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "2": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "3": [
+    "2019-10-22",
+    null,
+    false
+   ]
+  },
+  "gauge3": null,
+  "gauge5": null,
+  "google": "2019-10-16",
+  "glofas_v5": "2019-10-14",
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2019,
+  "station": "bardheere",
+  "rp": 4,
+  "swalim": {
+   "1": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "2": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "3": [
+    "2019-10-22",
+    null,
+    false
+   ]
+  },
+  "gauge3": null,
+  "gauge5": null,
+  "google": "2019-10-20",
+  "glofas_v5": "2019-10-15",
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2019,
+  "station": "bualle",
+  "rp": 4,
+  "swalim": {
+   "1": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "2": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "3": [
+    "2019-10-22",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2019-10-24",
+  "gauge5": null,
+  "google": "2019-10-22",
+  "glofas_v5": "2019-10-17",
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2023,
+  "station": "dollow",
+  "rp": 4,
+  "swalim": {
+   "1": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "2": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "3": [
+    "2023-11-13",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2023-10-28",
+  "gauge5": "2023-10-28",
+  "google": "2023-10-28",
+  "glofas_v5": "2023-10-19",
+  "v4_issue": "2023-10-21"
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2023,
+  "station": "luuq",
+  "rp": 4,
+  "swalim": {
+   "1": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "2": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "3": [
+    "2023-10-29",
+    7.1,
+    true
+   ]
+  },
+  "gauge3": "2023-10-05",
+  "gauge5": "2023-10-21",
+  "google": "2023-10-30",
+  "glofas_v5": "2023-10-23",
+  "v4_issue": "2023-10-21"
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2023,
+  "station": "bardheere",
+  "rp": 4,
+  "swalim": {
+   "1": [
+    "2023-10-20",
+    null,
+    false
+   ],
+   "2": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "3": [
+    "2023-11-13",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2023-10-30",
+  "gauge5": "2023-10-30",
+  "google": "2023-10-31",
+  "glofas_v5": "2023-10-29",
+  "v4_issue": "2023-10-21"
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2023,
+  "station": "bualle",
+  "rp": 4,
+  "swalim": {
+   "1": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "2": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "3": [
+    "2023-11-20",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2023-10-25",
+  "gauge5": "2023-10-25",
+  "google": "2023-10-31",
+  "glofas_v5": "2023-10-30",
+  "v4_issue": "2023-10-21"
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2020,
+  "station": "dollow",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2020-04-27",
+    null,
+    false
+   ],
+   "2": [
+    "2020-04-27",
+    null,
+    false
+   ],
+   "3": [
+    "2020-04-27",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2020-05-09",
+  "gauge5": "2020-05-12",
+  "google": "2020-04-26",
+  "glofas_v5": "2020-05-11",
+  "v4_issue": "2020-05-01"
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2020,
+  "station": "luuq",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2020-04-27",
+    null,
+    false
+   ],
+   "2": [
+    "2020-04-27",
+    null,
+    false
+   ],
+   "3": [
+    "2020-04-27",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2020-04-26",
+  "gauge5": "2020-05-13",
+  "google": "2020-04-30",
+  "glofas_v5": "2020-04-30",
+  "v4_issue": "2020-05-01"
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2020,
+  "station": "bardheere",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2020-04-27",
+    null,
+    false
+   ],
+   "2": [
+    "2020-04-27",
+    null,
+    false
+   ],
+   "3": [
+    "2020-04-27",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2020-04-22",
+  "gauge5": "2020-04-22",
+  "google": "2020-04-28",
+  "glofas_v5": "2020-04-27",
+  "v4_issue": "2020-05-01"
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2020,
+  "station": "bualle",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2020-05-18",
+    null,
+    false
+   ],
+   "2": [
+    "2020-05-18",
+    null,
+    false
+   ],
+   "3": [
+    "2020-05-18",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2020-04-22",
+  "gauge5": "2020-05-14",
+  "google": "2020-04-29",
+  "glofas_v5": "2020-04-29",
+  "v4_issue": "2020-05-01"
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2021,
+  "station": "dollow",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2021-05-10",
+    null,
+    false
+   ],
+   "2": [
+    "2021-05-10",
+    null,
+    false
+   ]
+  },
+  "gauge3": null,
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2021,
+  "station": "luuq",
+  "rp": 5,
+  "swalim": {},
+  "gauge3": null,
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2021,
+  "station": "bardheere",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2021-05-10",
+    null,
+    false
+   ],
+   "2": [
+    "2021-05-10",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2021-05-12",
+  "gauge5": "2021-05-12",
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2021,
+  "station": "bualle",
+  "rp": 5,
+  "swalim": {},
+  "gauge3": null,
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2024,
+  "station": "dollow",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2024-05-09",
+    4.86,
+    true
+   ]
+  },
+  "gauge3": "2024-05-10",
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2024,
+  "station": "luuq",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2024-05-09",
+    5.62,
+    true
+   ]
+  },
+  "gauge3": "2024-05-07",
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2024,
+  "station": "bardheere",
+  "rp": 5,
+  "swalim": {},
+  "gauge3": null,
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2024,
+  "station": "bualle",
+  "rp": 5,
+  "swalim": {},
+  "gauge3": null,
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2006,
+  "station": "belet_weyne",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2006-10-31",
+    null,
+    false
+   ],
+   "2": [
+    "2006-10-31",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2006-11-02",
+  "gauge5": "2006-11-05",
+  "google": "2006-10-27",
+  "glofas_v5": "2006-11-01",
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2006,
+  "station": "bulo_burti",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2006-10-31",
+    null,
+    false
+   ],
+   "2": [
+    "2006-10-31",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2006-10-03",
+  "gauge5": "2006-11-11",
+  "google": "2006-10-26",
+  "glofas_v5": "2006-11-02",
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2006,
+  "station": "jowhar",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2006-10-31",
+    null,
+    false
+   ],
+   "2": [
+    "2006-10-31",
+    null,
+    false
+   ]
+  },
+  "gauge3": null,
+  "gauge5": null,
+  "google": "2006-10-26",
+  "glofas_v5": "2006-11-04",
+  "v4_issue": "2006-10-30"
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2014,
+  "station": "belet_weyne",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2014-10-20",
+    7.0,
+    true
+   ],
+   "2": [
+    "2014-10-24",
+    7.3,
+    true
+   ]
+  },
+  "gauge3": "2014-10-20",
+  "gauge5": "2014-10-29",
+  "google": "2014-10-10",
+  "glofas_v5": "2014-10-15",
+  "v4_issue": "2014-10-12"
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2014,
+  "station": "bulo_burti",
+  "rp": 5,
+  "swalim": {},
+  "gauge3": "2014-11-03",
+  "gauge5": null,
+  "google": "2014-10-10",
+  "glofas_v5": "2014-10-17",
+  "v4_issue": "2014-10-12"
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2014,
+  "station": "jowhar",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2014-10-20",
+    null,
+    false
+   ],
+   "2": [
+    "2014-10-20",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2014-10-01",
+  "gauge5": "2014-10-01",
+  "google": "2014-10-10",
+  "glofas_v5": "2014-10-19",
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2019,
+  "station": "belet_weyne",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2019-10-22",
+    7.8,
+    true
+   ],
+   "2": [
+    "2019-10-22",
+    7.8,
+    true
+   ],
+   "3": [
+    "2019-10-25",
+    8.3,
+    true
+   ]
+  },
+  "gauge3": "2019-10-14",
+  "gauge5": "2019-10-22",
+  "google": "2019-10-09",
+  "glofas_v5": "2019-10-12",
+  "v4_issue": "2019-10-02"
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2019,
+  "station": "bulo_burti",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2019-11-07",
+    null,
+    false
+   ],
+   "2": [
+    "2019-11-07",
+    null,
+    false
+   ],
+   "3": [
+    "2019-11-07",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2019-10-24",
+  "gauge5": "2019-11-01",
+  "google": "2019-10-09",
+  "glofas_v5": "2019-10-13",
+  "v4_issue": "2019-10-02"
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2019,
+  "station": "jowhar",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "2": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "3": [
+    "2019-10-22",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2019-10-01",
+  "gauge5": "2019-10-08",
+  "google": "2019-10-09",
+  "glofas_v5": "2019-10-15",
+  "v4_issue": "2019-10-02"
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2020,
+  "station": "belet_weyne",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2020-09-08",
+    null,
+    false
+   ],
+   "2": [
+    "2020-09-08",
+    null,
+    false
+   ],
+   "3": [
+    "2020-09-08",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2020-10-01",
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": "2020-10-02"
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2020,
+  "station": "bulo_burti",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2020-09-08",
+    7.0,
+    true
+   ]
+  },
+  "gauge3": "2020-10-01",
+  "gauge5": "2020-10-01",
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": "2020-10-02"
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2020,
+  "station": "jowhar",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2020-09-16",
+    null,
+    false
+   ],
+   "2": [
+    "2020-09-16",
+    null,
+    false
+   ],
+   "3": [
+    "2020-09-16",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2020-10-01",
+  "gauge5": "2020-10-06",
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": "2020-10-02"
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2023,
+  "station": "belet_weyne",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "2": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "3": [
+    "2023-11-13",
+    8.3,
+    true
+   ]
+  },
+  "gauge3": "2023-11-04",
+  "gauge5": "2023-11-11",
+  "google": "2023-11-03",
+  "glofas_v5": "2023-11-08",
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2023,
+  "station": "bulo_burti",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2023-11-02",
+    null,
+    false
+   ],
+   "2": [
+    "2023-11-13",
+    null,
+    false
+   ],
+   "3": [
+    "2023-11-13",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2023-11-06",
+  "gauge5": "2023-11-19",
+  "google": "2023-11-01",
+  "glofas_v5": "2023-11-10",
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2023,
+  "station": "jowhar",
+  "rp": 5,
+  "swalim": {
+   "1": [
+    "2023-10-29",
+    null,
+    false
+   ],
+   "2": [
+    "2023-10-29",
+    null,
+    false
+   ],
+   "3": [
+    "2023-11-13",
+    null,
+    false
+   ]
+  },
+  "gauge3": null,
+  "gauge5": null,
+  "google": "2023-11-01",
+  "glofas_v5": "2023-11-11",
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2020,
+  "station": "belet_weyne",
+  "rp": 6,
+  "swalim": {
+   "1": [
+    "2020-05-04",
+    7.2,
+    true
+   ],
+   "2": [
+    "2020-05-11",
+    8.1,
+    true
+   ],
+   "3": [
+    "2020-05-18",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2020-05-05",
+  "gauge5": "2020-05-12",
+  "google": "2020-04-29",
+  "glofas_v5": "2020-05-01",
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2020,
+  "station": "bulo_burti",
+  "rp": 6,
+  "swalim": {},
+  "gauge3": "2020-05-20",
+  "gauge5": "2020-05-27",
+  "google": "2020-04-30",
+  "glofas_v5": "2020-05-03",
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2020,
+  "station": "jowhar",
+  "rp": 6,
+  "swalim": {
+   "1": [
+    "2020-05-04",
+    5.3,
+    true
+   ],
+   "2": [
+    "2020-05-04",
+    5.3,
+    true
+   ]
+  },
+  "gauge3": "2020-04-29",
+  "gauge5": "2020-04-30",
+  "google": "2020-04-30",
+  "glofas_v5": "2020-05-05",
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2021,
+  "station": "belet_weyne",
+  "rp": 6,
+  "swalim": {
+   "1": [
+    "2021-05-10",
+    6.5,
+    true
+   ],
+   "2": [
+    "2021-05-19",
+    7.6,
+    true
+   ]
+  },
+  "gauge3": "2021-05-18",
+  "gauge5": "2021-05-26",
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2021,
+  "station": "bulo_burti",
+  "rp": 6,
+  "swalim": {},
+  "gauge3": null,
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2021,
+  "station": "jowhar",
+  "rp": 6,
+  "swalim": {},
+  "gauge3": null,
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2023,
+  "station": "belet_weyne",
+  "rp": 6,
+  "swalim": {},
+  "gauge3": "2023-04-08",
+  "gauge5": "2023-05-09",
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2023,
+  "station": "bulo_burti",
+  "rp": 6,
+  "swalim": {
+   "1": [
+    "2023-05-08",
+    null,
+    false
+   ]
+  },
+  "gauge3": "2023-04-17",
+  "gauge5": "2023-05-18",
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2023,
+  "station": "jowhar",
+  "rp": 6,
+  "swalim": {
+   "1": [
+    "2023-05-08",
+    null,
+    false
+   ]
+  },
+  "gauge3": null,
+  "gauge5": null,
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2024,
+  "station": "belet_weyne",
+  "rp": 6,
+  "swalim": {
+   "1": [
+    "2024-05-01",
+    6.5,
+    true
+   ],
+   "2": [
+    "2024-05-09",
+    7.48,
+    true
+   ],
+   "3": [
+    "2024-05-22",
+    8.3,
+    true
+   ]
+  },
+  "gauge3": "2024-05-08",
+  "gauge5": "2024-05-20",
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2024,
+  "station": "bulo_burti",
+  "rp": 6,
+  "swalim": {
+   "1": [
+    "2024-05-22",
+    6.56,
+    true
+   ]
+  },
+  "gauge3": "2024-05-21",
+  "gauge5": "2024-05-25",
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2024,
+  "station": "jowhar",
+  "rp": 6,
+  "swalim": {
+   "1": [
+    "2024-04-19",
+    5.27,
+    true
+   ],
+   "2": [
+    "2024-04-19",
+    5.27,
+    true
+   ]
+  },
+  "gauge3": "2024-04-19",
+  "gauge5": "2024-04-20",
+  "google": null,
+  "glofas_v5": null,
+  "v4_issue": null
+ }
+]

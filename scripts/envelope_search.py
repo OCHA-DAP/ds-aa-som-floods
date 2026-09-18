@@ -10,7 +10,7 @@ against the union rather than set individually.
               years as possible (severe = two or more of the river's gauges
               recorded a 1-in-5 or rarer season)
   tie-breaks  fewer activations in years with no recorded flood, then the
-              lower vote requirement
+              higher vote requirement, then the lower station return periods
   constraint  every window needs at least two gauges to agree (no single
               gauge releases the money) and never all of them (one quiet
               gauge cannot block it); station return periods stay at or
@@ -141,17 +141,6 @@ def window_options(dd, bench):
                 opts[(rp, n)] = frozenset(set(mx[mx >= n].index) & SPAN)
         out[(river, season)] = opts
     return out
-
-
-def benchmark_years(bench):
-    """(years with any RP3 flood, years with a severe flood) across the windows."""
-    any_flood, severe = set(), set()
-    for river, season in WINDOWS:
-        b = bench[(bench.river == river) & (bench.season == season)
-                  & (bench.benchmark == f"swalim_{REFERENCE_GAUGE[river]}")]
-        any_flood |= set(b[b.flood_3yr == 1].year) & SPAN
-        severe |= set(b[b.rp >= SEVERE_RP].year) & SPAN
-    return any_flood, severe
 
 
 def evaluate(options, combo, keys, any_flood, severe):

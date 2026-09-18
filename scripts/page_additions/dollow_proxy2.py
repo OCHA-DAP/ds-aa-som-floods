@@ -2,8 +2,10 @@
 have done with each candidate standing in for the design's Dollow point. Saves the candidate
 series (dollow_candidate_series.parquet) and writes dollow_proxy2.csv."""
 import os, sys
+from pathlib import Path
 os.environ.setdefault("GRPC_VERBOSITY", "NONE")
-sys.path.insert(0, r"C:\Users\pauni\Desktop\Work\OCHA\GitHub\ds-aa-som-floods"); sys.path.insert(0, ".")
+S = Path(__file__).resolve().parent
+sys.path.insert(0, str(S.parents[1])); sys.path.insert(0, str(S))
 import pandas as pd, numpy as np
 from src.datasources import grrr
 from src.utils import weibull_threshold

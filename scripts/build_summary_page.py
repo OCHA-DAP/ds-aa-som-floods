@@ -315,7 +315,7 @@ station_scores = []
 for river, stns in TRIGGER_STATIONS.items():
     for st in stns:
         obs = lv[lv.station == st].set_index("date")["level_m"].dropna().sort_index()
-        modern = obs[obs.index.year >= 2000]
+        modern = obs[(obs.index.year >= 2000) & (obs.index.year <= Y1)]  # fit closed at Y1, as the benchmark
         am = modern.groupby(modern.index.year).max().dropna()
         base = weibull_level(am.values, BENCHMARK_RP)
         if np.isnan(base):
@@ -499,7 +499,7 @@ if fc_daily is not None:
     for river, stns in TRIGGER_STATIONS.items():
         for st in stns:
             obs = lv[lv.station == st].set_index("date")["level_m"].dropna().sort_index()
-            modern = obs[obs.index.year >= 2000]
+            modern = obs[(obs.index.year >= 2000) & (obs.index.year <= Y1)]  # fit closed at Y1
             am_o = modern.groupby(modern.index.year).max().dropna()
             base = weibull_level(am_o.values, BENCHMARK_RP)
             if np.isnan(base):

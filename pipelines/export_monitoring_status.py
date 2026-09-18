@@ -83,7 +83,7 @@ def main():
         "swalim_note": ("The framework also allows the readiness trigger to be reached on a SWALIM moderate "
                         "flood risk alert for either river. Bulletins are not read by this pipeline."),
     }
-    (OUT_DIR / "status.json").write_text(json.dumps(status, indent=1, default=str) + "\n")
+    (OUT_DIR / "status.json").write_text(json.dumps(status, indent=1, default=str) + "\n", encoding="utf-8")
     print(f"wrote {OUT_DIR / 'status.json'} for {latest}: {result['status']}; chart_stale={chart_stale}")
 
 

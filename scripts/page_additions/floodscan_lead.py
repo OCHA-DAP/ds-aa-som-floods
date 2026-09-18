@@ -1,4 +1,7 @@
-"""Does the trigger catch the inundation ahead of time? For every season the two-SWALIM-gauge rule
+"""Superseded by floodscan_season.py (both rivers together, inundation at 1-in-3), which is what the
+page shows. Kept as the per-river variant at 1-in-5.
+
+Does the trigger catch the inundation ahead of time? For every season the two-SWALIM-gauge rule
 calls a flood (the benchmark), the FloodScan inundation day (river-buffer flooded fraction over its
 own 1-in-5, where reached) against three dated records, each taken on either river:
   * SWALIM gauges: the day the river's second gauge went over its own 1-in-3 level;
@@ -6,7 +9,7 @@ own 1-in-5, where reached) against three dated records, each taken on either riv
     GloFAS v5 reanalysis in Deyr) met the action rule, n points over their thresholds on one day;
   * forecasts: the first forecast issue on which the window's source (Google in Gu, GloFAS v4 in
     Deyr) met the action rule at leads 1 to 7.
-Writes floodscan_lead.json."""
+Writes floodscan_lead_by_river.json."""
 import json
 import pandas as pd
 import somlib as L
@@ -71,7 +74,7 @@ for river, season in WINDOWS:
         f = lambda k: (rec[k + "_date"] or "never")
         g = lambda k: (f"{rec[k + '_lead']:+d} d" if rec[k + "_lead"] is not None else "-")
         print(f"{season.title() + ' ' + river.title() + ' ' + str(y):18}{(rec['inundation'] or 'below 1-in-5'):>13}{f('gauge'):>17}{g('gauge'):>6}{f('reanalysis'):>17}{g('reanalysis'):>6}{f('forecast'):>16}{g('forecast'):>6}")
-json.dump(out, open("floodscan_lead.json", "w"), indent=1)
+json.dump(out, open("floodscan_lead_by_river.json", "w"), indent=1)
 with_in = [o for o in out if o["inundation"]]
 print(f"\n{len(out)} two-gauge flood seasons with a forecast archive, {len(with_in)} with a FloodScan 1-in-5 inundation")
 for key, lab in (("gauge", "SWALIM gauges"), ("reanalysis", "reanalysis"), ("forecast", "forecasts")):

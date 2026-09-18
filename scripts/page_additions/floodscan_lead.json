@@ -27,10 +27,10 @@
   "inundation": "2014-10-30",
   "gauge_date": "2014-10-20",
   "gauge_lead": 10,
-  "reanalysis_date": "2014-10-16",
-  "reanalysis_lead": 14,
-  "forecast_date": "2014-10-07",
-  "forecast_lead": 23
+  "reanalysis_date": "2014-10-17",
+  "reanalysis_lead": 13,
+  "forecast_date": "2014-10-12",
+  "forecast_lead": 18
  },
  {
   "season": "deyr",
@@ -49,7 +49,7 @@
   "inundation": null,
   "gauge_date": "2019-10-14",
   "gauge_lead": null,
-  "reanalysis_date": "2019-10-11",
+  "reanalysis_date": "2019-10-13",
   "reanalysis_lead": null,
   "forecast_date": "2019-10-02",
   "forecast_lead": null
@@ -60,7 +60,7 @@
   "inundation": null,
   "gauge_date": "2020-10-01",
   "gauge_lead": null,
-  "reanalysis_date": "2020-10-10",
+  "reanalysis_date": null,
   "reanalysis_lead": null,
   "forecast_date": "2020-10-02",
   "forecast_lead": null
