@@ -270,7 +270,7 @@ TRIGGER_CONFIG = {
     ("juba", "gu"): {"source": "google_grrr", "rp": 5, "n_req": 3},
     ("juba", "deyr"): {"source": "glofas_v5", "rp": 4, "n_req": 3},
     ("shabelle", "gu"): {"source": "google_grrr", "rp": 6, "n_req": 2},
-    ("shabelle", "deyr"): {"source": "glofas_v5", "rp": 4, "n_req": 2},
+    ("shabelle", "deyr"): {"source": "glofas_v5", "rp": 5, "n_req": 2},
 }
 # The operative source per window, which is what the trigger, the envelope
 # search and the summary page all read.
