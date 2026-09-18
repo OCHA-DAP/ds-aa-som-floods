@@ -14,7 +14,8 @@ from src.utils import weibull_level
 
 fs = pd.read_parquet("inundation_series.parquet"); fs["date"] = pd.to_datetime(fs["date"])   # people exposed per river's AA districts (floodscan_districts.py)
 WINDOWS = [("juba", "gu"), ("juba", "deyr"), ("shabelle", "gu"), ("shabelle", "deyr")]
-RULE = {("juba", "deyr"): (4, 3), ("shabelle", "deyr"): (4, 2), ("juba", "gu"): (5, 3), ("shabelle", "gu"): (6, 2)}
+from src.constants import TRIGGER_CONFIG as _TC
+RULE = {k: (v["rp"], v["n_req"]) for k, v in _TC.items()}
 CAL = {"deyr": "glofas_v5", "gu": "google_grrr"}
 FC = {"deyr": "glofas_v4", "gu": "google_grrr"}
 ARCHIVE = {"google_grrr": (2016, 2023), "glofas_v4": (2003, 2023)}

@@ -11,7 +11,8 @@ from src.utils import weibull_level
 S = __import__("pathlib").Path(__file__).parent
 ser = pd.read_parquet(S / "inundation_series.parquet"); ser["date"] = pd.to_datetime(ser["date"])
 both = ser.groupby("date")["value"].sum().sort_index()
-RULE = {("juba", "deyr"): (4, 3), ("shabelle", "deyr"): (4, 2), ("juba", "gu"): (5, 3), ("shabelle", "gu"): (6, 2)}
+from src.constants import TRIGGER_CONFIG as _TC
+RULE = {k: (v["rp"], v["n_req"]) for k, v in _TC.items()}
 CAL = {"deyr": "glofas_v5", "gu": "google_grrr"}
 FC = {"deyr": "glofas_v4", "gu": "google_grrr"}
 ARCHIVE = {"google_grrr": (2016, 2023), "glofas_v4": (2003, 2023)}

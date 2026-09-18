@@ -17,7 +17,8 @@ import somlib as L  # noqa: E402
 
 SPAN = set(range(2003, 2024))
 WINDOWS = [("juba", "deyr"), ("shabelle", "deyr"), ("juba", "gu"), ("shabelle", "gu")]
-RULE = {("juba", "deyr"): (4, 3), ("shabelle", "deyr"): (4, 2), ("juba", "gu"): (5, 3), ("shabelle", "gu"): (6, 2)}
+from src.constants import TRIGGER_CONFIG as _TC
+RULE = {k: (v["rp"], v["n_req"]) for k, v in _TC.items()}
 
 a = L.reforecast("glofas_v4")                       # the processed table the page already uses for leads 1-7
 b = glofas.load_reforecast_box(version="version_4_0", dir_suffix="_lead8_12").rename(columns={"valid_day": "valid_time"})
