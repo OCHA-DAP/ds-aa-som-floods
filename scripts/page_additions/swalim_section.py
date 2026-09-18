@@ -4,14 +4,20 @@ Narrative cells (what happened, SWALIM's three risk steps by bulletin date) are
 written here from the bulletin texts; activation dates, points over, peaks and the
 v4 forecast / v5 reanalysis columns come from trigger_detail.json
 (trigger_detail.py) and, for Gu 2024, gu2024_issue.json (gu2024_issue.py); the
-who-was-first verdicts come from swalim_timeline.json (swalim_timeline.py)."""
+who-was-first verdicts come from swalim_timeline.json (swalim_timeline.py). The gauge
+dates written into the narrative cells are checked against somlib.gauge_crossings
+before the section is written. Run with SOM_DATA_REPO set from a worktree, then
+toc_inject.py to restore the heading ids."""
 import json
 import re
+import sys
 from datetime import datetime
 from pathlib import Path
 
-S = Path(__file__).parent
-PAGE = S / "wt-trigger/pages/trigger-single-model/index.html"
+S = Path(__file__).resolve().parent
+sys.path.insert(0, str(S))
+import somlib as L  # noqa: E402
+PAGE = S.parents[1] / "pages/trigger-single-model/index.html"
 DET = {(d["river"], d["season"], d["year"]): d
        for d in json.loads((S / "trigger_detail.json").read_text(encoding="utf-8"))}
 G24 = json.loads((S / "gu2024_issue.json").read_text(encoding="utf-8"))
@@ -21,13 +27,13 @@ TL = {(t["season"], t["river"]): t for t in json.loads((S / "swalim_timeline.jso
 # | ISO date of SWALIM's first bulletin flagging risk at any level (for the lag columns).
 NARR = {
     ("juba", "deyr", 2006): (
-        "Severe flood; 1-in-5 at two gauges by 30 Oct",
+        "Severe flood; 1-in-3 and 1-in-5 on 30 Oct",
         "not archived (bulletin no. 1 of 3 Oct saw no risk; nos. 2 to 7 missing)",
         "31 Oct, high risk in the riverine areas",
         "31 Oct, river over its banks from Luuq to Jamame",
         "2006-10-31"),
     ("shabelle", "deyr", 2006): (
-        "Severe flood; 1-in-3 on 2 Nov, 1-in-5 on 18 Nov",
+        "Severe flood; 1-in-3 on 2 Nov, 1-in-5 on 11 Nov",
         "not archived (nos. 2 to 7 missing)",
         "31 Oct, severe risk downstream of Jowhar",
         "31 Oct, bank breakages in the lower Shabelle after abrupt rises at Belet Weyne, Bulo Burti and Jowhar",
@@ -56,7 +62,7 @@ NARR = {
         "22 Oct, Bardheere bank full, flooding at Luuq and Bardheere; 25 Oct also Dollow and Bualle",
         "2019-10-22"),
     ("shabelle", "deyr", 2019): (
-        "Severe flood; 1-in-3 on 14 Oct, 1-in-5 on 24 Oct",
+        "Severe flood; 1-in-3 on 14 Oct, 1-in-5 on 22 Oct",
         "not archived (first bulletin 22 Oct)",
         "22 Oct, Belet Weyne and Jowhar (Jowhar at the high level since late August)",
         "22 Oct, Jowhar near bank full with two breakages; 25 Oct Belet Weyne town flooded by overflow",
@@ -74,7 +80,7 @@ NARR = {
         "27 Apr, flooding reported at Dollow, Luuq and Bardheere",
         "2020-04-27"),
     ("shabelle", "gu", 2020): (
-        "Severe flood; 1-in-3 on 6 May, 1-in-5 on 12 May",
+        "Severe flood; 1-in-3 on 5 May, 1-in-5 on 12 May",
         "27 Apr, high risk foreseen with Belet Weyne still 0.50 m below the moderate level; 4 May, Belet Weyne 7.20 m past it",
         "4 May, Jowhar at the high level for four days; 11 May, Belet Weyne 8.10 m over it",
         "18 May, Belet Weyne bank full since 12 May; 11 May Jowhar 0.20 m below",
@@ -92,7 +98,7 @@ NARR = {
         "25 May, Belet Weyne 8.25 m about to reach bank full; 19 May breakage flooding upstream reported",
         "2021-05-10"),
     ("shabelle", "gu", 2023): (
-        "Severe flood; 1-in-3 on 17 Apr, 1-in-5 on 23 May",
+        "Severe flood; 1-in-3 on 17 Apr, 1-in-5 on 18 May",
         "no bulletin archived",
         "8 May advisory: high level at Belet Weyne, passed on 2 May",
         "8 May advisory: 0.40 m below bank full, overflow judged very likely",
@@ -104,13 +110,13 @@ NARR = {
         "13 Nov advisory: overflow along the whole river for more than a week",
         "2023-10-20"),
     ("shabelle", "deyr", 2023): (
-        "Largest flood on record; 1-in-3 on 7 Nov, 1-in-5 on 20 Nov",
+        "Largest flood on record; 1-in-3 on 6 Nov, 1-in-5 on 19 Nov",
         "29 Oct, moderate risk along the river with Belet Weyne 0.10 m below the level (21 Oct advisory: anticipatory action called for Hiraan)",
         "2 Nov, high risk projected at Belet Weyne in 3 to 4 days",
         "13 Nov advisory: Belet Weyne overflowing, most of the town flooded; 20 Nov Bulo Burti 0.32 m over the high level",
         "2023-10-21"),
     ("juba", "gu", 2024): (
-        "1-in-3 flood on 10 May (Luuq 7 May, Dollow 10 May); Luuq alone reached 1-in-5 on 8 May",
+        "1-in-3 flood on 10 May (Luuq 7 May, Dollow 10 May); no gauge reached 1-in-5 (Luuq peaked 0.02 m below its level on 8 May)",
         "9 May weekly bulletin: Luuq over the moderate level (8 May reading)",
         "9 May weekly bulletin: Dollow over the high level on 6 May after very heavy rain, back below it by 9 May",
         "no (14 May: Dollow below the flood levels)",
@@ -123,6 +129,23 @@ NARR = {
         "2024-04-19"),
 }
 ORDER = list(NARR)
+
+
+def _gauge(river, season, year, rp):
+    d = L.gauge_crossings(river, season, rp, span=range(1999, 2025)).get(year)
+    return d.strftime("%d %b").lstrip("0") if d is not None else None
+
+
+for (_r, _s, _y), _v in NARR.items():
+    _what, _g3, _g5 = _v[0], _gauge(_r, _s, _y, 3), _gauge(_r, _s, _y, 5)
+    _both = re.search(r"1-in-3 and 1-in-5 on (\d+ \w+)", _what)
+    _m3 = re.search(r"1-in-3 (?:flood )?on (\d+ \w+)", _what)
+    _m5 = re.search(r"1-in-5 on (\d+ \w+)", _what)
+    if _both:
+        assert _both.group(1) == _g3 == _g5, (_r, _s, _y, _what, _g3, _g5)
+    else:
+        assert (_m3.group(1) if _m3 else None) == _g3, (_r, _s, _y, _what, _g3)
+        assert (_m5.group(1) if _m5 else None) == _g5, (_r, _s, _y, _what, _g5)
 
 NA = "not available: record ends 2023"
 NONE6 = (None, [], 0, None, [], 0)
@@ -239,7 +262,7 @@ section = """    <h3>SWALIM's alerts against the trigger</h3>
       ensemble median had enough points over their thresholds at some lead of 1 to 7 days.
       v4 is not the Gu model and is not shown on Gu rows. The grey band marks the gauges' own
       two-gauge 1-in-3 and 1-in-5 crossings.</p>
-    <figure><img src="figs/k_swalim_timeline.png?v=202609111" alt="Timeline of SWALIM bulletins, the window's model and, in Deyr, the GloFAS v4 forecast per flood season">
+    <figure><img src="figs/k_swalim_timeline.png?v=202609190000" alt="Timeline of SWALIM bulletins, the window's model and, in Deyr, the GloFAS v4 forecast per flood season">
       <figcaption>Each row is one river-season. Upper track: SWALIM's first bulletin flagging
         risk (open circle) and the bulletins that first reported the moderate, high and bank
         full steps. Lower track: the first day the window's model crossed on its reanalysis
@@ -255,39 +278,44 @@ section = """    <h3>SWALIM's alerts against the trigger</h3>
       two-gauge 1-in-3 level was first crossed, not the peak. The trigger's date is the day
       the modelled flow crossed; in operation the forecast would have added up to 7 days to
       it. The GloFAS v4 issue date is the operational measure.</p>
-    <figure><img src="figs/k_swalim_window.png?v=202609111" alt="Lead time of each flag before the gauges' 1-in-3 crossing">
+    <figure><img src="figs/k_swalim_window.png?v=202609190000" alt="Lead time of each flag before the gauges' 1-in-3 crossing">
       <figcaption>Days between each flag and the gauges' first two-gauge 1-in-3 crossing, one
         row per flood season with a gauge event (Deyr 2019 Juba and Gu 2021 have none). Green:
         the action window, 1 to 7 days before onset; pale green: readiness, 8 to 12 days.
-        The black tick is the 1-in-5 crossing. Deyr 2006 Juba's onset is the 1-in-5 date, since
-        the 1-in-3 date is not in the record.</figcaption></figure>
+        The black tick is the 1-in-5 crossing. In Deyr 2006 on the Juba the second gauge
+        crossed 1-in-3 and 1-in-5 on the same day, 30 Oct.</figcaption></figure>
     <p>SWALIM's first bulletin fell inside the action window in five of the twelve seasons
       with a bulletin and a gauge event: Deyr 2006 and Deyr 2014 on the Shabelle, Deyr 2014
       and Deyr 2023 on the Juba, and Gu 2024 on the Juba, at 1 to 7 days before onset. It
-      was earlier than the window in three (Gu 2020 Shabelle 9 days, Deyr 2023 Shabelle 17
-      days, Gu 2024 Shabelle 19 days) and on or after onset in four (Deyr 2006 Juba, Deyr
-      2019 Shabelle, Gu 2020 Juba, Gu 2023 Shabelle). In Deyr, the GloFAS v4 issue was in
-      the window in 2023 on the Juba, earlier than it in 2014 and 2019 on the Shabelle, and
-      late or absent in the other seasons; the reanalysis trigger's own day
-      was inside the window in Deyr 2014, Deyr 2019 and Gu 2020 on the Shabelle (and a day
-      before the 1-in-5 date in Deyr 2006 on the Juba) and on or after onset in six seasons,
-      which is the gap a 1 to 7 day forecast has to close.</p>
+      was earlier than the action window in three (Gu 2020 Shabelle 8 days, inside the readiness
+      window; Deyr 2023 Shabelle 16 days; Gu 2024 Shabelle 19 days) and on or after onset in four
+      (Deyr 2006 Juba, Deyr 2019 Shabelle, Gu 2020 Juba, Gu 2023 Shabelle). In Deyr, the GloFAS v4
+      issue was in the action window in 2023 on the Juba (4 days before onset), in the readiness
+      window in 2014 and 2019 on the Shabelle (8 and 12 days), and on or after onset or absent in
+      the other seasons. The reanalysis trigger's own day was inside the action window in Deyr 2006
+      on the Juba and in Deyr 2014, Deyr 2019 and Gu 2020 on the Shabelle; it was on or after onset
+      in five seasons (Deyr 2006 and Deyr 2023 on the Shabelle, Deyr 2023 and Gu 2020 on the Juba,
+      Gu 2016 on the Shabelle), which is the gap a 1 to 7 day forecast has to close; and it was
+      never reached in Deyr 2014 on the Juba and in Deyr 2020 and Gu 2023 on the Shabelle.</p>
     <p>Where both flagged, SWALIM was first in six river-seasons and the window's model in
-      two. SWALIM's lead was 1 to 3 days in Deyr 2006, Deyr 2014 and Gu 2020, and 9 and 19
-      days in Deyr 2023, when its 20 October alert asked for anticipatory action while
-      GloFAS v5 waited for the rivers themselves. GloFAS v5 led in Deyr 2019 on the Shabelle
-      by 11 days and in Deyr 2006 on the Juba by 2 days, where SWALIM's earlier issues are
-      missing. In four flood seasons SWALIM flagged and the model never crossed: GloFAS v5 in
-      Deyr 2014 and Deyr 2019 on the Juba, Google in Gu 2021 on both rivers and Gu 2023 on
-      the Shabelle. Gu 2016 has no SWALIM bulletin at all.</p>
-    <p>The GloFAS v4 forecast, which is what would run live, is earlier than SWALIM where
-      it crosses at all: by 8 days in Deyr 2014 and 20 days in Deyr 2019 on the Shabelle,
-      and by 4 days in Gu 2024 on the Juba, with SWALIM ahead only in Deyr 2014 on the Juba
-      (8 days), Gu 2020 on the Juba (4 days) and Deyr 2023 on the Juba (1 day). Its failure
-      mode is the Shabelle: no v4 issue had a point over its level in Gu 2020, Deyr 2023 or
-      Gu 2024, three seasons in which SWALIM reported bank full at Belet Weyne. Up to 2021
-      SWALIM's archived bulletins are Flood Updates written once a river was already at the
-      high level or bank full; the ladder-style alerts with a moderate step start in 2023.</p>
+      two. SWALIM's lead was 2 to 3
+      days in Deyr 2006, Deyr 2014 and Gu 2020, and 9 and 20 days in Deyr 2023, when its 20 October
+      alert asked for anticipatory action and GloFAS v5 crossed on 29 October on the Juba and 10
+      November on the Shabelle. GloFAS v5 led in Deyr 2019 on the Shabelle by 9 days and in Deyr
+      2006 on the Juba by 2 days, where SWALIM's earlier issues are missing. In four flood seasons
+      SWALIM flagged and the model never crossed: GloFAS v5 in Deyr 2014 and Deyr 2019 on the Juba,
+      Google in Gu 2021 on both rivers and Gu 2023 on the Shabelle. In Deyr 2020 on the Shabelle
+      the model did not cross either, and SWALIM's only bulletin concerned the September flood.
+      Gu 2016 has no SWALIM bulletin at all.</p>
+    <p>The GloFAS v4 forecast, which is what would run live, is earlier than SWALIM where it crosses at all
+      in Deyr: by 3 days in Deyr 2014 and 20 days in Deyr 2019 on the Shabelle, with SWALIM ahead
+      in Deyr 2014 on the Juba (8 days) and Deyr 2023 on the Juba (1 day). On the Juba in Gu, where
+      v4 is not the window's model, the same replay was 4 days behind SWALIM in 2020 and 4 days
+      ahead in 2024. No v4 issue had a point over its level in Gu 2020, Deyr 2023 or Gu 2024 on the
+      Shabelle, three seasons in which SWALIM reported bank full at Belet Weyne. Most of SWALIM's
+      archived bulletins up to 2021 are Flood Updates written once a river was already at the high
+      level or bank full; a moderate-risk step is recorded in Deyr 2014, Gu 2020 on the Shabelle,
+      Gu 2021 and from 2023.</p>
     <h4>The same comparison station by station</h4>
     <p>The charts above work at river level, where SWALIM's earliest flag anywhere on the
       river meets a rule that counts points. SWALIM's bulletins name individual gauges and
@@ -301,12 +329,12 @@ section = """    <h3>SWALIM's alerts against the trigger</h3>
       reading, which is most of 2006 and 2019 to 2021. The 2024 weekly bulletins are read
       from their published readings only, because their prose mixes forecasts and
       look-backs to earlier years.</p>
-    <figure><img src="figs/k_swalim_station_shabelle.png?v=202609111" alt="Shabelle: SWALIM's reported levels at each gauge against the gauge record and the models">
+    <figure><img src="figs/k_swalim_station_shabelle.png?v=202609190000" alt="Shabelle: SWALIM's reported levels at each gauge against the gauge record and the models">
       <figcaption>Shabelle. Upper track: SWALIM's reported levels for that gauge. Lower
         track: the models over that station's own threshold. Grey band: that gauge's own
         1-in-3 to 1-in-5 crossings. Deyr 2020's bulletins concern the September flood at
         Belet Weyne, before the Deyr window opens.</figcaption></figure>
-    <figure><img src="figs/k_swalim_station_juba.png?v=202609111" alt="Juba: SWALIM's reported levels at each gauge against the gauge record and the models">
+    <figure><img src="figs/k_swalim_station_juba.png?v=202609190000" alt="Juba: SWALIM's reported levels at each gauge against the gauge record and the models">
       <figcaption>Juba, same layout.</figcaption></figure>
     <p>Of the 55 station-seasons, 39 have a bulletin naming that gauge and 21 record it at
       bank full. Belet Weyne and Jowhar are named in 8 of their 9 seasons, Bulo Burti in 6;
@@ -323,8 +351,7 @@ section = """    <h3>SWALIM's alerts against the trigger</h3>
       banks.</p>
     <p>Against SWALIM's first flag for the same gauge, over the 34 station-seasons up to
       2023, Google crossed that station's threshold earlier in 15, on the same day in 2,
-      later in 8 and never in 9. GloFAS v5 was earlier in 12, same day in 2, later in 13 and
-      never in 7. The GloFAS v4 forecast issue was earlier in 7, same day in 3, later in 7
+      later in 8 and never in 9. GloFAS v5 was earlier in 12, on the same day in 1, later in 12 and never in 9. The GloFAS v4 forecast issue was earlier in 7, same day in 3, later in 7
       and absent in 17. At station level the models therefore lead SWALIM about as often as
       they trail it, and the trigger's advantage at river level comes from requiring several
       points rather than from any one gauge being called early.</p>

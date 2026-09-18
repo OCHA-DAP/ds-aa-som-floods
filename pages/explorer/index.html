@@ -62,9 +62,13 @@
       <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / indicator explorer</p>
       <h1>Indicator explorer</h1>
       <p>Pick a basin and a year to see how each streamflow indicator behaved against the
-         SWALIM gauge record. Every source — GEOGloWS included, via its retrospective — is
+         SWALIM gauge record. Every source, GEOGloWS included via its retrospective, is
          judged against its own 1-in-6-year threshold: absolute discharge is never compared
          across models.</p>
+      <p>This explorer belongs to the <a href="../trigger/">multi-source study</a>: the decision
+         variable it shows is that study's pool of (station, model) pairs at 1-in-6. The adopted
+         mechanism, one model per river-season window, is set out in the
+         <a href="../trigger-single-model/summary.html">trigger summary</a>.</p>
     </div>
   </header>
 
@@ -93,7 +97,7 @@
       <p class="sub">Colored lines: per source, how many of the season's selected stations
         exceed their own seasonal 1-in-6-year threshold that day (each source thresholded
         on its own 1999–2023 climatology). Black line: <strong>the trigger's decision
-        variable</strong> — the number of pool (station, model) pairs over their adopted
+        variable</strong>: the number of pool (station, model) pairs over their adopted
         thresholds (a station carried by two models counts twice). Dashed grey: the
         required count. Amber ticks: days the trigger activates.</p>
       <svg id="p2" viewBox="0 0 960 190" role="img" aria-label="station consensus counts"></svg>
@@ -101,8 +105,8 @@
     <div class="panel">
       <h3 id="p3title"></h3>
       <p class="sub">Each source's discharge at the reference station divided by its own
-        seasonal 1-in-6-year threshold there — 1.0 (dashed) means "at threshold". This is
-        the bias-free way to overlay models whose absolute magnitudes differ by 5–10×.</p>
+        seasonal 1-in-6-year threshold there; 1.0 (dashed) means "at threshold". This puts
+        models whose absolute magnitudes differ by 5 to 10 times on one scale.</p>
       <svg id="p3" viewBox="0 0 960 210" role="img" aria-label="discharge relative to own threshold"></svg>
     </div>
   </div>
@@ -112,18 +116,18 @@
   <div class="about">
     <p><strong>Reading it.</strong> The top panel is the ground truth: the SWALIM gauge the
        trigger is calibrated against. The middle panel is the trigger's actual decision
-       variable — the station consensus. The bottom panel shows the shape and timing of each
+       variable: the station consensus. The bottom panel shows the shape and timing of each
        model's signal at the reference station. A model can track the river well (bottom)
-       yet peak days late or under-rank an extreme (middle) — GEOGloWS in Deyr 2023 on the
-       Shabelle is the canonical example.</p>
+       yet peak days late or under-rank an extreme (middle); GEOGloWS in Deyr 2023 on the
+       Shabelle is one example.</p>
     <p><strong>Method.</strong> Series are each model's reanalysis/retrospective (this
-       explorer is about indicator behaviour, not forecast lead time — see the
-       <a href="../trigger/">trigger report</a> for the reforecast backtests). Consensus
+       explorer is about indicator behaviour, not forecast lead time; see the
+       <a href="../trigger/">multi-source study</a> for its reforecast backtests). Consensus
        counts exist only inside the Gu (Mar–May) and Deyr (Oct–Dec) windows, because the
        trigger does. Thresholds are Weibull plotting positions on each source's own seasonal
-       maxima, 1999–2023 — we assume bias between reanalysis and forecast for <em>all</em>
-       sources, so operational thresholds must likewise be refit on the operational
-       product's own climatology. Data baked by
+       maxima, 1999–2023; bias between reanalysis and forecast is assumed for <em>all</em>
+       sources, so operational thresholds are refit on the operational product's own
+       climatology. Data baked by
        <code>scripts/export_explorer_data.py</code>.</p>
   </div>
 
@@ -293,7 +297,7 @@
       marks.push("activated");
     if (D.benchmark.severe_years.indexOf(y) >= 0) marks.push("5yr RP");
     else if (D.benchmark.moderate_years.indexOf(y) >= 0) marks.push("3yr RP");
-    return y + (marks.length ? " — " + marks.join(", ") : "");
+    return y + (marks.length ? ": " + marks.join(", ") : "");
   }
   function fillControls() {
     var seg = el("basinSeg");

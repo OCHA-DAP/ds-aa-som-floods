@@ -1,7 +1,10 @@
 """Why the action window stops at 7 days: the design rule on the GloFAS v4 reforecast,
 scored by lead band. Same construction as somlib.first_issue_dates (ensemble median,
-levels from the model's own record, design return period and vote count per window),
-run once on leads 1-7 and once on leads 8-12, and lead by lead. Writes lead_band_design.json."""
+levels from the model's own record, design return period and vote count per window,
+votes counted on one issue and one valid day), run once on leads 1-7 and once on leads
+8-12, and lead by lead, over the 21 years both processed tables cover (2003-2023).
+Writes lead_band_design.json. Run with SOM_DATA_REPO pointing at the checkout that holds
+data/processed when this file sits in a worktree."""
 import json
 import sys
 from pathlib import Path
@@ -9,11 +12,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-REPO = Path(r"C:\Users\pauni\Desktop\Work\OCHA\GitHub\ds-aa-som-floods")
-SCRATCH = Path(__file__).parent
-sys.path.insert(0, str(REPO)); sys.path.insert(0, str(SCRATCH))
-from src.datasources import glofas  # noqa: E402
-import somlib as L  # noqa: E402
+SCRATCH = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRATCH))
+import somlib as L  # noqa: E402  (puts the repo root on sys.path and resolves data/processed)
 
 SPAN = set(range(2003, 2024))
 WINDOWS = [("juba", "deyr"), ("shabelle", "deyr"), ("juba", "gu"), ("shabelle", "gu")]
@@ -21,8 +22,9 @@ from src.constants import TRIGGER_CONFIG as _TC
 RULE = {k: (v["rp"], v["n_req"]) for k, v in _TC.items()}
 
 a = L.reforecast("glofas_v4")                       # the processed table the page already uses for leads 1-7
-b = glofas.load_reforecast_box(version="version_4_0", dir_suffix="_lead8_12").rename(columns={"valid_day": "valid_time"})
-print("leads 1-7 table", sorted(a.leadtime_days.unique()), sorted(a.station.unique())); print("8-12 raw", sorted(b.leadtime_days.unique()), sorted(b.station.unique()))
+b = pd.read_parquet(L.P / "reforecast_glofas_v4_lead8_12.parquet")  # the processed 8-12 table the readiness leg reads
+print("leads 1-7 table", sorted(a.leadtime_days.unique()), str(a.issued_time.min())[:10], str(a.issued_time.max())[:10])
+print("leads 8-12 table", sorted(b.leadtime_days.unique()), str(b.issued_time.min())[:10], str(b.issued_time.max())[:10])
 rf = pd.concat([a[["issued_time", "valid_time", "station", "leadtime_days", "discharge"]], b[["issued_time", "valid_time", "station", "leadtime_days", "discharge"]]], ignore_index=True)
 for col in ("issued_time", "valid_time"):
     rf[col] = pd.to_datetime(rf[col])
@@ -64,13 +66,11 @@ for ld in range(1, 13):
     uc = set().union(*(years(r, s, (1, ld)) for r, s in WINDOWS))
     out["cumulative"][ld] = score(uc)
     print(f"lead {ld:2d} alone: {len(u):2d} acts, severe {len(u & severe)}, no-flood {len(u - flood)} | window 1-{ld:2d}: {len(uc):2d} acts, severe {len(uc & severe)}, no-flood {len(uc - flood)}")
-# how the ensemble's high flows fade with lead, over the years both archives cover (the 8-12 archive stops in 2013)
-both = med[med.issued_time.dt.year <= 2013]
+# how the ensemble's high flows fade with lead, over the 21 years both tables cover
+both = med[med.issued_time.dt.year.isin(SPAN)]
 q = both.groupby(["station", "leadtime_days"]).discharge.quantile(.98).unstack("leadtime_days")
 share = q.div(q[1], axis=0)
-out["fade_years"] = [2003, int(both.issued_time.dt.year.max())]
+out["fade_years"] = [int(both.issued_time.dt.year.min()), int(both.issued_time.dt.year.max())]
 out["fade_share_of_day1"] = {int(ld): round(float(share[ld].median()), 3) for ld in share.columns}
-out["bands_to_2013"] = {k: sorted(y for y in v["years"] if y <= 2013) for k, v in out["bands"].items()}
 print("fade (median station share of day-1 98th percentile):", out["fade_share_of_day1"])
-print("activations 2003-2013 by band:", out["bands_to_2013"])
 json.dump(out, open(SCRATCH / "lead_band_design.json", "w"), indent=1)

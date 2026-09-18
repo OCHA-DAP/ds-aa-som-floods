@@ -1,5 +1,5 @@
 """By season, both rivers together. Inundation = FloodScan flood exposure summed over all 14
-anticipatory-action districts, dated at its own 1-in-5. (1) Do the two-gauge benchmark years rank
+anticipatory-action districts, dated at its own 1-in-3 (SFED_RP). (1) Do the two-gauge benchmark years rank
 high in it? (2) For each benchmark season-year with a forecast archive: the inundation day against
 the SWALIM gauges (second gauge over 1-in-3), the reanalysis rule and the first forecast issue, each
 the earliest on either river. Writes floodscan_rank.json and floodscan_lead.json."""

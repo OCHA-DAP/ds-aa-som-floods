@@ -5,8 +5,9 @@ window is 1 to 7 days before the onset, readiness 8 to 12.
 
 Gauge dates (onset = second gauge over its own 1-in-3, and the 1-in-5 crossing) come
 from somlib.gauge_crossings, the same two-gauge benchmark as every other page section
-(levels fitted 2000-2023). SWALIM, trigger and v4 issue dates are the hand-checked
-record from the bulletin archive and the forecast replays.
+(levels fitted 2000-2023). SWALIM, trigger and v4 issue dates come from
+swalim_timeline.json (swalim_timeline.py: SWALIM bulletin dates hand-read from the
+archive, model and forecast dates computed from somlib).
 
     SOM_DATA_REPO=<checkout with data/processed> python scripts/page_additions/swalim_window.py
 """
@@ -39,23 +40,30 @@ def gauge_date(season, river, rp):
     return d.date().isoformat() if d is not None else None
 
 
-# season, river, SWALIM first bulletin, trigger (window's model on its own record), v4 issue, note
-FLAGS = [
- ("Deyr 2006", "Juba",     "2006-10-31", "2006-10-29", None,         "onset taken as the 1-in-5 date; 1-in-3 date not in the record"),
- ("Deyr 2006", "Shabelle", "2006-10-31", "2006-11-02", None,         None),
- ("Deyr 2014", "Juba",     "2014-10-15", None,         "2014-10-23", None),
- ("Deyr 2014", "Shabelle", "2014-10-15", "2014-10-16", "2014-10-07", None),
- ("Deyr 2019", "Shabelle", "2019-10-22", "2019-10-11", "2019-10-02", None),
- ("Deyr 2020", "Shabelle", None,         "2020-10-10", "2020-10-02", "SWALIM's bulletin was for the September flood"),
- ("Deyr 2023", "Juba",     "2023-10-20", "2023-10-29", "2023-10-21", None),
- ("Deyr 2023", "Shabelle", "2023-10-21", "2023-11-09", None,         None),
- ("Gu 2016",   "Shabelle", None,         "2016-05-12", "2016-05-08", None),
- ("Gu 2020",   "Juba",     "2020-04-27", "2020-04-29", "2020-05-01", None),
- ("Gu 2020",   "Shabelle", "2020-04-27", "2020-04-30", None,         None),
- ("Gu 2023",   "Shabelle", "2023-05-08", None,         None,         None),
- ("Gu 2024",   "Juba",     "2024-05-09", "n/a",        "2024-05-05", None),
- ("Gu 2024",   "Shabelle", "2024-04-19", "n/a",        None,         None),
+# season, river, note: the rows with a gauge event (Deyr 2019 Juba and Gu 2021 have none)
+NOTES = [
+ ("Deyr 2006", "Juba",     "the second gauge crossed 1-in-3 and 1-in-5 on the same day"),
+ ("Deyr 2006", "Shabelle", None),
+ ("Deyr 2014", "Juba",     None),
+ ("Deyr 2014", "Shabelle", None),
+ ("Deyr 2019", "Shabelle", None),
+ ("Deyr 2020", "Shabelle", "SWALIM's bulletin was for the September flood"),
+ ("Deyr 2023", "Juba",     None),
+ ("Deyr 2023", "Shabelle", None),
+ ("Gu 2016",   "Shabelle", None),
+ ("Gu 2020",   "Juba",     None),
+ ("Gu 2020",   "Shabelle", None),
+ ("Gu 2023",   "Shabelle", None),
+ ("Gu 2024",   "Juba",     None),
+ ("Gu 2024",   "Shabelle", None),
 ]
+TL = {(r["season"], r["river"]): r for r in json.loads((S / "swalim_timeline.json").read_text(encoding="utf-8"))}
+# Deyr 2020 Shabelle: SWALIM's only bulletin (8 Sep) concerned the September flood, before the
+# Deyr window, so it is not counted as a flag for the October rise
+NO_SWALIM = {("Deyr 2020", "Shabelle")}
+FLAGS = [(season, river, None if (season, river) in NO_SWALIM else TL[(season, river)]["swalim_first"],
+          TL[(season, river)]["trigger"], TL[(season, river)]["v4_issue"], note)
+         for season, river, note in NOTES]
 ROWS = []
 for season, river, sw, trig, v4, note in FLAGS:
     onset = gauge_date(season, river, 3) or gauge_date(season, river, 5)

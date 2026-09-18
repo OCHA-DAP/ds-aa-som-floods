@@ -112,7 +112,10 @@ body.variant span.stdonly, body.variant a.stdonly { display:none; }
       <h1>The multi-source trigger mechanism</h1>
       <p>Proposed trigger for anticipatory action against riverine flooding on the Juba and
          Shabelle: a multi-model station consensus across GloFAS, Google Flood Hub and
-         GEOGloWS, calibrated against SWALIM river gauges. August 2026.</p>
+         GEOGloWS, calibrated against SWALIM river gauges. August 2026. The trigger adopted for live
+         monitoring is the <a href="../trigger-single-model/" style="color:#fff">one-model-per-window mechanism</a>
+         (<a href="../trigger-single-model/summary.html" style="color:#fff">summary</a>); this page is the
+         multi-source study it was compared with.</p>
     </div>
   </header>
 
@@ -123,7 +126,7 @@ body.variant span.stdonly, body.variant a.stdonly { display:none; }
         <button type="button" id="vAll" class="on" aria-pressed="true">All three providers</button>
         <button type="button" id="vNog" aria-pressed="false">Without Google Flood Hub</button>
       </div>
-      <span class="vbar-note" id="vbarNote">Adopted mechanism — GloFAS v5 + Google GRRR + GEOGloWS</span>
+      <span class="vbar-note" id="vbarNote">Study configuration — GloFAS v5 + Google GRRR + GEOGloWS</span>
     </div>
   </div>
 
@@ -529,7 +532,7 @@ body.variant span.stdonly, body.variant a.stdonly { display:none; }
       <figcaption>GloFAS v4 (2003–2023) and Google GRRR (2016–2023) forecasts are
         essentially self-consistent at action leads: rank ρ ≥ 0.99, ratio ≈ 1.00 — the
         licence for calibrating their thresholds on reanalysis. GloFAS drifts to ~0.90×
-        by lead 12 (readiness band, shaded) — its 7–12-day thresholds should anticipate
+        by lead 12 (readiness band, shaded) — its 8–12-day thresholds should anticipate
         that. <strong>GEOGloWS runs 0.85–0.91× its own retrospective even at lead 1</strong>
         (ρ ~0.82), on only ~2 years of archive (2024–26) — retrospective-fitted thresholds
         will under-fire on its live forecasts until refit on forecast climatology.
@@ -606,7 +609,7 @@ body.variant span.stdonly, body.variant a.stdonly { display:none; }
 
     <h2>The readiness leg (8–12 days)</h2>
     <p>GloFAS ensemble-median forecasts at leads 8–12 days (the leads-8-12 reforecast was
-       downloaded specifically for this band), over each window's distinct stations —
+       downloaded specifically for this band; the readiness figures in this section were computed with lead 7 of the leads-1-7 archive included, as notebook 11 does), over each window's distinct stations —
        just 2 on the Juba, 3 on the Shabelle now — thresholds on GloFAS v4's own
        climatology, at a lower bar: readiness releases only the mobilisation share and
        may activate more often than action. It fully covers the action years for Juba Gu,
@@ -940,7 +943,7 @@ document.querySelectorAll("article h2, article h3").forEach(function (el) {
     document.getElementById("vNog").setAttribute("aria-pressed", String(on));
     document.getElementById("vbarNote").textContent = on
       ? "Resilience variant — GloFAS v5 + GEOGloWS only, recalibrated end to end"
-      : "Adopted mechanism — GloFAS v5 + Google GRRR + GEOGloWS";
+      : "Study configuration — GloFAS v5 + Google GRRR + GEOGloWS";
     Array.prototype.forEach.call(document.querySelectorAll(".vswap"), function (el) {
       if (el.hasAttribute("data-alt-src")) {
         if (!el.dataset.stdSrc) el.dataset.stdSrc = el.getAttribute("src");

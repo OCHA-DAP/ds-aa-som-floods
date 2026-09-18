@@ -1,0 +1,891 @@
+[
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2006,
+  "station": "dollow",
+  "swalim": {}
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2006,
+  "station": "luuq",
+  "swalim": {
+   "1": [
+    "2006-10-31",
+    null,
+    false
+   ],
+   "2": [
+    "2006-10-31",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2006,
+  "station": "bardheere",
+  "swalim": {}
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2006,
+  "station": "bualle",
+  "swalim": {}
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2014,
+  "station": "dollow",
+  "swalim": {}
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2014,
+  "station": "luuq",
+  "swalim": {
+   "1": [
+    "2014-10-24",
+    6.0,
+    true
+   ],
+   "2": [
+    "2014-10-24",
+    6.0,
+    true
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2014,
+  "station": "bardheere",
+  "swalim": {}
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2014,
+  "station": "bualle",
+  "swalim": {}
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2019,
+  "station": "dollow",
+  "swalim": {}
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2019,
+  "station": "luuq",
+  "swalim": {
+   "1": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "2": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "3": [
+    "2019-10-22",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2019,
+  "station": "bardheere",
+  "swalim": {
+   "1": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "2": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "3": [
+    "2019-10-22",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2019,
+  "station": "bualle",
+  "swalim": {
+   "1": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "2": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "3": [
+    "2019-10-22",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2023,
+  "station": "dollow",
+  "swalim": {
+   "1": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "2": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "3": [
+    "2023-11-13",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2023,
+  "station": "luuq",
+  "swalim": {
+   "1": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "2": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "3": [
+    "2023-10-29",
+    7.1,
+    true
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2023,
+  "station": "bardheere",
+  "swalim": {
+   "1": [
+    "2023-10-20",
+    null,
+    false
+   ],
+   "2": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "3": [
+    "2023-11-13",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2023,
+  "station": "bualle",
+  "swalim": {
+   "1": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "2": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "3": [
+    "2023-11-20",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2020,
+  "station": "dollow",
+  "swalim": {
+   "1": [
+    "2020-04-27",
+    null,
+    false
+   ],
+   "2": [
+    "2020-04-27",
+    null,
+    false
+   ],
+   "3": [
+    "2020-04-27",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2020,
+  "station": "luuq",
+  "swalim": {
+   "1": [
+    "2020-04-27",
+    null,
+    false
+   ],
+   "2": [
+    "2020-04-27",
+    null,
+    false
+   ],
+   "3": [
+    "2020-04-27",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2020,
+  "station": "bardheere",
+  "swalim": {
+   "1": [
+    "2020-04-27",
+    null,
+    false
+   ],
+   "2": [
+    "2020-04-27",
+    null,
+    false
+   ],
+   "3": [
+    "2020-04-27",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2020,
+  "station": "bualle",
+  "swalim": {
+   "1": [
+    "2020-05-18",
+    null,
+    false
+   ],
+   "2": [
+    "2020-05-18",
+    null,
+    false
+   ],
+   "3": [
+    "2020-05-18",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2021,
+  "station": "dollow",
+  "swalim": {
+   "1": [
+    "2021-05-10",
+    null,
+    false
+   ],
+   "2": [
+    "2021-05-10",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2021,
+  "station": "luuq",
+  "swalim": {}
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2021,
+  "station": "bardheere",
+  "swalim": {
+   "1": [
+    "2021-05-10",
+    null,
+    false
+   ],
+   "2": [
+    "2021-05-10",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2021,
+  "station": "bualle",
+  "swalim": {}
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2024,
+  "station": "dollow",
+  "swalim": {
+   "1": [
+    "2024-05-09",
+    4.86,
+    true
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2024,
+  "station": "luuq",
+  "swalim": {
+   "1": [
+    "2024-05-09",
+    5.62,
+    true
+   ]
+  }
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2024,
+  "station": "bardheere",
+  "swalim": {}
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2024,
+  "station": "bualle",
+  "swalim": {}
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2006,
+  "station": "belet_weyne",
+  "swalim": {
+   "1": [
+    "2006-10-31",
+    null,
+    false
+   ],
+   "2": [
+    "2006-10-31",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2006,
+  "station": "bulo_burti",
+  "swalim": {
+   "1": [
+    "2006-10-31",
+    null,
+    false
+   ],
+   "2": [
+    "2006-10-31",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2006,
+  "station": "jowhar",
+  "swalim": {
+   "1": [
+    "2006-10-31",
+    null,
+    false
+   ],
+   "2": [
+    "2006-10-31",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2014,
+  "station": "belet_weyne",
+  "swalim": {
+   "1": [
+    "2014-10-20",
+    7.0,
+    true
+   ],
+   "2": [
+    "2014-10-24",
+    7.3,
+    true
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2014,
+  "station": "bulo_burti",
+  "swalim": {}
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2014,
+  "station": "jowhar",
+  "swalim": {
+   "1": [
+    "2014-10-20",
+    null,
+    false
+   ],
+   "2": [
+    "2014-10-20",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2019,
+  "station": "belet_weyne",
+  "swalim": {
+   "1": [
+    "2019-10-22",
+    7.8,
+    true
+   ],
+   "2": [
+    "2019-10-22",
+    7.8,
+    true
+   ],
+   "3": [
+    "2019-10-25",
+    8.3,
+    true
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2019,
+  "station": "bulo_burti",
+  "swalim": {
+   "1": [
+    "2019-11-07",
+    null,
+    false
+   ],
+   "2": [
+    "2019-11-07",
+    null,
+    false
+   ],
+   "3": [
+    "2019-11-07",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2019,
+  "station": "jowhar",
+  "swalim": {
+   "1": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "2": [
+    "2019-10-22",
+    null,
+    false
+   ],
+   "3": [
+    "2019-10-22",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2020,
+  "station": "belet_weyne",
+  "swalim": {
+   "1": [
+    "2020-09-08",
+    null,
+    false
+   ],
+   "2": [
+    "2020-09-08",
+    null,
+    false
+   ],
+   "3": [
+    "2020-09-08",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2020,
+  "station": "bulo_burti",
+  "swalim": {
+   "1": [
+    "2020-09-08",
+    7.0,
+    true
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2020,
+  "station": "jowhar",
+  "swalim": {
+   "1": [
+    "2020-09-16",
+    null,
+    false
+   ],
+   "2": [
+    "2020-09-16",
+    null,
+    false
+   ],
+   "3": [
+    "2020-09-16",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2023,
+  "station": "belet_weyne",
+  "swalim": {
+   "1": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "2": [
+    "2023-10-21",
+    null,
+    false
+   ],
+   "3": [
+    "2023-11-13",
+    8.3,
+    true
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2023,
+  "station": "bulo_burti",
+  "swalim": {
+   "1": [
+    "2023-11-02",
+    null,
+    false
+   ],
+   "2": [
+    "2023-11-13",
+    null,
+    false
+   ],
+   "3": [
+    "2023-11-13",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2023,
+  "station": "jowhar",
+  "swalim": {
+   "1": [
+    "2023-10-29",
+    null,
+    false
+   ],
+   "2": [
+    "2023-10-29",
+    null,
+    false
+   ],
+   "3": [
+    "2023-11-13",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2020,
+  "station": "belet_weyne",
+  "swalim": {
+   "1": [
+    "2020-05-04",
+    7.2,
+    true
+   ],
+   "2": [
+    "2020-05-11",
+    8.1,
+    true
+   ],
+   "3": [
+    "2020-05-18",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2020,
+  "station": "bulo_burti",
+  "swalim": {}
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2020,
+  "station": "jowhar",
+  "swalim": {
+   "1": [
+    "2020-05-04",
+    5.3,
+    true
+   ],
+   "2": [
+    "2020-05-04",
+    5.3,
+    true
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2021,
+  "station": "belet_weyne",
+  "swalim": {
+   "1": [
+    "2021-05-10",
+    6.5,
+    true
+   ],
+   "2": [
+    "2021-05-19",
+    7.6,
+    true
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2021,
+  "station": "bulo_burti",
+  "swalim": {}
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2021,
+  "station": "jowhar",
+  "swalim": {}
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2023,
+  "station": "belet_weyne",
+  "swalim": {}
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2023,
+  "station": "bulo_burti",
+  "swalim": {
+   "1": [
+    "2023-05-08",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2023,
+  "station": "jowhar",
+  "swalim": {
+   "1": [
+    "2023-05-08",
+    null,
+    false
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2024,
+  "station": "belet_weyne",
+  "swalim": {
+   "1": [
+    "2024-05-01",
+    6.5,
+    true
+   ],
+   "2": [
+    "2024-05-09",
+    7.48,
+    true
+   ],
+   "3": [
+    "2024-05-22",
+    8.3,
+    true
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2024,
+  "station": "bulo_burti",
+  "swalim": {
+   "1": [
+    "2024-05-22",
+    6.56,
+    true
+   ]
+  }
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2024,
+  "station": "jowhar",
+  "swalim": {
+   "1": [
+    "2024-04-19",
+    5.27,
+    true
+   ],
+   "2": [
+    "2024-04-19",
+    5.27,
+    true
+   ]
+  }
+ }
+]

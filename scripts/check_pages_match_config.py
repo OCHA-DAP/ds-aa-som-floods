@@ -64,8 +64,8 @@ for page in sorted(PAGES.rglob("*.html")):
                               f"config says 1-in-{want}")
     # the lead bands are configuration, not prose
     stale = f"{READINESS_LEADS[0] - 1}-{READINESS_LEADS[1]}"
-    for bad in (f"{stale} d", f"{stale.replace('-', chr(8211))} d",
-                f"{READINESS_LEADS[0] - 1} to {READINESS_LEADS[1]} days"):
+    for bad in (f"{stale} d", f"{stale.replace('-', chr(8211))} d", f"{stale}-day", f"{stale.replace('-', chr(8211))}-day",
+                f"{READINESS_LEADS[0] - 1} to {READINESS_LEADS[1]} days", f"{READINESS_LEADS[0] - 1}-to-{READINESS_LEADS[1]}-day thresholds"):
         if bad in text:
             fail(rel, f"readiness band written as {bad}, config says "
                       f"{READINESS_LEADS[0]} to {READINESS_LEADS[1]}")

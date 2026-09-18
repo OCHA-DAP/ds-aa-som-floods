@@ -2,8 +2,14 @@
 the first bulletin on which SWALIM reported that gauge at each of its own official
 levels (moderate, high, bank full), the gauge's own return-period crossings, and the
 first day each model crossed that station's own threshold.
-Writes figs/k_swalim_station_<river>.png and swalim_station_timeline.json."""
+SWALIM's per-station steps are read from swalim_station_records.csv (swalim_station_parse.py)
+when it is present, otherwise from swalim_station_steps.json, the saved record of those steps.
+Gauge and model dates are computed from somlib (gauge levels fitted 2000-2023, model levels
+on TRIGGER_YEARS, at the window's return period in TRIGGER_CONFIG).
+Writes figs/k_swalim_station_<river>.png and swalim_station_timeline.json.
+Run with SOM_DATA_REPO set when this file sits in a worktree."""
 import json
+import sys
 from datetime import date
 from pathlib import Path
 
@@ -14,14 +20,22 @@ import pandas as pd
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
-import somlib as L
-from src.constants import TRIGGER_CONFIG
+S = Path(__file__).resolve().parent
+sys.path.insert(0, str(S))
+import somlib as L  # noqa: E402
+from src.constants import TRIGGER_CONFIG  # noqa: E402
 
-S = Path(__file__).parent
-FIGS = S / "wt-trigger/pages/trigger-single-model/figs"
-REC = pd.read_csv(S / "swalim_station_records.csv", parse_dates=["date"])
-REC["season"] = REC.date.dt.month.map(lambda m: "gu" if m in (3, 4, 5, 6) else ("deyr" if m in (9, 10, 11, 12) else None))
-REC["year"] = REC.date.dt.year
+FIGS = S.parents[1] / "pages/trigger-single-model/figs"
+CSV = S / "swalim_station_records.csv"
+if CSV.exists():
+    REC = pd.read_csv(CSV, parse_dates=["date"])
+    REC["season"] = REC.date.dt.month.map(lambda m: "gu" if m in (3, 4, 5, 6) else ("deyr" if m in (9, 10, 11, 12) else None))
+    REC["year"] = REC.date.dt.year
+    STEPS = None
+else:
+    REC = None
+    STEPS = {(r["river"], r["season"], r["year"], r["station"]): r["swalim"]
+             for r in json.loads((S / "swalim_station_steps.json").read_text(encoding="utf-8"))}
 TH = L.swalim_thresholds()
 C_SW, C_SWD, C_G, C_V5, C_V4, C_GAUGE = "#d97706", "#92400e", "#1d4ed8", "#0f766e", "#6b7280", "#9ca3af"
 AXIS = {"deyr": (date(2001, 9, 1), date(2001, 12, 15)), "gu": (date(2001, 3, 15), date(2001, 6, 10))}
@@ -38,8 +52,10 @@ def fmt(d):
     return pd.Timestamp(d).strftime("%d %b").lstrip("0") if d is not None else None
 
 
-def swalim_steps(st, season, year):
+def swalim_steps(st, season, year, river=None):
     """{level class: (first bulletin date, reading, from a published reading?)}"""
+    if REC is None:
+        return {int(k): (pd.Timestamp(v[0]), v[1], bool(v[2])) for k, v in STEPS.get((river, season, year, st), {}).items()}
     g = REC[(REC.station == st) & (REC.season == season) & (REC.year == year)].sort_values("date")
     out = {}
     for lvl in (1, 2, 3):
@@ -98,15 +114,19 @@ def lag_phrase(first, g3):
 records = []
 for river in ("juba", "shabelle"):
     stations = L.TRIGGER_STATIONS[river]
-    have = REC[REC.station.isin(stations) & REC.season.notna()][["season", "year"]].drop_duplicates()
-    keys = sorted(have.itertuples(index=False), key=lambda k: ({"deyr": 0, "gu": 1}[k.season], k.year))
+    if REC is not None:
+        have = REC[REC.station.isin(stations) & REC.season.notna()][["season", "year"]].drop_duplicates()
+        keys = [(k.season, k.year) for k in have.itertuples(index=False)]
+    else:
+        keys = sorted({(k[1], k[2]) for k in STEPS if k[0] == river})
+    keys = sorted(set(keys), key=lambda k: ({"deyr": 0, "gu": 1}[k[0]], k[1]))
     rows = []
-    for season, year in [(k.season, k.year) for k in keys]:
+    for season, year in keys:
         rp = TRIGGER_CONFIG[(river, season)]["rp"]
         for st in stations:
             rows.append({
                 "river": river, "season": season, "year": year, "station": st, "rp": rp,
-                "swalim": swalim_steps(st, season, year),
+                "swalim": swalim_steps(st, season, year, river),
                 "gauge3": gauge_cross(st, river, season, year, 3),
                 "gauge5": gauge_cross(st, river, season, year, 5),
                 "google": model_cross("google_grrr", st, season, year, rp),

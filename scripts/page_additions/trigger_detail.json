@@ -1,0 +1,977 @@
+[
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2006,
+  "n_req": 3,
+  "n_points": 4,
+  "rp": 4,
+  "trigger": [
+   "29 Oct",
+   [
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   3,
+   "29 Oct",
+   [
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   5
+  ],
+  "v4_fc": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ],
+  "v4_fc_issue": [
+   null,
+   null,
+   [],
+   0,
+   null,
+   null,
+   [],
+   0
+  ],
+  "thr_v4": {
+   "Dollow": 1735.8,
+   "Luuq": 1733.8,
+   "Bardheere": 1730.0,
+   "Bualle": 1724.8
+  },
+  "v5": [
+   "29 Oct",
+   [
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   3,
+   "29 Oct",
+   [
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   5
+  ]
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2006,
+  "n_req": 2,
+  "n_points": 3,
+  "rp": 5,
+  "trigger": [
+   "02 Nov",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   3,
+   "04 Nov",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   10
+  ],
+  "v4_fc": [
+   null,
+   [],
+   1,
+   "30 Oct",
+   [
+    "Jowhar"
+   ],
+   0
+  ],
+  "v4_fc_issue": [
+   null,
+   null,
+   [],
+   1,
+   "30 Oct",
+   "30 Oct",
+   [
+    "Jowhar"
+   ],
+   0
+  ],
+  "thr_v4": {
+   "Belet Weyne": 1109.0,
+   "Bulo Burti": 1109.3,
+   "Jowhar": 1159.3
+  },
+  "v5": [
+   "02 Nov",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   3,
+   "04 Nov",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   10
+  ]
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2014,
+  "n_req": 3,
+  "n_points": 4,
+  "rp": 4,
+  "trigger": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ],
+  "v4_fc": [
+   "25 Oct",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   4,
+   "25 Oct",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   4
+  ],
+  "v4_fc_issue": [
+   "23 Oct",
+   "25 Oct",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere"
+   ],
+   4,
+   "24 Oct",
+   "25 Oct",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   4
+  ],
+  "thr_v4": {
+   "Dollow": 1735.8,
+   "Luuq": 1733.8,
+   "Bardheere": 1730.0,
+   "Bualle": 1724.8
+  },
+  "v5": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ]
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2014,
+  "n_req": 2,
+  "n_points": 3,
+  "rp": 5,
+  "trigger": [
+   "17 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   3,
+   "19 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   7
+  ],
+  "v4_fc": [
+   "13 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   2,
+   "13 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   1
+  ],
+  "v4_fc_issue": [
+   "12 Oct",
+   "13 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   2,
+   "12 Oct",
+   "13 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   1
+  ],
+  "thr_v4": {
+   "Belet Weyne": 1109.0,
+   "Bulo Burti": 1109.3,
+   "Jowhar": 1159.3
+  },
+  "v5": [
+   "17 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   3,
+   "19 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   7
+  ]
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2016,
+  "n_req": 2,
+  "n_points": 3,
+  "rp": 6,
+  "trigger": [
+   "12 May",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   3,
+   "12 May",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   4
+  ],
+  "v4_fc": [
+   "09 May",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   3,
+   "10 May",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   23
+  ],
+  "v4_fc_issue": [
+   "08 May",
+   "10 May",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   3,
+   "08 May",
+   "10 May",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   14
+  ],
+  "thr_v4": {
+   "Belet Weyne": 673.2,
+   "Bulo Burti": 659.6,
+   "Jowhar": 676.1
+  },
+  "v5": [
+   "15 May",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   3,
+   "17 May",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   11
+  ]
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2019,
+  "n_req": 3,
+  "n_points": 4,
+  "rp": 4,
+  "trigger": [
+   null,
+   [],
+   2,
+   "15 Oct",
+   [
+    "Luuq",
+    "Bardheere"
+   ],
+   0
+  ],
+  "v4_fc": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ],
+  "v4_fc_issue": [
+   null,
+   null,
+   [],
+   0,
+   null,
+   null,
+   [],
+   0
+  ],
+  "thr_v4": {
+   "Dollow": 1735.8,
+   "Luuq": 1733.8,
+   "Bardheere": 1730.0,
+   "Bualle": 1724.8
+  },
+  "v5": [
+   null,
+   [],
+   2,
+   "15 Oct",
+   [
+    "Luuq",
+    "Bardheere"
+   ],
+   0
+  ]
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2019,
+  "n_req": 2,
+  "n_points": 3,
+  "rp": 5,
+  "trigger": [
+   "13 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   3,
+   "15 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   22
+  ],
+  "v4_fc": [
+   "02 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   3,
+   "02 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   15
+  ],
+  "v4_fc_issue": [
+   "02 Oct",
+   "02 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   3,
+   "02 Oct",
+   "02 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   9
+  ],
+  "thr_v4": {
+   "Belet Weyne": 1109.0,
+   "Bulo Burti": 1109.3,
+   "Jowhar": 1159.3
+  },
+  "v5": [
+   "13 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   3,
+   "15 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   22
+  ]
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2020,
+  "n_req": 2,
+  "n_points": 3,
+  "rp": 5,
+  "trigger": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ],
+  "v4_fc": [
+   "02 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   3,
+   "03 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   6
+  ],
+  "v4_fc_issue": [
+   "02 Oct",
+   "03 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   3,
+   "02 Oct",
+   "03 Oct",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   4
+  ],
+  "thr_v4": {
+   "Belet Weyne": 1109.0,
+   "Bulo Burti": 1109.3,
+   "Jowhar": 1159.3
+  },
+  "v5": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ]
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2020,
+  "n_req": 3,
+  "n_points": 4,
+  "rp": 5,
+  "trigger": [
+   "29 Apr",
+   [
+    "Dollow",
+    "Bardheere",
+    "Bualle"
+   ],
+   4,
+   "30 Apr",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   20
+  ],
+  "v4_fc": [
+   "03 May",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere"
+   ],
+   4,
+   "05 May",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   14
+  ],
+  "v4_fc_issue": [
+   "01 May",
+   "06 May",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   4,
+   "01 May",
+   "06 May",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   10
+  ],
+  "thr_v4": {
+   "Dollow": 2176.8,
+   "Luuq": 2176.1,
+   "Bardheere": 2175.4,
+   "Bualle": 2239.9
+  },
+  "v5": [
+   "30 Apr",
+   [
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   4,
+   "11 May",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   11
+  ]
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2020,
+  "n_req": 2,
+  "n_points": 3,
+  "rp": 6,
+  "trigger": [
+   "30 Apr",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   3,
+   "30 Apr",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   16
+  ],
+  "v4_fc": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ],
+  "v4_fc_issue": [
+   null,
+   null,
+   [],
+   0,
+   null,
+   null,
+   [],
+   0
+  ],
+  "thr_v4": {
+   "Belet Weyne": 673.2,
+   "Bulo Burti": 659.6,
+   "Jowhar": 676.1
+  },
+  "v5": [
+   "03 May",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   3,
+   "05 May",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   19
+  ]
+ },
+ {
+  "river": "juba",
+  "season": "gu",
+  "year": 2021,
+  "n_req": 3,
+  "n_points": 4,
+  "rp": 5,
+  "trigger": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ],
+  "v4_fc": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ],
+  "v4_fc_issue": [
+   null,
+   null,
+   [],
+   0,
+   null,
+   null,
+   [],
+   0
+  ],
+  "thr_v4": {
+   "Dollow": 2176.8,
+   "Luuq": 2176.1,
+   "Bardheere": 2175.4,
+   "Bualle": 2239.9
+  },
+  "v5": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ]
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2021,
+  "n_req": 2,
+  "n_points": 3,
+  "rp": 6,
+  "trigger": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ],
+  "v4_fc": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ],
+  "v4_fc_issue": [
+   null,
+   null,
+   [],
+   0,
+   null,
+   null,
+   [],
+   0
+  ],
+  "thr_v4": {
+   "Belet Weyne": 673.2,
+   "Bulo Burti": 659.6,
+   "Jowhar": 676.1
+  },
+  "v5": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ]
+ },
+ {
+  "river": "shabelle",
+  "season": "gu",
+  "year": 2023,
+  "n_req": 2,
+  "n_points": 3,
+  "rp": 6,
+  "trigger": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ],
+  "v4_fc": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ],
+  "v4_fc_issue": [
+   null,
+   null,
+   [],
+   0,
+   null,
+   null,
+   [],
+   0
+  ],
+  "thr_v4": {
+   "Belet Weyne": 673.2,
+   "Bulo Burti": 659.6,
+   "Jowhar": 676.1
+  },
+  "v5": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ]
+ },
+ {
+  "river": "juba",
+  "season": "deyr",
+  "year": 2023,
+  "n_req": 3,
+  "n_points": 4,
+  "rp": 4,
+  "trigger": [
+   "29 Oct",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere"
+   ],
+   4,
+   "30 Oct",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   37
+  ],
+  "v4_fc": [
+   "21 Oct",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   4,
+   "21 Oct",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   42
+  ],
+  "v4_fc_issue": [
+   "21 Oct",
+   "21 Oct",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   4,
+   "21 Oct",
+   "21 Oct",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   11
+  ],
+  "thr_v4": {
+   "Dollow": 1735.8,
+   "Luuq": 1733.8,
+   "Bardheere": 1730.0,
+   "Bualle": 1724.8
+  },
+  "v5": [
+   "29 Oct",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere"
+   ],
+   4,
+   "30 Oct",
+   [
+    "Dollow",
+    "Luuq",
+    "Bardheere",
+    "Bualle"
+   ],
+   37
+  ]
+ },
+ {
+  "river": "shabelle",
+  "season": "deyr",
+  "year": 2023,
+  "n_req": 2,
+  "n_points": 3,
+  "rp": 5,
+  "trigger": [
+   "10 Nov",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   3,
+   "11 Nov",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   22
+  ],
+  "v4_fc": [
+   null,
+   [],
+   0,
+   null,
+   [],
+   0
+  ],
+  "v4_fc_issue": [
+   null,
+   null,
+   [],
+   0,
+   null,
+   null,
+   [],
+   0
+  ],
+  "thr_v4": {
+   "Belet Weyne": 1109.0,
+   "Bulo Burti": 1109.3,
+   "Jowhar": 1159.3
+  },
+  "v5": [
+   "10 Nov",
+   [
+    "Belet Weyne",
+    "Bulo Burti"
+   ],
+   3,
+   "11 Nov",
+   [
+    "Belet Weyne",
+    "Bulo Burti",
+    "Jowhar"
+   ],
+   22
+  ]
+ }
+]

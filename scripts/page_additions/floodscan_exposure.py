@@ -1,8 +1,11 @@
 """Flood exposure for the 14 anticipatory-action districts (FloodScan flood extent x WorldPop,
 the team's flood-exposure pipeline, DB table app.floodscan_exposure), daily 1998-2023.
 
-Writes data/processed/floodscan_exposure_14.parquet and uploads it to blob, so the timing page
-can be rebuilt with scripts/restore_from_blob.py instead of a database pull.
+Caches the pull as floodscan_exposure_14.parquet next to this script and writes
+inundation_series.parquet (people exposed per river per day) for the FloodScan scripts. The
+copy season_charts.py reads sits under data/processed and on blob at
+ds-aa-som-floods/processed/floodscan_exposure_14.parquet, so the timing page can be rebuilt
+with scripts/restore_from_blob.py instead of a database pull.
 
 Usage (from repo root; needs prod DB read access):
     .venv/Scripts/python.exe scripts/page_additions/floodscan_exposure.py
