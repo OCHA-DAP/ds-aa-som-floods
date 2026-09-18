@@ -89,8 +89,8 @@ def threshold_source(product):
 # The readiness leg carries each window's own votes and return period, but
 # with GloFAS at leads 8-12 for every window and the return period capped at
 # 1-in-5 where the 21-year reforecast archive cannot resolve rarer levels
-# (trigger-single-model page, "The readiness leg"). Thresholds are refitted
-# on the readiness-band series of the operational GloFAS version.
+# (trigger-single-model page, "The readiness leg"). Both legs read the same
+# reanalysis levels, so a station's 1-in-5 is one number on either leg.
 READINESS_RP_CAP = 5
 READINESS_RULES = {
     w: {

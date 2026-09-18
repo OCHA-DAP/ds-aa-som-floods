@@ -77,8 +77,7 @@ def evaluate(df, monitoring_date=None, levels_df=None):
         a = cfg.ACTION_RULES[w]
         r = cfg.READINESS_RULES[w]
         a_levels = thr.lookup(levels_df, cfg.threshold_source(a["source"]), season, a["rp"], stations)
-        r_levels = thr.lookup(levels_df, cfg.GLOFAS_OPERATIONAL, season, r["rp"], stations,
-                              basis="readiness_band")
+        r_levels = thr.lookup(levels_df, cfg.GLOFAS_OPERATIONAL, season, r["rp"], stations)
         action = _leg(df, a["source"], stations, a_levels, cfg.ACTION_LEADS, months, a["n_req"])
         action.update({"source": a["source"], "rp": a["rp"], "leads": list(cfg.ACTION_LEADS)})
         ready = _leg(df, r["source"], stations, r_levels, cfg.READINESS_LEADS, months, r["n_req"])
