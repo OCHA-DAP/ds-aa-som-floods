@@ -144,7 +144,7 @@ def monitoring_chart(df, result, levels_df=None):
             gl_levels = thr.lookup(levels_df, cfg.GLOFAS_OPERATIONAL, season, a["rp"], stations)
             role = "activation"
         else:
-            gl_levels = thr.lookup(levels_df, cfg.GLOFAS_OPERATIONAL, season, r["rp"], stations, basis="readiness_band")
+            gl_levels = thr.lookup(levels_df, cfg.GLOFAS_OPERATIONAL, season, r["rp"], stations)
             role = "readiness"
         _panel(ax_of(i, col), df, "glofas", river, season, gl_levels, result["windows"][key], role)
     for ax in left:

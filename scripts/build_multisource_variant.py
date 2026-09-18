@@ -866,7 +866,7 @@ def write_activation_impact():
         old = json.loads(src_path.read_text(encoding="utf-8"))
         meta_note = old.get("meta", {}).get("note", "")
         for row in old.get("rows", []):
-            for river, seasons in row.get("rivers", {}).items():
+            for river, seasons in row.get("basins", row.get("rivers", {})).items():
                 for season, w in seasons.items():
                     impact[(row["year"], river, season)] = (w.get("emdat"),
                                                             w.get("cerf"))

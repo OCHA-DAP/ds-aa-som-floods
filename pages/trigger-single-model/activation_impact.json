@@ -110,7 +110,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 3500,
+       "deaths": 0,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -119,7 +123,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 150000,
+       "deaths": 0,
+       "multi": false
+      },
       "cerf": null
      }
     },
@@ -130,7 +138,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 3500,
+       "deaths": 0,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -164,7 +176,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 6500,
+       "deaths": 0,
+       "multi": false
+      },
       "cerf": null
      }
     },
@@ -245,7 +261,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 0,
+       "deaths": 0,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -265,7 +285,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "moderate",
-      "emdat": null,
+      "emdat": {
+       "aff": 0,
+       "deaths": 0,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -335,7 +359,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "moderate",
-      "emdat": null,
+      "emdat": {
+       "aff": 7520,
+       "deaths": 12,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -355,7 +383,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "moderate",
-      "emdat": null,
+      "emdat": {
+       "aff": 5020,
+       "deaths": 5,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -389,8 +421,15 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": null,
-      "cerf": null
+      "emdat": {
+       "aff": 155500,
+       "deaths": 35,
+       "multi": false
+      },
+      "cerf": {
+       "usd": 10437041,
+       "unattr": true
+      }
      }
     },
     "shabelle": {
@@ -409,8 +448,15 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": null,
-      "cerf": null
+      "emdat": {
+       "aff": 299000,
+       "deaths": 52,
+       "multi": false
+      },
+      "cerf": {
+       "usd": 10437041,
+       "unattr": true
+      }
      }
     }
    }
@@ -454,7 +500,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 8000,
+       "deaths": 4,
+       "multi": false
+      },
       "cerf": null
      }
     }
@@ -479,7 +529,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "severe",
-      "emdat": null,
+      "emdat": {
+       "aff": 52000,
+       "deaths": 0,
+       "multi": false
+      },
       "cerf": null
      }
     },
@@ -524,7 +578,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 1750,
+       "deaths": 0,
+       "multi": true
+      },
       "cerf": null
      }
     },
@@ -544,7 +602,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 1750,
+       "deaths": 0,
+       "multi": true
+      },
       "cerf": null
      }
     }
@@ -679,7 +741,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 32200,
+       "deaths": 31,
+       "multi": false
+      },
       "cerf": null
      }
     }
@@ -695,7 +761,11 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 50000,
+       "deaths": 7,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -715,7 +785,11 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 50000,
+       "deaths": 7,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -749,7 +823,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "severe",
-      "emdat": null,
+      "emdat": {
+       "aff": 90000,
+       "deaths": 0,
+       "multi": true
+      },
       "cerf": null
      }
     },
@@ -769,7 +847,11 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": null,
+      "emdat": {
+       "aff": 90000,
+       "deaths": 0,
+       "multi": true
+      },
       "cerf": null
      }
     }
@@ -805,7 +887,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 16296,
+       "deaths": 0,
+       "multi": false
+      },
       "cerf": null
      },
      "deyr": {
@@ -830,7 +916,11 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "moderate",
-      "emdat": null,
+      "emdat": {
+       "aff": 0,
+       "deaths": 9,
+       "multi": false
+      },
       "cerf": null
      },
      "deyr": {
@@ -920,8 +1010,15 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": null,
-      "cerf": null
+      "emdat": {
+       "aff": 700000,
+       "deaths": 5,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 5133588,
+       "unattr": true
+      }
      },
      "deyr": {
       "n": 2,
@@ -940,8 +1037,15 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "moderate",
-      "emdat": null,
-      "cerf": null
+      "emdat": {
+       "aff": 700000,
+       "deaths": 5,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 5133588,
+       "unattr": true
+      }
      },
      "deyr": {
       "n": 0,
@@ -974,8 +1078,15 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
-      "cerf": null
+      "emdat": {
+       "aff": 500000,
+       "deaths": 17,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 8000222,
+       "unattr": false
+      }
      }
     },
     "shabelle": {
@@ -994,8 +1105,15 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": null,
-      "cerf": null
+      "emdat": {
+       "aff": 500000,
+       "deaths": 17,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 8000222,
+       "unattr": false
+      }
      }
     }
    }
@@ -1010,7 +1128,11 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": null,
+      "emdat": {
+       "aff": 1191020,
+       "deaths": 32,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -1030,8 +1152,15 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": null,
-      "cerf": null
+      "emdat": {
+       "aff": 1191020,
+       "deaths": 32,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 7100529,
+       "unattr": false
+      }
      },
      "deyr": {
       "n": 0,
@@ -1055,7 +1184,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 400000,
+       "deaths": 25,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -1075,7 +1208,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "",
-      "emdat": null,
+      "emdat": {
+       "aff": 400000,
+       "deaths": 25,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -1145,7 +1282,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "severe",
-      "emdat": null,
+      "emdat": {
+       "aff": 568003,
+       "deaths": 43,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -1154,8 +1295,15 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": null,
-      "cerf": null
+      "emdat": {
+       "aff": 2758000,
+       "deaths": 122,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 10000009,
+       "unattr": false
+      }
      }
     },
     "shabelle": {
@@ -1165,7 +1313,11 @@
       "adopted": false,
       "adopted_v": false,
       "bench": "severe",
-      "emdat": null,
+      "emdat": {
+       "aff": 568003,
+       "deaths": 43,
+       "multi": true
+      },
       "cerf": null
      },
      "deyr": {
@@ -1174,8 +1326,15 @@
       "adopted": true,
       "adopted_v": true,
       "bench": "severe",
-      "emdat": null,
-      "cerf": null
+      "emdat": {
+       "aff": 2758000,
+       "deaths": 122,
+       "multi": true
+      },
+      "cerf": {
+       "usd": 10000009,
+       "unattr": false
+      }
      }
     }
    }

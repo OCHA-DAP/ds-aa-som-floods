@@ -444,8 +444,8 @@ add(f"<p>In Deyr, GloFAS tracks the gauges far more closely than Google ({track_
 add("<h2>How often it activates</h2><p>Every threshold sits at 1-in-3 or rarer. The vote counts were set so that the mechanism as a whole activates about once in three years while still catching every severe season.</p>")
 add(table(["", "#Activations, 25 years", "Return period", "Years"],
           [[c(wname(r, s)), n(str(len(act[(r, s)]))), c(rp_text(len(act[(r, s)]))), c(yl(act[(r, s)]))] for r, s in WINDOWS]
-          + [[c("Juba, either window"), n(str(len(per_river["juba"]))), c(rate_river["juba"]), c(yl(per_river["juba"]))],
-             [c("Shabelle, either window"), n(str(len(per_river["shabelle"]))), c(rate_river["shabelle"]), c(yl(per_river["shabelle"]))],
+          + [[c("Deyr, either window"), n(str(len(per_season["deyr"]))), c(rate_season["deyr"]), c(yl(per_season["deyr"]))],
+             [c("Gu, either window"), n(str(len(per_season["gu"]))), c(rate_season["gu"]), c(yl(per_season["gu"]))],
              [c("Whole mechanism"), n(str(n_act)), c(rate_env), c(yl(env_years))]]))
 ai = json.load(open(PAGE / "activation_impact.json"))          # the analysis page's year-by-year table data
 for row in ai["rows"]:
