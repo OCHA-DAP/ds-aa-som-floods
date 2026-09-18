@@ -16,9 +16,13 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
 from src.constants import TRIGGER_CONFIG  # noqa: E402
-from src.monitoring.config import ACTION_LEADS, READINESS_LEADS  # noqa: E402
+from src.monitoring.config import (ACTION_LEADS, READINESS_LEADS,  # noqa: E402
+                                   READINESS_RP_CAP)
 
 RP = {(r, s): c["rp"] for (r, s), c in TRIGGER_CONFIG.items()}
+# the readiness leg states the same rule with the return period capped
+RP_READY = {k: min(v, READINESS_RP_CAP) for k, v in RP.items()}
+READY_MARK = f"{READINESS_LEADS[0]} to {READINESS_LEADS[1]} days"
 # pages name a window either way round, so both spellings are checked
 LABEL = {k: (f"{k[1].title()} {k[0].title()}", f"{k[0].title()} {k[1].title()}")
          for k in TRIGGER_CONFIG}
@@ -51,9 +55,13 @@ for page in sorted(PAGES.rglob("*.html")):
                     rf"(?:{names})[^.]{{0,90}}?gauges forecast over their own 1-in-(\d+) level",
                     rf"(?:{names})[^.]{{0,40}}?(?:GloFAS v5|Google GRRR) 1-in-(\d+) \d of \d"):
             for m in re.finditer(pat, text):
-                if int(m.group(1)) != rp:
+                # the readiness rule is the same statement followed by its lead band
+                # ("... on the same day, 8 to 12 days ahead"), checked against the cap
+                tail = text[m.end():m.end() + 60]
+                want = RP_READY[key] if re.match(rf"\s*on the same day, {READY_MARK} ahead", tail) else rp
+                if int(m.group(1)) != want:
                     fail(rel, f"{LABEL[key][0]} rule stated as 1-in-{m.group(1)}, "
-                              f"config says 1-in-{rp}")
+                              f"config says 1-in-{want}")
     # the lead bands are configuration, not prose
     stale = f"{READINESS_LEADS[0] - 1}-{READINESS_LEADS[1]}"
     for bad in (f"{stale} d", f"{stale.replace('-', chr(8211))} d",

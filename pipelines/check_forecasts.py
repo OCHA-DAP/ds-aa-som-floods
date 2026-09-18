@@ -5,7 +5,8 @@
   list or the GRIB process identifiers changed, unless
   ALLOW_VERSION_MISMATCH=true. Applying the frozen v4 thresholds to a v5
   forecast would be wrong, so failing loudly is the safe default.
-- Google Flood Hub at the six gauges the live API serves (Dollow's HYBAS
+- Google Flood Hub at the seven trigger points (Dollow reads the Juba
+  main-stem gauge hybas_1121039440 since 2026-09-15; the design's Dawa-branch
   gauge is not in the operational feed).
 
 Rows are written to blob as monitoring/forecasts/<date>.parquet (dev), the store the later steps read.

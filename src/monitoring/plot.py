@@ -71,12 +71,12 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
             a0, a1 = issue + pd.Timedelta(days=cfg.ACTION_LEADS[0] - 1), issue + pd.Timedelta(days=cfg.ACTION_LEADS[1] - 1)
             r0, r1 = issue + pd.Timedelta(days=cfg.READINESS_LEADS[0] - 1), issue + pd.Timedelta(days=cfg.READINESS_LEADS[1] - 1)
             ax.axvspan(r0 - pd.Timedelta(hours=12), r1 + pd.Timedelta(hours=12), color="#F1F4F7", zorder=0)
-            ax.text(r0, 0.97, "readiness 8 to 12 d", transform=ax.get_xaxis_transform(), fontsize=8,
+            ax.text(r0, 0.97, f"readiness {cfg.READINESS_LEADS[0]} to {cfg.READINESS_LEADS[1]} d", transform=ax.get_xaxis_transform(), fontsize=8,
                     color=FAINT, va="top")
         else:
             a0, a1 = issue + pd.Timedelta(days=cfg.ACTION_LEADS[0]), issue + pd.Timedelta(days=cfg.ACTION_LEADS[1])
         ax.axvspan(a0 - pd.Timedelta(hours=12), a1 + pd.Timedelta(hours=12), color="#E6EEF7", zorder=0)
-        ax.text(a0, 0.97, "activation 1 to 7 d", transform=ax.get_xaxis_transform(), fontsize=8,
+        ax.text(a0, 0.97, f"activation {cfg.ACTION_LEADS[0]} to {cfg.ACTION_LEADS[1]} d", transform=ax.get_xaxis_transform(), fontsize=8,
                 color=FAINT, va="top")
     for st in stations:
         s = sub[sub.station == st].sort_values("valid_date")

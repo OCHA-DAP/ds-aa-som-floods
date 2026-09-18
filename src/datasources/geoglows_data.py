@@ -134,6 +134,8 @@ def download_forecast_archive_date(init, river_ids):
     The 13 Somalia rivers span only 2 of the store's 9,969 river chunks, so
     a contiguous slice across them is far cheaper than 13 separate reads.
     """
+    import zarr
+
     g = zarr.open_group(
         f"s3://{FORECAST_ARCHIVE_BUCKET}/{init}.zarr", mode="r",
         storage_options=S3_STORAGE_OPTIONS,

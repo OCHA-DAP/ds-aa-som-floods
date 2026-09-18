@@ -14,6 +14,7 @@ other's flows. Everything is computed here from data/processed/.
 
 import html
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -36,7 +37,8 @@ from src.utils import weibull_level  # noqa: E402
 
 OUT = REPO / "pages" / "glofas-version"
 FIGS = OUT / "figs"
-P = REPO / "data" / "processed"
+# processed parquets live in the main checkout; SOM_DATA_REPO points at it from a worktree
+P = Path(os.environ.get("SOM_DATA_REPO", REPO)) / "data" / "processed"
 Y0, Y1 = TRIGGER_YEARS
 SPAN = set(range(Y0, Y1 + 1))
 ST = cfg.STATION_TITLE
@@ -70,9 +72,8 @@ def activation_years(m, levels, n_req):
 
 
 def rp_text(n, years=len(SPAN)):
-    """25/8 = 3.125 is printed 1-in-3.2, as on the trigger pages (half up)."""
-    from decimal import ROUND_HALF_UP, Decimal
-    return f"1-in-{Decimal(years / n).quantize(Decimal('0.1'), rounding=ROUND_HALF_UP)}" if n else "never"
+    """Weibull (years + 1) / activations, formatted as on the trigger pages: 26/8 -> 1-in-3.2."""
+    return f"1-in-{(years + 1) / n:.1f}" if n else "never"
 
 
 def gauge_benchmark():
@@ -117,20 +118,19 @@ def main():
         for st in TRIGGER_STATIONS[river]:
             t4 = thr.lookup(lv_df, "glofas_v4", "deyr", rp, [st])[st]
             t5 = thr.lookup(lv_df, "glofas_v5", "deyr", rp, [st])[st]
-            tr = thr.lookup(lv_df, "glofas_v4", "deyr", rrp, [st], basis="readiness_band")[st]
+            tr = thr.lookup(lv_df, "glofas_v4", "deyr", rrp, [st])[st]  # readiness reads the same reanalysis levels
             m4 = dd["glofas_v4"][(dd["glofas_v4"].station == st) & dd["glofas_v4"].date.dt.month.isin(SEASONS["deyr"])].discharge
             m5 = dd["glofas_v5"][(dd["glofas_v5"].station == st) & dd["glofas_v5"].date.dt.month.isin(SEASONS["deyr"])].discharge
             deyr_rows.append({"river": river, "station": st, "rp": rp, "v4": t4, "v5": t5, "ratio": t4 / t5,
-                              "mean4": m4.mean(), "mean5": m5.mean(), "readiness_rp": rrp, "readiness_band": tr})
+                              "mean4": m4.mean(), "mean5": m5.mean(), "readiness_rp": rrp, "readiness": tr})
     tdf = pd.DataFrame(deyr_rows)
 
-    # Gu readiness levels (GloFAS is readiness-only in Gu) for completeness
+    # Gu readiness levels (GloFAS is readiness-only in Gu), reanalysis at the capped return period
     gu_rows = []
     for river in ("juba", "shabelle"):
         rrp = cfg.READINESS_RULES[(river, "gu")]["rp"]
         for st in TRIGGER_STATIONS[river]:
             gu_rows.append({"river": river, "station": st, "rp": rrp,
-                            "band": thr.lookup(lv_df, "glofas_v4", "gu", rrp, [st], basis="readiness_band")[st],
                             "v4": thr.lookup(lv_df, "glofas_v4", "gu", rrp, [st])[st],
                             "v5": thr.lookup(lv_df, "glofas_v5", "gu", rrp, [st])[st]})
     gdf = pd.DataFrame(gu_rows)
@@ -156,7 +156,7 @@ def main():
     def envelope(version):
         deyr = set(acts[(("juba", "deyr"), version, version)]) | set(acts[(("shabelle", "deyr"), version, version)])
         yrs = sorted(deyr | set(gu_union))
-        return {"years": yrs, "n": len(yrs), "rp": len(SPAN) / len(yrs) if yrs else np.inf,
+        return {"years": yrs, "n": len(yrs), "rp": (len(SPAN) + 1) / len(yrs) if yrs else np.inf,
                 "severe_caught": sorted(set(yrs) & set(severe_all)),
                 "severe_missed": sorted(set(severe_all) - set(yrs)),
                 "no_flood": sorted(set(yrs) - set(flood_all))}
@@ -251,12 +251,8 @@ def main():
         f"<tr><td>{cfg.RIVER_TITLE[r.river]}</td><td>{ST[r.station]}</td><td>1-in-{r.rp}</td>"
         f"<td class=n>{r.v5:,.0f}</td><td class=n><em>{r.v4:,.0f}</em></td><td class=n>{r.ratio:.2f}x</td>"
         f"<td class=n>{r.mean5:,.0f}</td><td class=n>{r.mean4:,.0f}</td>"
-        f"<td class=n>1-in-{r.readiness_rp}: {r.readiness_band:,.0f}</td></tr>"
+        f"<td class=n>1-in-{r.readiness_rp}: {r.readiness:,.0f}</td></tr>"
         for r in tdf.itertuples())
-    gu_thr_rows = "".join(
-        f"<tr><td>{cfg.RIVER_TITLE[r.river]}</td><td>{ST[r.station]}</td><td>1-in-{r.rp}</td>"
-        f"<td class=n><em>{r.band:,.0f}</em></td><td class=n>{r.v4:,.0f}</td><td class=n>{r.v5:,.0f}</td></tr>"
-        for r in gdf.itertuples())
 
     def act_cell(w, fit, flow):
         a = acts[(w, fit, flow)]
@@ -339,7 +335,7 @@ table.data tr.pick td {{ background:var(--b05); }} .muted {{ color:#6b7683; font
   <article>
     <div class="stats">
       <div class="stat flag"><div class="v">v4.5</div><div class="l">operational GloFAS, EWDS, 14 Sep 2026</div></div>
-      <div class="stat"><div class="v">{ratio_med:.1f}x</div><div class="l">median v4 / v5 ratio of the Deyr 1-in-4 levels</div></div>
+      <div class="stat"><div class="v">{ratio_med:.1f}x</div><div class="l">median v4 / v5 ratio of the Deyr action levels</div></div>
       <div class="stat"><div class="v">{env['glofas_v5']['n']} &rarr; {env['glofas_v4']['n']}</div><div class="l">envelope activations 1999&ndash;2023, design &rarr; live</div></div>
       <div class="stat"><div class="v">{len(env['glofas_v5']['severe_caught'])} &rarr; {len(env['glofas_v4']['severe_caught'])} of {len(severe_all)}</div><div class="l">severe years caught, design &rarr; live</div></div>
     </div>
@@ -363,16 +359,16 @@ table.data tr.pick td {{ background:var(--b05); }} .muted {{ color:#6b7683; font
        flat along each river where version 5 decreases downstream. The versions share the river network here, so
        every comparison is at the same cell. A level fitted on one version is meaningless on the other.</p>
     <figure><img src="figs/seasonal_maxima.png" alt="v4 vs v5 seasonal maxima"><figcaption>Deyr seasonal maximum at each monitored point, 1999&ndash;2023, version 4 against version 5. Dashed: equal; thin grey: version 4 twice version 5.</figcaption></figure>
-    <figure><img src="figs/deyr2023.png" alt="Deyr 2023 on both versions"><figcaption>Deyr 2023, the largest flood in the record, at the two reference gauges on each version's reanalysis with each version's own 1-in-4 level. At Luuq both versions cross their own level; at Belet Weyne version 5 crosses and version 4 stays below its level through the largest flood on record, which is why no version 4 rule catches Deyr 2023 on the Shabelle.</figcaption></figure>
+    <figure><img src="figs/deyr2023.png" alt="Deyr 2023 on both versions"><figcaption>Deyr 2023, the largest flood in the record, at the two reference gauges on each version's reanalysis with each version's own Deyr level (1-in-4 at Luuq, 1-in-5 at Belet Weyne). At Luuq both versions cross their own level; at Belet Weyne version 5 crosses and version 4 stays below its level through the largest flood on record, which is why no version 4 rule catches Deyr 2023 on the Shabelle.</figcaption></figure>
 
     <h2>Deyr action levels, both versions</h2>
     <p>Levels at each point's Deyr return period, fitted on the Deyr seasonal maxima 1999&ndash;2023 of each version's own reanalysis
        (Weibull plotting position, as in the trigger analysis). The live column is highlighted. The last column is the
-       readiness level, fitted on the version 4 reforecast at leads 8&ndash;12 days, which the trigger page already used and
-       which is consistent with a version 4 live forecast.</p>
-    <div class="tablewrap"><table class="data"><thead><tr><th>River</th><th>Point</th><th>RP</th><th>v5 level (design)</th><th>v4 level (live)</th><th>v4 / v5</th><th>v5 Deyr mean</th><th>v4 Deyr mean</th><th>Readiness level (v4 band, 8&ndash;12 d)</th></tr></thead>
+       readiness level: the same version 4 reanalysis level at the window's return period, capped at 1-in-5
+       (<code>READINESS_RP_CAP</code> in <code>src/monitoring/config.py</code>), so in Deyr it equals the live action level.</p>
+    <div class="tablewrap"><table class="data"><thead><tr><th>River</th><th>Point</th><th>RP</th><th>v5 level (design)</th><th>v4 level (live)</th><th>v4 / v5</th><th>v5 Deyr mean</th><th>v4 Deyr mean</th><th>Readiness level (v4 reanalysis, leads 8&ndash;12 d)</th></tr></thead>
     <tbody>{thr_rows}</tbody></table></div>
-    <p class="muted">Gu readiness levels (GloFAS carries readiness only in Gu; Google carries the action leg): {', '.join(f"{ST[r.station]} {r.band:,.0f}" for r in gdf.itertuples())} m³/s at 1-in-5, version 4 readiness band. On the reanalyses the same points sit at v4 {', '.join(f"{r.v4:,.0f}" for r in gdf.itertuples())} and v5 {', '.join(f"{r.v5:,.0f}" for r in gdf.itertuples())}.</p>
+    <p class="muted">Gu readiness levels (GloFAS carries readiness only in Gu; Google carries the action leg), version 4 reanalysis at 1-in-5: {', '.join(f"{ST[r.station]} {r.v4:,.0f}" for r in gdf.itertuples())} m³/s. On the version 5 reanalysis the same points sit at {', '.join(f"{r.v5:,.0f}" for r in gdf.itertuples())}.</p>
 
     <h2>What the Deyr windows do on each version</h2>
     <p>Each window's adopted rule replayed on each version's own reanalysis with levels fitted on that version (the two
@@ -421,8 +417,8 @@ table.data tr.pick td {{ background:var(--b05); }} .muted {{ color:#6b7683; font
           on the main-stem gauge; the trigger pages still show the design point's Dollow numbers until rebuilt.</li>
       <li><strong>Google's live horizon.</strong> The API returns daily values from two days before the issue to five
           days after it, so the action leg reads Google at leads 1&ndash;5, not 1&ndash;7 as in the archive.</li>
-      <li><strong>Readiness levels</strong> were fitted on the version 4 reforecast at leads 8&ndash;12 (the only archive
-          at those leads), so they were already consistent with a version 4 live forecast; nothing changes there.</li>
+      <li><strong>Readiness</strong> reads the same version 4 reanalysis levels as the action leg, at the window's return
+          period capped at 1-in-5, so the version switch applies to both legs alike.</li>
       <li><strong>When version 5 goes live</strong>, flip the constant, regenerate this page and the design comparison
           holds in reverse: the v5 columns above become the live ones. The v5 reanalysis extends to mid-2026 on EWDS, so
           the levels can also be refitted on a longer record at that point.</li>
@@ -439,7 +435,7 @@ table.data tr.pick td {{ background:var(--b05); }} .muted {{ color:#6b7683; font
 </body>
 </html>
 """
-    (OUT / "index.html").write_text(page)
+    (OUT / "index.html").write_text(page, encoding="utf-8")
     summary = {"generated": pd.Timestamp.today().strftime("%Y-%m-%d"), "operational": cfg.GLOFAS_OPERATIONAL,
                "ratio_median_deyr_rp": float(ratio_med),
                "deyr_levels": tdf.round(1).to_dict(orient="records"),
@@ -447,7 +443,7 @@ table.data tr.pick td {{ background:var(--b05); }} .muted {{ color:#6b7683; font
                "gu_activations": {cfg.WINDOW_KEY[w]: y for w, y in gu_acts.items()},
                "envelope": {v: {k: (float(x) if k == "rp" else x) for k, x in e_.items()} for v, e_ in env.items()},
                "benchmark": {cfg.WINDOW_KEY[w]: b for w, b in bench.items()}, "sweep_v4": sweep}
-    (OUT / "data.json").write_text(json.dumps(summary, indent=1, default=str) + "\n")
+    (OUT / "data.json").write_text(json.dumps(summary, indent=1, default=str) + "\n", encoding="utf-8")
     print(f"wrote {OUT / 'index.html'}")
     print("envelope:", {v: (e_['n'], round(e_['rp'], 1), e_['years']) for v, e_ in env.items()})
     print("deyr acts v4:", {cfg.WINDOW_KEY[w]: y for w, y in v4d.items()})

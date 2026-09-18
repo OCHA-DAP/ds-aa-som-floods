@@ -13,7 +13,7 @@
    "mean4": 890.4000244140625,
    "mean5": 259.0,
    "readiness_rp": 4,
-   "readiness_band": 1498.8
+   "readiness": 1735.8
   },
   {
    "river": "juba",
@@ -25,7 +25,7 @@
    "mean4": 895.2999877929688,
    "mean5": 320.29998779296875,
    "readiness_rp": 4,
-   "readiness_band": 1517.2
+   "readiness": 1733.8
   },
   {
    "river": "juba",
@@ -37,7 +37,7 @@
    "mean4": 906.2000122070312,
    "mean5": 328.0,
    "readiness_rp": 4,
-   "readiness_band": 1532.3
+   "readiness": 1730.0
   },
   {
    "river": "juba",
@@ -49,7 +49,7 @@
    "mean4": 913.5999755859375,
    "mean5": 313.20001220703125,
    "readiness_rp": 4,
-   "readiness_band": 1551.3
+   "readiness": 1724.8
   },
   {
    "river": "shabelle",
@@ -61,7 +61,7 @@
    "mean4": 471.1000061035156,
    "mean5": 149.10000610351562,
    "readiness_rp": 5,
-   "readiness_band": 989.0
+   "readiness": 1109.0
   },
   {
    "river": "shabelle",
@@ -73,7 +73,7 @@
    "mean4": 475.6000061035156,
    "mean5": 115.5,
    "readiness_rp": 5,
-   "readiness_band": 1000.6
+   "readiness": 1109.3
   },
   {
    "river": "shabelle",
@@ -85,7 +85,7 @@
    "mean4": 486.79998779296875,
    "mean5": 104.0999984741211,
    "readiness_rp": 5,
-   "readiness_band": 1013.0
+   "readiness": 1159.3
   }
  ],
  "activations": {
@@ -204,7 +204,7 @@
     2023
    ],
    "n": 12,
-   "rp": 2.0833333333333335,
+   "rp": 2.1666666666666665,
    "severe_caught": [
     2014,
     2016,
@@ -234,7 +234,7 @@
     2023
    ],
    "n": 8,
-   "rp": 3.125,
+   "rp": 3.25,
    "severe_caught": [
     2006,
     2014,

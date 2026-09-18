@@ -90,7 +90,10 @@ def gauge_consensus_years(lv, river, season, rp, n_req=BENCH_GAUGES):
     for st in TRIGGER_STATIONS[river]:
         s = lv[lv.station == st].set_index("date")["level_m"].dropna().sort_index()
         s = s[s.index.month.isin(SEASONS[season])]
-        modern = s[s.index.year >= 2000]
+        # fit window closed at max(SPAN): an open-ended fit let 2024-2026 readings
+        # into the levels while crossings are counted inside SPAN only, and that
+        # alone decided whether 2008 was severe
+        modern = s[(s.index.year >= 2000) & (s.index.year <= max(SPAN))]
         am = modern.groupby(modern.index.year).max().dropna()
         if not len(am):
             continue
