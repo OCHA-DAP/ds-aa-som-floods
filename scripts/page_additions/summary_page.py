@@ -18,14 +18,18 @@ from matplotlib.lines import Line2D
 
 import somlib as L
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from src.constants import TRIGGER_CONFIG  # noqa: E402
+
 S = Path(__file__).parent
-PAGE = S / "wt-trigger/pages/trigger-single-model"
+PAGE = Path(__file__).resolve().parents[2] / "pages" / "trigger-single-model"
 FIGS = PAGE / "figs"
 OUT = PAGE / "summary.html"
 
 # ---------------------------------------------------------------- the design, as adopted
 WINDOWS = [("juba", "deyr"), ("shabelle", "deyr"), ("juba", "gu"), ("shabelle", "gu")]   # Deyr before Gu
-RULE = {("juba", "deyr"): (4, 3), ("shabelle", "deyr"): (4, 2), ("juba", "gu"): (5, 3), ("shabelle", "gu"): (6, 2)}
+RULE = {k: (v["rp"], v["n_req"]) for k, v in TRIGGER_CONFIG.items()}
 CAL = {"deyr": "glofas_v5", "gu": "google_grrr"}                    # calibrated model per season (data key)
 SOURCE = {"deyr": "GloFAS", "gu": "Google Flood Hub"}               # how the trigger names its source
 NICE = {"google_grrr": "Google Flood Hub", "glofas_v5": "GloFAS v5", "glofas_v4": "GloFAS v4"}
@@ -103,8 +107,10 @@ n_act = len(env_years)
 sev_caught = len(env_years & severe_all)
 outside = sorted(env_years - flood_all)
 per_river = {r: set().union(*(act[(r, s)] for s in ("deyr", "gu"))) for r in ("juba", "shabelle")}
+per_season = {s: set().union(*(act[(r, s)] for r in ("juba", "shabelle"))) for s in ("deyr", "gu")}
 rate_env = rp_text(n_act)
 rate_river = {r: rp_text(len(v)) for r, v in per_river.items()}
+rate_season = {s: rp_text(len(v)) for s, v in per_season.items()}
 # readiness leg as designed (GloFAS ensemble, 6 of 11 members, readiness thresholds), from the v4 reforecast sweep, 2003-2023
 sweep = json.load(open(S / "prob_sweep_results.json"))
 RSPAN = set(range(2003, 2024))
@@ -114,7 +120,7 @@ assert len(RSPAN) == 21 and 8 <= len(ready_years) <= 12 and env_years <= RSPAN |
 rate_ready, rate_either = rp_text(len(ready_years), n=len(RSPAN)), rp_text(len(either_years), n=len(RSPAN))
 # cross-check against the analysis page's own headline tiles
 assert f"{rate_env} overall action return period" in index_text, rate_env
-assert f"{rate_river['shabelle']} / {rate_river['juba']} per river" in index_text, rate_river
+assert f"{rate_season['deyr']} / {rate_season['gu']} per season" in index_text, rate_season
 assert sev_caught == len(severe_all) == 7, (sev_caught, len(severe_all))
 assert outside == [2013], outside
 
@@ -369,7 +375,7 @@ details{{margin:14px 0}} summary{{cursor:pointer;font-weight:600;padding:4px 0;c
 <div class="wrap">""")
 
 add("<h2>Findings</h2><ul>"
-    f"<li>Four windows, one forecast source each: GloFAS in Deyr and Google Flood Hub in Gu, with thresholds between 1-in-4 and 1-in-6 at each gauge. Any one window activating releases the allocation.</li>"
+    f"<li>Four windows, one forecast source each: GloFAS in Deyr and Google Flood Hub in Gu, with thresholds between 1-in-{min(r for r, _ in RULE.values())} and 1-in-{max(r for r, _ in RULE.values())} at each gauge. Any one window activating releases the allocation.</li>"
     f"<li>On the 1999 to 2023 gauge record the mechanism activates {n_act} times in 25 years ({rate_env}), catches all {len(severe_all)} severe seasons, and activates once with no gauge flood behind it ({yl(outside)}).</li>"
     f"<li>GloFAS tracks the gauges more closely in Deyr ({track_season[('deyr', 'glofas_v5')]:.2f} against {track_season[('deyr', 'google_grrr')]:.2f} for Google) and Google more closely in Gu ({track_season[('gu', 'google_grrr')]:.2f} against {track_season[('gu', 'glofas_v5')]:.2f}); Google also orders the Gu floods closer to the gauges' order.</li>"
     f"<li>On the historical forecasts, Google was first in all {FB_G['n_both']} Gu seasons both archives cover and GloFAS v4 was first in {FB_D['head_to_head']['glofas_v4']} of {FB_D['n_both']} in Deyr. The action window stops at 7 days because Google forecasts no further and the GloFAS signal fades beyond a week.</li>"
