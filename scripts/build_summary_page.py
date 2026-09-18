@@ -1016,9 +1016,7 @@ HTML = f"""<!DOCTYPE html>
       their own level, which keeps one record from deciding the benchmark but has three
       consequences worth stating.
       <ul>
-        <li><strong>It agrees with the impact record on the big years.</strong> All five
-          costliest years in EM-DAT and CERF terms &mdash; 2006, 2018, 2019, 2020 and
-          2023 &mdash; are severe under the rule.</li>
+        <li><strong>It agrees with the impact record on the big years.</strong> All five costliest years in EM-DAT and CERF terms (2006, 2018, 2019, 2020 and 2023) are severe under the rule.</li>
         <li><strong>1999 to 2001 cannot be assessed.</strong> The Juba had no gauge
           reporting and the Shabelle only one, so no consensus is possible and those
           years read as quiet rather than as unknown. Nothing activates before 2005, so

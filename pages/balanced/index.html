@@ -190,11 +190,8 @@ table.cmp td.fire { background:rgba(30,121,95,.30); font-weight:700; color:#1251
         activation rate is carried almost entirely by Gu.</li>
       <li><strong>GEOGloWS units are scored on the retrospective</strong> at lead 0, since
         its forecast archive begins July 2024. Any lead-time claim resting on them is
-        unproven, and its live forecasts run at 0.89&times; its own retrospective &mdash;
-        so a level set as 1-in-5 behaves like a median 1-in-13 unless the thresholds are
-        refit or the forecast is debiased.</li>
-      <li><strong>Scored on the corrected benchmark</strong> (branch
-        <code>fix/corrected-benchmark-and-lag</code>): return levels fitted strictly
+        unproven, and its live forecasts run at 0.89&times; its own retrospective, so a level set as 1-in-5 behaves like a median 1-in-13 unless the thresholds are refit or the forecast is debiased.</li>
+      <li><strong>Scored on the corrected benchmark</strong> (<code>scripts/envelope_search.py</code>): return levels fitted strictly
         within 2000&ndash;2023, which removes 2008 from the severe set.</li>
     </ul>
 

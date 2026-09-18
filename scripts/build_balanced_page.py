@@ -9,8 +9,8 @@ within 0.10 rho of the window's best.  The search maximises severe-year coverage
 subject to the envelope staying at 1-in-3 or rarer, tie-broken on how level the
 basin and season activation counts come out.
 
-Run with the project interpreter from the corrected-benchmark checkout - see the
-guard, and the note in scripts/build_comparison_page.py for why it matters:
+Run with the project interpreter. The guard below checks that scripts/envelope_search.py
+fits the gauge return levels on a closed window (see scripts/build_comparison_page.py):
 
     .venv/bin/python scripts/build_balanced_page.py
 """
@@ -26,7 +26,7 @@ if "max(SPAN)" not in inspect.getsource(es.gauge_consensus_years):
     sys.exit(
         "REFUSING TO RUN: scripts/envelope_search.py still fits return levels on an\n"
         "open-ended window, so the benchmark would carry a lookahead.\n"
-        "Check out fix/corrected-benchmark-and-lag (or merge it) and rerun."
+        "Fix the fit window in scripts/envelope_search.py and rerun."
     )
 
 D = ROOT / "data/processed"

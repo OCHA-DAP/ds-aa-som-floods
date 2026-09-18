@@ -267,7 +267,10 @@ READINESS_MODEL = "glofas_v4"
 # 2026-08-31 against the two-gauge benchmark: 8,808 assignments land on 8
 # activations, 267 tie for the best score, and those 267 span only two distinct
 # activation-year sets, so the choice of product is not identified by the
-# backtest.
+# backtest. The GEOGloWS-cost figures two paragraphs up ("7 of 8", "2008 as
+# the miss") were computed on the earlier benchmark that counted 2008 as an
+# eighth severe year; on the corrected benchmark the adopted design catches
+# all 7 severe years.
 # Where the envelope is indifferent, the forecast side decides, which is why
 # Shabelle Deyr runs on GloFAS: it leads the Shabelle at lead time in both
 # seasons, its thresholds come from the v5 reanalysis that matches the
@@ -289,12 +292,14 @@ WINDOW_MODEL = {k: v["source"] for k, v in TRIGGER_CONFIG.items()}
 # settings are searched against the union instead (scripts/envelope_search.py).
 ENVELOPE_TARGET_RP = 3
 
-# A year counts as severe when the river's reference gauge recorded a 1-in-5
-# or rarer season. These are the years the envelope is judged on: at a 1-in-3
-# activation rate it cannot catch every RP3 flood, so it should catch the
+# A season counts as severe when two of the river's gauges reached their own
+# 1-in-5 level (scripts/envelope_search.py gauge_consensus_years, levels fitted
+# 2000-2023). These are the years the envelope is judged on: at a 1-in-3
+# activation rate it cannot catch every 1-in-3 flood, so it should catch the
 # worst ones.
 SEVERE_RP = 5
 
 TRIGGER_YEARS = (1999, 2023)
-BENCHMARK_RP = 3  # a flood year at the reference gauge
+BENCHMARK_RP = 3  # a flood season: two gauges over their own 1-in-3 level
+# the gauge each river's model is ranked against in scripts/model_selection.py
 REFERENCE_GAUGE = {"juba": "luuq", "shabelle": "belet_weyne"}

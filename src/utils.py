@@ -13,7 +13,7 @@ def return_period_for_level(annual_max, level):
 
     Uses the same Weibull plotting-position convention as return-level
     calculations elsewhere (rank i, ascending, has non-exceedance
-    probability i/(n+1)); this is its inverse — given a level, find the
+    probability i/(n+1)); this is its inverse: given a level, find the
     continuous rank via linear interpolation, then convert to a return
     period. Returns NaN if `level` exceeds every annual maximum on record
     (i.e. the return period can't be estimated without extrapolating
