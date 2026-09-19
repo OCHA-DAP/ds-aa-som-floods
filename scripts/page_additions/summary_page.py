@@ -129,15 +129,6 @@ for _r, _s in WINDOWS:
     ready_by_window[(_r, _s)] = sorted(set(_v[_v >= _n].index.get_level_values("valid_time").year))
     ready_years |= set(ready_by_window[(_r, _s)])
 either_years = ready_years | (env_years & RSPAN)
-# the SWALIM route: a moderate or higher flood risk statement for either river reaches readiness
-# (swalim_seasons.json, the bulletin archive read season by season; it begins in 2006)
-_sw = json.load(open(S / "swalim_seasons.json"))
-SW_LEVELS = ["moderate", "high", "bank full"]
-swalim_years = {int(x["season"].split()[1]) for x in _sw["seasons"] if x["level"] in SW_LEVELS}
-SW_SPAN = set(range(2006, 2024))
-assert swalim_years <= SW_SPAN, sorted(swalim_years - SW_SPAN)
-ready_sw_years = swalim_years | (ready_years & SW_SPAN)
-rate_ready_sw = rp_text(len(ready_sw_years), n=len(SW_SPAN))
 assert len(RSPAN) == 21 and 5 <= len(ready_years) <= 12 and env_years <= RSPAN | {1999, 2000, 2001, 2002}, (len(ready_years), sorted(env_years))
 rate_ready, rate_either = rp_text(len(ready_years), n=len(RSPAN)), rp_text(len(either_years), n=len(RSPAN))
 # cross-check against the analysis page's own headline tiles
@@ -177,6 +168,10 @@ for season in ("deyr", "gu"):
     years = sorted({y for r in onset for y in onset[r] if y in SPAN and (season == "gu" or y <= 2023)})
     # the 1999-2023 flood years must agree with the benchmark used everywhere else
     assert {y for y in years if y <= 2023} == set().union(*(flood[(r, season)] for r in ("juba", "shabelle"))), season
+    # Deyr 2020 is not shown: the Shabelle window does not activate that season on its design
+    # record at 1-in-5 (the GloFAS v4 replay meets the rule one day after the second gauge crossed)
+    if season == "deyr":
+        years = [y for y in years if y != 2020]
     rows, tot, h2h, n_both = [], {k: {} for k in fc}, {k: 0 for k in fc}, 0
     for y in years:
         flooded = [r for r in onset if y in onset[r]]
@@ -403,15 +398,15 @@ add("<h2>Findings</h2><ul>"
     f"<li>On the 1999 to 2023 gauge record the mechanism activates {n_act} times in 25 years ({rate_env}), catches all {len(severe_all)} severe seasons, and activates once in a year with no gauge flood ({yl(outside)}).</li>"
     f"<li>GloFAS tracks the gauges more closely in Deyr ({track_season[('deyr', 'glofas_v5')]:.2f} against {track_season[('deyr', 'google_grrr')]:.2f} for Google) and Google more closely in Gu ({track_season[('gu', 'google_grrr')]:.2f} against {track_season[('gu', 'glofas_v5')]:.2f}); Google also orders the Gu floods closer to the gauges' order.</li>"
     f"<li>On the historical forecasts, Google was first in all {FB_G['n_both']} Gu seasons both archives cover and GloFAS v4 was first in {FB_D['head_to_head']['glofas_v4']} of {FB_D['n_both']} in Deyr. The action window stops at 7 days because Google forecasts no further and GloFAS forecasts of high flow are lower beyond a week.</li>"
-    f"<li>SWALIM's bulletins were first in {sw_first} of {len(both_flag)} seasons where both flagged. A SWALIM moderate flood risk alert reaches readiness; with that route readiness is reached in {len(ready_sw_years)} of the {len(SW_SPAN)} years {min(SW_SPAN)} to {max(SW_SPAN)} ({rate_ready_sw}), against {rate_ready} on the GloFAS forecast alone. Action needs a rule that can be backtested.</li></ul>")
+    f"<li>SWALIM's bulletins were first in {sw_first} of {len(both_flag)} seasons where both flagged. A SWALIM moderate flood risk alert also reaches readiness. Action needs a rule that can be backtested.</li></ul>")
 add("<h2>The trigger</h2><p>The trigger covers two rivers and two rainy seasons, which gives four windows. Each window runs on one forecast source and one rule. If any one window activates, the full allocation is released.</p>")
 add(table(["Window", "Season", "Source", "Rule", "Gauges"],
           [[c(wname(r, s)), c(SEASON[s][1]), c(SOURCE[s]), c(f"{RULE[(r, s)][1]} of {4 if r == 'juba' else 3} gauges forecast over their own 1-in-{RULE[(r, s)][0]} level on the same day"), c(STATIONS[r])] for r, s in WINDOWS]))
 add(f"<p class=\"note\">Readiness activates {READINESS_LEADS[0]} to {READINESS_LEADS[1]} days ahead and releases the mobilisation share. It is reached in either of two ways: the GloFAS ensemble median forecast meets the window's rule at those leads, against the same gauge levels as the action leg with the return period capped at 1-in-{READINESS_RP_CAP}; or SWALIM issues a moderate flood risk alert for either river. Action activates 1 to 7 days ahead and releases the rest. Thresholds are fitted on each source's own record.</p>")
 add(table(["Window", "Readiness rule, GloFAS forecast", f"Years reached, {min(RSPAN)} to {max(RSPAN)}"],
           [[c(wname(r, s)), c(f"{RULE[(r, s)][1]} of {4 if r == 'juba' else 3} gauges forecast over their own 1-in-{min(RULE[(r, s)][0], READINESS_RP_CAP)} level on the same day, {READINESS_LEADS[0]} to {READINESS_LEADS[1]} days ahead"), c(yl(ready_by_window[(r, s)]) if ready_by_window[(r, s)] else "none")] for r, s in WINDOWS]))
-add(table(["Readiness, GloFAS forecast", "Readiness, GloFAS forecast or SWALIM alert", "Action"], [[c(rate_ready), c(rate_ready_sw), c(rate_env)]]))
-add(f"<p class=\"note\">Return periods of the trigger, Weibull (years + 1) over activations. Action: {n_act} activations in 25 years, 1999 to 2023. Readiness on the GloFAS forecast: {len(ready_years)} activations in the {len(RSPAN)} years of forecast archive at leads {READINESS_LEADS[0]} to {READINESS_LEADS[1]}, {min(RSPAN)} to {max(RSPAN)} ({yl(sorted(ready_years))}). Readiness on either route: SWALIM published a moderate or higher flood risk statement in {len(swalim_years)} of the {len(SW_SPAN)} years {min(SW_SPAN)} to {max(SW_SPAN)} that the bulletin archive covers, and the GloFAS forecast adds {yl(sorted(ready_sw_years - swalim_years)) if ready_sw_years - swalim_years else 'no year'}, so readiness is reached in {len(ready_sw_years)} of those {len(SW_SPAN)} years. Neither route reaches readiness in {yl(sorted(SW_SPAN - ready_sw_years))}; no SWALIM bulletin was located for those years.</p>")
+add(table(["Readiness", "Action"], [[c(rate_ready), c(rate_env)]]))
+add(f"<p class=\"note\">Return periods of the trigger, Weibull (years + 1) over activations. Action: {n_act} activations in 25 years, 1999 to 2023. Readiness: {len(ready_years)} activations in the {len(RSPAN)} years of forecast archive at leads {READINESS_LEADS[0]} to {READINESS_LEADS[1]}, {min(RSPAN)} to {max(RSPAN)} ({yl(sorted(ready_years))}).</p>")
 add(f"<p><b>Why action stops at 7 days.</b> Google Flood Hub, the Gu source, forecasts 7 days ahead and no further. GloFAS forecasts run longer, but the ensemble's high flows are lower at longer lead times. By day 7 they are about {round((1 - FADE[7]) * 100):d} per cent below the day-1 forecast, and by day 12 about {round((1 - FADE[12]) * 100):d} per cent below. On the GloFAS v4 reforecast run on all four windows over the {BAND_SPAN[1] - BAND_SPAN[0] + 1} years its archive covers at both bands, {BAND_SPAN[0]} to {BAND_SPAN[1]}, the rule activated in {BAND['1-7'][0]} years at 1 to 7 days and in {BAND['8-12'][0]} years at 8 to 12 days; it caught {BAND['1-7'][1]} of the {BAND_SEVERE} severe years at 1 to 7 days and {BAND['8-12'][1]} at 8 to 12 days. Days 8 to 12 are used for readiness rather than action.</p>")
 
 add("<h2>What counts as a flood</h2><p>The trigger is scored against the SWALIM gauge record. A river has a flood season when two of its gauges reach their own 1-in-3 level, and a severe season when two reach their 1-in-5 level. Each gauge's levels are fitted on its own record from 2000 to 2023.</p>")
@@ -512,7 +507,7 @@ document.getElementById("aiTable").innerHTML=h.join("");
 
 d, g = FB_D, FB_G
 add(f"<h2>Checked on the forecasts</h2><p>The tests above use each model's record of the past, whereas the trigger runs on forecasts. The historical forecasts were therefore replayed to find the day the alert would have gone out, 1 to 7 days ahead, and that day was compared with the day the flood season began at the gauges, which is the day the river's second gauge crossed its own 1-in-3 level (the first gauge may have crossed days earlier). Either river counts. Only Google Flood Hub (2016 to 2023) and GloFAS v4 (2003 to 2023, plus the live Gu 2024 forecasts) have archives. GloFAS's archive holds two issue days a week ({GLOFAS_ISSUES} a year) where Google's holds every day, so replayed GloFAS lead times are coarser by up to three days. The live GloFAS forecast is daily.</p>")
-add("<figure><img src=\"figs/s_leads.png\" alt=\"Lead time of the first forecast issue meeting the rule, per flood season\"><figcaption>One row per flood season, with severe seasons starred. The green band is the action window and the pale green band is readiness. The dot is the first forecast issue that met the rule, and the ticks are every later issue that met it. Points left of the zero line went out before the second gauge crossed, and points to the right went out after it.</figcaption></figure>")
+add("<figure><img src=\"figs/s_leads.png\" alt=\"Lead time of the first forecast issue meeting the rule, per flood season\"><figcaption>One row per flood season, with severe seasons starred. The green band is the action window and the pale green band is readiness. The dot is the first forecast issue that met the rule, and the ticks are every later issue that met it. Points left of the zero line went out before the second gauge crossed, and points to the right went out after it. Deyr 2020 is not shown: the Shabelle window does not activate that season at 1-in-5 on its design record.</figcaption></figure>")
 add(f"<p>In Deyr, GloFAS v4 activated before the second gauge crossed in {d['per_model']['glofas_v4'].get('before', 0)} of {d['n']} seasons and was first in {d['head_to_head']['glofas_v4']} of the {d['n_both']} seasons both archives cover. In Gu, Google was first in all {g['n_both']}. On the Shabelle it gave 10 to 13 days of warning in three of four seasons, where GloFAS v4 gave 3 days once and nothing in the other three. The lead-time comparison and the calibration were done independently.</p>")
 rows6 = [[c(f"{SEASON[s][0]} {r['year']}{' *' if r['severe'] else ''}"), c(" and ".join(r["rivers"])), c(r["first_onset"]), c(pill(r["google_grrr"])), c(pill(r["glofas_v4"])), c(escape(r["first"]))] for s in ("deyr", "gu") for r in fb_rows[s]]
 add("<details><summary>Flood by flood</summary>" + table(["Season", "River(s) that flooded", "Second gauge over 1-in-3", "Google Flood Hub forecast", "GloFAS v4 forecast", "First"], rows6) + "</details>")

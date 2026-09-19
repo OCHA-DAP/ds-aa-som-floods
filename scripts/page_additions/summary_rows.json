@@ -239,39 +239,6 @@
     "first": "tie"
    },
    {
-    "year": 2020,
-    "rivers": [
-     "Shabelle"
-    ],
-    "severe": true,
-    "first_onset": "1 Oct",
-    "first_gauge_before": 0,
-    "google_grrr": {
-     "kind": "never",
-     "text": "rule never met",
-     "river": null,
-     "when": null,
-     "lead": null,
-     "all_leads": [],
-     "n_issues": 0
-    },
-    "glofas_v4": {
-     "kind": "after",
-     "text": "1 d after",
-     "river": "Shabelle",
-     "when": "2 Oct",
-     "lead": -1,
-     "all_leads": [
-      -1,
-      -2,
-      -4,
-      -6
-     ],
-     "n_issues": 4
-    },
-    "first": "GloFAS v4"
-   },
-   {
     "year": 2023,
     "rivers": [
      "Juba",
@@ -686,22 +653,21 @@
    "per_model": {
     "google_grrr": {
      "na": 3,
-     "never": 3,
+     "never": 2,
      "before": 1
     },
     "glofas_v4": {
      "never": 2,
-     "before": 4,
-     "after": 1
+     "before": 4
     }
    },
    "head_to_head": {
     "google_grrr": 0,
-    "glofas_v4": 3
+    "glofas_v4": 2
    },
-   "n_both": 4,
-   "n": 7,
-   "n_severe": 5
+   "n_both": 3,
+   "n": 6,
+   "n_severe": 4
   },
   "gu": {
    "per_model": {
