@@ -23,7 +23,8 @@ after it. `lead_band_design.py` scores the design rule by lead band on the two p
 v4 tables (leads 1-7 and 8-12, 2003-2023) for the summary page.
 `ensemble_agreement_figs.py`, with `scripts/prob_sweep.py`, makes the figures and the years table for
 `pages/ensemble-agreement/`. `swalim_seasons.json` is the per-season SWALIM flood-risk level record
-(2006-2023), kept as data; the summary page no longer quotes a return period from it.
+(2006-2023) that `summary_page.py` reads for the SWALIM readiness route (alerts counted in
+two-gauge flood seasons only).
 `somlib.py` holds the shared conventions: local parquet under `data/processed/`, the two-gauge
 benchmark as `scripts/envelope_search.py` computes it (levels fitted 2000-2023), activation dates
 by flow day and by forecast issue date. Intermediate JSON/HTML land next to the scripts.
