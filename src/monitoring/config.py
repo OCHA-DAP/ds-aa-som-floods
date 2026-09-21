@@ -124,7 +124,11 @@ def season_of(month):
 # ------------------------------------------------------------- Listmonk
 LISTMONK_PROJECT_TAG = "ds-aa-som-floods"
 LISTMONK_LISTS = {
-    "info": {"name": "[AA framework] Somalia riverine flooding (informational)", "tag": "som:info"},
+    # the Monday informational email goes here in every run mode. List 103 ("Pauline") holds
+    # only the framework owner (decision 2026-09-21); it carries no project tag, so it is
+    # given by id. The tagged list "[AA framework] Somalia riverine flooding (informational)"
+    # (som:info, id 122) is not used by the pipeline.
+    "info": {"id": 103, "name": "Pauline"},
     "trigger": {"name": "[AA framework] Somalia riverine flooding (trigger)", "tag": "som:trigger"},
     "test": {"name": "[TEST] Somalia riverine flooding", "tag": "som:test", "extra_tags": ["TEST"]},
 }

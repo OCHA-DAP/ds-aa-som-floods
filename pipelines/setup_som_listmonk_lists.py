@@ -41,11 +41,15 @@ def http():
 
 def resolve_or_create(client, dry_run):
     have = {}
+    tagged = {k: c for k, c in cfg.LISTMONK_LISTS.items() if "tag" in c}
     for lst in client.fetch_all_lists(tag=cfg.LISTMONK_PROJECT_TAG):
-        for cfg_ in cfg.LISTMONK_LISTS.values():
+        for cfg_ in tagged.values():
             if cfg_["tag"] in lst.get("tags", []):
                 have[cfg_["tag"]] = lst["id"]
     for key, c in cfg.LISTMONK_LISTS.items():
+        if "id" in c:                     # a list given by id is never created or tagged here
+            print(f"  {key}: fixed id {c['id']} ({c['name']})")
+            continue
         if c["tag"] in have:
             print(f"  {key}: exists (id {have[c['tag']]})")
             continue
