@@ -10,6 +10,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/site.css">
 <style>
+/* OCHA blue on this page: the UN-OCHA common_design brand values (--cd-ocha-blue, --cd-blue--dark,
+   --cd-blue-grey--light, --cd-blue--brighter) mapped onto the site tokens. */
+:root { --b5:#1f69b3; --b6:#1f69b3; --b7:#144372; --b05:#ebf0f4; --b1:#d4e5f7; }
+.brand { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:14px 44px; background:#fff; border-bottom:1px solid #e2e7e7; }
+.brand a { display:block; line-height:0; }
+.brand img { height:44px; width:auto; display:block; }
+.contact { margin:30px 0 8px; padding:16px 20px; border-radius:6px; background:var(--b05); border-left:5px solid var(--b6); }
+.contact p { margin:0 0 6px; } .contact p:last-child { margin-bottom:0; }
 .hero.hero-sub { padding:40px 44px 34px; }
 .hero.hero-sub h1 { font-size:28px; }
 .crumb { font-size:12px; margin:0 0 14px; }
@@ -52,7 +60,7 @@ table.data td.none { color:#9aa4a6; }
 .callout { margin:18px 0; padding:12px 16px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
 .callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
 .callout.error { background:#fbeeec; border-left-color:#B34036; }
-@media (max-width:640px) { article { padding:4px 22px 16px; } .hero.hero-sub { padding:32px 22px 28px; }  }
+@media (max-width:640px) { article { padding:4px 22px 16px; } .hero.hero-sub { padding:32px 22px 28px; } .brand { padding:12px 22px; } .brand img { height:34px; } }
 .maprow{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:18px;align-items:start;margin:14px 0 4px}
 @media (max-width:760px){.maprow{grid-template-columns:1fr}}
 .map{border:1px solid #e2e7e7;border-radius:6px;background:#f6f8f8;overflow:hidden} .map svg{display:block;width:100%;height:auto}
@@ -68,6 +76,10 @@ table.data td.none { color:#9aa4a6; }
 </head>
 <body>
 <div class="wrap">
+  <div class="brand">
+    <a href="https://www.unocha.org/"><img src="../assets/ocha_logo.png" alt="OCHA"></a>
+    <a href="https://centre.humdata.org/"><img src="../assets/centre_for_humdata.png" alt="Centre for Humanitarian Data"></a>
+  </div>
   <header class="hero hero-sub">
     <div class="inner">
       <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / live monitoring</p>
@@ -111,6 +123,10 @@ table.data td.none { color:#9aa4a6; }
       <li><strong>A window is open</strong> by calendar month: Deyr from September to January, Gu from February to June. Every forecast day inside the window counts, so monitoring for Deyr starts in September and for Gu in February. The thresholds and return periods are fitted on the three season months only (Gu March to May, Deyr October to December); the months either side are a surveillance buffer. In July and August the pipeline still runs and this page still updates, but no email is sent.</li>
       <li>Full design and evidence: the <a href="../trigger-single-model/summary.html">trigger summary</a> and the <a href="../trigger-single-model/">analysis page</a>. Which GloFAS version is live, and what it does to the thresholds: <a href="../glofas-version/">GloFAS version switch</a>.</li>
     </ul>
+    <h2 id="contact">Contact</h2>
+    <div class="contact">
+      <p>Reach out to OCHA Data Science at <a href="mailto:ocha-datascience@un.org">ocha-datascience@un.org</a> with any questions.</p>
+    </div>
   </article>
 
 </div>
