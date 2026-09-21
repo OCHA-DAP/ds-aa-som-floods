@@ -7,11 +7,14 @@ instance's base_campaign template (branding, footer, unsubscribe); the Jinja
 templates here are the content fragment, and the chart is hosted in the
 Listmonk media library.
 
-Flags (src/monitoring/flags.py): TEST_EMAIL routes to som:test and tags
-the campaign name [test] (the template's red banner); DRY_RUN renders but
-does not upload or send; SIMULATE_TRIGGER forces an action activation on
-the first open window (or Deyr Shabelle) and tags [SIM]. A simulation to a
-real list additionally needs ALLOW_REAL_SIMULATION=true.
+Flags (src/monitoring/flags.py): TEST_EMAIL routes the readiness and
+activation emails to som:test and tags the campaign name [test] (the
+template's red banner); the Monday informational email always goes to
+Listmonk list 103 ("Pauline"), whatever the flag (decision 2026-09-21: that
+list holds only the framework owner). DRY_RUN renders but does not upload or send;
+SIMULATE_TRIGGER forces an action activation on the first open window (or
+Deyr Shabelle) and tags [SIM]. A simulation to a real list additionally needs
+ALLOW_REAL_SIMULATION=true.
 """
 
 import sys
@@ -39,7 +42,10 @@ SOURCE_URL = {"glofas": "https://global-flood.emergency.copernicus.eu/", "google
 
 
 def resolve_list_id(client, list_type):
-    tag = cfg.LISTMONK_LISTS[list_type]["tag"]
+    spec = cfg.LISTMONK_LISTS[list_type]
+    if "id" in spec:                      # a list given by id (no project tag on it)
+        return spec["id"]
+    tag = spec["tag"]
     for lst in client.fetch_all_lists(tag=cfg.LISTMONK_PROJECT_TAG):
         if tag in lst.get("tags", []):
             return lst["id"]
@@ -172,7 +178,10 @@ def main():
             raise RuntimeError("chart not in blob; run save_plots.py first")
         chart_url = client.upload_media(chart, f"som_flood_monitoring_{monitoring_date}.png")
     body = render(result, template, chart_url)
-    list_id = resolve_list_id(client, "test" if flags["TEST_EMAIL"] else email_type)
+    # the informational email goes to its own list in every mode (decision 2026-09-21);
+    # the trigger emails follow TEST_EMAIL
+    list_type = "info" if template == "informational" else ("test" if flags["TEST_EMAIL"] else email_type)
+    list_id = resolve_list_id(client, list_type)
     campaign_id = client.create_campaign(name=name, subject=subject, body=body, list_ids=[list_id])
     client.send_campaign(campaign_id, skip_confirmation=True)
     print(f"sent campaign {campaign_id} ({name}) to list {list_id}")
