@@ -23,9 +23,12 @@ Daily GHA `monitoring.yml` at 10:00 UTC (13:00 EAT); step 1 waits for the day's 
    Ends with `os._exit(0)` (cfgrib teardown segfault on Linux).
 2. `pipelines/save_plots.py` — `evaluate.evaluate` + chart → blob
    `projects/ds-aa-som-floods/monitoring/{date}.png` (dev).
-3. `pipelines/send_emails.py` — Listmonk via ocha-relay. Lists resolved by tag
-   (`ds-aa-som-floods` + `som:info` / `som:trigger` / `som:test`; created by
-   `pipelines/setup_som_listmonk_lists.py`, ids 122/123/124 as observed, never hardcoded).
+3. `pipelines/send_emails.py` — Listmonk via ocha-relay. Lists in `config.LISTMONK_LISTS`:
+   Monday informational → id 103 (Pauline only); readiness/activation → id 127, the live
+   consolidated list (HC, heads of agencies, clusters, task team) — **never send a test or
+   simulated campaign to 127** (`config.LIVE_LIST_IDS`, enforced in `send_emails.py`);
+   `TEST_EMAIL` → the `som:test` tagged list (id 124). List 126 (task team) is for
+   dry runs on request. The old tagged lists 122/123 (`som:info`/`som:trigger`) are unused.
    Cadence: while a window is open, Monday informational + immediate on readiness/action.
    **When no window is open nothing is sent** (the pipeline still runs and the page still updates).
    Windows are open by calendar month (`config.MONITORING_OPEN_MONTHS`): Deyr September to

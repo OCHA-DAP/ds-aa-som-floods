@@ -9,12 +9,14 @@ Listmonk media library.
 
 Flags (src/monitoring/flags.py): TEST_EMAIL routes the readiness and
 activation emails to som:test and tags the campaign name [test] (the
-template's red banner); the Monday informational email always goes to
+template's red banner); without it they go to the live consolidated list
+(Listmonk list 127, decision 2026-09-28). The Monday informational email always goes to
 Listmonk list 103 ("Pauline"), whatever the flag (decision 2026-09-21: that
 list holds only the framework owner). DRY_RUN renders but does not upload or send;
 SIMULATE_TRIGGER forces an action activation on the first open window (or
 Deyr Shabelle) and tags [SIM]. A simulation to a real list additionally needs
-ALLOW_REAL_SIMULATION=true.
+ALLOW_REAL_SIMULATION=true, and the live list (config.LIVE_LIST_IDS) never
+receives a test or simulated campaign at all.
 """
 
 import sys
@@ -182,6 +184,8 @@ def main():
     # the trigger emails follow TEST_EMAIL
     list_type = "info" if template == "informational" else ("test" if flags["TEST_EMAIL"] else email_type)
     list_id = resolve_list_id(client, list_type)
+    if list_id in cfg.LIVE_LIST_IDS and (flags["TEST_EMAIL"] or flags["SIMULATE_TRIGGER"]):
+        raise SystemExit(f"Refusing to send a test or simulated campaign to live list {list_id}")
     campaign_id = client.create_campaign(name=name, subject=subject, body=body, list_ids=[list_id])
     client.send_campaign(campaign_id, skip_confirmation=True)
     print(f"sent campaign {campaign_id} ({name}) to list {list_id}")
