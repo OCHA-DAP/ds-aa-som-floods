@@ -26,8 +26,8 @@ rd = copy.deepcopy(base); k = rd["open_windows"][0]; leg = rd["windows"][k]["rea
 leg.update({"activated": True, "max_votes": leg["n_req"], "max_votes_date": READINESS_DAY})
 for st in list(leg["stations"])[: leg["n_req"]]:
     v = leg["stations"][st]
-    v.update({"exceeds": True, "max_value": v["max_value"] or v["threshold"] * 1.12,
-              "max_date": v["max_date"] or READINESS_DAY, "pct_of_threshold": max(v["pct_of_threshold"] or 0, 112.0)})
+    v.update({"exceeds": True, "max_value": v["threshold"] * 1.12,
+              "max_date": READINESS_DAY, "pct_of_threshold": 112.0})
 rd.update({"readiness": True, "readiness_windows": [k], "status": "READINESS TRIGGER REACHED"})
 ac = se.simulate(copy.deepcopy(base))
 for w in ac["windows"].values():

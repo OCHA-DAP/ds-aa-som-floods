@@ -61,11 +61,13 @@ def simulate(result):
     leg = w["action"]
     leg["activated"], leg["max_votes"] = True, leg["n_req"]
     leg["max_votes_date"] = leg["max_votes_date"] or result["monitoring_date"]
+    # the simulated stations get a peak, ratio and date that agree with each other:
+    # the real peak is below the threshold, so it cannot be shown next to "exceeds"
     for st in list(leg["stations"])[: leg["n_req"]]:
         v = leg["stations"][st]
-        v.update({"exceeds": True, "max_value": v["max_value"] or v["threshold"] * 1.2,
-                  "max_date": v["max_date"] or result["monitoring_date"],
-                  "pct_of_threshold": max(v["pct_of_threshold"] or 0, 120.0), "reporting": True})
+        v.update({"exceeds": True, "max_value": v["threshold"] * 1.2,
+                  "max_date": leg["max_votes_date"],
+                  "pct_of_threshold": 120.0, "reporting": True})
     result.update({"open_windows": sorted(set(result["open_windows"]) | {key}),
                    "action": True, "action_windows": [key], "status": "ACTIVATION TRIGGER REACHED"})
     return result
