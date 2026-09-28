@@ -17,24 +17,20 @@
   <table width="90%" align="center" style="border:1px solid #000;border-collapse:collapse;font-size:0.9em;margin-left:auto;margin-right:auto;margin:0 0 8px;">
     <tr style="background-color:#1e795f;color:white;">
       <th style="padding:8px;border:1px solid transparent;">Station</th>
-      <th style="padding:8px;border:1px solid transparent;">Forecast peak (m<sup>3</sup>/s)</th>
       <th style="padding:8px;border:1px solid transparent;">Day of peak</th>
       <th style="padding:8px;border:1px solid transparent;">Peak / return level</th>
-      <th style="padding:8px;border:1px solid transparent;">Return level (m<sup>3</sup>/s)</th>
     </tr>
     {% for st, v in w.action.stations.items() %}
     <tr{% if v.exceeds %} style="color:#B34036;font-weight:bold;"{% endif %}>
       <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ station_title[st] }}</td>
       {% if not v.reporting %}
-      <td colspan="3" style="text-align:center;padding:8px;border:1px solid transparent;color:#888;">not in the live feed</td>
+      <td colspan="2" style="text-align:center;padding:8px;border:1px solid transparent;color:#888;">not in the live feed</td>
       {% elif v.max_value is none %}
-      <td colspan="3" style="text-align:center;padding:8px;border:1px solid transparent;color:#888;">no forecast day inside the window yet</td>
+      <td colspan="2" style="text-align:center;padding:8px;border:1px solid transparent;color:#888;">no forecast day inside the window yet</td>
       {% else %}
-      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "{:,.0f}".format(v.max_value) }}</td>
       <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ v.max_date|longdate }}</td>
       <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "%.2f"|format(v.pct_of_threshold / 100) }}&times;</td>
       {% endif %}
-      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "{:,.0f}".format(v.threshold) }}</td>
     </tr>
     {% endfor %}
   </table>
