@@ -3,7 +3,7 @@
 <div>
   <p>
     The <b>activation trigger</b> of the anticipatory action framework for riverine flooding in
-    Somalia has been reached for the <b>{{ season_title[action_windows[0]] }}</b> season.
+    Somalia <b>has been reached</b> for the <b>{{ season_title[action_windows[0]] }}</b> season.
     {% for key in action_windows %}{% set w = windows[key] %}
     The {{ source_title[w.action.source] }} forecasts issued on {{ (google_issue if w.action.source == 'google' else glofas_issue)|longdate }} indicate that
     <b>{{ w.action.max_votes }} of {{ w.action.n_of }}</b> stations on the {{ river_title[w.river] }} will
