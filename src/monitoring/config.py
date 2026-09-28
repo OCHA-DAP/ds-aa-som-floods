@@ -139,8 +139,8 @@ LISTMONK_LISTS = {
 # The live list must never receive a test or simulated campaign; send_emails.py refuses.
 LIVE_LIST_IDS = {LISTMONK_LISTS["trigger"]["id"]}
 EMAIL_SUBJECT_PREFIX = "Somalia AA: Riverine Flooding"
-CONTACT_NAME = "Tristan Downing"
-CONTACT_EMAIL = "tristan.downing@un.org"
+CONTACT_NAME = "OCHA Data Science"
+CONTACT_EMAIL = "ocha-datascience@un.org"
 
 # ------------------------------------------------------------- outputs
 STATUS_DIR = "pages/monitoring"  # on the orphan monitoring-status branch too
