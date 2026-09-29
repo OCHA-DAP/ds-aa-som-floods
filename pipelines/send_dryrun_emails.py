@@ -61,12 +61,10 @@ def main():
     target = lists[list_id]
     print(f"target list {list_id}: {target['name']} ({target['subscriber_count']} subscribers)")
 
-    chart_url = None
-    if which in ("readiness", "both"):
-        chart = plot.load_chart(d)
-        if chart is None:
-            raise RuntimeError("chart not in blob for that day")
-        chart_url = client.upload_media(chart, f"som_flood_dryrun_{d}.png")
+    chart = plot.load_chart(d)
+    if chart is None:
+        raise RuntimeError("chart not in blob for that day")
+    chart_url = client.upload_media(chart, f"som_flood_dryrun_{d}.png")
 
     stamp = dt.datetime.now(dt.timezone.utc)
     for name, res in (("readiness", rd), ("action", ac)):

@@ -1,0 +1,26 @@
+{# Per-river station tables for one leg: leg_name is 'readiness' or 'action', hit_windows the windows where that leg is reached #}
+{% set ordered = hit_windows + (open_windows|reject('in', hit_windows)|list) %}
+{% for key in ordered %}{% set w = windows[key] %}{% set leg = w[leg_name] %}
+<h3 style="font-weight:normal;font-size:15px;margin:24px 0 6px;">{{ river_title[w.river] }}: {{ leg_name if leg_name == 'readiness' else 'activation' }} trigger {% if key in hit_windows %}reached{% else %}not reached{% endif %}</h3>
+<p style="margin:0 0 8px;font-size:13px;color:#555;">{{ source_title[leg.source] }}, {{ leg.leads[0] }} to {{ leg.leads[1] }} days ahead, rule {{ leg.n_req }} of {{ leg.n_of }} stations over their discharge return level thresholds.</p>
+<table width="90%" align="center" style="border:1px solid #000;border-collapse:collapse;font-size:0.9em;margin-left:auto;margin-right:auto;margin:0 0 8px;">
+  <tr style="background-color:#1e795f;color:white;">
+    <th style="padding:8px;border:1px solid transparent;">Station</th>
+    <th style="padding:8px;border:1px solid transparent;">Day of peak</th>
+    <th style="padding:8px;border:1px solid transparent;">Peak / return level</th>
+  </tr>
+  {% for st, v in leg.stations.items() %}
+  <tr{% if v.exceeds %} style="color:#B34036;font-weight:bold;"{% endif %}>
+    <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ station_title[st] }}</td>
+    {% if not v.reporting %}
+    <td colspan="2" style="text-align:center;padding:8px;border:1px solid transparent;color:#888;">not in the live feed</td>
+    {% elif v.max_value is none %}
+    <td colspan="2" style="text-align:center;padding:8px;border:1px solid transparent;color:#888;">no forecast day inside the window yet</td>
+    {% else %}
+    <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ v.max_date|longdate }}</td>
+    <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "%.2f"|format(v.pct_of_threshold / 100) }}&times;</td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>
+{% endfor %}

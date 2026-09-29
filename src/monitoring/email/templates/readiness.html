@@ -11,7 +11,8 @@
     {% endfor %}
   </p>
   <p>The activation trigger has not been reached. We will continue monitoring for the activation trigger daily.</p>
-  {% with show_activation = false %}{% include "_rules.html" %}{% endwith %}
+  {% with leg_name = 'readiness', hit_windows = readiness_windows %}{% include "_stations.html" %}{% endwith %}
+  <p style="font-size:12px;color:#555;margin:8px 0 16px;">The framework also allows the readiness trigger to be reached on a <b>SWALIM moderate flood risk alert</b> for either river. SWALIM bulletins are not read by this pipeline. Check the <a href="https://frrims.faoswalim.org/rivers/levels">SWALIM river levels</a> alongside this email.</p>
   <img src="{{ chart_url }}" width="640" style="max-width:100%;height:auto;"/>
   <p>The live status page is at <a href="{{ dashboard_url }}">{{ dashboard_url }}</a>. Code and documentation are available <a href="{{ repo_url }}">on GitHub</a>.</p>
 </div>

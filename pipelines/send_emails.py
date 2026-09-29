@@ -175,12 +175,10 @@ def main():
         return
 
     client = ListmonkClient.from_env()
-    chart_url = None
-    if template != "action":
-        chart = plot.load_chart(monitoring_date)
-        if chart is None:
-            raise RuntimeError("chart not in blob; run save_plots.py first")
-        chart_url = client.upload_media(chart, f"som_flood_monitoring_{monitoring_date}.png")
+    chart = plot.load_chart(monitoring_date)
+    if chart is None:
+        raise RuntimeError("chart not in blob; run save_plots.py first")
+    chart_url = client.upload_media(chart, f"som_flood_monitoring_{monitoring_date}.png")
     body = render(result, template, chart_url)
     # the informational email goes to its own list in every mode (decision 2026-09-21);
     # the trigger emails follow TEST_EMAIL

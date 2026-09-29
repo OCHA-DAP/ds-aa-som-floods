@@ -45,7 +45,7 @@ test = [l for l in lists if "som:test" in l["tags"]][0]["id"]
 today = se._long_date(d)   # the run sends on the day it reads the forecast
 made = []
 try:
-    for name, res, chart in (("readiness", rd, "../monitoring/latest.png"), ("action", ac, None)):
+    for name, res, chart in (("readiness", rd, "../monitoring/latest.png"), ("action", ac, "../monitoring/latest.png")):
         body = se.render(res, name, chart)
         Path(f"pages/temp/dryrun_{name}.html").write_text(
             '<meta charset="utf-8"><body style="background:#fff;margin:0;padding:24px;max-width:760px">'
