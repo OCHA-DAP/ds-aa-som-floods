@@ -1,8 +1,9 @@
 """Send the simulated readiness and activation emails to one chosen list, as a dry run.
 
 Both legs are simulated exactly as pipelines/render_dryrun_emails.py does, from the
-stored forecast of MONITORING_DATE (default: the latest stored day). Campaigns are
-tagged [TEST] in the subject and [test] in the name (the template's test banner).
+stored forecast of MONITORING_DATE (default: the latest stored day), and dated
+today: the issue date, the simulated peak days and the subject all use the day the
+dry run is sent, as a real run would. Campaigns are tagged [TEST] in the subject and [test] in the name (the template's test banner).
 No notification state is written. The live list (config.LIVE_LIST_IDS) is refused.
 
 Usage (from repo root):
@@ -31,9 +32,14 @@ def main():
 
     raw = os.environ.get("MONITORING_DATE", "").strip()
     d = dt.date.fromisoformat(raw) if raw else etl.latest_monitoring_date()
-    readiness_day = str(d + dt.timedelta(days=12))
-    action_day = str(d + dt.timedelta(days=7))
+    today = dt.datetime.now(dt.timezone.utc).date()
+    readiness_day = str(today + dt.timedelta(days=12))
+    action_day = str(today + dt.timedelta(days=7))
     base = evaluate.evaluate(etl.load_day(d), d)
+    # the simulation is dated today, whichever stored day supplies the forecast rows
+    base.update({"monitoring_date": str(today), "glofas_issue": str(today),
+                 "google_issue": f"{today} 00:00 UTC"})
+    print(f"forecast rows from {d}, simulation dated {today}")
 
     rd = copy.deepcopy(base); k = rd["open_windows"][0]; leg = rd["windows"][k]["readiness"]
     leg.update({"activated": True, "max_votes": leg["n_req"], "max_votes_date": readiness_day})
@@ -69,9 +75,36 @@ def main():
         body = se.render(res, name, chart_url)
         subject = f"[TEST] {cfg.EMAIL_SUBJECT_PREFIX} - {res['status'].capitalize()} | {se._long_date(stamp.date())}"
         cname = f"{cfg.LISTMONK_PROJECT_TAG} dryrun {name} {d} {stamp:%Y%m%dT%H%M} [test] [sim]"
-        cid = client.create_campaign(name=cname, subject=subject, body=body, list_ids=[list_id])
-        client.send_campaign(cid, skip_confirmation=True)
-        print(f"sent {name} campaign {cid} to list {list_id}: {subject}")
+        # the shared instance sometimes marks a campaign finished with sent=0 and no
+        # error; verify delivery and retry once
+        for attempt in (1, 2):
+            cid = client.create_campaign(name=cname, subject=subject, body=body, list_ids=[list_id])
+            client.send_campaign(cid, skip_confirmation=True)
+            if _delivered(client, cid):
+                print(f"sent {name} campaign {cid} to list {list_id}: {subject}")
+                break
+            print(f"WARNING: campaign {cid} finished with sent < to_send (attempt {attempt})")
+        else:
+            raise SystemExit(f"{name}: not delivered after 2 attempts")
+
+
+def _delivered(client, cid, wait=30):
+    import time
+    for _ in range(wait // 3):
+        time.sleep(3)
+        c = client.get(f"/api/campaigns/{cid}")["data"] if hasattr(client, "get") else _get_campaign(client, cid)
+        if c["status"] == "finished" or c["status"] == "cancelled":
+            return c["sent"] >= c["to_send"] and c["to_send"] > 0
+    return False
+
+
+def _get_campaign(client, cid):
+    import requests
+    b = (os.environ.get("DSCI_LISTMONK_API_URL") or os.environ["DSCI_LISTMONK_BASE_URL"]).rstrip("/")
+    if not b.endswith("/api"):
+        b += "/api"
+    auth = (os.environ["DSCI_LISTMONK_API_USERNAME"], os.environ["DSCI_LISTMONK_API_KEY"])
+    return requests.get(f"{b}/campaigns/{cid}", auth=auth, timeout=60).json()["data"]
 
 
 if __name__ == "__main__":
