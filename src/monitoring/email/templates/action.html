@@ -1,44 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 <div>
-  <p>
-    The <b>activation trigger</b> of the anticipatory action framework for riverine flooding in
-    Somalia has been reached for the <b>{{ season_title[action_windows[0]] }}</b> season.
+  <p>The <b>activation trigger</b> of the anticipatory action framework for riverine flooding in
+    Somalia <b>has been reached</b> for the <b>{{ season_title[action_windows[0]] }}</b> season.
     {% for key in action_windows %}{% set w = windows[key] %}
     The {{ source_title[w.action.source] }} forecasts issued on {{ (google_issue if w.action.source == 'google' else glofas_issue)|longdate }} indicate that
     <b>{{ w.action.max_votes }} of {{ w.action.n_of }}</b> stations on the {{ river_title[w.river] }} will
     exceed their discharge return level thresholds within {{ w.action.leads[1] }} days.
     {% endfor %}
   </p>
-  {% set ordered = action_windows + (open_windows|reject('in', action_windows)|list) %}
-  {% for key in ordered %}{% set w = windows[key] %}
-  <h3 style="font-weight:normal;font-size:15px;margin:24px 0 6px;">{{ river_title[w.river] }}{% if key in action_windows %}: activation trigger reached{% else %}: activation trigger not reached{% endif %}</h3>
-  <p style="margin:0 0 8px;font-size:13px;color:#555;">{{ source_title[w.action.source] }}, {{ w.action.leads[0] }} to {{ w.action.leads[1] }} days ahead, rule {{ w.action.n_req }} of {{ w.action.n_of }} stations over their discharge return level thresholds.</p>
-  <table width="90%" align="center" style="border:1px solid #000;border-collapse:collapse;font-size:0.9em;margin-left:auto;margin-right:auto;margin:0 0 8px;">
-    <tr style="background-color:#1e795f;color:white;">
-      <th style="padding:8px;border:1px solid transparent;">Station</th>
-      <th style="padding:8px;border:1px solid transparent;">Forecast peak (m<sup>3</sup>/s)</th>
-      <th style="padding:8px;border:1px solid transparent;">Day of peak</th>
-      <th style="padding:8px;border:1px solid transparent;">Peak / return level</th>
-      <th style="padding:8px;border:1px solid transparent;">Return level (m<sup>3</sup>/s)</th>
-    </tr>
-    {% for st, v in w.action.stations.items() %}
-    <tr{% if v.exceeds %} style="color:#B34036;font-weight:bold;"{% endif %}>
-      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ station_title[st] }}</td>
-      {% if not v.reporting %}
-      <td colspan="3" style="text-align:center;padding:8px;border:1px solid transparent;color:#888;">not in the live feed</td>
-      {% elif v.max_value is none %}
-      <td colspan="3" style="text-align:center;padding:8px;border:1px solid transparent;color:#888;">no forecast day inside the window yet</td>
-      {% else %}
-      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "{:,.0f}".format(v.max_value) }}</td>
-      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ v.max_date|longdate }}</td>
-      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "%.2f"|format(v.pct_of_threshold / 100) }}&times;</td>
-      {% endif %}
-      <td style="text-align:center;padding:8px;border:1px solid transparent;">{{ "{:,.0f}".format(v.threshold) }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% endfor %}
-  <p style="margin-top:24px;">The live status page is at <a href="{{ dashboard_url }}">{{ dashboard_url }}</a>.</p>
+  {% with leg_name = 'action', hit_windows = action_windows %}{% include "_stations.html" %}{% endwith %}
+  <img src="{{ chart_url }}" width="640" style="max-width:100%;height:auto;margin-top:16px;"/>
+  <p>The live status page is at <a href="{{ dashboard_url }}">{{ dashboard_url }}</a>.</p>
 </div>
 {% endblock content %}

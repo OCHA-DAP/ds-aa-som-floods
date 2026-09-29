@@ -129,12 +129,20 @@ LISTMONK_LISTS = {
     # given by id. The tagged list "[AA framework] Somalia riverine flooding (informational)"
     # (som:info, id 122) is not used by the pipeline.
     "info": {"id": 103, "name": "Pauline"},
-    "trigger": {"name": "[AA framework] Somalia riverine flooding (trigger)", "tag": "som:trigger"},
-    "test": {"name": "[TEST] Somalia riverine flooding", "tag": "som:test", "extra_tags": ["TEST"]},
+    # readiness and activation emails go to the live consolidated list (HC, heads of agencies,
+    # clusters, task team; decision 2026-09-28). It carries no project tag, so it is given by id.
+    # The tagged list "[AA framework] Somalia riverine flooding (trigger)" (som:trigger, id 123)
+    # is not used by the pipeline.
+    "trigger": {"id": 127, "name": "Somalia Flood AA Monitoring - Consolidated List"},
+    # test sends go to the framework owner only (decision 2026-09-29); the tagged list
+    # "[TEST] Somalia riverine flooding" (som:test, id 124) is not used by the pipeline.
+    "test": {"id": 103, "name": "Pauline"},
 }
+# The live list must never receive a test or simulated campaign; send_emails.py refuses.
+LIVE_LIST_IDS = {LISTMONK_LISTS["trigger"]["id"]}
 EMAIL_SUBJECT_PREFIX = "Somalia AA: Riverine Flooding"
-CONTACT_NAME = "Tristan Downing"
-CONTACT_EMAIL = "tristan.downing@un.org"
+CONTACT_NAME = "OCHA Data Science"
+CONTACT_EMAIL = "ocha-datascience@un.org"
 
 # ------------------------------------------------------------- outputs
 STATUS_DIR = "pages/monitoring"  # on the orphan monitoring-status branch too
