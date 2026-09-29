@@ -9,7 +9,6 @@
     exceed their discharge return level thresholds within {{ w.action.leads[1] }} days.
     {% endfor %}
   </p>
-  <p>The readiness trigger ({{ windows[action_windows[0]].readiness.leads[0] }} to {{ windows[action_windows[0]].readiness.leads[1] }} days ahead) is {% if readiness_windows %}also reached{% else %}not reached{% endif %} on this forecast.</p>
   {% with leg_name = 'action', hit_windows = action_windows %}{% include "_stations.html" %}{% endwith %}
   <img src="{{ chart_url }}" width="640" style="max-width:100%;height:auto;margin-top:16px;"/>
   <p>The live status page is at <a href="{{ dashboard_url }}">{{ dashboard_url }}</a>. Code and documentation are available <a href="{{ repo_url }}">on GitHub</a>.</p>
