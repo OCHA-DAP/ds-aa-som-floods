@@ -134,7 +134,9 @@ LISTMONK_LISTS = {
     # The tagged list "[AA framework] Somalia riverine flooding (trigger)" (som:trigger, id 123)
     # is not used by the pipeline.
     "trigger": {"id": 127, "name": "Somalia Flood AA Monitoring - Consolidated List"},
-    "test": {"name": "[TEST] Somalia riverine flooding", "tag": "som:test", "extra_tags": ["TEST"]},
+    # test sends go to the framework owner only (decision 2026-09-29); the tagged list
+    # "[TEST] Somalia riverine flooding" (som:test, id 124) is not used by the pipeline.
+    "test": {"id": 103, "name": "Pauline"},
 }
 # The live list must never receive a test or simulated campaign; send_emails.py refuses.
 LIVE_LIST_IDS = {LISTMONK_LISTS["trigger"]["id"]}

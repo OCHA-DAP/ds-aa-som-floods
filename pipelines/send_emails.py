@@ -8,7 +8,7 @@ templates here are the content fragment, and the chart is hosted in the
 Listmonk media library.
 
 Flags (src/monitoring/flags.py): TEST_EMAIL routes the readiness and
-activation emails to som:test and tags the campaign name [test] (the
+activation emails to list 103 (Pauline only) and tags the campaign name [test] (the
 template's red banner); without it they go to the live consolidated list
 (Listmonk list 127, decision 2026-09-28). The Monday informational email always goes to
 Listmonk list 103 ("Pauline"), whatever the flag (decision 2026-09-21: that

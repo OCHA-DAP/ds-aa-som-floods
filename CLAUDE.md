@@ -27,8 +27,8 @@ Daily GHA `monitoring.yml` at 10:00 UTC (13:00 EAT); step 1 waits for the day's 
    Monday informational → id 103 (Pauline only); readiness/activation → id 127, the live
    consolidated list (HC, heads of agencies, clusters, task team) — **never send a test or
    simulated campaign to 127** (`config.LIVE_LIST_IDS`, enforced in `send_emails.py`);
-   `TEST_EMAIL` → the `som:test` tagged list (id 124). List 126 (task team) is for
-   dry runs on request. The old tagged lists 122/123 (`som:info`/`som:trigger`) are unused.
+   `TEST_EMAIL` → id 103 as well (Pauline only). List 126 (task team) is for dry runs on
+   request. The old tagged lists 122/123/124 (`som:info`/`som:trigger`/`som:test`) are unused.
    Cadence: while a window is open, Monday informational + immediate on readiness/action.
    **When no window is open nothing is sent** (the pipeline still runs and the page still updates).
    Windows are open by calendar month (`config.MONITORING_OPEN_MONTHS`): Deyr September to
