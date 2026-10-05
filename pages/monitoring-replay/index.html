@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitoring replay: Deyr 2023 &middot; Somalia Riverine Flood Trigger</title>
+<meta name="description" content="The Somalia riverine flood monitoring page re-run on GloFAS forecasts issued from 3 Oct to 25 Nov 2023, with today's trigger rules and thresholds.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+/* OCHA blue on this page: the UN-OCHA common_design brand values (--cd-ocha-blue, --cd-blue--dark,
+   --cd-blue-grey--light, --cd-blue--brighter) mapped onto the site tokens. */
+:root { --b5:#1f69b3; --b6:#1f69b3; --b7:#144372; --b05:#ebf0f4; --b1:#d4e5f7; }
+.brand { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:14px 44px; background:#fff; border-bottom:1px solid #e2e7e7; }
+.brand a { display:block; line-height:0; }
+.brand img { height:44px; width:auto; display:block; }
+.contact { margin:30px 0 8px; padding:16px 20px; border-radius:6px; background:var(--b05); border-left:5px solid var(--b6); }
+.contact p { margin:0 0 6px; } .contact p:last-child { margin-bottom:0; }
+.hero.hero-sub { padding:40px 44px 34px; }
+.hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; }
+.crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+.crumb a:hover { text-decoration:underline; }
+article { padding:8px 44px 24px; max-width:1000px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:20px; color:var(--n9); margin:34px 0 10px; line-height:1.25; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; }
+article a { color:var(--b6); }
+.banner { display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; margin:22px 0 6px; padding:16px 20px; border-radius:6px; border:1px solid #e2e7e7; border-left:8px solid #9aa4a6; background:#fff; }
+.banner .status { font-family:'Merriweather',Georgia,serif; font-size:22px; font-weight:700; color:#5e6a6b; }  /* trigger not reached: grey; readiness amber, activation red below */
+.banner.warn { border-left-color:#D48F2A; } .banner.warn .status { color:#B0722B; }
+.banner.error { border-left-color:#B34036; } .banner.error .status { color:#B34036; }
+.banner.off { border-left-color:#9aa4a6; } .banner.off .status { color:#5e6a6b; }
+.banner .meta { font-size:12.5px; color:var(--n7); line-height:1.6; }
+.grid4 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 8px; }
+@media (max-width:640px){.grid4{grid-template-columns:1fr}}
+.win { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5); border-radius:5px; padding:14px 16px 12px; }
+.win.closed { opacity:.62; border-top-color:#c8d0d1; }
+.win.act { border-top-color:#B34036; } .win.ready { border-top-color:#D48F2A; }
+.win h3 { margin:0 0 4px; font-family:'Merriweather',Georgia,serif; font-size:15px; color:var(--n9); }
+.win .src { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--n7); margin-bottom:10px; }
+.win .leg { display:flex; justify-content:space-between; align-items:baseline; font-size:13px; color:var(--n8); padding:5px 0; border-top:1px solid #f0f3f3; }
+.win .leg b { font-size:17px; color:var(--n9); }
+.win .leg .fired { color:#B34036; } .win .leg .fired-r { color:#B0722B; }
+.pill { display:inline-block; font-size:10px; padding:2px 7px; border-radius:10px; text-transform:uppercase; letter-spacing:.07em; font-weight:700; background:var(--b05); color:var(--b7); border:1px solid var(--b1); vertical-align:2px; margin-left:6px; }
+.pill.grey { background:#f0f3f3; color:#5e6a6b; border-color:#e2e7e7; }
+figure { margin:20px 0 8px; } figure img { width:100%; height:auto; display:block; border:1px solid #e2e7e7; border-radius:4px; }
+figcaption { font-size:12px; color:var(--n7); margin-top:7px; line-height:1.5; }
+table.data { border-collapse:collapse; width:100%; margin:12px 0 4px; font-size:13px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 9px 6px; }
+table.data td { border-bottom:1px solid #eef1f1; padding:6px 9px; color:var(--n8); white-space:nowrap; }
+table.data td.n, table.data th.n { text-align:right; font-variant-numeric:tabular-nums; }
+table.data.stations { table-layout:fixed; min-width:620px; }
+table.data td.over { color:#B34036; font-weight:600; }
+table.data td.none { color:#9aa4a6; }
+.bar { display:inline-block; height:9px; background:var(--b1); border-radius:2px; vertical-align:middle; margin-right:6px; }
+.bar.over { background:#B34036; }
+.tablewrap { overflow-x:auto; }
+.callout { margin:18px 0; padding:12px 16px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
+.callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
+.callout.error { background:#fbeeec; border-left-color:#B34036; }
+@media (max-width:640px) { article { padding:4px 22px 16px; } .hero.hero-sub { padding:32px 22px 28px; } .brand { padding:12px 22px; } .brand img { height:34px; } }
+.maprow{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:18px;align-items:start;margin:14px 0 4px}
+@media (max-width:760px){.maprow{grid-template-columns:1fr}}
+.map{border:1px solid #e2e7e7;border-radius:6px;background:#f6f8f8;overflow:hidden} .map svg{display:block;width:100%;height:auto}
+.district{fill:#fff;stroke:#c9d2d3;stroke-width:.7} .district.aa{fill:#e9eeee;stroke:#9aa4a6}
+.district.aa.reached{fill:rgba(179,64,54,.28);stroke:#B34036} .district.aa.ready{fill:rgba(212,143,42,.28);stroke:#D48F2A} .district.aa.clear{fill:rgba(46,139,110,.16);stroke:#2E8B6E}
+.river{fill:none;stroke:#4a90c2;stroke-width:1.4;stroke-linejoin:round;stroke-linecap:round;opacity:.75} .river.main{stroke-width:2.4;opacity:.95}
+.pt{stroke:#1f2324;stroke-width:1.2;fill:#fff} .pt.over{fill:#B34036;stroke:#7A241C} .pt.rdy{fill:#D48F2A;stroke:#8a5a15} .pt.na{fill:#e2e7e7;stroke:#9aa4a6;stroke-dasharray:2 1.5}
+.lbl{font:11px Roboto,sans-serif;fill:#1f2324;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+.dlbl{font:10px Roboto,sans-serif;fill:#5e6a6b;paint-order:stroke;stroke:#fff;stroke-width:2.5px} .rlbl{font:italic 11px Roboto,sans-serif;fill:#3b6f95;paint-order:stroke;stroke:#fff;stroke-width:3px}
+.legend{font-size:13px;color:var(--n8)} .legend h3{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--n7);font-weight:700;margin:0 0 8px}
+.legend .row{display:flex;align-items:center;gap:9px;margin:6px 0} .legend .sw{width:14px;height:14px;border-radius:3px;border:1px solid #9aa4a6;flex:none} .legend .dot{width:12px;height:12px;border-radius:50%;border:1.5px solid #1f2324;flex:none;background:#fff}
+
+/* replay bar and note; everything else on this page is the monitoring page's own CSS */
+#replaybar { position:sticky; top:0; z-index:20; background:#1f2324; color:#fff; padding:9px 44px 8px; box-shadow:0 2px 8px rgba(0,0,0,.18); }
+#replaybar .rb-top { display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; font-size:13.5px; line-height:1.4; }
+#replaybar .rb-tag { background:#f2c94c; color:#1f2324; font-weight:700; font-size:11px; letter-spacing:.08em; text-transform:uppercase; padding:2px 8px; border-radius:3px; }
+#replaybar .rb-days { display:flex; flex-wrap:wrap; align-items:center; gap:3px; margin-top:7px; }
+#replaybar button { font:inherit; cursor:pointer; }
+#replaybar .day { width:23px; height:22px; padding:0; border-radius:4px; font-size:11.5px; background:#565f61; border:1px solid #565f61; color:#fff; }
+#replaybar .day.ready { background:#D48F2A; border-color:#D48F2A; color:#1f2324; }
+#replaybar .day.act { background:#c9483c; border-color:#c9483c; }
+#replaybar .day.cur { outline:2px solid #fff; outline-offset:1px; font-weight:700; }
+#replaybar .nav { background:none; border:1px solid #6b7577; color:#fff; border-radius:4px; height:22px; padding:0 9px; font-size:11.5px; }
+#replaybar .nav:disabled { opacity:.35; cursor:default; }
+#replaybar .mon { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#9aa4a6; width:34px; }
+#replaybar .brk { flex-basis:100%; height:0; }
+#replaybar .mark { font-size:11.5px; color:#f2c94c; border-left:2px solid #f2c94c; padding:1px 3px 1px 5px; white-space:nowrap; }
+#replaybar .mark.obs { color:#9cc7e6; border-left-color:#9cc7e6; }
+#replaynote { background:#2a3133; color:#d6dddd; padding:8px 44px 9px; font-size:12.5px; line-height:1.5; }
+#replaynote .rb-key { font-size:11.5px; color:#aab3b5; margin-top:4px; line-height:1.6; }
+#replaynote .rb-key .sw { display:inline-block; width:9px; height:9px; border-radius:2px; margin:0 4px 0 10px; }
+#replaynote .rb-key .sw:first-child { margin-left:0; }
+.replay-about { margin:20px 0 0; padding:14px 18px; border-radius:6px; background:#fffbea; border:1px solid #f0e2a8; border-left:5px solid #f2c94c; }
+.replay-about h2 { margin:0 0 6px; font-size:16px; }
+.replay-about ul { margin:6px 0 0; padding-left:20px; }
+.replay-about li { font-size:13.5px; margin:3px 0; }
+/* the day buttons wrap into a tall bar on a narrow screen: let it scroll away there */
+@media (max-width:900px) { #replaybar { position:static; padding:9px 22px 8px; } #replaynote { padding:8px 22px 9px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <a href="https://www.unocha.org/"><img src="../assets/ocha_logo.png" alt="OCHA"></a>
+    <a href="https://centre.humdata.org/"><img src="../assets/centre_for_humdata.png" alt="Centre for Humanitarian Data"></a>
+  </div>
+  <header class="hero hero-sub">
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / monitoring replay</p>
+      <h1>Monitoring replay: Deyr 2023</h1>
+      <p>The <a href="../monitoring/" style="color:#fff">live monitoring page</a>, re-run on each archived GloFAS reforecast issue from 3 Oct to 25 Nov 2023, with today's trigger rules and thresholds. This is a reconstruction of a past season, not a status.</p>
+    </div>
+  </header>
+
+  <div id="replaybar">
+    <div class="rb-top"><span class="rb-tag">Replay &middot; not live</span><span><b>Deyr 2023</b> &middot; <span id="rb-cur"></span></span><button class="nav" id="rb-prev" aria-label="Previous issue">&#9664;</button><button class="nav" id="rb-next" aria-label="Next issue">&#9654;</button><span style="color:#aab3b5;font-size:12px">pick a day, or use the arrow keys</span></div>
+    <div class="rb-days" id="rb-days"></div>
+  </div>
+  <div id="replaynote">
+    <div id="rb-note"></div>
+    <div class="rb-key"><span class="sw" style="background:#565f61"></span>trigger not reached<span class="sw" style="background:#D48F2A"></span>readiness trigger reached<span class="sw" style="background:#c9483c"></span>activation trigger reached &nbsp;&middot;&nbsp; <span style="color:#f2c94c">SHF</span>: Somalia Humanitarian Fund allocation announced, 12 Oct &nbsp;&middot;&nbsp; <span style="color:#9cc7e6">gauges</span>: second gauge on that river over its own 1-in-3 level (Juba 25 Oct; Shabelle 6 Nov)</div>
+  </div>
+
+  <article>
+    <div class="replay-about">
+      <h2>About this replay</h2>
+      <ul>
+        <li><strong>What is replayed.</strong> Everything below the bar is the monitoring page's own code, fed with the pipeline's own evaluation and chart of the forecast issue selected.</li>
+        <li><strong>Forecasts.</strong> The GloFAS reforecast archive the trigger was tested on: 11 ensemble members, two issues a week. The live pipeline reads the full operational ensemble every day, so the first day on which a trigger is reached is only known to within the gap between two issues. GloFAS was already on version 4 in October 2023, the version today's thresholds are fitted on.</li>
+        <li><strong>Result.</strong> The readiness trigger is first reached on the 21 Oct issue (Juba). The activation trigger is first reached on the 21 Oct issue (Juba).</li>
+        <li><strong>The Somalia Humanitarian Fund allocation.</strong> The Fund announced a $15 million allocation for early action and response on 12 Oct 2023, on the seasonal El Ni&ntilde;o outlook (<a href="https://reliefweb.int/report/somalia/somalia-humanitarian-fund-allocates-15-million-support-communities-highest-risk-el-nino-induced-flooding">OCHA, 12 Oct 2023</a>). This trigger did not exist then and was not the basis for it.</li>
+        <li><strong>Thresholds are today's.</strong> They are fitted on the GloFAS version 4 record for 1999 to 2023, so the 2023 season is part of the record it is judged against.</li>
+        <li><strong>The Shabelle.</strong> Neither trigger is reached on the Shabelle on any issue replayed. Two Shabelle gauges had reached their own 1-in-3 level by 6 Nov. The highest forecast in the activation band stays between 50% and 70% of its threshold. The <a href="../glofas-version/">GloFAS version switch</a> page describes this gap in version 4.</li>
+        <li><strong>The whole season on one chart</strong> (model, gauges and flood exposure): <a href="../activation-timing/#deyr2023">Timing of activations, Deyr 2023</a>.</li>
+      </ul>
+    </div>
+    <div id="banner" class="banner off"><span class="status">Loading</span></div>
+    <div id="windows" class="grid4"></div>
+    <div id="notes"></div>
+
+    <div class="maprow">
+      <div class="map"><svg id="map" role="img" aria-label="Map of the Juba and Shabelle rivers with the fourteen anticipatory-action districts, coloured by the status of the season being monitored"></svg></div>
+      <div class="legend" id="maplegend"></div>
+    </div>
+    <!-- /map -->
+
+    <h2>The forecast against the trigger thresholds</h2>
+    <figure id="chartfig" hidden>
+      <img id="chart" alt="Forecast at each monitored point as a share of its own threshold">
+      <figcaption>Each line is one monitored point, as a percentage of its own trigger threshold for the
+        season being watched; the dashed line is the threshold that counts as a vote. The two shaded bands
+        count forward from the forecast issue date: the next 7 days are the activation window (darker band)
+        and days 8 to 12 are the readiness window (lighter band). GloFAS lines are the
+        ensemble median.</figcaption>
+    </figure>
+
+    <h2>Forecast peak at each station</h2>
+    <p id="tables-intro">For each window of the season being monitored, the forecast peak at each station within the leg's lead band and inside the window months, against the station's threshold. A ratio of 1.00× or more means the peak reaches the threshold and the station votes.</p>
+    <div id="tables"></div>
+
+    <h2>How to read this page</h2>
+    <ul>
+      <li><strong>Four windows, one source each.</strong> Gu (window February to June) runs on Google Flood Hub, Deyr (window September to January) on GloFAS. A window's trigger is reached when, on a single forecast day, enough of the river's stations are forecast at or above their own return-period threshold: Juba needs 3 of 4 stations, Shabelle 2 of 3. Any one window reaching its trigger releases the allocation.</li>
+      <li><strong>Activation</strong> reads leads 1 to 7 days on the window's source. <strong>Readiness</strong> reads GloFAS at leads 8 to 12 days for every window, against discharge return level thresholds fitted on the same reanalysis record as the action leg, and releases only the mobilisation share.</li>
+      <li><strong>SWALIM.</strong> The framework also allows the readiness trigger to be reached on a SWALIM moderate flood risk alert for either river. Bulletins are not read by this pipeline. Check the <a href="https://frrims.faoswalim.org/rivers/levels">SWALIM river levels</a> alongside it.</li>
+      <li><strong>A window is open</strong> by calendar month: Deyr from September to January, Gu from February to June. Every forecast day inside the window counts, so monitoring for Deyr starts in September and for Gu in February. The thresholds and return periods are fitted on the three season months only (Gu March to May, Deyr October to December); the months either side are a surveillance buffer.</li>
+      <li>Full design and evidence: the <a href="../trigger-single-model/summary.html">trigger summary</a> and the <a href="../trigger-single-model/">analysis page</a>. Which GloFAS version is live, and what it does to the thresholds: <a href="../glofas-version/">GloFAS version switch</a>.</li>
+    </ul>
+    <h2 id="contact">Contact</h2>
+    <div class="contact">
+      <p>Reach out to OCHA Data Science at <a href="mailto:ocha-datascience@un.org">ocha-datascience@un.org</a> with any questions.</p>
+    </div>
+  </article>
+
+</div>
+
+<script>window.__renderStatus = function () {
+const fmtDate = s => s ? new Date(s + "T00:00:00Z").toLocaleDateString("en-GB", {day:"numeric", month:"short", year:"numeric", timeZone:"UTC"}) : "";
+const fmtTs = s => s ? new Date(s).toLocaleString("en-GB", {day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit", timeZoneName:"short"}) : "";
+const n0 = x => x == null ? "" : Math.round(x).toLocaleString("en-GB");
+
+function legRow(name, leg, fired, cls) {
+  const v = leg.max_votes, req = leg.n_req, of = leg.n_of;
+  const rep = leg.n_reporting < of ? ` · ${leg.n_reporting} of ${of} reporting` : "";
+  return `<div class="leg"><span>${name}<br><span style="font-size:11px;color:var(--n7)">rule ${req} of ${of} over their levels${rep}</span></span>
+          <b class="${fired ? cls : ""}">${v}/${of}</b></div>`;
+}
+
+function windowCard(key, w) {
+  const a = w.action, r = w.readiness;
+  const cls = !w.open ? "closed" : a.activated ? "act" : r.activated ? "ready" : "";
+  const src = (w.action.source === "google" ? "Google Flood Hub" : "GloFAS") + " · activation";
+  return `<div class="win ${cls}"><h3>${w.title}${w.open ? "" : '<span class="pill grey">out of season</span>'}${a.activated && w.open ? '<span class="pill" style="background:#fbeeec;color:#B34036;border-color:#f3c9c4">activation</span>' : ""}${!a.activated && r.activated && w.open ? '<span class="pill" style="background:#fdf3e7;color:#B0722B;border-color:#f3dcb8">readiness</span>' : ""}</h3>
+    <div class="src">${src}</div>
+    ${legRow("Readiness (GloFAS 8 to 12 d)", r, r.activated, "fired-r")}
+    ${legRow("Activation (1 to 7 d)", a, a.activated, "fired")}
+  </div>`;
+}
+
+function pointTable(w, leg, legName, titles) {
+  const rows = Object.entries(leg.stations).map(([st, v]) => {
+    if (!v.reporting) return `<tr><td>${titles.station[st]}</td><td class="none" colspan="3">not in the live feed</td><td class="n">${n0(v.threshold)}</td></tr>`;
+    if (v.max_value == null) return `<tr><td>${titles.station[st]}</td><td class="none" colspan="3">no forecast day inside the window yet</td><td class="n">${n0(v.threshold)}</td></tr>`;
+    const pct = Math.min(v.pct_of_threshold, 250);
+    return `<tr><td>${titles.station[st]}</td>
+      <td class="n ${v.exceeds ? "over" : ""}">${n0(v.max_value)}</td>
+      <td>${fmtDate(v.max_date)}</td>
+      <td><span class="bar ${v.exceeds ? "over" : ""}" style="width:${Math.max(2, pct * 0.6)}px"></span>${(v.pct_of_threshold / 100).toFixed(2)}×</td>
+      <td class="n">${n0(v.threshold)}</td></tr>`;
+  }).join("");
+  const src = leg.source === "google" ? "Google Flood Hub" : "GloFAS ensemble median";
+  return `<h3 style="font-size:15px;margin:22px 0 2px;font-family:Merriweather,Georgia,serif">${w.title}: ${legName}</h3>
+    <p style="margin:0 0 6px;font-size:12.5px;color:var(--n7)">${src}, leads ${leg.leads[0]} to ${leg.leads[1]} days, valid days inside the window · rule ${leg.n_req} of ${leg.n_of} over their levels · highest count on one day ${leg.max_votes} of ${leg.n_of}${leg.max_votes_date ? ` on ${fmtDate(leg.max_votes_date)}` : ""}</p>
+    <div class="tablewrap"><table class="data stations"><colgroup><col style="width:20%"><col style="width:17%"><col style="width:19%"><col style="width:27%"><col style="width:17%"></colgroup><thead><tr><th>Station</th><th class="n">Forecast peak (m³/s)</th><th>Day of peak</th><th>Peak / threshold</th><th class="n">Threshold (m³/s)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+fetch("status.json?v=" + Date.now(), {cache: "no-store"}).then(r => { if (!r.ok) throw new Error(r.status + " " + r.statusText); return r.json(); }).then(s => {
+  const b = document.getElementById("banner");
+  const cls = s.action ? "error" : s.readiness ? "warn" : s.open_windows.length ? "" : "off";
+  b.className = "banner " + cls;
+  const cap = x => x.charAt(0).toUpperCase() + x.slice(1);
+  const seasonNow = [...new Set(s.open_windows.map(k => s.windows[k].season))].map(cap).join(" and ") || "no season";
+  b.innerHTML = `<span class="status">${s.status}</span>
+    <span class="meta">${s.open_windows.some(k => s.windows[k].action.source === "google")
+      ? `Forecasts issued <b>${fmtDate(s.glofas_issue)}</b> (GloFAS) and <b>${fmtDate((s.google_issue || "").slice(0, 10))}</b> (Google Flood Hub)`
+      : `Forecast issued <b>${fmtDate(s.glofas_issue)}</b> (GloFAS)`} · monitoring <b>${seasonNow}</b><br>
+    ${s.open_windows.some(k => s.windows[k].action.source === "google")
+      ? `Google Flood Hub: ${s.n_google_gauges} of 7 gauges · GloFAS version ${s.glofas_operational === "glofas_v5" ? "5" : "4"} (reforecast archive), ${s.n_glofas_points} stations · replayed for ${fmtDate(s.monitoring_date)}`
+      : `GloFAS only this season: version ${s.glofas_operational === "glofas_v5" ? "5" : "4"} (reforecast archive), ${s.n_glofas_points} stations · replayed for ${fmtDate(s.monitoring_date)}`}</span>`;
+  // open season first (Deyr from September to January, Gu from February to June), Juba before Shabelle
+  const order = ["juba", "shabelle"];
+  const cards = Object.entries(s.windows).sort(([, a], [, b]) => (b.open - a.open) || (order.indexOf(a.river) - order.indexOf(b.river)));
+  document.getElementById("windows").innerHTML = cards.map(([k, w]) => windowCard(k, w)).join("");
+  const notes = [];
+  if (s.chart_stale) notes.push(`<div class="callout warn">The chart is from the last available run; today's is not published yet.</div>`);
+  notes.push(`<div class="callout">${s.swalim_note} <a href="https://frrims.faoswalim.org/rivers/levels">SWALIM river levels</a>.</div>`);
+  document.getElementById("notes").innerHTML = notes.join("");
+  if (s.chart) { document.getElementById("chart").src = s.chart + "?v=" + encodeURIComponent(s.generated_at); document.getElementById("chartfig").hidden = false; }
+  const shown = s.open_windows.length ? s.open_windows : Object.keys(s.windows);
+  document.getElementById("tables-intro").textContent = s.open_windows.length
+    ? "For each window of the season being monitored, the forecast peak at each station within the leg's lead band and inside the window months, against the station's threshold. A ratio of 1.00× or more means the peak reaches the threshold and the station votes."
+    : "No window is open. Shown for every window: the forecast peak at each station within the lead band, against the threshold, counting only valid days inside the window months (so most cells are empty).";
+  document.getElementById("tables").innerHTML = shown.map(k => pointTable(s.windows[k], s.windows[k].readiness, "readiness", s.titles) + pointTable(s.windows[k], s.windows[k].action, "activation", s.titles)).join("");
+}).catch(err => {
+  document.getElementById("banner").innerHTML = `<span class="status">No status yet</span><span class="meta">Could not load status.json (${err.message}). The monitoring pipeline writes it after its first run.</span>`;
+});
+};</script>
+<script>window.__renderMap = function () {
+(function () {
+  const STATIONS = {
+    dollow: {name: "Dollow", river: "juba", lat: 4.175, lon: 42.075}, luuq: {name: "Luuq", river: "juba", lat: 3.725, lon: 42.525},
+    bardheere: {name: "Bardheere", river: "juba", lat: 2.325, lon: 42.225}, bualle: {name: "Bualle", river: "juba", lat: 1.225, lon: 42.575},
+    belet_weyne: {name: "Belet Weyne", river: "shabelle", lat: 4.725, lon: 45.225}, bulo_burti: {name: "Bulo Burti", river: "shabelle", lat: 3.825, lon: 45.575},
+    jowhar: {name: "Jowhar", river: "shabelle", lat: 2.775, lon: 45.525},
+  };
+  const AA = {SO2605: "juba", SO2606: "juba", SO2602: "juba", SO2703: "juba", SO2701: "juba", SO2702: "juba",
+              SO2001: "shabelle", SO2002: "shabelle", SO2003: "shabelle", SO2101: "shabelle", SO2103: "shabelle", SO2302: "shabelle", SO2305: "shabelle", SO2301: "shabelle"};
+  const HAS_POINT = new Set(["SO2605", "SO2606", "SO2602", "SO2701", "SO2001", "SO2002", "SO2101"]);
+  const RIVER_TITLE = {juba: "Juba", shabelle: "Shabelle"};
+  const STATE_TEXT = {reached: "activation trigger reached", ready: "readiness trigger reached", clear: "trigger not reached", off: "no window open"};
+  const LON0 = 41.0, LON1 = 46.4, LAT0 = -0.9, LAT1 = 5.5, W = 700, PAD = 16;
+  const K = (W - 2 * PAD) / (LON1 - LON0), H = Math.round((LAT1 - LAT0) * K + 2 * PAD);
+  const X = lon => PAD + (lon - LON0) * K, Y = lat => PAD + (LAT1 - lat) * K;
+  const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  function pathOf(geom) {
+    const rings = geom.type === "Polygon" ? [geom.coordinates] : geom.type === "MultiPolygon" ? geom.coordinates
+                : geom.type === "LineString" ? [[geom.coordinates]] : geom.coordinates.map(l => [l]);
+    let d = "";
+    for (const poly of rings) for (const ring of poly)
+      d += ring.map((c, i) => (i ? "L" : "M") + X(c[0]).toFixed(1) + " " + Y(c[1]).toFixed(1)).join("") + (geom.type.includes("Polygon") ? "Z" : "");
+    return d;
+  }
+  function centroid(geom) {
+    const pts = []; const walk = c => (typeof c[0] === "number") ? pts.push(c) : c.forEach(walk); walk(geom.coordinates);
+    return [pts.reduce((a, p) => a + p[0], 0) / pts.length, pts.reduce((a, p) => a + p[1], 0) / pts.length];
+  }
+  const get = u => fetch(u, {cache: "no-store"}).then(r => { if (!r.ok) throw new Error(u + " " + r.status); return r.json(); });
+  Promise.all([get("districts.json"), get("rivers.json"), get("status.json").catch(() => null)]).then(([districts, rivers, s]) => {
+    const openFor = {};                                   // the open window per river, if any
+    if (s) for (const [k, w] of Object.entries(s.windows)) if (w.open) openFor[w.river] = w;
+    const stateOf = w => !w ? "off" : w.action.activated ? "reached" : w.readiness.activated ? "ready" : "clear";
+    const svg = document.getElementById("map"); svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    let g = "";
+    for (const f of districts.features) if (!AA[f.properties.pcode]) g += '<path class="district" d="' + pathOf(f.geometry) + '"></path>';
+    for (const f of districts.features) {
+      const river = AA[f.properties.pcode]; if (!river) continue;
+      const st = stateOf(openFor[river]);
+      g += '<path class="district aa ' + (st === "off" ? "" : st) + '" d="' + pathOf(f.geometry) + '"><title>' + esc(f.properties.name) + ", " + RIVER_TITLE[river] + ": " + STATE_TEXT[st] + "</title></path>";
+    }
+    for (const f of rivers.features) g += '<path class="river ' + (/jubba|shab|sheb/i.test(f.properties.name) ? "main" : "") + '" d="' + pathOf(f.geometry) + '"></path>';
+    for (const f of districts.features) {
+      if (!AA[f.properties.pcode] || HAS_POINT.has(f.properties.pcode)) continue;
+      const c = centroid(f.geometry);
+      g += '<text class="dlbl" x="' + X(c[0]).toFixed(1) + '" y="' + (Y(c[1]) + 3).toFixed(1) + '" text-anchor="middle">' + esc(f.properties.name) + "</text>";
+    }
+    g += '<text class="rlbl" x="' + X(43.1).toFixed(1) + '" y="' + Y(0.2).toFixed(1) + '">Juba</text><text class="rlbl" x="' + X(46.0).toFixed(1) + '" y="' + Y(3.3).toFixed(1) + '">Shabelle</text>';
+    for (const [key, st] of Object.entries(STATIONS)) {
+      const w = openFor[st.river]; let cls = "pt", title = st.name;
+      if (w) {
+        const a = w.action.stations[key], r = w.readiness.stations[key];
+        if (a && a.exceeds) { cls += " over"; title += ": forecast over its activation threshold (" + (a.pct_of_threshold / 100).toFixed(2) + "× threshold)"; }
+        else if (r && r.exceeds) { cls += " rdy"; title += ": forecast over its readiness threshold (" + (r.pct_of_threshold / 100).toFixed(2) + "× threshold)"; }
+        else if (a) { title += ": " + (a.pct_of_threshold == null ? "no forecast in the lead band yet" : (a.pct_of_threshold / 100).toFixed(2) + "× its activation threshold"); }
+      } else title += ": no window open";
+      const x = X(st.lon), y = Y(st.lat), left = st.river === "juba";
+      g += '<circle class="' + cls + '" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="6.5"><title>' + esc(title) + "</title></circle>";
+      g += '<text class="lbl" x="' + (x + (left ? -10 : 10)).toFixed(1) + '" y="' + (y + 4).toFixed(1) + '" text-anchor="' + (left ? "end" : "start") + '">' + esc(st.name) + "</text>";
+    }
+    svg.innerHTML = g;
+    document.getElementById("maplegend").innerHTML = '<h3>Districts</h3>' +
+      '<div class="row"><span class="sw" style="background:rgba(179,64,54,.28);border-color:#B34036"></span>Activation trigger reached</div>' +
+      '<div class="row"><span class="sw" style="background:rgba(212,143,42,.28);border-color:#D48F2A"></span>Readiness trigger reached</div>' +
+      '<div class="row"><span class="sw" style="background:rgba(46,139,110,.16);border-color:#2E8B6E"></span>Trigger not reached</div>' +
+      '<div class="row"><span class="sw" style="background:#e9eeee"></span>No window open</div>' +
+      '<h3 style="margin-top:16px">Monitored points</h3>' +
+      '<div class="row"><span class="dot" style="background:#B34036;border-color:#7A241C"></span>Over its activation threshold</div>' +
+      '<div class="row"><span class="dot" style="background:#D48F2A;border-color:#8a5a15"></span>Over its readiness threshold</div>' +
+      '<div class="row"><span class="dot"></span>Below its thresholds</div>';
+  }).catch(e => { document.getElementById("maplegend").textContent = "Map data could not be loaded: " + e.message; });
+})();
+};</script>
+<script>
+(function () {
+  const realFetch = window.fetch.bind(window);
+  const shared = {};                       // districts.json and rivers.json, read once from the live page
+  let R = null, cur = null;
+  const answer = body => new Response(JSON.stringify(body), {status: 200, headers: {"Content-Type": "application/json"}});
+  window.fetch = function (url, opts) {
+    const key = String(url).split("?")[0];
+    if (R && key === "status.json") return Promise.resolve(answer(R.status[cur]));
+    if (key === "districts.json" || key === "rivers.json") {
+      if (!shared[key]) {
+        shared[key] = realFetch("../monitoring/" + key).then(r => { if (!r.ok) throw new Error(key + " " + r.status); return r.json(); });
+        shared[key].catch(() => { delete shared[key]; });   // a failed read is tried again on the next day picked
+      }
+      return shared[key].then(answer);
+    }
+    return realFetch(url, opts);
+  };
+  const bar = document.getElementById("replaybar");
+  const dm = s => new Date(s + "T00:00:00Z").toLocaleDateString("en-GB", {day: "numeric", month: "short", timeZone: "UTC"});
+  const cls = s => s.action ? "act" : s.readiness ? "ready" : "";
+  function drawDays() {
+    let h = "", month = "";
+    const marks = R.marks.slice();
+    const flag = m => `<span class="mark ${m.cls}" title="${m.label}">${m.short}</span>`;
+    R.dates.forEach(d => {
+      if (d.slice(0, 7) !== month) { h += (month ? '<span class="brk"></span>' : "") + `<span class="mon">${dm(d).split(" ")[1]}</span>`; month = d.slice(0, 7); }
+      while (marks.length && marks[0].date <= d) h += flag(marks.shift());
+      const s = R.status[d], label = `${dm(d)}: ${s.status.toLowerCase()}`;
+      h += `<button class="day ${cls(s)}" data-d="${d}" title="${label}" aria-label="${label}">${+d.slice(8)}</button>`;
+    });
+    marks.forEach(m => { h += flag(m); });
+    document.getElementById("rb-days").innerHTML = h;
+  }
+  function show(d) {
+    cur = d;
+    try { history.replaceState(null, "", "#" + d); } catch (e) {}
+    bar.querySelectorAll(".day").forEach(b => {
+      b.classList.toggle("cur", b.dataset.d === d);
+      if (b.dataset.d === d) b.setAttribute("aria-current", "true"); else b.removeAttribute("aria-current");
+    });
+    const i = R.dates.indexOf(d);
+    document.getElementById("rb-prev").disabled = i === 0;
+    document.getElementById("rb-next").disabled = i === R.dates.length - 1;
+    document.getElementById("rb-cur").textContent = `forecast issued ${dm(d)} ${d.slice(0, 4)}`;
+    document.getElementById("rb-note").innerHTML = `<b>Forecast issued ${dm(d)} ${d.slice(0, 4)}.</b> ` + (R.notes[d] || "");
+    window.__renderStatus(); window.__renderMap();
+  }
+  const step = k => { const i = R.dates.indexOf(cur) + k; if (i >= 0 && i < R.dates.length) show(R.dates[i]); };
+  const fromHash = () => R.dates.includes(location.hash.slice(1)) ? location.hash.slice(1) : null;
+  realFetch("replay.json").then(r => { if (!r.ok) throw new Error(r.status + " " + r.statusText); return r.json(); }).then(data => {
+    R = data;
+    drawDays();
+    bar.addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      if (b.id === "rb-prev") step(-1); else if (b.id === "rb-next") step(1); else if (b.dataset.d) show(b.dataset.d);
+    });
+    document.addEventListener("keydown", e => {
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      const a = document.activeElement;   // leave the arrows alone inside anything else that takes focus
+      if (a && a !== document.body && !bar.contains(a)) return;
+      if (e.key === "ArrowLeft") step(-1); else if (e.key === "ArrowRight") step(1);
+    });
+    window.addEventListener("hashchange", () => { const d = fromHash(); if (d && d !== cur) show(d); });
+    show(fromHash() || R.start);
+  }).catch(err => {
+    document.getElementById("banner").innerHTML = `<span class="status">No replay data</span><span class="meta">Could not load replay.json (${err.message}).</span>`;
+  });
+})();
+</script>
+</body>
+</html>

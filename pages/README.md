@@ -23,6 +23,14 @@ Layout, with the script that writes each directory:
   `latest.png` are written by `pipelines/export_monitoring_status.py` in
   `.github/workflows/monitoring.yml`, pushed to the orphan `monitoring-status` branch
   and overlaid here by `deploy-pages.yml`.
+- `monitoring-replay/`: the monitoring page re-run on the archived GloFAS forecasts of a
+  past season (Deyr 2023). Everything in it is written by
+  `scripts/build_monitoring_replay_page.py`: `index.html` is generated from
+  `monitoring/index.html`, so re-run its `build` step after editing the monitoring page,
+  the trigger config or the thresholds; `replay.json` holds one status per issue and
+  `charts/` the pipeline's chart for each. Published from the twice-weekly reforecast
+  (`build --source reforecast`) until the daily operational archive has been fetched
+  (`fetch`, `process --upload`, then plain `build`).
 - `summary/`: the data-source review (`scripts/build_summary_page.py` with
   `scripts/summary_figures.py`).
 - `glofas-version/`: the version 4 / version 5 note (`scripts/build_glofas_version_page.py`).
