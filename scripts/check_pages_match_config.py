@@ -70,20 +70,35 @@ for page in sorted(PAGES.rglob("*.html")):
             fail(rel, f"readiness band written as {bad}, config says "
                       f"{READINESS_LEADS[0]} to {READINESS_LEADS[1]}")
 
-# the live status must carry the configured rule on both legs
-status = PAGES / "monitoring" / "status.json"
-if status.exists():
-    s = json.loads(status.read_text(encoding="utf-8"))
+# the live status must carry the configured rule on both legs, and so must every
+# issue of the replay, which is only rebuilt by hand
+# (scripts/build_monitoring_replay_page.py build)
+def check_status(where, s):
     for name, w in s.get("windows", {}).items():
         key = (w["river"], w["season"])
         if w["action"]["rp"] != RP[key]:
-            fail("status.json", f"{name} action rp{w['action']['rp']}, config rp{RP[key]}")
+            fail(where, f"{name} action rp{w['action']['rp']}, config rp{RP[key]}")
+        if w["action"]["n_req"] != TRIGGER_CONFIG[key]["n_req"]:
+            fail(where, f"{name} action needs {w['action']['n_req']} stations, "
+                        f"config {TRIGGER_CONFIG[key]['n_req']}")
         if tuple(w["readiness"]["leads"]) != tuple(READINESS_LEADS):
-            fail("status.json", f"{name} readiness leads {w['readiness']['leads']}, "
-                                f"config {list(READINESS_LEADS)}")
+            fail(where, f"{name} readiness leads {w['readiness']['leads']}, "
+                        f"config {list(READINESS_LEADS)}")
         if tuple(w["action"]["leads"]) != tuple(ACTION_LEADS):
-            fail("status.json", f"{name} action leads {w['action']['leads']}, "
-                                f"config {list(ACTION_LEADS)}")
+            fail(where, f"{name} action leads {w['action']['leads']}, "
+                        f"config {list(ACTION_LEADS)}")
+
+
+status = PAGES / "monitoring" / "status.json"
+if status.exists():
+    check_status("status.json", json.loads(status.read_text(encoding="utf-8")))
+replay = PAGES / "monitoring-replay" / "replay.json"
+if replay.exists():
+    issues = json.loads(replay.read_text(encoding="utf-8"))["status"]
+    if not issues:
+        fail("monitoring-replay/replay.json", "holds no issue")
+    for day in sorted(issues)[:1] + sorted(issues)[-1:]:  # one build writes every issue, so the ends tell
+        check_status(f"monitoring-replay/replay.json {day}", issues[day])
 
 # emails state the rule in words and must not print a return period
 for tpl in sorted((REPO / "src/monitoring/email/templates").glob("*.html")):

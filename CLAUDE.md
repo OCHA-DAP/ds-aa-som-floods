@@ -87,3 +87,10 @@ and never register Deyr 2006/2023 on the Shabelle — see the page.
   the threshold and page builders.
 - Pages: one site, landing page `pages/index.html` with a card per product; nested pages link
   back via the hero crumb. Palette in `src/constants.py`; site CSS `pages/assets/site.css`.
+- `pages/monitoring-replay/` (the monitoring page re-run on Deyr 2023) is generated from
+  `pages/monitoring/index.html` and the pipeline's own evaluate/plot code by
+  `scripts/build_monitoring_replay_page.py`. It goes stale when the monitoring page, the
+  trigger config or `thresholds.json` change: re-run its `build` step, which stops if the
+  monitoring page's wording has moved or `GLOFAS_OPERATIONAL` is no longer v4. Published from
+  the reforecast (`build --source reforecast`) until the daily operational archive is fetched
+  (`fetch`, `process --upload`, `build`; EWDS serves about one day every five minutes).
