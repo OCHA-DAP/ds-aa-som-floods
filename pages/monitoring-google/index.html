@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Google Flood Hub reading &middot; Somalia Riverine Flood Trigger</title>
-<meta name="description" content="Informational page: the latest Google Flood Hub forecast at the seven monitored stations on the Juba and Shabelle, read against Google's own return-period levels with the same station rule as the trigger. Not part of the trigger.">
+<meta name="description" content="Informational page: the latest Google Flood Hub forecast at the seven monitored stations on the Juba and Shabelle, read against Google's own 1-in-6 levels with the same station rule as the trigger. Not part of the trigger.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@ table.data td.over { color:#B34036; font-weight:600; } table.data td.none { colo
       <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / <a href="../monitoring/">live monitoring</a> / Google Flood Hub reading</p>
       <h1>Google Flood Hub reading</h1>
       <p>The latest Google Flood Hub forecast at the seven monitored stations, read against Google's
-         own return-period levels with the trigger's station rule. Informational only: this page is
+         own 1-in-6 levels with the trigger's station rule. Informational only: this page is
          not part of the trigger and sends no email. The trigger for the season being monitored is on
          the <a href="../monitoring/">live monitoring page</a>. Updated once a day with it.</p>
     </div>
@@ -74,10 +74,11 @@ table.data td.over { color:#B34036; font-weight:600; } table.data td.none { colo
   <div id="tables"></div>
   <h2>About this reading</h2>
   <ul>
-    <li><strong>What is shown.</strong> Google Flood Hub's forecast at each station as a share of that station's Google return-period level for the window, at the window's return period, counted with the trigger's own rule: a number of stations over their level on one forecast day. The monitoring page reads the Deyr windows on GloFAS; this page applies the same rule to Google.</li>
+    <li><strong>What is shown.</strong> Google Flood Hub's forecast at each station as a share of that station's Google level for the window, counted with the trigger's own rule: a number of stations over their level on one forecast day. The monitoring page reads the Deyr windows on GloFAS; this page applies the same rule to Google.</li>
+    <li><strong>Levels at 1-in-6.</strong> In Deyr the Google levels are set at a 1-in-6 return period on both rivers, not the trigger's 1-in-4 and 1-in-5. On the 1999 to 2023 record that makes Google's Shabelle Deyr activation years the same four as the GloFAS v5 design: 2006, 2014, 2019 and 2023. On the Juba the same setting gives 2006, 2008, 2019 and 2023.</li>
     <li><strong>Why it is informational.</strong> The endorsed framework runs Deyr on GloFAS. In the <a href="../trigger-single-model/">trigger design</a>, Google on Deyr catches the same four severe Shabelle years as GloFAS v5 and adds 2008, a flood year; on the Juba it activates in three years outside the gauge benchmark (2013, 2015, 2019) and its peaks run 8 to 10 days ahead of the gauges. The <a href="../glofas-version/">GloFAS version page</a> describes the gap in the version 4 record on the Shabelle.</li>
     <li><strong>Lead days.</strong> The live Google feed returns about five to six days ahead of the issue, so the 1 to 7 day band is read as far as the feed goes. A readiness band (8 to 12 days) is not available on Google.</li>
-    <li><strong>Levels.</strong> Fitted on Google's own retrospective record, 1999 to 2023, with the same estimator as the trigger levels. Dollow reads the Juba main-stem gauge, the only one Google serves there.</li>
+    <li><strong>Record.</strong> Levels are fitted on Google's own retrospective record, 1999 to 2023, with the same estimator as the trigger levels. Dollow reads the Juba main-stem gauge, the only one Google serves there.</li>
   </ul>
   <h2 id="contact">Contact</h2>
   <div class="contact">
@@ -117,14 +118,14 @@ function readWindow(s, key) {
   }
   let maxVotes = 0, maxDate = null;
   for (const [d, n] of Object.entries(votes)) if (n > maxVotes) { maxVotes = n; maxDate = d; }
-  return {key, w, nReq, nOf: stations.length, per, maxVotes, maxDate, hit: maxVotes >= nReq, maxLead,
+  return {key, w, nReq, nOf: stations.length, per, maxVotes, maxDate, hit: maxVotes >= nReq, maxLead, rp: (s.google_view_rp || {})[key],
           glofas: w.action.source === "glofas" ? w.action.stations : null};
 }
 
 function card(r) {
   const cls = !r.w.open ? "closed" : r.hit ? "hit" : "";
   return `<div class="win ${cls}"><h3>${r.w.title}${r.w.open ? "" : '<span class="pill grey">out of season</span>'}</h3>
-    <div class="src">Google Flood Hub · ${LEADS[0]} to ${LEADS[1]} days ahead</div>
+    <div class="src">Google Flood Hub · ${LEADS[0]} to ${LEADS[1]} days ahead · 1-in-${r.rp} levels</div>
     <div class="leg"><span>Stations over their Google level<br><span style="font-size:11px;color:var(--n7)">the trigger's rule needs ${r.nReq} of ${r.nOf} on one forecast day</span></span><b class="${r.hit ? "hit" : ""}">${r.maxVotes}/${r.nOf}</b></div>
   </div>`;
 }
@@ -163,7 +164,7 @@ function table(r, titles) {
   }).join("");
   return `<h3 style="font-size:15px;margin:22px 0 2px;font-family:Merriweather,Georgia,serif">${r.w.title}</h3>
     <p style="margin:0 0 6px;font-size:12.5px;color:var(--n7)">Google Flood Hub, ${LEADS[0]} to ${LEADS[1]} days ahead, valid days inside the window · rule ${r.nReq} of ${r.nOf} over their levels · highest count on one day ${r.maxVotes} of ${r.nOf}${r.maxDate ? ` on ${fmtDate(r.maxDate)}` : ""}</p>
-    <div class="tablewrap"><table class="data"><thead><tr><th>Station</th><th class="n">Google peak (m³/s)</th><th>Day of peak</th><th>Peak / Google level</th><th class="n">Google level (m³/s)</th><th>GloFAS peak / its level (the trigger)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    <div class="tablewrap"><table class="data"><thead><tr><th>Station</th><th class="n">Google peak (m³/s)</th><th>Day of peak</th><th>Peak / Google level</th><th class="n">Google 1-in-${r.rp} level (m³/s)</th><th>GloFAS peak / its level (the trigger)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 fetch("../monitoring/status.json?v=" + Date.now(), {cache: "no-store"}).then(r => { if (!r.ok) throw new Error(r.status + " " + r.statusText); return r.json(); }).then(s => {
