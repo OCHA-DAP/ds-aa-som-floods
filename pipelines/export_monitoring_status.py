@@ -26,6 +26,7 @@ from src.monitoring import etl, evaluate, plot  # noqa: E402
 from src.monitoring import thresholds as thr  # noqa: E402
 
 OUT_DIR = Path(os.environ.get("STATUS_OUT_DIR", cfg.STATUS_DIR))
+GOOGLE_VIEW_RP = {"deyr": 6}  # informational Google reading, see google_levels below
 
 
 def series_for_page(df):
@@ -76,6 +77,14 @@ def main():
         "glofas_operational": cfg.GLOFAS_OPERATIONAL,
         "lead_bands": {"action": list(cfg.ACTION_LEADS), "readiness": list(cfg.READINESS_LEADS)},
         "levels": levels_for_page(levels_df),
+        # Google Flood Hub's own levels for the informational page /monitoring-google/;
+        # not used by the trigger. Deyr reads Google at 1-in-6 on both rivers (decision
+        # 2026-10-07: at 1-in-6 Google's Shabelle Deyr activation years match GloFAS v5's,
+        # 2006, 2014, 2019, 2023); Gu keeps the configured return period, where Google is
+        # the trigger source anyway.
+        "google_levels": {cfg.WINDOW_KEY[w]: thr.lookup(levels_df, "google_grrr", w[1], GOOGLE_VIEW_RP.get(w[1], cfg.ACTION_RULES[w]["rp"]), TRIGGER_STATIONS[w[0]])
+                          for w in cfg.WINDOWS},
+        "google_view_rp": {cfg.WINDOW_KEY[w]: GOOGLE_VIEW_RP.get(w[1], cfg.ACTION_RULES[w]["rp"]) for w in cfg.WINDOWS},
         "series": series_for_page(df),
         "stations": {r: list(s) for r, s in TRIGGER_STATIONS.items()},
         "titles": {"station": cfg.STATION_TITLE, "river": cfg.RIVER_TITLE, "source": cfg.SOURCE_TITLE,
