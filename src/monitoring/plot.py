@@ -71,7 +71,8 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
     # sits left of the readiness band (far). A forecast flood enters on the right and moves
     # left as the days pass: readiness first, then activation.
     a0, a1 = cfg.ACTION_LEADS
-    ax.axvspan(a0, a1, color="#E6EEF7", zorder=0)
+    # the activation band runs up to the first readiness day so the two bands touch
+    ax.axvspan(a0, cfg.READINESS_LEADS[0] if product == "glofas" else a1, color="#E6EEF7", zorder=0)
     ax.text(a0 + 0.1, 0.97, f"activation (days {a0} to {a1})", transform=ax.get_xaxis_transform(),
             fontsize=8.5, color=BODY, va="top", fontweight="bold")
     if product == "glofas":
