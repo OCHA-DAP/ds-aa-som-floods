@@ -13,7 +13,7 @@
 :root { --b5:#1f69b3; --b6:#1f69b3; --b7:#144372; --b05:#ebf0f4; --b1:#d4e5f7; }
 .brand { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:14px 44px; background:#fff; border-bottom:1px solid #e2e7e7; }
 .brand a { display:block; line-height:0; } .brand img { height:44px; width:auto; display:block; }
-.hero.hero-sub { padding:40px 44px 34px; } .hero.hero-sub h1 { font-size:28px; }
+.hero.hero-sub { padding:40px 44px 34px; } .hero.hero-sub h1 { font-size:28px; } .hero p a { color:#fff; }
 .crumb { font-size:12px; margin:0 0 14px; } .crumb a { color:rgba(255,255,255,.85); text-decoration:none; } .crumb a:hover { text-decoration:underline; }
 article { padding:8px 44px 24px; max-width:1000px; }
 article h2 { font-family:'Merriweather',Georgia,serif; font-size:20px; color:var(--n9); margin:34px 0 10px; line-height:1.25; }
@@ -47,12 +47,23 @@ table.data td.over { color:#B34036; font-weight:600; } table.data td.none { colo
 </style>
 </head>
 <body>
-<div class="hero hero-sub">
-  <div class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / <a href="../monitoring/">monitoring</a> / Google Flood Hub reading</div>
-  <h1>Google Flood Hub reading <span class="pill">informational</span></h1>
-  <p>The latest Google Flood Hub forecast at the seven monitored stations, read against Google's own return-period levels with the trigger's station rule. This page is not part of the trigger and sends no email. The trigger for the season being monitored is on the <a href="../monitoring/">monitoring page</a>.</p>
-</div>
-<article>
+<div class="wrap">
+  <div class="brand">
+    <a href="https://www.unocha.org/"><img src="../assets/ocha_logo.png" alt="OCHA"></a>
+    <a href="https://centre.humdata.org/"><img src="../assets/centre_for_humdata.png" alt="Centre for Humanitarian Data"></a>
+  </div>
+  <header class="hero hero-sub">
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / <a href="../monitoring/">live monitoring</a> / Google Flood Hub reading</p>
+      <h1>Google Flood Hub reading</h1>
+      <p>The latest Google Flood Hub forecast at the seven monitored stations, read against Google's
+         own return-period levels with the trigger's station rule. Informational only: this page is
+         not part of the trigger and sends no email. The trigger for the season being monitored is on
+         the <a href="../monitoring/">live monitoring page</a>. Updated once a day with it.</p>
+    </div>
+  </header>
+
+  <article>
   <div id="banner" class="banner"><span class="status">Loading</span></div>
   <div id="windows" class="grid2"></div>
   <div id="notes"></div>
@@ -68,8 +79,14 @@ table.data td.over { color:#B34036; font-weight:600; } table.data td.none { colo
     <li><strong>Lead days.</strong> The live Google feed returns about five to six days ahead of the issue, so the 1 to 7 day band is read as far as the feed goes. A readiness band (8 to 12 days) is not available on Google.</li>
     <li><strong>Levels.</strong> Fitted on Google's own retrospective record, 1999 to 2023, with the same estimator as the trigger levels. Dollow reads the Juba main-stem gauge, the only one Google serves there.</li>
   </ul>
-  <div class="contact"><p>Reach out to OCHA Data Science at <a href="mailto:ocha-datascience@un.org">ocha-datascience@un.org</a> with any questions.</p></div>
-</article>
+  <h2 id="contact">Contact</h2>
+  <div class="contact">
+    <p>Reach out to OCHA Data Science at <a href="mailto:ocha-datascience@un.org">ocha-datascience@un.org</a> with any questions.</p>
+  </div>
+  </article>
+
+</div>
+
 <script>
 const OPEN = {deyr: [9, 10, 11, 12, 1], gu: [2, 3, 4, 5, 6]};
 const LEADS = [1, 7];
