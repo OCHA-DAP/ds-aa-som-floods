@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Google Flood Hub reading &middot; Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Informational page: the latest Google Flood Hub forecast at the seven monitored stations on the Juba and Shabelle, read against Google's own return-period levels with the same station rule as the trigger. Not part of the trigger.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+:root { --b5:#1f69b3; --b6:#1f69b3; --b7:#144372; --b05:#ebf0f4; --b1:#d4e5f7; }
+.brand { display:flex; justify-content:space-between; align-items:center; gap:20px; padding:14px 44px; background:#fff; border-bottom:1px solid #e2e7e7; }
+.brand a { display:block; line-height:0; } .brand img { height:44px; width:auto; display:block; }
+.hero.hero-sub { padding:40px 44px 34px; } .hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; } .crumb a { color:rgba(255,255,255,.85); text-decoration:none; } .crumb a:hover { text-decoration:underline; }
+article { padding:8px 44px 24px; max-width:1000px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:20px; color:var(--n9); margin:34px 0 10px; line-height:1.25; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; } article a { color:var(--b6); }
+.banner { display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; margin:22px 0 6px; padding:16px 20px; border-radius:6px; border:1px solid #e2e7e7; border-left:8px solid #9aa4a6; background:#fff; }
+.banner .status { font-family:'Merriweather',Georgia,serif; font-size:22px; font-weight:700; color:#5e6a6b; }
+.banner.over { border-left-color:#B34036; } .banner.over .status { color:#B34036; }
+.banner .meta { font-size:12.5px; color:var(--n7); line-height:1.6; }
+.grid2 { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 8px; }
+@media (max-width:640px){.grid2{grid-template-columns:1fr}}
+.win { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5); border-radius:5px; padding:14px 16px 12px; }
+.win.hit { border-top-color:#B34036; } .win.closed { opacity:.62; border-top-color:#c8d0d1; }
+.win h3 { margin:0 0 4px; font-family:'Merriweather',Georgia,serif; font-size:15px; color:var(--n9); }
+.win .src { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--n7); margin-bottom:10px; }
+.win .leg { display:flex; justify-content:space-between; align-items:baseline; font-size:13px; color:var(--n8); padding:5px 0; border-top:1px solid #f0f3f3; }
+.win .leg b { font-size:17px; color:var(--n9); } .win .leg b.hit { color:#B34036; }
+.pill { display:inline-block; font-size:10px; padding:2px 7px; border-radius:10px; text-transform:uppercase; letter-spacing:.07em; font-weight:700; background:#fdf3e7; color:#B0722B; border:1px solid #f3dcb8; vertical-align:2px; margin-left:6px; }
+.pill.grey { background:#f0f3f3; color:#5e6a6b; border-color:#e2e7e7; }
+figure { margin:20px 0 8px; } figure svg { width:100%; height:auto; display:block; }
+figcaption { font-size:12px; color:var(--n7); margin-top:7px; line-height:1.5; }
+table.data { border-collapse:collapse; width:100%; margin:12px 0 4px; font-size:13px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 9px 6px; }
+table.data td { border-bottom:1px solid #eef1f1; padding:6px 9px; color:var(--n8); white-space:nowrap; }
+table.data td.n, table.data th.n { text-align:right; font-variant-numeric:tabular-nums; }
+table.data td.over { color:#B34036; font-weight:600; } table.data td.none { color:#9aa4a6; }
+.bar { display:inline-block; height:9px; background:var(--b1); border-radius:2px; vertical-align:middle; margin-right:6px; } .bar.over { background:#B34036; } .bar.g { background:#c9d6e3; }
+.tablewrap { overflow-x:auto; }
+.callout { margin:18px 0; padding:12px 16px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
+.callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
+.contact { margin:30px 0 8px; padding:16px 20px; border-radius:6px; background:var(--b05); border-left:5px solid var(--b6); } .contact p { margin:0; }
+</style>
+</head>
+<body>
+<div class="hero hero-sub">
+  <div class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / <a href="../monitoring/">monitoring</a> / Google Flood Hub reading</div>
+  <h1>Google Flood Hub reading <span class="pill">informational</span></h1>
+  <p>The latest Google Flood Hub forecast at the seven monitored stations, read against Google's own return-period levels with the trigger's station rule. This page is not part of the trigger and sends no email. The trigger for the season being monitored is on the <a href="../monitoring/">monitoring page</a>.</p>
+</div>
+<article>
+  <div id="banner" class="banner"><span class="status">Loading</span></div>
+  <div id="windows" class="grid2"></div>
+  <div id="notes"></div>
+  <h2>Forecast against Google's own levels</h2>
+  <div id="charts" class="grid2"></div>
+  <h2>Station tables</h2>
+  <p id="tables-intro"></p>
+  <div id="tables"></div>
+  <h2>About this reading</h2>
+  <ul>
+    <li><strong>What is shown.</strong> Google Flood Hub's forecast at each station as a share of that station's Google return-period level for the window, at the window's return period, counted with the trigger's own rule: a number of stations over their level on one forecast day. The monitoring page reads the Deyr windows on GloFAS; this page applies the same rule to Google.</li>
+    <li><strong>Why it is informational.</strong> The endorsed framework runs Deyr on GloFAS. In the <a href="../trigger-single-model/">trigger design</a>, Google on Deyr catches the same four severe Shabelle years as GloFAS v5 and adds 2008, a flood year; on the Juba it activates in three years outside the gauge benchmark (2013, 2015, 2019) and its peaks run 8 to 10 days ahead of the gauges. The <a href="../glofas-version/">GloFAS version page</a> describes the gap in the version 4 record on the Shabelle.</li>
+    <li><strong>Lead days.</strong> The live Google feed returns about five to six days ahead of the issue, so the 1 to 7 day band is read as far as the feed goes. A readiness band (8 to 12 days) is not available on Google.</li>
+    <li><strong>Levels.</strong> Fitted on Google's own retrospective record, 1999 to 2023, with the same estimator as the trigger levels. Dollow reads the Juba main-stem gauge, the only one Google serves there.</li>
+  </ul>
+  <div class="contact"><p>Reach out to OCHA Data Science at <a href="mailto:ocha-datascience@un.org">ocha-datascience@un.org</a> with any questions.</p></div>
+</article>
+<script>
+const OPEN = {deyr: [9, 10, 11, 12, 1], gu: [2, 3, 4, 5, 6]};
+const LEADS = [1, 7];
+const COL = {dollow: "#065A82", luuq: "#1C7293", bardheere: "#2A78D6", bualle: "#8E5FA8", belet_weyne: "#065A82", bulo_burti: "#0E8A7B", jowhar: "#EB6834"};
+const n0 = x => x == null ? "" : Math.round(x).toLocaleString("en");
+const fmtDate = d => { if (!d) return ""; const t = new Date(d + "T00:00:00Z"); return `${t.getUTCDate()} ${t.toLocaleString("en", {month: "short", timeZone: "UTC"})} ${t.getUTCFullYear()}`; };
+
+function readWindow(s, key) {
+  const w = s.windows[key], levels = s.google_levels[key], stations = s.stations[w.river];
+  const nReq = w.action.n_req, months = OPEN[w.season];
+  const per = {}, votes = {};
+  let maxLead = 0;
+  for (const st of stations) {
+    const ser = (s.series.google || {})[st], lvl = levels[st];
+    if (!ser || !lvl) { per[st] = {reporting: false, threshold: lvl}; continue; }
+    let best = null;
+    const pts = [];
+    ser.dates.forEach((d, i) => {
+      const lead = ser.leads[i], m = +d.slice(5, 7);
+      if (lead < LEADS[0] || lead > LEADS[1] || !months.includes(m)) return;
+      const v = ser.value[i]; pts.push({lead, d, v, pct: 100 * v / lvl});
+      maxLead = Math.max(maxLead, lead);
+      if (best == null || v > best.v) best = {v, d};
+      if (v >= lvl) votes[d] = (votes[d] || 0) + 1;
+    });
+    per[st] = {reporting: true, threshold: lvl, max_value: best && best.v, max_date: best && best.d,
+               pct: best && 100 * best.v / lvl, exceeds: !!best && best.v >= lvl, pts};
+  }
+  let maxVotes = 0, maxDate = null;
+  for (const [d, n] of Object.entries(votes)) if (n > maxVotes) { maxVotes = n; maxDate = d; }
+  return {key, w, nReq, nOf: stations.length, per, maxVotes, maxDate, hit: maxVotes >= nReq, maxLead,
+          glofas: w.action.source === "glofas" ? w.action.stations : null};
+}
+
+function card(r) {
+  const cls = !r.w.open ? "closed" : r.hit ? "hit" : "";
+  return `<div class="win ${cls}"><h3>${r.w.title}${r.w.open ? "" : '<span class="pill grey">out of season</span>'}</h3>
+    <div class="src">Google Flood Hub · ${LEADS[0]} to ${LEADS[1]} days ahead</div>
+    <div class="leg"><span>Stations over their Google level<br><span style="font-size:11px;color:var(--n7)">the trigger's rule needs ${r.nReq} of ${r.nOf} on one forecast day</span></span><b class="${r.hit ? "hit" : ""}">${r.maxVotes}/${r.nOf}</b></div>
+  </div>`;
+}
+
+function chart(r, titles) {
+  const W = 460, H = 270, L = 48, R = 16, T = 18, B = 40;
+  const pts = Object.values(r.per).flatMap(v => v.pts || []);
+  const ymax = Math.max(120, ...pts.map(p => p.pct + 10));
+  const x = l => L + (l - LEADS[0]) / (LEADS[1] - LEADS[0]) * (W - L - R);
+  const y = p => T + (1 - p / ymax) * (H - T - B);
+  let g = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="Roboto,Helvetica,Arial,sans-serif" font-size="11">`;
+  for (let p = 0; p <= ymax; p += 20) g += `<line x1="${L}" x2="${W - R}" y1="${y(p)}" y2="${y(p)}" stroke="#eef1f1"/><text x="${L - 6}" y="${y(p) + 4}" text-anchor="end" fill="#8a949a">${p}%</text>`;
+  if (r.maxLead && r.maxLead < LEADS[1]) g += `<rect x="${x(r.maxLead)}" y="${T}" width="${x(LEADS[1]) - x(r.maxLead)}" height="${H - T - B}" fill="#f4f6f7"/><text x="${(x(r.maxLead) + x(LEADS[1])) / 2}" y="${T + 14}" text-anchor="middle" fill="#9aa4a6" font-size="10">not in the feed</text>`;
+  g += `<line x1="${L}" x2="${W - R}" y1="${y(100)}" y2="${y(100)}" stroke="#B34036" stroke-dasharray="5 4" stroke-width="1.3"/><text x="${W - R}" y="${y(100) - 5}" text-anchor="end" fill="#B34036" font-size="10">Google level</text>`;
+  for (let l = LEADS[0]; l <= LEADS[1]; l++) g += `<text x="${x(l)}" y="${H - B + 16}" text-anchor="middle" fill="#8a949a">${l}</text>`;
+  g += `<text x="${(L + W - R) / 2}" y="${H - 8}" text-anchor="middle" fill="#55606d">days ahead of the forecast</text>`;
+  for (const [st, v] of Object.entries(r.per)) {
+    if (!v.pts || !v.pts.length) continue;
+    const sorted = v.pts.slice().sort((a, b) => a.lead - b.lead);
+    const d = sorted.map((p, i) => `${i ? "L" : "M"}${x(p.lead).toFixed(1)},${y(p.pct).toFixed(1)}`).join(" ");
+    g += `<path d="${d}" fill="none" stroke="${COL[st]}" stroke-width="${v.exceeds ? 2.4 : 1.7}"/>`;
+  }
+  g += "</svg>";
+  const legend = Object.entries(r.per).filter(([, v]) => v.pts && v.pts.length).map(([st]) => `<span style="display:inline-block;margin:0 14px 4px 0;font-size:12px;color:var(--n8)"><span style="display:inline-block;width:18px;height:3px;background:${COL[st]};vertical-align:middle;margin-right:6px"></span>${titles.station[st]}</span>`).join("");
+  return `<figure>${g}<div style="margin:6px 0 0">${legend}</div><figcaption><b>${r.w.title}</b>: each line is one station as % of its own Google level for the window; the dashed line is the level that counts as over.</figcaption></figure>`;
+}
+
+function table(r, titles) {
+  const rows = Object.entries(r.per).map(([st, v]) => {
+    const gl = r.glofas && r.glofas[st];
+    const gcell = gl ? (gl.pct_of_threshold == null ? '<td class="none">no forecast day yet</td>' : `<td><span class="bar g" style="width:${Math.max(2, Math.min(gl.pct_of_threshold, 250) * 0.6)}px"></span>${(gl.pct_of_threshold / 100).toFixed(2)}×</td>`) : "<td></td>";
+    if (!v.reporting) return `<tr><td>${titles.station[st]}</td><td class="none" colspan="3">not in the live feed</td><td class="n">${n0(v.threshold)}</td>${gcell}</tr>`;
+    if (v.max_value == null) return `<tr><td>${titles.station[st]}</td><td class="none" colspan="3">no forecast day inside the window yet</td><td class="n">${n0(v.threshold)}</td>${gcell}</tr>`;
+    return `<tr><td>${titles.station[st]}</td><td class="n ${v.exceeds ? "over" : ""}">${n0(v.max_value)}</td><td>${fmtDate(v.max_date)}</td>
+      <td><span class="bar ${v.exceeds ? "over" : ""}" style="width:${Math.max(2, Math.min(v.pct, 250) * 0.6)}px"></span>${(v.pct / 100).toFixed(2)}×</td><td class="n">${n0(v.threshold)}</td>${gcell}</tr>`;
+  }).join("");
+  return `<h3 style="font-size:15px;margin:22px 0 2px;font-family:Merriweather,Georgia,serif">${r.w.title}</h3>
+    <p style="margin:0 0 6px;font-size:12.5px;color:var(--n7)">Google Flood Hub, ${LEADS[0]} to ${LEADS[1]} days ahead, valid days inside the window · rule ${r.nReq} of ${r.nOf} over their levels · highest count on one day ${r.maxVotes} of ${r.nOf}${r.maxDate ? ` on ${fmtDate(r.maxDate)}` : ""}</p>
+    <div class="tablewrap"><table class="data"><thead><tr><th>Station</th><th class="n">Google peak (m³/s)</th><th>Day of peak</th><th>Peak / Google level</th><th class="n">Google level (m³/s)</th><th>GloFAS peak / its level (the trigger)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+fetch("../monitoring/status.json?v=" + Date.now(), {cache: "no-store"}).then(r => { if (!r.ok) throw new Error(r.status + " " + r.statusText); return r.json(); }).then(s => {
+  if (!s.google_levels) throw new Error("status.json has no google_levels yet");
+  const keys = s.open_windows.length ? s.open_windows : Object.keys(s.windows);
+  const reads = keys.map(k => readWindow(s, k));
+  const anyHit = reads.some(r => r.w.open && r.hit);
+  const b = document.getElementById("banner");
+  b.className = "banner " + (anyHit ? "over" : "");
+  const gi = (s.google_issue || "").slice(0, 10);
+  b.innerHTML = `<span class="status">${anyHit ? "Google reading: station rule met" : "Google reading: station rule not met"}</span>
+    <span class="meta">Google Flood Hub forecast issued <b>${fmtDate(gi)}</b> · ${s.n_google_gauges} of 7 gauges · checked ${fmtDate(s.monitoring_date)}<br>
+    Trigger status on the monitoring page: <b>${s.status}</b>${s.open_windows.length ? " (read on GloFAS)" : ""}</span>`;
+  document.getElementById("windows").innerHTML = reads.map(card).join("");
+  document.getElementById("notes").innerHTML = `<div class="callout warn">Informational only. The trigger for Deyr is read on GloFAS; a station count on this page does not reach any trigger and sends no email.</div>`;
+  document.getElementById("charts").innerHTML = reads.map(r => chart(r, s.titles)).join("");
+  document.getElementById("tables-intro").textContent = "For each window, Google Flood Hub's peak at each station within 1 to 7 days ahead and inside the window months, against the station's Google level. The last column repeats the trigger's own GloFAS reading from the monitoring page.";
+  document.getElementById("tables").innerHTML = reads.map(r => table(r, s.titles)).join("");
+}).catch(err => {
+  document.getElementById("banner").innerHTML = `<span class="status">No reading yet</span><span class="meta">Could not load the monitoring status (${err.message}).</span>`;
+});
+</script>
+</body>
+</html>

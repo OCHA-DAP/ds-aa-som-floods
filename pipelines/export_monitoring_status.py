@@ -76,6 +76,10 @@ def main():
         "glofas_operational": cfg.GLOFAS_OPERATIONAL,
         "lead_bands": {"action": list(cfg.ACTION_LEADS), "readiness": list(cfg.READINESS_LEADS)},
         "levels": levels_for_page(levels_df),
+        # Google Flood Hub's own levels at each window's return period, read by the
+        # informational page /monitoring-google/; not used by the trigger
+        "google_levels": {cfg.WINDOW_KEY[w]: thr.lookup(levels_df, "google_grrr", w[1], cfg.ACTION_RULES[w]["rp"], TRIGGER_STATIONS[w[0]])
+                          for w in cfg.WINDOWS},
         "series": series_for_page(df),
         "stations": {r: list(s) for r, s in TRIGGER_STATIONS.items()},
         "titles": {"station": cfg.STATION_TITLE, "river": cfg.RIVER_TITLE, "source": cfg.SOURCE_TITLE,
