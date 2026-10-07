@@ -105,7 +105,7 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
     ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(decimals=0))
     ax.set_xlim(0.5, xmax + 0.5)
     ax.set_xticks(range(1, xmax + 1))
-    ax.set_xticklabels([f"+{d}" for d in range(1, xmax + 1)])
+    ax.set_xticklabels([str(d) for d in range(1, xmax + 1)])
     issued_label = f"days ahead of the {_day_month(issue)} forecast" if issue is not None else "days ahead of the forecast"
     ax.set_xlabel(issued_label, color=BODY, fontsize=9)
     if issue is not None:
