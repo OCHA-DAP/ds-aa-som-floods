@@ -3,8 +3,9 @@
 Two rows (Juba, Shabelle) by two columns (Google Flood Hub, GloFAS ensemble
 median). Each line is one point, expressed as a percentage of that point's
 threshold for the season being watched, so points with very different
-discharges share one axis and 100% is the level that counts as a vote. The
-action lead band is shaded darker, the readiness band lighter. Palette and
+discharges share one axis and 100% is the level that counts as a vote. The x axis is
+lead time (days ahead of the issue): the activation band (1 to 7 d) sits left of the
+readiness band (8 to 12 d), with calendar dates along the top. Palette and
 type follow src.constants so the chart matches the analysis pages.
 """
 
@@ -66,45 +67,66 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
         ax.text(0.5, 0.5, f"no {cfg.SOURCE_TITLE[product]} data retrieved", ha="center",
                 va="center", transform=ax.transAxes, color=FAINT, fontsize=10)
     issue = pd.Timestamp(sub.issued_time.iloc[0]).tz_localize(None).normalize() if len(sub) else None
-    if issue is not None:
-        if product == "glofas":
-            a0, a1 = issue + pd.Timedelta(days=cfg.ACTION_LEADS[0] - 1), issue + pd.Timedelta(days=cfg.ACTION_LEADS[1] - 1)
-            r0, r1 = issue + pd.Timedelta(days=cfg.READINESS_LEADS[0] - 1), issue + pd.Timedelta(days=cfg.READINESS_LEADS[1] - 1)
-            ax.axvspan(r0 - pd.Timedelta(hours=12), r1 + pd.Timedelta(hours=12), color="#F1F4F7", zorder=0)
-            ax.text(r0, 0.97, f"readiness {cfg.READINESS_LEADS[0]} to {cfg.READINESS_LEADS[1]} d", transform=ax.get_xaxis_transform(), fontsize=8,
-                    color=FAINT, va="top")
-        else:
-            a0, a1 = issue + pd.Timedelta(days=cfg.ACTION_LEADS[0]), issue + pd.Timedelta(days=cfg.ACTION_LEADS[1])
-        ax.axvspan(a0 - pd.Timedelta(hours=12), a1 + pd.Timedelta(hours=12), color="#E6EEF7", zorder=0)
-        ax.text(a0, 0.97, f"activation {cfg.ACTION_LEADS[0]} to {cfg.ACTION_LEADS[1]} d", transform=ax.get_xaxis_transform(), fontsize=8,
-                color=FAINT, va="top")
+    # x axis is lead time: days ahead of the forecast issue, so the activation band (near)
+    # sits left of the readiness band (far). A forecast flood enters on the right and moves
+    # left as the days pass: readiness first, then activation.
+    a0, a1 = cfg.ACTION_LEADS
+    # the activation band runs up to the first readiness day so the two bands touch
+    ax.axvspan(a0, cfg.READINESS_LEADS[0] if product == "glofas" else a1, color="#E6EEF7", zorder=0)
+    ax.text(a0 + 0.1, 0.97, f"activation (days {a0} to {a1})", transform=ax.get_xaxis_transform(),
+            fontsize=8.5, color=BODY, va="top", fontweight="bold")
+    if product == "glofas":
+        r0, r1 = cfg.READINESS_LEADS
+        ax.axvspan(r0, r1, color="#FBF3E4", zorder=0)
+        ax.text(r0 + 0.1, 0.97, f"readiness (days {r0} to {r1})", transform=ax.get_xaxis_transform(),
+                fontsize=8.5, color=BODY, va="top", fontweight="bold")
+        ax.annotate("", xy=(a0 + 0.2, 0.885), xytext=(r1 - 0.1, 0.885), xycoords=ax.get_xaxis_transform(),
+                    arrowprops=dict(arrowstyle="-|>", color=FAINT, lw=1))
+        ax.text((a0 + r1) / 2, 0.90, "readiness first, then activation", transform=ax.get_xaxis_transform(),
+                fontsize=7.5, color=FAINT, ha="center", va="bottom", style="italic")
+        xmax = r1
+    else:
+        xmax = a1
     for st in stations:
-        s = sub[sub.station == st].sort_values("valid_date")
+        s = sub[sub.station == st].sort_values("leadtime_days")
         lvl = levels.get(st)
         if s.empty or not lvl:
             continue
         pct = 100 * s["value"] / lvl
         exceeds = (pct >= 100).any()
-        ax.plot(s["valid_date"], pct, color=STATION_COLORS[st], lw=2.2 if exceeds else 1.6,
+        ax.plot(s["leadtime_days"], pct, color=STATION_COLORS[st], lw=2.2 if exceeds else 1.6,
                 marker="o", ms=3, label=f"{cfg.STATION_TITLE[st]} ({lvl:,.0f} m³/s)", zorder=3)
     live = [st for st in stations if not sub[sub.station == st].empty]
     missing = [cfg.STATION_TITLE[st] for st in stations if st not in live]
     ax.axhline(100, color="#B34036", ls="--", lw=1.2, zorder=2)
+    ax.text(xmax + 0.45, 98.5, "trigger level", color="#B34036",
+            fontsize=7.5, va="top", ha="right")
     ax.set_ylim(bottom=0)
     ax.set_ylim(top=max(ax.get_ylim()[1], 120))
     ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(decimals=0))
-    ax.xaxis.set_major_locator(mdates.DayLocator(interval=2))
-    ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda x, _: _day_month(mdates.num2date(x))))
+    ax.set_xlim(0.5, xmax + 0.5)
+    ax.set_xticks(range(1, xmax + 1))
+    ax.set_xticklabels([str(d) for d in range(1, xmax + 1)])
+    issued_label = f"days ahead of the {_day_month(issue)} forecast" if issue is not None else "days ahead of the forecast"
+    ax.set_xlabel(issued_label, color=BODY, fontsize=9)
+    if issue is not None:
+        # calendar dates along the top for readers who want them; GloFAS day n is issue+(n-1), Google lead n is issue+n
+        off = -1 if product == "glofas" else 0
+        top = ax.secondary_xaxis("top")
+        top.set_xticks(range(1, xmax + 1, 2))
+        top.set_xticklabels([_day_month(issue + pd.Timedelta(days=d + off)) for d in range(1, xmax + 1, 2)], fontsize=7.5, color=FAINT)
+        top.tick_params(length=0)
+        top.spines["top"].set_visible(False)
     ax.grid(axis="y", color=GRID, lw=0.8)
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)
     votes = ""
     if result_window is not None:
         leg = result_window["action"] if role == "activation" else result_window["readiness"]
-        votes = (f"  ·  max {leg['max_votes']} of {leg['n_of']} points over"
+        votes = (f" {leg['max_votes']} of {leg['n_of']} stations over"
                  + (f" on {_day_month(pd.Timestamp(leg['max_votes_date']))}" if leg["max_votes_date"] else "")
-                 + f" (rule: {leg['n_req']} of {leg['n_of']})")
-    title = f"{cfg.RIVER_TITLE[river]} · {cfg.SOURCE_TITLE[product]} · {role}{votes}"
+                 + f", {leg['n_req']} needed")
+    title = f"{cfg.RIVER_TITLE[river]} · {role}:{votes}"
     ax.set_title(title, color=PRODUCT_COLORS[product], pad=8)
     if missing:
         ax.text(0.995, 0.03, "not in live feed: " + ", ".join(missing), transform=ax.transAxes,
@@ -148,26 +170,25 @@ def monitoring_chart(df, result, levels_df=None):
             role = "readiness"
         _panel(ax_of(i, col), df, "glofas", river, season, gl_levels, result["windows"][key], role)
     for ax in left:
-        ax.set_ylabel("% of the point's threshold")
+        ax.set_ylabel("% of the station's trigger level")
     status = result["status"]
     gi = pd.Timestamp(result["glofas_issue"]) if result.get("glofas_issue") else None
-    issued = f"GloFAS issue {_day_month(gi)} {gi:%Y}" if gi is not None else "no GloFAS issue"
+    issued = f"GloFAS forecast of {_day_month(gi)} {gi:%Y}" if gi is not None else "no GloFAS forecast"
     if two_sources and result.get("google_issue"):
         go = pd.Timestamp(result["google_issue"][:10])
-        issued += f", Google issue {_day_month(go)} {go:%Y}"
-    fig.text(0.02, head[0], f"Somalia riverine flood trigger · {issued} · "
-                            f"{cfg.SEASON_TITLE[season]}{'' if is_open else ' (out of season)'}",
+        issued += f", Google forecast of {_day_month(go)} {go:%Y}"
+    fig.text(0.02, head[0], f"Somalia riverine flood trigger · {cfg.SEASON_TITLE[season].split(' (')[0]} season"
+                            f"{'' if is_open else ' (not open)'} · {issued}",
              fontsize=11, color=BODY)
     label = fig.text(0.02, head[1], "Status: ", fontsize=11, color=BODY)
     fig.canvas.draw()
     x1 = fig.transFigure.inverted().transform((label.get_window_extent().x1, 0))[0]
     fig.text(x1, head[1], status, fontsize=11, fontweight="bold", color=STATUS_COLORS.get(status, INK))
-    sources = (f"GloFAS: ensemble median, levels from the {cfg.GLOFAS_OPERATIONAL.replace('_', ' ')} climatology"
-               + ("; Google: Flood Hub deterministic, levels from its retrospective" if two_sources else ""))
-    runs = f"GloFAS run: {result.get('glofas_version') or 'n/a'}" + (f"; Google issue: {result.get('google_issue') or 'n/a'}" if two_sources else "")
-    fig.text(0.02, 0.012, f"Lines: forecast at each trigger point as % of its own threshold ({sources}). "
-                          f"Dashed line = vote level. {runs}.",
-             fontsize=7.5, color=FAINT, wrap=True)
+    v = cfg.GLOFAS_OPERATIONAL.replace("glofas_", "GloFAS ")
+    sources = (f"{v} ensemble median; trigger levels from the {v} reanalysis"
+               + ("; Google Flood Hub, levels from its retrospective" if two_sources else ""))
+    runs = f"Run {result.get('glofas_version') or 'n/a'}" + (f"; Google issue {result.get('google_issue') or 'n/a'}" if two_sources else "")
+    fig.text(0.02, 0.012, f"{sources}. {runs}.", fontsize=7.5, color=FAINT, wrap=True)
     fig.tight_layout(rect=rect, h_pad=3.2)
     return fig
 
