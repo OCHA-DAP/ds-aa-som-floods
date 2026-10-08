@@ -10,6 +10,7 @@ src/monitoring/plot.py so the examples match the live chart.
 Output: pages/monitoring/examples/{readiness,activation}.png
 """
 import datetime as dt
+import math
 import sys
 from pathlib import Path
 
@@ -23,15 +24,11 @@ JUBA = ["dollow", "luuq", "bardheere", "bualle"]
 
 def example(df, day, leads, factor, name):
     d = df.copy()
-    # rise to the factor over the band's first three days, hold to its end, then ease back
-    # over the next three days, so the shape reads as one flood wave rather than a step
+    # one smooth flood wave centred inside the band: a bell-shaped scaling that peaks at the
+    # factor mid-band and fades to 1 outside it, so the other band stays under its level
+    centre = (leads[0] + leads[1]) / 2
     for lead in range(1, 13):
-        if lead < leads[0]:
-            f = 1.0
-        elif lead <= leads[1]:
-            f = 1 + (factor - 1) * min(1.0, (lead - leads[0] + 1) / 3)
-        else:
-            f = 1 + (factor - 1) * max(0.0, 1 - (lead - leads[1]) / 3)
+        f = 1 + (factor - 1) * math.exp(-((lead - centre) ** 2) / (2 * 1.8 ** 2))
         m = (d.source == "glofas") & d.station.isin(JUBA) & (d.leadtime_days == lead)
         d.loc[m, "value"] = d.loc[m, "value"] * f
     res = evaluate.evaluate(d, day)

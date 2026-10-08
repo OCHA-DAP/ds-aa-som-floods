@@ -112,30 +112,28 @@ details.howto p.muted { color:var(--n7); font-size:12.5px; padding-bottom:10px; 
     <h2>Latest forecasts against the trigger thresholds</h2>
     <figure id="chartfig" hidden>
       <img id="chart" alt="Forecast at each monitored point as a share of its own threshold">
-      <figcaption>Each line is one monitored point, as a percentage of its own trigger threshold for the
-        season being watched; the dashed line is the threshold that counts as a vote. The two shaded bands
-        count forward from the forecast issue date: the next 7 days are the activation window (darker band)
-        and days 8 to 12 are the readiness window (lighter band). GloFAS lines are the
-        ensemble median.</figcaption>
+      <figcaption>Each line is one station as a percentage of its own trigger level. The red dashed line is
+        the trigger level. Blue band: the next 7 days, where activation is decided. Orange band: days 8 to 12,
+        where readiness is decided. GloFAS lines are the ensemble median.</figcaption>
     </figure>
     <details class="howto">
       <summary>How to read this chart</summary>
-      <p>Each station is drawn as a share of its own trigger level, so 100% is the level that counts as
-         a vote. The forecast is read from today outward: the blue band is the next 7 days, where the
-         activation trigger is decided, and the orange band is days 8 to 12, where the readiness trigger
-         is decided. A flood that is still 8 to 12 days away shows up in the orange band first; as the
-         days pass it moves left into the blue band. Readiness comes first, then activation.</p>
+      <p>Each line is one station, shown as a percentage of its own trigger level. Above the red line, the
+         station counts. The blue band covers the next 7 days and decides activation. The orange band
+         covers days 8 to 12 and decides readiness. A flood that is ten days away appears in the orange
+         band first and moves into the blue band as the days pass. That is why readiness normally comes
+         before activation.</p>
       <div class="howto-grid">
         <figure>
           <img src="examples/readiness.png" alt="Illustration of a readiness trigger: Juba stations above their trigger level in the orange 8 to 12 day band only">
-          <figcaption><b>Readiness reached.</b> Enough Juba stations are above their level on one day in the orange band, days 8 to 12, while the blue band stays below. The status reads readiness trigger reached.</figcaption>
+          <figcaption><b>Readiness reached.</b> Juba stations go over the line in the orange band and stay under it in the blue band.</figcaption>
         </figure>
         <figure>
           <img src="examples/activation.png" alt="Illustration of an activation trigger: Juba stations above their trigger level in the blue 1 to 7 day band">
-          <figcaption><b>Activation reached.</b> Enough Juba stations are above their level on one day in the blue band, days 1 to 7. The status reads activation trigger reached, whatever the orange band shows.</figcaption>
+          <figcaption><b>Activation reached.</b> Juba stations go over the line in the blue band. The orange band no longer matters.</figcaption>
         </figure>
       </div>
-      <p class="muted">Both pictures are illustrations built from a real forecast day with the Juba values scaled up, not readings.</p>
+      <p class="muted">These two charts are illustrations, not readings. They take a real forecast day and scale up the Juba values.</p>
     </details>
 
     <h2>Forecast peak at each station</h2>
