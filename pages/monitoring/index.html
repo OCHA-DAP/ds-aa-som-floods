@@ -57,6 +57,13 @@ table.data td.none { color:#9aa4a6; }
 .bar { display:inline-block; height:9px; background:var(--b1); border-radius:2px; vertical-align:middle; margin-right:6px; }
 .bar.over { background:#B34036; }
 .tablewrap { overflow-x:auto; }
+details.howto { margin:12px 0 4px; border:1px solid #e2e7e7; border-radius:6px; background:#fff; }
+details.howto summary { cursor:pointer; padding:10px 14px; font-weight:500; color:var(--b7); }
+details.howto > p, details.howto > div { padding:0 14px; }
+details.howto p.muted { color:var(--n7); font-size:12.5px; padding-bottom:10px; }
+.howto-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+@media (max-width:640px){.howto-grid{grid-template-columns:1fr}}
+.howto-grid figure { margin:8px 0; } .howto-grid figcaption { font-size:12px; }
 .callout { margin:18px 0; padding:12px 16px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
 .callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
 .callout.error { background:#fbeeec; border-left-color:#B34036; }
@@ -105,12 +112,29 @@ table.data td.none { color:#9aa4a6; }
     <h2>Latest forecasts against the trigger thresholds</h2>
     <figure id="chartfig" hidden>
       <img id="chart" alt="Forecast at each monitored point as a share of its own threshold">
-      <figcaption>Each line is one monitored point, as a percentage of its own trigger threshold for the
-        season being watched; the dashed line is the threshold that counts as a vote. The two shaded bands
-        count forward from the forecast issue date: the next 7 days are the activation window (darker band)
-        and days 8 to 12 are the readiness window (lighter band). GloFAS lines are the
-        ensemble median.</figcaption>
+      <figcaption>Each line is one station as a percentage of its own trigger level. The red dashed line is
+        the trigger level. Blue band: the next 7 days, where activation is decided. Orange band: days 8 to 12,
+        where readiness is decided. GloFAS lines are the ensemble median.</figcaption>
     </figure>
+    <details class="howto">
+      <summary>How to read this chart</summary>
+      <p>Each line is one station, shown as a percentage of its own trigger level. Above the red line, the
+         station counts. The blue band covers the next 7 days and decides activation. The orange band
+         covers days 8 to 12 and decides readiness. A flood that is ten days away appears in the orange
+         band first and moves into the blue band as the days pass. That is why readiness normally comes
+         before activation.</p>
+      <div class="howto-grid">
+        <figure>
+          <img src="examples/readiness.png" alt="Illustration of a readiness trigger: Juba stations above their trigger level in the orange 8 to 12 day band only">
+          <figcaption><b>Readiness reached.</b> Juba stations go over the line in the orange band and stay under it in the blue band.</figcaption>
+        </figure>
+        <figure>
+          <img src="examples/activation.png" alt="Illustration of an activation trigger: Juba stations above their trigger level in the blue 1 to 7 day band">
+          <figcaption><b>Activation reached.</b> Juba stations go over the line in the blue band and stay over it in the orange band. Activation takes precedence.</figcaption>
+        </figure>
+      </div>
+      <p class="muted">These two charts are illustrations, not readings. They take a real forecast day and scale up the Juba values.</p>
+    </details>
 
     <h2>Forecast peak at each station</h2>
     <p id="tables-intro">For each window of the season being monitored, the forecast peak at each station within the leg's lead band and inside the window months, against the station's threshold. A ratio of 1.00× or more means the peak reaches the threshold and the station votes.</p>

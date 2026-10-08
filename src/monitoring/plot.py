@@ -13,6 +13,7 @@ import io
 from datetime import timedelta
 
 import matplotlib
+import numpy as np
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -71,19 +72,21 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
     # sits left of the readiness band (far). A forecast flood enters on the right and moves
     # left as the days pass: readiness first, then activation.
     a0, a1 = cfg.ACTION_LEADS
-    # the activation band runs up to the first readiness day so the two bands touch
-    ax.axvspan(a0, cfg.READINESS_LEADS[0] if product == "glofas" else a1, color="#E6EEF7", zorder=0)
+    # the two bands meet halfway between the last activation day and the first readiness day
+    ax.axvspan(a0, cfg.READINESS_LEADS[0] - 0.5 if product == "glofas" else a1, color="#E6EEF7", zorder=0)
+    box = dict(facecolor="white", edgecolor="none", pad=1.5, alpha=0.85)
     ax.text(a0 + 0.1, 0.97, f"activation (days {a0} to {a1})", transform=ax.get_xaxis_transform(),
-            fontsize=8.5, color=BODY, va="top", fontweight="bold")
+            fontsize=8.5, color=BODY, va="top", fontweight="bold", bbox=box, zorder=5)
     if product == "glofas":
         r0, r1 = cfg.READINESS_LEADS
-        ax.axvspan(r0, r1, color="#FBF3E4", zorder=0)
-        ax.text(r0 + 0.1, 0.97, f"readiness (days {r0} to {r1})", transform=ax.get_xaxis_transform(),
-                fontsize=8.5, color=BODY, va="top", fontweight="bold")
+        ax.axvspan(r0 - 0.5, r1, color="#FBF3E4", zorder=0)
+        ax.text(r0 - 0.4, 0.97, f"readiness (days {r0} to {r1})", transform=ax.get_xaxis_transform(),
+                fontsize=8.5, color=BODY, va="top", fontweight="bold", bbox=box, zorder=5)
         ax.annotate("", xy=(a0 + 0.2, 0.885), xytext=(r1 - 0.1, 0.885), xycoords=ax.get_xaxis_transform(),
                     arrowprops=dict(arrowstyle="-|>", color=FAINT, lw=1))
-        ax.text((a0 + r1) / 2, 0.90, "readiness first, then activation", transform=ax.get_xaxis_transform(),
-                fontsize=7.5, color=FAINT, ha="center", va="bottom", style="italic")
+        # the note sits under the arrow, clear of the band labels above it
+        ax.text((a0 + r1) / 2, 0.87, "readiness first, then activation", transform=ax.get_xaxis_transform(),
+                fontsize=7.5, color=FAINT, ha="center", va="top", style="italic", bbox=box, zorder=5)
         xmax = r1
     else:
         xmax = a1
@@ -99,10 +102,11 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
     live = [st for st in stations if not sub[sub.station == st].empty]
     missing = [cfg.STATION_TITLE[st] for st in stations if st not in live]
     ax.axhline(100, color="#B34036", ls="--", lw=1.2, zorder=2)
-    ax.text(xmax + 0.45, 98.5, "trigger level", color="#B34036",
-            fontsize=7.5, va="top", ha="right")
+    ax.text(xmax + 0.45, 98.5, "trigger level", color="#B34036", fontsize=7.5, va="top", ha="right",
+            bbox=dict(facecolor="white", edgecolor="none", pad=1.2, alpha=0.85), zorder=5)
     ax.set_ylim(bottom=0)
-    ax.set_ylim(top=max(ax.get_ylim()[1], 120))
+    top = max((float(np.nanmax(np.asarray(line.get_ydata(), dtype=float))) for line in ax.get_lines() if len(line.get_ydata())), default=0)
+    ax.set_ylim(top=max(120, top * 1.25))
     ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(decimals=0))
     ax.set_xlim(0.5, xmax + 0.5)
     ax.set_xticks(range(1, xmax + 1))
@@ -120,13 +124,15 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
     ax.grid(axis="y", color=GRID, lw=0.8)
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)
-    votes = ""
+    def _count(leg):
+        return f"{leg['max_votes']} of {leg['n_of']} over, {leg['n_req']} needed"
+    # river on the first line, the counts on a second so the two panels never run into each other
+    title = f"{cfg.RIVER_TITLE[river]}"
     if result_window is not None:
-        leg = result_window["action"] if role == "activation" else result_window["readiness"]
-        votes = (f" {leg['max_votes']} of {leg['n_of']} stations over"
-                 + (f" on {_day_month(pd.Timestamp(leg['max_votes_date']))}" if leg["max_votes_date"] else "")
-                 + f", {leg['n_req']} needed")
-    title = f"{cfg.RIVER_TITLE[river]} · {role}:{votes}"
+        if product == "glofas":   # this panel carries both legs
+            title += "\n" + f"activation {_count(result_window['action'])}  ·  readiness {_count(result_window['readiness'])}"
+        else:
+            title += "\n" + f"{role} {_count(result_window['action'])}"
     ax.set_title(title, color=PRODUCT_COLORS[product], pad=8)
     if missing:
         ax.text(0.995, 0.03, "not in live feed: " + ", ".join(missing), transform=ax.transAxes,
@@ -169,6 +175,10 @@ def monitoring_chart(df, result, levels_df=None):
             gl_levels = thr.lookup(levels_df, cfg.GLOFAS_OPERATIONAL, season, r["rp"], stations)
             role = "readiness"
         _panel(ax_of(i, col), df, "glofas", river, season, gl_levels, result["windows"][key], role)
+    # one y scale for every panel, with headroom for the band labels above the highest line
+    top = max(ax.get_ylim()[1] for ax in fig.axes)
+    for ax in fig.axes:
+        ax.set_ylim(0, top)
     for ax in left:
         ax.set_ylabel("% of the station's trigger level")
     status = result["status"]
