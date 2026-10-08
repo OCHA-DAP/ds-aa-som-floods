@@ -59,6 +59,9 @@ jobs:
       DSCI_LISTMONK_API_USERNAME: ${{ secrets.DSCI_LISTMONK_API_USERNAME }}
       DSCI_LISTMONK_API_KEY: ${{ secrets.DSCI_LISTMONK_API_KEY }}
       MONITORING_DATE: ${{ inputs.date || '' }}
+      # which GloFAS system version the forecast is read as (thresholds follow it);
+      # unset = the default in src/monitoring/config.py. Runbook: CLAUDE.md, 'Switching GloFAS version'.
+      GLOFAS_OPERATIONAL: ${{ vars.GLOFAS_OPERATIONAL || '' }}
       TEST_EMAIL: ${{ inputs.test_email || vars.TEST_EMAIL || 'true' }}
       DRY_RUN: ${{ inputs.dry_run || vars.DRY_RUN || 'true' }}
       SIMULATE_TRIGGER: ${{ inputs.simulate_trigger || 'false' }}

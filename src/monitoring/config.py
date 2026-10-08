@@ -5,6 +5,8 @@ src.constants. Everything here is operational plumbing: which GloFAS system
 version is live, lead bands, storage locations, Listmonk lists.
 """
 
+import os
+
 from src.constants import SEASONS, TRIGGER_CONFIG, TRIGGER_STATIONS
 
 PROJECT_PREFIX = "ds-aa-som-floods"
@@ -18,13 +20,25 @@ BLOB_STAGE = "dev"
 # release, and the forecast dataset offers no legacy v4 stream (only 2.1 and
 # 3.1), so the `operational` forecast IS v4. Thresholds must come from the
 # climatology of the model that produces the forecast they are applied to,
-# so this is the one switch: flip it to "glofas_v5" the day EWDS lists a
+# so this is the one switch, flipped to "glofas_v5" the day EWDS lists a
 # version_4_x entry under Legacy Versions (see etl.check_glofas_version).
-GLOFAS_OPERATIONAL = "glofas_v4"
+# It is read from the environment so the switch is the repo variable
+# GLOFAS_OPERATIONAL (monitoring.yml passes it through); the default here is
+# what runs when the variable is unset. The switch runbook is in CLAUDE.md.
 GLOFAS_REANALYSIS_VERSION = {"glofas_v4": "version_4_0", "glofas_v5": "version_5_0"}
-# Process identifiers stamped in the operational GRIB on 2026-09-13 (v4.5).
-# A change means the system version changed; the run then fails loudly.
-GLOFAS_EXPECTED_PROCESS = {"generatingProcessIdentifier": 5, "backgroundProcess": 21}
+GLOFAS_OPERATIONAL = os.getenv("GLOFAS_OPERATIONAL", "").strip() or "glofas_v4"
+if GLOFAS_OPERATIONAL not in GLOFAS_REANALYSIS_VERSION:
+    raise ValueError(f"GLOFAS_OPERATIONAL={GLOFAS_OPERATIONAL!r}; expected one of {sorted(GLOFAS_REANALYSIS_VERSION)}")
+# Process identifiers stamped in the operational GRIB, per version. A change
+# means the system version changed; the run then fails loudly. v4: read on
+# 2026-09-13 (v4.5). v5: not pinned until the first v5 issue is downloaded;
+# while None the run records the ids it sees instead of checking them.
+GLOFAS_PROCESS_KEYS = ("generatingProcessIdentifier", "backgroundProcess")
+GLOFAS_EXPECTED_PROCESS_BY_VERSION = {
+    "glofas_v4": {"generatingProcessIdentifier": 5, "backgroundProcess": 21},
+    "glofas_v5": None,
+}
+GLOFAS_EXPECTED_PROCESS = GLOFAS_EXPECTED_PROCESS_BY_VERSION[GLOFAS_OPERATIONAL]
 GLOFAS_LEADS = list(range(1, 13))  # days 1..12, GloFAS labelling
 GLOFAS_ENSEMBLE_MEMBERS_MIN = 40  # 51 expected; fewer means a truncated download
 

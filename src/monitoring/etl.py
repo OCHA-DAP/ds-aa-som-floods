@@ -141,7 +141,7 @@ def grib_process_ids(path):
     with open(path, "rb") as f:
         gid = eccodes.codes_grib_new_from_file(f)
         try:
-            return {k: int(eccodes.codes_get(gid, k)) for k in cfg.GLOFAS_EXPECTED_PROCESS}
+            return {k: int(eccodes.codes_get(gid, k)) for k in cfg.GLOFAS_PROCESS_KEYS}
         finally:
             eccodes.codes_release(gid)
 
@@ -223,7 +223,8 @@ def fetch_glofas(monitoring_date, max_days_back=1, keep_raw=True):
             continue
         ids = grib_process_ids(path)
         df = process_glofas(path, monitoring_date)
-        version_ok = ids == cfg.GLOFAS_EXPECTED_PROCESS
+        # an unpinned version (expected None) is accepted; check_forecasts prints the ids to pin
+        version_ok = cfg.GLOFAS_EXPECTED_PROCESS is None or ids == cfg.GLOFAS_EXPECTED_PROCESS
         label = f"{cfg.GLOFAS_OPERATIONAL} (gpi{ids['generatingProcessIdentifier']}/bp{ids['backgroundProcess']})"
         df["model_version"] = label
         if keep_raw and not path.with_suffix(".fromblob").exists():
