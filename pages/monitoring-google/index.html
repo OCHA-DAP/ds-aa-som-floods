@@ -69,6 +69,11 @@ table.data td.over { color:#B34036; font-weight:600; } table.data td.none { colo
   <div id="notes"></div>
   <h2>Forecast against Google's own levels</h2>
   <div id="charts" class="grid2"></div>
+  <h2>GloFAS reanalysis, last three weeks</h2>
+  <p id="rean-intro"></p>
+  <div id="rean-cards" class="grid2"></div>
+  <div id="rean-charts" class="grid2"></div>
+  <div id="rean-table"></div>
   <h2>Station tables</h2>
   <p id="tables-intro"></p>
   <div id="tables"></div>
@@ -78,6 +83,7 @@ table.data td.over { color:#B34036; font-weight:600; } table.data td.none { colo
     <li><strong>Levels at 1-in-6.</strong> In Deyr the Google levels are set at a 1-in-6 return period on both rivers, not the trigger's 1-in-4 and 1-in-5. On the 1999 to 2023 record that makes Google's Shabelle Deyr activation years the same four as the GloFAS v5 design: 2006, 2014, 2019 and 2023. On the Juba the same setting gives 2006, 2008, 2019 and 2023.</li>
     <li><strong>Why it is informational.</strong> The endorsed framework runs Deyr on GloFAS. In the <a href="../trigger-single-model/">trigger design</a>, Google on Deyr catches the same four severe Shabelle years as GloFAS v5 and adds 2008, a flood year; on the Juba it activates in three years outside the gauge benchmark (2013, 2015, 2019) and its peaks run 8 to 10 days ahead of the gauges. The <a href="../glofas-version/">GloFAS version page</a> describes the gap in the version 4 record on the Shabelle.</li>
     <li><strong>Lead days.</strong> The live Google feed returns about five to six days ahead of the issue, so the 1 to 7 day band is read as far as the feed goes. A readiness band (8 to 12 days) is not available on Google.</li>
+    <li><strong>Reanalysis block.</strong> GloFAS also publishes a near-real-time reanalysis, a day or two behind. The block shows the last three weeks at each station as a share of that version's own level for the window, at the trigger's return period. It is the model's account of what the river has been doing, not a forecast. The versions differ: on the 1999 to 2023 record version 4 does not reach its Shabelle level in Deyr 2006 or 2023, while version 5 does.</li>
     <li><strong>Record.</strong> Levels are fitted on Google's own retrospective record, 1999 to 2023, with the same estimator as the trigger levels. Dollow reads the Juba main-stem gauge, the only one Google serves there.</li>
   </ul>
   <h2 id="contact">Contact</h2>
@@ -167,6 +173,72 @@ function table(r, titles) {
     <div class="tablewrap"><table class="data"><thead><tr><th>Station</th><th class="n">Google peak (m³/s)</th><th>Day of peak</th><th>Peak / Google level</th><th class="n">Google 1-in-${r.rp} level (m³/s)</th><th>GloFAS peak / its level (the trigger)</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
+const VCOL = {glofas_v4: "#1C7293", glofas_v5: "#8E5FA8"};
+const VLAB = {glofas_v4: "GloFAS v4", glofas_v5: "GloFAS v5"};
+
+function reanRead(s, key, vkey) {
+  const w = s.windows[key], stations = s.stations[w.river], nReq = w.action.n_req;
+  const v = s.reanalysis_recent.versions[vkey]; if (!v || !v.series) return null;
+  const levels = s.reanalysis_levels[vkey][key];
+  const per = {}, byDate = {};
+  for (const st of stations) {
+    const ser = v.series[st], lvl = levels[st]; if (!ser || !lvl || !ser.dates.length) continue;
+    const pts = ser.dates.map((d, i) => ({d, v: ser.value[i], pct: 100 * ser.value[i] / lvl}));
+    per[st] = {pts, last: pts[pts.length - 1], level: lvl};
+    pts.forEach(p => { if (p.v >= lvl) byDate[p.d] = (byDate[p.d] || 0) + 1; });
+  }
+  const lastOver = Object.values(per).filter(x => x.last.v >= x.level).length;
+  let maxVotes = 0, maxDate = null;
+  for (const [d, n] of Object.entries(byDate)) if (n > maxVotes) { maxVotes = n; maxDate = d; }
+  return {vkey, key, w, nReq, nOf: stations.length, per, lastDate: v.last_date, lastOver, maxVotes, maxDate};
+}
+
+function reanCard(reads) {
+  const r0 = reads.find(r => r); if (!r0) return "";
+  const rows = reads.filter(r => r).map(r => `<div class="leg"><span>${VLAB[r.vkey]}, ${fmtDate(r.lastDate)}<br><span style="font-size:11px;color:var(--n7)">stations over their ${VLAB[r.vkey]} level that day; most on one day in the last three weeks ${r.maxVotes} of ${r.nOf}${r.maxDate ? " on " + fmtDate(r.maxDate) : ""}</span></span><b class="${r.lastOver >= r.nReq ? "hit" : ""}">${r.lastOver}/${r.nOf}</b></div>`).join("");
+  return `<div class="win ${reads.some(r => r && r.lastOver >= r.nReq) ? "hit" : ""}"><h3>${r0.w.title}</h3><div class="src">Reanalysis · each version against its own level · rule ${r0.nReq} of ${r0.nOf}</div>${rows}</div>`;
+}
+
+function reanChart(r, titles) {
+  const W = 460, H = 250, L = 48, R = 16, T = 18, B = 40;
+  const dates = [...new Set(Object.values(r.per).flatMap(x => x.pts.map(p => p.d)))].sort();
+  if (!dates.length) return "";
+  const ymax = Math.max(120, ...Object.values(r.per).flatMap(x => x.pts.map(p => p.pct + 10)));
+  const x = d => L + dates.indexOf(d) / Math.max(1, dates.length - 1) * (W - L - R);
+  const y = p => T + (1 - p / ymax) * (H - T - B);
+  let g = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="Roboto,Helvetica,Arial,sans-serif" font-size="11">`;
+  for (let p = 0; p <= ymax; p += 20) g += `<line x1="${L}" x2="${W - R}" y1="${y(p)}" y2="${y(p)}" stroke="#eef1f1"/><text x="${L - 6}" y="${y(p) + 4}" text-anchor="end" fill="#8a949a">${p}%</text>`;
+  g += `<line x1="${L}" x2="${W - R}" y1="${y(100)}" y2="${y(100)}" stroke="#B34036" stroke-dasharray="5 4" stroke-width="1.3"/><text x="${W - R}" y="${y(100) - 5}" text-anchor="end" fill="#B34036" font-size="10">${VLAB[r.vkey]} level</text>`;
+  dates.forEach((d, i) => { if (i % 5 === 0 || i === dates.length - 1) g += `<text x="${x(d)}" y="${H - B + 16}" text-anchor="middle" fill="#8a949a">${fmtDate(d).replace(/ \d{4}$/, "")}</text>`; });
+  for (const [st, v] of Object.entries(r.per)) {
+    const dd = v.pts.map((p, i) => `${i ? "L" : "M"}${x(p.d).toFixed(1)},${y(p.pct).toFixed(1)}`).join(" ");
+    g += `<path d="${dd}" fill="none" stroke="${COL[st]}" stroke-width="1.7"/>`;
+  }
+  g += "</svg>";
+  const legend = Object.keys(r.per).map(st => `<span style="display:inline-block;margin:0 14px 4px 0;font-size:12px;color:var(--n8)"><span style="display:inline-block;width:18px;height:3px;background:${COL[st]};vertical-align:middle;margin-right:6px"></span>${titles.station[st]}</span>`).join("");
+  return `<figure>${g}<div style="margin:6px 0 0">${legend}</div><figcaption><b>${r.w.title}, ${VLAB[r.vkey]}</b>: reanalysis at each station as % of its own ${VLAB[r.vkey]} level, last three weeks.</figcaption></figure>`;
+}
+
+function reanTable(s, keys, vs, titles) {
+  let rows = "";
+  for (const key of keys) {
+    const w = s.windows[key];
+    rows += `<tr><td colspan="${1 + 2 * vs.length}" style="font-weight:600;color:var(--n9)">${w.title}</td></tr>`;
+    for (const st of s.stations[w.river]) {
+      let cells = "";
+      for (const v of vs) {
+        const ser = s.reanalysis_recent.versions[v].series[st], lvl = s.reanalysis_levels[v][key][st];
+        if (!ser || !ser.value.length) { cells += '<td class="none" colspan="2">no data</td>'; continue; }
+        const last = ser.value[ser.value.length - 1], pct = 100 * last / lvl;
+        cells += `<td class="n ${pct >= 100 ? "over" : ""}">${n0(last)}</td><td><span class="bar ${pct >= 100 ? "over" : ""}" style="width:${Math.max(2, Math.min(pct, 250) * 0.6)}px"></span>${(pct / 100).toFixed(2)}× of ${n0(lvl)}</td>`;
+      }
+      rows += `<tr><td>${titles.station[st]}</td>${cells}</tr>`;
+    }
+  }
+  const head = vs.map(v => `<th class="n">${VLAB[v]} latest (m³/s)</th><th>${VLAB[v]} latest / its level</th>`).join("");
+  return `<div class="tablewrap"><table class="data"><thead><tr><th>Station</th>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
 fetch("../monitoring/status.json?v=" + Date.now(), {cache: "no-store"}).then(r => { if (!r.ok) throw new Error(r.status + " " + r.statusText); return r.json(); }).then(s => {
   if (!s.google_levels) throw new Error("status.json has no google_levels yet");
   const keys = s.open_windows.length ? s.open_windows : Object.keys(s.windows);
@@ -183,6 +255,18 @@ fetch("../monitoring/status.json?v=" + Date.now(), {cache: "no-store"}).then(r =
   document.getElementById("charts").innerHTML = reads.map(r => chart(r, s.titles)).join("");
   document.getElementById("tables-intro").textContent = "For each window, Google Flood Hub's peak at each station within 1 to 7 days ahead and inside the window months, against the station's Google level. The last column repeats the trigger's own GloFAS reading from the monitoring page.";
   document.getElementById("tables").innerHTML = reads.map(r => table(r, s.titles)).join("");
+  const rr = s.reanalysis_recent;
+  const vs = rr && rr.versions ? Object.keys(rr.versions).filter(v => rr.versions[v].series) : [];
+  if (vs.length) {
+    const lastDates = vs.map(v => `${VLAB[v]} to ${fmtDate(rr.versions[v].last_date)}`).join(", ");
+    const missing = Object.keys(rr.versions).filter(v => !rr.versions[v].series).map(v => VLAB[v]);
+    document.getElementById("rean-intro").textContent = `GloFAS's near-real-time reanalysis at the seven stations, each version read against its own level for the window with the trigger's station rule. Latest day: ${lastDates}.${missing.length ? " Not available from EWDS for this period: " + missing.join(", ") + "." : ""} Informational: a model's account of recent flows, not a forecast and not part of the trigger.`;
+    document.getElementById("rean-cards").innerHTML = keys.map(k => reanCard(vs.map(v => reanRead(s, k, v)))).join("");
+    document.getElementById("rean-charts").innerHTML = keys.flatMap(k => vs.map(v => reanRead(s, k, v))).filter(r => r).map(r => reanChart(r, s.titles)).join("");
+    document.getElementById("rean-table").innerHTML = reanTable(s, keys, vs, s.titles);
+  } else {
+    document.getElementById("rean-intro").textContent = "No reanalysis fetched yet. The daily run adds it once the fetch has succeeded.";
+  }
 }).catch(err => {
   document.getElementById("banner").innerHTML = `<span class="status">No reading yet</span><span class="meta">Could not load the monitoring status (${err.message}).</span>`;
 });

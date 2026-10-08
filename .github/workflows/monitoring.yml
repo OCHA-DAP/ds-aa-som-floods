@@ -83,6 +83,9 @@ jobs:
         run: python pipelines/save_plots.py
       - name: Email
         run: python pipelines/send_emails.py
+      - name: Recent GloFAS reanalysis, v4 and v5 (informational, for /monitoring-google/)
+        continue-on-error: true
+        run: python pipelines/fetch_recent_reanalysis.py
       - name: Publish monitoring status
         if: env.DRY_RUN != 'true'
         run: |
