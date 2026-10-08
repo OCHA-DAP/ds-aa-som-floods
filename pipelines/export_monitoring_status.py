@@ -59,15 +59,18 @@ def levels_for_page(levels_df):
 
 
 def load_recent_reanalysis():
+    """The current season's entry of the reanalysis store (pipelines/fetch_recent_reanalysis.py)."""
     from azure.core.exceptions import ResourceNotFoundError
-    local = os.environ.get("REANALYSIS_RECENT_FILE")
+    local = os.environ.get("REANALYSIS_STORE_FILE")
     if local:
-        return json.loads(Path(local).read_text(encoding="utf-8"))
-    try:
-        data = etl._container().get_blob_client(f"{cfg.PROJECT_PREFIX}/monitoring/reanalysis_recent.json").download_blob().readall()
-    except ResourceNotFoundError:
-        return None
-    return json.loads(data)
+        store = json.loads(Path(local).read_text(encoding="utf-8"))
+    else:
+        try:
+            store = json.loads(etl._container().get_blob_client(f"{cfg.PROJECT_PREFIX}/monitoring/reanalysis_season.json").download_blob().readall())
+        except ResourceNotFoundError:
+            return None
+    cur = store.get("current")
+    return store.get("seasons", {}).get(cur) if cur else None
 
 
 def main():
@@ -97,7 +100,7 @@ def main():
         "google_levels": {cfg.WINDOW_KEY[w]: thr.lookup(levels_df, "google_grrr", w[1], GOOGLE_VIEW_RP.get(w[1], cfg.ACTION_RULES[w]["rp"]), TRIGGER_STATIONS[w[0]])
                           for w in cfg.WINDOWS},
         "google_view_rp": {cfg.WINDOW_KEY[w]: GOOGLE_VIEW_RP.get(w[1], cfg.ACTION_RULES[w]["rp"]) for w in cfg.WINDOWS},
-        # the last weeks of GloFAS v4 and v5 reanalysis (pipelines/fetch_recent_reanalysis.py),
+        # the season's GloFAS v4 and v5 reanalysis so far (pipelines/fetch_recent_reanalysis.py),
         # with each version's own levels at the window's configured return period; informational,
         # read by /monitoring-google/. Absent when the fetch has never succeeded.
         "reanalysis_recent": load_recent_reanalysis(),
