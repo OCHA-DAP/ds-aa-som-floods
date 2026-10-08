@@ -31,8 +31,11 @@ from src.monitoring import config as cfg, etl  # noqa: E402
 from src.monitoring.flags import env_flag  # noqa: E402
 
 VERSIONS = {"glofas_v4": "version_4_0", "glofas_v5": "version_5_0"}
-# EWDS product per version: "intermediate" is the near-real-time stream (v4 serves it a day
-# or two behind); set per version once EWDS confirms what v5 offers for the current period
+# EWDS product per version: "intermediate" is the near-real-time stream. v4 serves it a day or
+# two behind (checked 2026-10-08: ~90 s per request, data to two days before today). v5 is a
+# fixed 1980-2025 reanalysis release with no near-real-time stream yet: EWDS rejects both
+# products for 2026 (checked 2026-10-08). The request is still made daily so v5 appears on the
+# page by itself the day ECMWF extends it; until then it fails fast and the page says so.
 PRODUCT = {"glofas_v4": "intermediate", "glofas_v5": "intermediate"}
 DAYS_BACK = 21
 BLOB = f"{cfg.PROJECT_PREFIX}/monitoring/reanalysis_recent.json"
