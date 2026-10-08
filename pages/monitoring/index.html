@@ -57,6 +57,13 @@ table.data td.none { color:#9aa4a6; }
 .bar { display:inline-block; height:9px; background:var(--b1); border-radius:2px; vertical-align:middle; margin-right:6px; }
 .bar.over { background:#B34036; }
 .tablewrap { overflow-x:auto; }
+details.howto { margin:12px 0 4px; border:1px solid #e2e7e7; border-radius:6px; background:#fff; }
+details.howto summary { cursor:pointer; padding:10px 14px; font-weight:500; color:var(--b7); }
+details.howto > p, details.howto > div { padding:0 14px; }
+details.howto p.muted { color:var(--n7); font-size:12.5px; padding-bottom:10px; }
+.howto-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+@media (max-width:640px){.howto-grid{grid-template-columns:1fr}}
+.howto-grid figure { margin:8px 0; } .howto-grid figcaption { font-size:12px; }
 .callout { margin:18px 0; padding:12px 16px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
 .callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
 .callout.error { background:#fbeeec; border-left-color:#B34036; }
@@ -111,6 +118,25 @@ table.data td.none { color:#9aa4a6; }
         and days 8 to 12 are the readiness window (lighter band). GloFAS lines are the
         ensemble median.</figcaption>
     </figure>
+    <details class="howto">
+      <summary>How to read this chart</summary>
+      <p>Each station is drawn as a share of its own trigger level, so 100% is the level that counts as
+         a vote. The forecast is read from today outward: the blue band is the next 7 days, where the
+         activation trigger is decided, and the orange band is days 8 to 12, where the readiness trigger
+         is decided. A flood that is still 8 to 12 days away shows up in the orange band first; as the
+         days pass it moves left into the blue band. Readiness comes first, then activation.</p>
+      <div class="howto-grid">
+        <figure>
+          <img src="examples/readiness.png" alt="Illustration of a readiness trigger: Juba stations above their trigger level in the orange 8 to 12 day band only">
+          <figcaption><b>Readiness reached.</b> Enough Juba stations are above their level on one day in the orange band, days 8 to 12, while the blue band stays below. The status reads readiness trigger reached.</figcaption>
+        </figure>
+        <figure>
+          <img src="examples/activation.png" alt="Illustration of an activation trigger: Juba stations above their trigger level in the blue 1 to 7 day band">
+          <figcaption><b>Activation reached.</b> Enough Juba stations are above their level on one day in the blue band, days 1 to 7. The status reads activation trigger reached, whatever the orange band shows.</figcaption>
+        </figure>
+      </div>
+      <p class="muted">Both pictures are illustrations built from a real forecast day with the Juba values scaled up, not readings.</p>
+    </details>
 
     <h2>Forecast peak at each station</h2>
     <p id="tables-intro">For each window of the season being monitored, the forecast peak at each station within the leg's lead band and inside the window months, against the station's threshold. A ratio of 1.00× or more means the peak reaches the threshold and the station votes.</p>
