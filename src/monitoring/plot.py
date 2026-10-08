@@ -129,11 +129,9 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
     title = f"{cfg.RIVER_TITLE[river]}"
     if result_window is not None:
         if product == "glofas":   # this panel carries both legs
-            title += f"
-activation {_count(result_window['action'])}  ·  readiness {_count(result_window['readiness'])}"
+            title += "\n" + f"activation {_count(result_window['action'])}  ·  readiness {_count(result_window['readiness'])}"
         else:
-            title += f"
-{role} {_count(result_window['action'])}"
+            title += "\n" + f"{role} {_count(result_window['action'])}"
     ax.set_title(title, color=PRODUCT_COLORS[product], pad=8)
     if missing:
         ax.text(0.995, 0.03, "not in live feed: " + ", ".join(missing), transform=ax.transAxes,
