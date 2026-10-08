@@ -59,14 +59,33 @@ in `pyproject.toml`, geoglows → hydrostats, do not build on a clean 3.12 runne
 
 The analysis fitted the Deyr levels on the **GloFAS v5** reanalysis assuming v5 was live. As of
 2026-09-14 the operational forecast is **v4** (v4.5, April 2026; v5 pre-operational on EWDS).
-`GLOFAS_OPERATIONAL` in `src/monitoring/config.py` selects the climatology; both v4 and v5 levels
+`GLOFAS_OPERATIONAL` (repo variable; default in `src/monitoring/config.py`) selects the climatology; both v4 and v5 levels
 (plus the v4 readiness-band levels) are frozen in `src/monitoring/thresholds.json` by
 `scripts/build_monitoring_thresholds.py`. `check_forecasts.py` fails (no email) when EWDS lists a
 `version_4*` entry under Legacy Versions or the GRIB process ids
-(`GLOFAS_EXPECTED_PROCESS`) change — that is the day to flip the constant, rebuild
+(`GLOFAS_EXPECTED_PROCESS_BY_VERSION`) change — that is the day to switch (runbook below), rebuild
 `pages/glofas-version/` (`scripts/build_glofas_version_page.py`) and re-check the design.
 v4 runs ~2–2.5× v5 here; on v4 the adopted Deyr rules over-activate (envelope 1-in-1.9 vs 1-in-3.2)
 and never register Deyr 2006/2023 on the Shabelle — see the page.
+
+### Switching GloFAS version (v4 to v5)
+
+The pipeline is version-agnostic; the version is the repo variable `GLOFAS_OPERATIONAL`
+(`glofas_v4` or `glofas_v5`), read by `src/monitoring/config.py` and passed by `monitoring.yml`.
+The v5 reanalysis levels for both seasons are already in `src/monitoring/thresholds.json`.
+
+1. **Signal.** The daily run fails with "EWDS now lists a version_4 entry under Legacy
+   Versions" (or "GRIB process identifiers differ") the day ECMWF promotes v5. Check the
+   [CEMS versioning page](https://confluence.ecmwf.int/display/CEMS/GloFAS+versioning+system).
+2. **Switch.** Set the repo variable `GLOFAS_OPERATIONAL` to `glofas_v5`
+   (`gh variable set GLOFAS_OPERATIONAL --body glofas_v5`) and re-run the workflow for the
+   day. Levels, readiness, chart, page and emails all follow the variable; nothing else changes.
+3. **Pin.** The first v5 run prints "process ids are not pinned ... pin {...}". Put those ids
+   under `glofas_v5` in `GLOFAS_EXPECTED_PROCESS_BY_VERSION` so later version changes fail
+   loudly again, and set the default in `config.py` to `glofas_v5`.
+4. **Afterwards.** `pages/glofas-version/` becomes history; the replay build
+   (`scripts/build_monitoring_replay_page.py`) refuses to run on v5 until its guard is updated.
+   There is no v5 reforecast, so lead-time bias on v5 cannot be measured.
 
 ### Live-feed caveats
 

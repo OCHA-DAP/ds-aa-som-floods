@@ -83,8 +83,8 @@ def main():
     print(f"EWDS legacy versions: {version['legacy_versions']}")
     if version["v4_retired"] and cfg.GLOFAS_OPERATIONAL == "glofas_v4":
         msg = ("EWDS now lists a version_4 entry under Legacy Versions: the operational "
-               "forecast has moved on. Flip GLOFAS_OPERATIONAL in src/monitoring/config.py "
-               "and re-check the thresholds (pages/glofas-version/).")
+               "forecast has moved on. Set the repo variable GLOFAS_OPERATIONAL=glofas_v5 "
+               "(runbook: CLAUDE.md, 'Switching GloFAS version').")
         if not env_flag("ALLOW_VERSION_MISMATCH", False):
             raise SystemExit("ERROR: " + msg)
         print("WARNING: " + msg)
@@ -93,6 +93,9 @@ def main():
     (df_glofas, meta), (df_google, gmeta) = fetch_todays_forecasts(monitoring_date)
     print(f"  issue {meta['issue_date']} ({meta['days_back']} d back), {len(df_glofas)} rows, "
           f"process ids {meta['process_ids']}, expected {cfg.GLOFAS_EXPECTED_PROCESS}")
+    if cfg.GLOFAS_EXPECTED_PROCESS is None:
+        print(f"  NOTE: process ids are not pinned for {cfg.GLOFAS_OPERATIONAL}; pin "
+              f"{meta['process_ids']} in config.GLOFAS_EXPECTED_PROCESS_BY_VERSION once confirmed")
     if not meta["version_ok"]:
         msg = ("GRIB process identifiers differ from the expected operational system; "
                "the GloFAS version may have changed.")
