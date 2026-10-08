@@ -124,15 +124,16 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)
     def _count(leg):
-        return (f"{leg['max_votes']} of {leg['n_of']} over"
-                + (f" on {_day_month(pd.Timestamp(leg['max_votes_date']))}" if leg["max_votes_date"] else "")
-                + f", {leg['n_req']} needed")
+        return f"{leg['max_votes']} of {leg['n_of']} over, {leg['n_req']} needed"
+    # river on the first line, the counts on a second so the two panels never run into each other
     title = f"{cfg.RIVER_TITLE[river]}"
     if result_window is not None:
         if product == "glofas":   # this panel carries both legs
-            title += f" · activation: {_count(result_window['action'])} · readiness: {_count(result_window['readiness'])}"
+            title += f"
+activation {_count(result_window['action'])}  ·  readiness {_count(result_window['readiness'])}"
         else:
-            title += f" · {role}: {_count(result_window['action'])}"
+            title += f"
+{role} {_count(result_window['action'])}"
     ax.set_title(title, color=PRODUCT_COLORS[product], pad=8)
     if missing:
         ax.text(0.995, 0.03, "not in live feed: " + ", ".join(missing), transform=ax.transAxes,

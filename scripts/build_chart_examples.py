@@ -22,13 +22,15 @@ OUT = Path("pages/monitoring/examples")
 JUBA = ["dollow", "luuq", "bardheere", "bualle"]
 
 
-def example(df, day, leads, factor, name):
+def example(df, day, leads, factor, name, hold=False):
     d = df.copy()
-    # one smooth flood wave centred inside the band: a bell-shaped scaling that peaks at the
-    # factor mid-band and fades to 1 outside it, so the other band stays under its level
+    # one smooth flood wave: a bell-shaped scaling that peaks at the factor mid-band and
+    # fades to 1 outside it. With hold=True the flow stays high after the peak, so the
+    # readiness band is over its level as well (an activation normally comes with that).
     centre = (leads[0] + leads[1]) / 2
     for lead in range(1, 13):
-        f = 1 + (factor - 1) * math.exp(-((lead - centre) ** 2) / (2 * 1.8 ** 2))
+        x = min(lead, centre) if hold else lead
+        f = 1 + (factor - 1) * math.exp(-((x - centre) ** 2) / (2 * 1.8 ** 2))
         m = (d.source == "glofas") & d.station.isin(JUBA) & (d.leadtime_days == lead)
         d.loc[m, "value"] = d.loc[m, "value"] * f
     res = evaluate.evaluate(d, day)
@@ -46,8 +48,8 @@ def main():
     df = etl.load_day(day)
     # readiness: Juba over its level only in the 8 to 12 day band
     example(df, day, cfg.READINESS_LEADS, 1.9, "readiness")
-    # activation: Juba over its level inside the 1 to 7 day band
-    example(df, day, cfg.ACTION_LEADS, 1.75, "activation")
+    # activation: Juba over its level inside the 1 to 7 day band and staying high after it
+    example(df, day, cfg.ACTION_LEADS, 1.75, "activation", hold=True)
 
 
 if __name__ == "__main__":
