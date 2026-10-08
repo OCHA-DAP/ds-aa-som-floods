@@ -84,8 +84,9 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
                 fontsize=8.5, color=BODY, va="top", fontweight="bold", bbox=box, zorder=5)
         ax.annotate("", xy=(a0 + 0.2, 0.885), xytext=(r1 - 0.1, 0.885), xycoords=ax.get_xaxis_transform(),
                     arrowprops=dict(arrowstyle="-|>", color=FAINT, lw=1))
-        ax.text((a0 + r1) / 2, 0.90, "readiness first, then activation", transform=ax.get_xaxis_transform(),
-                fontsize=7.5, color=FAINT, ha="center", va="bottom", style="italic", bbox=box, zorder=5)
+        # the note sits under the arrow, clear of the band labels above it
+        ax.text((a0 + r1) / 2, 0.87, "readiness first, then activation", transform=ax.get_xaxis_transform(),
+                fontsize=7.5, color=FAINT, ha="center", va="top", style="italic", bbox=box, zorder=5)
         xmax = r1
     else:
         xmax = a1
