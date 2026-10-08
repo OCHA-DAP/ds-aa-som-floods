@@ -71,14 +71,14 @@ def _panel(ax, df, product, river, season, levels, result_window, role):
     # sits left of the readiness band (far). A forecast flood enters on the right and moves
     # left as the days pass: readiness first, then activation.
     a0, a1 = cfg.ACTION_LEADS
-    # the activation band runs up to the first readiness day so the two bands touch
-    ax.axvspan(a0, cfg.READINESS_LEADS[0] if product == "glofas" else a1, color="#E6EEF7", zorder=0)
+    # the two bands meet halfway between the last activation day and the first readiness day
+    ax.axvspan(a0, cfg.READINESS_LEADS[0] - 0.5 if product == "glofas" else a1, color="#E6EEF7", zorder=0)
     ax.text(a0 + 0.1, 0.97, f"activation (days {a0} to {a1})", transform=ax.get_xaxis_transform(),
             fontsize=8.5, color=BODY, va="top", fontweight="bold")
     if product == "glofas":
         r0, r1 = cfg.READINESS_LEADS
-        ax.axvspan(r0, r1, color="#FBF3E4", zorder=0)
-        ax.text(r0 + 0.1, 0.97, f"readiness (days {r0} to {r1})", transform=ax.get_xaxis_transform(),
+        ax.axvspan(r0 - 0.5, r1, color="#FBF3E4", zorder=0)
+        ax.text(r0 - 0.4, 0.97, f"readiness (days {r0} to {r1})", transform=ax.get_xaxis_transform(),
                 fontsize=8.5, color=BODY, va="top", fontweight="bold")
         ax.annotate("", xy=(a0 + 0.2, 0.885), xytext=(r1 - 0.1, 0.885), xycoords=ax.get_xaxis_transform(),
                     arrowprops=dict(arrowstyle="-|>", color=FAINT, lw=1))
