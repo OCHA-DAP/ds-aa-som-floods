@@ -98,7 +98,14 @@ def _container(write=False):
 
 
 # ----------------------------------------------------------------- GloFAS
-def glofas_request(issue_date):
+def glofas_request(issue_date, attempt=0):
+    """The EWDS request for one issue. `attempt` nudges the east edge of the area by a
+    thousandth of a degree per retry: EWDS caches the product it built for a request, and
+    an issue fetched while EWDS was still publishing it (12 of 51 members, 2026-10-12) is
+    served back unchanged to every identical request for hours. A different area means a
+    fresh product; the nudge is far smaller than a cell, so the same cells are returned."""
+    area = list(FORECAST_AREA)
+    area[3] = round(area[3] + 0.001 * attempt, 3)
     return {
         "variable": "river_discharge_in_the_last_24_hours",
         "system_version": ["operational"],
@@ -108,7 +115,7 @@ def glofas_request(issue_date):
         "month": [f"{issue_date:%m}"],
         "day": [f"{issue_date:%d}"],
         "leadtime_hour": [str(24 * d) for d in cfg.GLOFAS_LEADS],
-        "area": FORECAST_AREA,
+        "area": area,
         "data_format": "grib2",
         "download_format": "unarchived",
     }
@@ -127,10 +134,10 @@ def _raw_in_blob(issue_date, out_path):
     return True
 
 
-def download_glofas(issue_date, out_path):
+def download_glofas(issue_date, out_path, attempt=0):
     """Download one day's operational ensemble to out_path (GRIB2)."""
     client = _client(wait_until_complete=True)
-    client.retrieve("cems-glofas-forecast", glofas_request(issue_date), str(out_path))
+    client.retrieve("cems-glofas-forecast", glofas_request(issue_date, attempt), str(out_path))
     return Path(out_path)
 
 
@@ -201,11 +208,14 @@ def check_glofas_version():
     return {"legacy_versions": legacy, "v4_retired": v4_retired}
 
 
-def fetch_glofas(monitoring_date, max_days_back=1, keep_raw=True):
+def fetch_glofas(monitoring_date, max_days_back=1, keep_raw=True, attempt=0):
     """Download today's operational ensemble (falling back to yesterday's issue).
 
     Returns (frame, meta). meta records which issue was used, the GRIB
     process ids and whether they match the expected operational system.
+    A truncated ensemble (EWDS still publishing the issue, or serving a cached
+    partial product) counts as "not available", so the caller can retry with a
+    higher `attempt` (see glofas_request) or fall back to the previous issue.
     """
     tmp = Path(tempfile.mkdtemp())
     last_err = None
@@ -216,13 +226,18 @@ def fetch_glofas(monitoring_date, max_days_back=1, keep_raw=True):
             if _raw_in_blob(issue, path):
                 print(f"  GloFAS issue {issue}: reusing the raw GRIB already in blob")
             else:
-                download_glofas(issue, path)
+                download_glofas(issue, path, attempt)
         except Exception as exc:  # EWDS raises generic exceptions on "no data"
             last_err = exc
             print(f"  GloFAS issue {issue} not available: {type(exc).__name__}: {str(exc)[:160]}")
             continue
         ids = grib_process_ids(path)
-        df = process_glofas(path, monitoring_date)
+        try:
+            df = process_glofas(path, monitoring_date)
+        except ValueError as exc:  # truncated ensemble: treat like a missing issue
+            last_err = exc
+            print(f"  GloFAS issue {issue} incomplete: {exc}")
+            continue
         # an unpinned version (expected None) is accepted; check_forecasts prints the ids to pin
         version_ok = cfg.GLOFAS_EXPECTED_PROCESS is None or ids == cfg.GLOFAS_EXPECTED_PROCESS
         label = f"{cfg.GLOFAS_OPERATIONAL} (gpi{ids['generatingProcessIdentifier']}/bp{ids['backgroundProcess']})"
