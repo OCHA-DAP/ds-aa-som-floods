@@ -5,6 +5,7 @@
 pandas>=2.2
 numpy>=2.0
 xarray>=2025.1
+netCDF4>=1.6  # the reanalysis step reads EWDS netCDF (xarray needs a netCDF backend on the runner)
 cfgrib>=0.9.15
 eccodes==2.47.0
 cdsapi>=0.7.7
