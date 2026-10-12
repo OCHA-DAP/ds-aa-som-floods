@@ -50,16 +50,23 @@ def fetch_todays_forecasts(monitoring_date):
     Runs for a past date do not wait."""
     deadline = _deadline(monitoring_date)
     glofas = google = None
+    attempt = 0   # each retry asks EWDS with a slightly different area, so a cached partial product is not served again
     while True:
         now = datetime.now(timezone.utc)
         waiting = monitoring_date == now.date() and now < deadline
         if glofas is None:
             try:
-                glofas = etl.fetch_glofas(monitoring_date, max_days_back=0)
+                glofas = etl.fetch_glofas(monitoring_date, max_days_back=0, attempt=attempt)
             except RuntimeError as exc:
                 if not waiting:
-                    print(f"  {monitoring_date} GloFAS issue not on EWDS ({str(exc)[:80]}); taking the previous issue")
-                    glofas = etl.fetch_glofas(monitoring_date, max_days_back=1)
+                    # past the deadline (or a re-run for the day): one fresh request first, so a
+                    # cached partial product is not what decides the fallback
+                    try:
+                        glofas = etl.fetch_glofas(monitoring_date, max_days_back=0, attempt=attempt + 1)
+                    except RuntimeError:
+                        print(f"  {monitoring_date} GloFAS issue not on EWDS ({str(exc)[:80]}); taking the previous issue")
+                        glofas = etl.fetch_glofas(monitoring_date, max_days_back=1, attempt=attempt + 1)
+            attempt += 1
         if google is None:
             df_g, gmeta = etl.fetch_google(monitoring_date)
             latest = pd.to_datetime(df_g.issued_time).max().date() if len(df_g) else None
