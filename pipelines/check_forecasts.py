@@ -59,8 +59,13 @@ def fetch_todays_forecasts(monitoring_date):
                 glofas = etl.fetch_glofas(monitoring_date, max_days_back=0, attempt=attempt)
             except RuntimeError as exc:
                 if not waiting:
-                    print(f"  {monitoring_date} GloFAS issue not on EWDS ({str(exc)[:80]}); taking the previous issue")
-                    glofas = etl.fetch_glofas(monitoring_date, max_days_back=1, attempt=attempt)
+                    # past the deadline (or a re-run for the day): one fresh request first, so a
+                    # cached partial product is not what decides the fallback
+                    try:
+                        glofas = etl.fetch_glofas(monitoring_date, max_days_back=0, attempt=attempt + 1)
+                    except RuntimeError:
+                        print(f"  {monitoring_date} GloFAS issue not on EWDS ({str(exc)[:80]}); taking the previous issue")
+                        glofas = etl.fetch_glofas(monitoring_date, max_days_back=1, attempt=attempt + 1)
             attempt += 1
         if google is None:
             df_g, gmeta = etl.fetch_google(monitoring_date)
