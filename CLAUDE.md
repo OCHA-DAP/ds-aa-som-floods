@@ -32,7 +32,9 @@ Daily GHA `monitoring.yml` at 10:00 UTC (13:00 EAT); step 1 waits for the day's 
    Cadence: while a window is open, Monday informational + immediate on readiness/action.
    **When no window is open nothing is sent** (the pipeline still runs and the page still updates).
    Windows are open by calendar month (`config.MONITORING_OPEN_MONTHS`): Deyr September to
-   January, Gu February to June; every forecast day inside the window counts, so Deyr monitoring starts in September.
+   January, Gu February to June, so Deyr monitoring starts in September. Only forecast days in the
+   fitted season months count towards the rule (`src.constants.SEASONS`: Deyr October to December,
+   Gu March to May); the buffer months are shown but cannot trigger (since 2026-10-15).
 4. `pipelines/export_monitoring_status.py` — `status.json` + `latest.png` to the orphan
    `monitoring-status` branch under `pages/monitoring/`; `deploy-pages.yml` (runs on `workflow_run` when the monitoring workflow completes)
    overlays them so <https://ocha-dap.github.io/ds-aa-som-floods/monitoring/> reads them.

@@ -6,11 +6,16 @@ river's points are at or above their own return-period threshold, reading
 the ensemble median for GloFAS and the deterministic value for Google.
 Action reads the window's source at leads 1-7; readiness reads GloFAS at
 leads 8-12 against the same reanalysis thresholds at the capped return period.
-Every forecast valid day inside the window's open months counts
-(config.MONITORING_OPEN_MONTHS: Deyr September to January, Gu February to
-June), so monitoring for Deyr starts in September. The thresholds themselves
-are fitted on the three season months only (src.constants.SEASONS); the extra
-months are a surveillance buffer.
+The window is open, so the status is evaluated and emails go out, in
+config.MONITORING_OPEN_MONTHS (Deyr September to January, Gu February to
+June). Only forecast valid days inside the three season months count towards
+the rule (src.constants.SEASONS: Deyr October to December, Gu March to May),
+the months the thresholds and return periods are fitted on. The months either
+side are a surveillance buffer: on the GloFAS v4 reanalysis the Shabelle is
+over its Deyr level in September in 10 of the 25 years 1999-2023 on the tail
+of the Ethiopian summer rains, with no Deyr flood behind 6 of them, so
+counting September would roughly double the trigger's frequency (found
+2026-10-15).
 
 The result is a plain dict of scalars, lists and dicts so the same object
 feeds the email template, the chart header and status.json; the status page
@@ -76,7 +81,7 @@ def evaluate(df, monitoring_date=None, levels_df=None):
     for w in cfg.WINDOWS:
         river, season = w
         stations = TRIGGER_STATIONS[river]
-        months = cfg.MONITORING_OPEN_MONTHS[season]   # every forecast day inside the open window counts
+        months = SEASONS[season]   # only forecast days in the fitted season months count (not the buffer)
         a = cfg.ACTION_RULES[w]
         r = cfg.READINESS_RULES[w]
         a_levels = thr.lookup(levels_df, cfg.threshold_source(a["source"]), season, a["rp"], stations)

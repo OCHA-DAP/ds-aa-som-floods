@@ -57,12 +57,15 @@ READINESS_LEADS = (8, 12)
 
 # ------------------------------------------------------- monitoring windows
 # Calendar months in which each season's windows are open: Deyr from September
-# to January, Gu from February to June (decided 2026-09-15). The status is
-# evaluated, emails go out, and every forecast valid day inside these months
-# counts towards the rule. The months outside SEASONS are a surveillance buffer:
-# every threshold and every return period is fitted on the three season months
-# in SEASONS only (Gu March to May, Deyr October to December), never on the
-# buffer. Monitoring for Deyr therefore starts in September.
+# to January, Gu from February to June (decided 2026-09-15). While open, the
+# status is evaluated, the page updates and emails go out. The rule itself only
+# counts forecast valid days inside the three season months in SEASONS (Gu
+# March to May, Deyr October to December), the months every threshold and
+# return period is fitted on (decided 2026-10-15; before that the buffer months
+# counted too, which on the reanalysis would have fired the Shabelle leg on the
+# September tail of the Ethiopian summer rains in 10 of 25 years). The months
+# outside SEASONS are a surveillance buffer: forecasts are read and shown, but
+# cannot reach the trigger.
 MONITORING_OPEN_MONTHS = {"deyr": (9, 10, 11, 12, 1), "gu": (2, 3, 4, 5, 6)}
 
 # ------------------------------------------------------------- windows
