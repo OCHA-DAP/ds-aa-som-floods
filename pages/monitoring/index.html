@@ -198,12 +198,21 @@ function pointTable(w, leg, legName, titles) {
 
 fetch("status.json?v=" + Date.now(), {cache: "no-store"}).then(r => { if (!r.ok) throw new Error(r.status + " " + r.statusText); return r.json(); }).then(s => {
   const b = document.getElementById("banner");
-  const cls = s.action ? "error" : s.readiness ? "warn" : s.open_windows.length ? "" : "off";
+  // once a trigger has been announced this season it stays on the banner for the rest of the
+  // season (s.season.announced, the once-per-season email record); the day's own reading
+  // (s.status) is shown underneath
+  const ann = (s.season && s.season.announced) || {};
+  const held = ann.action ? "action" : ann.readiness ? "readiness" : null;
+  const cls = (s.action || held === "action") ? "error" : (s.readiness || held === "readiness") ? "warn" : s.open_windows.length ? "" : "off";
   b.className = "banner " + cls;
   const cap = x => x.charAt(0).toUpperCase() + x.slice(1);
   const seasonNow = [...new Set(s.open_windows.map(k => s.windows[k].season))].map(cap).join(" and ") || "no season";
-  b.innerHTML = `<span class="status">${s.status}</span>
-    <span class="meta">${s.open_windows.some(k => s.windows[k].action.source === "google")
+  const headline = held === "action" ? "ACTIVATION TRIGGER REACHED" : held === "readiness" ? "READINESS TRIGGER REACHED" : s.status;
+  const heldLine = held
+    ? `${held === "action" ? "Activation" : "Readiness"} trigger reached on <b>${fmtDate(ann[held])}</b>, ${cap(s.season.name)} ${s.season.year}; it stays reached for the season. Today's forecast on its own: <b>${s.status.toLowerCase()}</b>.<br>`
+    : "";
+  b.innerHTML = `<span class="status">${headline}</span>
+    <span class="meta">${heldLine}${s.open_windows.some(k => s.windows[k].action.source === "google")
       ? `Forecasts issued <b>${fmtDate(s.glofas_issue)}</b> (GloFAS) and <b>${fmtDate((s.google_issue || "").slice(0, 10))}</b> (Google Flood Hub)`
       : `Forecast issued <b>${fmtDate(s.glofas_issue)}</b> (GloFAS)`} · currently monitoring <b>${seasonNow}</b><br>
     ${s.open_windows.some(k => s.windows[k].action.source === "google")

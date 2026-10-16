@@ -85,8 +85,17 @@ def main():
         (OUT_DIR / "latest.png").write_bytes(chart)
     elif not (OUT_DIR / "latest.png").exists():
         print("  warning: no chart in blob and no previous latest.png")
+    # What has already been announced this season (the once-per-season email record,
+    # src.monitoring.etl.notified_blob): the page banner keeps "reached" for the rest of the
+    # season once a trigger has been announced, while the day's own reading stays in `status`.
+    season = {}
+    if result["open_windows"]:
+        name = result["windows"][result["open_windows"][0]]["season"]
+        year = etl.season_year(latest, name)
+        season = {"name": name, "year": year, "title": cfg.SEASON_TITLE[name], "announced": etl.load_notified(name, year)}
     status = {
         **result,
+        "season": season,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "chart": "latest.png", "chart_stale": chart_stale,
         "glofas_operational": cfg.GLOFAS_OPERATIONAL,
