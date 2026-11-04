@@ -11,6 +11,7 @@ import os
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 REPO = Path(__file__).resolve().parents[1]
@@ -103,25 +104,58 @@ def main():
     year_grid = B.grid(grid_rows, "Activation years for the four designs")
 
     # ------------------------------------------------------------ forecast lead
+    lead = res["lead"]
+    LM = (S.OLD_G, S.NEW_G, "glofas_v4")
+
     def ahead(issue, gauges):
         if issue is None:
             return "&ndash;"
         k = (gauges - issue).days
         return f"{B.d(issue)} <span class=muted>({'same day' if k == 0 else (f'{k} d before' if k > 0 else f'{-k} d after')})</span>"
-    l_rows = ""
+
+    def covered(m, w, y):  # the old Google archive ends June 2023: no Deyr 2023
+        return not (m == S.OLD_G and w[1] == "deyr" and y > res["old_google_deyr_last"])
+    l_rows, outside = "", {}
     for w in S.WINDOWS:
-        rows = res["lead"][w]
-        c = TRIGGER_CONFIG[w]
-        for i, (y, row) in enumerate(rows.items()):
-            l_rows += (f"<tr><td>{WNAME[w] if i == 0 else ''}{'<br><span class=muted>' + str(c['n_req']) + ' of ' + str(len(TRIGGER_STATIONS[w[0]])) + ', 1-in-' + str(c['rp']) + '</span>' if i == 0 else ''}</td>"
-                       f"<td><b>{y}</b></td><td class=n>{B.d(row['gauges'])}</td>"
-                       + "".join(f"<td class=n>{ahead(row[m], row['gauges'])}</td>" for m in (S.OLD_G, S.NEW_G, "glofas_v4")) + "</tr>")
-    jd = res["lead"][("juba", "deyr")]
-    assert list(jd) == [2017] and jd[2017]["glofas_v4"] is not None and jd[2017]["glofas_v4"] < jd[2017]["gauges"]
-    assert jd[2017][S.OLD_G] is None and jd[2017][S.NEW_G] is None
-    shab_deyr = res["lead"][("shabelle", "deyr")]
-    assert sorted(shab_deyr) == [2019, 2020]
-    assert all(r[S.NEW_G] is not None and (r["glofas_v4"] is None or r[S.NEW_G] < r["glofas_v4"]) for r in shab_deyr.values())
+        x, c = lead[w], TRIGGER_CONFIG[w]
+        ok = L.assessable_years(*w, span=res["lead_years"])
+        outside[w] = {m: sorted(y for y in x["first"][m] if y not in x["gauges"] and y in ok and covered(m, w, y)) for m in LM}
+        for i, y in enumerate(sorted(x["gauges"])):
+            label = (f"{WNAME[w]}<br><span class=muted>{c['n_req']} of {len(TRIGGER_STATIONS[w[0]])}, 1-in-{c['rp']}</span>" if i == 0 else "")
+            l_rows += (f"<tr><td>{label}</td><td><b>{y}</b></td><td class=n>{B.d(x['gauges'][y])}</td>"
+                       + "".join(f"<td class=n>{ahead(x['first'][m].get(y), x['gauges'][y])}</td>" if covered(m, w, y)
+                                 else "<td class=n><span class=muted>no archive</span></td>" for m in LM) + "</tr>")
+        l_rows += ("<tr><td></td><td colspan=2><span class=muted>met the rule outside a flood season</span></td>"
+                   + "".join(f"<td class=n>{B.yrs(outside[w][m])}</td>" for m in LM) + "</tr>")
+    # the sentences in section 1
+    sd, jd, jg, sg = (lead[w] for w in (("shabelle", "deyr"), ("juba", "deyr"), ("juba", "gu"), ("shabelle", "gu")))
+    assert sorted(sd["gauges"]) == [2019, 2020, 2023]
+    gl = L.reforecast("glofas_v4").issued_time
+    first_deyr_2020 = gl[(gl.dt.year == 2020) & (gl.dt.month >= 10)].min()
+    assert sd["gauges"][2020] < first_deyr_2020 and first_deyr_2020.month == 10 and first_deyr_2020.day <= 7
+    assert all(sd["first"][S.NEW_G][y] == sd["first"]["glofas_v4"][y] for y in (2019, 2020))
+    assert sd["first"][S.NEW_G][2023] < sd["gauges"][2023] and 2023 not in sd["first"]["glofas_v4"]
+    assert sorted(jd["gauges"]) == [2017, 2023]
+    assert all(jd["first"]["glofas_v4"][y] < jd["gauges"][y] for y in (2017, 2023))
+    assert 2017 not in jd["first"][S.NEW_G] and jd["first"][S.NEW_G][2023] > jd["gauges"][2023]
+    assert outside[("juba", "deyr")][S.NEW_G] == [2019, 2020] and not outside[("juba", "deyr")]["glofas_v4"]
+    for x in (jg, sg):
+        both = set(x["first"][S.OLD_G]) & set(x["first"][S.NEW_G])
+        assert both and all(x["first"][S.NEW_G][y] > x["first"][S.OLD_G][y] for y in both)
+    assert all(jg["first"][S.NEW_G][y] < jg["first"]["glofas_v4"][y] for y in set(jg["first"][S.NEW_G]) & set(jg["first"]["glofas_v4"]))
+
+    # other stated facts
+    win_b = dict(zip(S.WINDOWS, Bc[1]))
+    assert all(win_b[w]["model"] == "glofas_v5" for w in S.WINDOWS if w != ("juba", "gu"))
+    assert all(dict(zip(S.WINDOWS, x[1]))[("juba", "deyr")]["model"] == "glofas_v5" for x in (Bc, C_, D_))
+    swapped = {w: {**TRIGGER_CONFIG[w], "source": S.NEW_G if TRIGGER_CONFIG[w]["source"] == S.OLD_G else TRIGGER_CONFIG[w]["source"]}
+               for w in S.WINDOWS}
+    assert S.config_of(D_[1]) == swapped, "the 7-year option is the comparison page's design"
+    assert 2023 in sev and 2023 not in win_b[("shabelle", "gu")]["years"]
+    assert 2023 in dict(zip(S.WINDOWS, D_[1]))[("shabelle", "gu")]["years"] and 2023 in Bc[2]["years"]
+    import google_model_update as GMU
+    st_old, st_new = (float(np.median(list(GMU.tracking(m, "juba", "gu").values()))) for m in (S.OLD_G, S.NEW_G))
+    assert st_new > st_old and trk_new[("juba", "gu")][S.NEW_G] < trk_old[("juba", "gu")][S.OLD_G], "Gu Juba ranks flip"
 
     page = f"""<!DOCTYPE html>
 <html lang="en">
@@ -166,19 +200,22 @@ table.yg td {{ width:26px; min-width:26px; font-size:10.5px; }}
           change is largest in Deyr, where the old Google model was weak ({trk_old[('juba', 'deyr')]['google_grrr']:.2f} and
           {trk_old[('shabelle', 'deyr')]['google_grrr']:.2f}) and the new one is not ({trk_new[('juba', 'deyr')][S.NEW_G]:.2f} and
           {trk_new[('shabelle', 'deyr')][S.NEW_G]:.2f}). That weakness is why Deyr went to GloFAS.</li>
-      <li><strong>The design's search, re-run.</strong> With the design's two caps (activate in at most 8 of 25 years, release in at most
-          8 river-seasons), the search hands the new Google model only <b>Gu Juba</b>; GloFAS version 5 takes the other three windows.
+      <li><strong>The design's search, re-run.</strong> With the design's two caps (activate in at most 8 of 25 years; release in at most
+          8 seasons, counting each Gu or Deyr of a given year in which either river's window activates), the search hands the new Google model only <b>Gu Juba</b>; GloFAS version 5 takes the other three windows.
           With the year cap alone, the new model also takes Gu Shabelle and Deyr Shabelle. Deyr Juba stays on GloFAS version 5 either way.</li>
-      <li><strong>Forecast lead in Deyr.</strong> On the Shabelle, the new Google model's forecasts met the rule before GloFAS version 4's in
-          both Deyr flood seasons of the shared archive (2019, 2020). On the Juba there is one Deyr flood season to judge by (2017): GloFAS met the
-          rule well ahead and neither Google model met it.</li>
+      <li><strong>Forecast lead</strong>, scored only on the days the GloFAS forecast archive holds. Deyr Shabelle: the new Google model met
+          the rule on the same forecast issue as GloFAS in 2019 and 2020, and also caught 2023, which GloFAS missed. Deyr Juba: GloFAS met the
+          rule ahead of the gauges in both flood seasons (2017, 2023); the new Google model missed 2017, was late in 2023 and also met the rule
+          in two seasons without a flood (2019, 2020). In Gu the new Google model reaches the rule later than the old one, but still ahead of
+          GloFAS on the Juba.</li>
     </ul>
     <div class="callout warn"><strong>Where the search and the design's own principle disagree.</strong> Under both caps the search moves Gu
       Shabelle from Google to GloFAS version 5, which tracks that window worst of the three ({trk_new[('shabelle', 'gu')]['glofas_v5']:.2f}
       against {trk_new[('shabelle', 'gu')][S.NEW_G]:.2f} for the new Google model). It does so only because GloFAS activates in 2005, a flood
-      season, which lifts the count from 7 to 8 years. The design's stated rule was that where the backtest cannot tell models apart,
-      tracking and forecast lead decide. That points to the 7-year option: the adopted design with the new Google model in both Gu
-      windows ({B.rp_text(D_[2]['fires'])}, all severe years, no activation outside a flood season). Which to adopt is for the working group.</div>
+      season, which lifts the count from 7 to 8 years. In exchange it gives up Gu Shabelle 2023, a severe season on the gauges; 2023 stays in
+      its record only because the Deyr windows activate in Deyr that year. The design's stated rule was that where the backtest cannot tell models apart,
+      tracking and forecast lead decide. That points to the 7-year option, which is exactly the design on the comparison page: the adopted
+      settings with the new Google model in both Gu windows ({B.rp_text(D_[2]['fires'])}, all severe years, no activation outside a flood season). Which to adopt is for the working group.</div>
 
     <h2><span class="num">2</span>How each model tracks the gauges</h2>
     <p>The search's own measure, used to break ties: mean best-lag rank correlation of the window's points with the river's reference
@@ -193,19 +230,25 @@ table.yg td {{ width:26px; min-width:26px; font-size:10.5px; }}
        points, with every window activating at least twice. It then takes the combination of the four windows with the most activation
        years under the caps, and among those the one that catches most severe years, has fewest activations outside a flood season, the
        fewest unanimous rules, the best tracking and the lowest return periods. Run on the old models it reproduces the adopted design
-       exactly. Under both caps, the new-model pick is the only model assignment with its backtest score.</p>
+       exactly. That check rests on the two caps, not on the ranking: only a handful of combinations pass both caps, and reordering the
+       ranking gives the same pick. The caps are applied together, which is one reading of the design notes; they do not say whether the
+       season cap was applied together with the year cap or afterwards. Under both caps, the new-model pick is the only model assignment
+       with its backtest score.</p>
     <div class="tablewrap"><table class="data"><thead><tr><th>Option</th><th>Gu Juba</th><th>Deyr Juba</th><th>Gu Shabelle</th><th>Deyr Shabelle</th>
-      <th>Years</th><th>River-seasons</th><th>Severe caught</th><th>Outside a flood season</th></tr></thead><tbody>{d_rows}</tbody></table></div>
+      <th>Years</th><th>Seasons released</th><th>Severe caught</th><th>Outside a flood season</th></tr></thead><tbody>{d_rows}</tbody></table></div>
     <p>Activation years by option (G: released in Gu, D: in Deyr, GD: both). River gauges: F a flood season, S a severe one.</p>
     {year_grid}
 
     <h2><span class="num">4</span>Forecast lead</h2>
     <p>The other half of the design's judgement: which forecast reaches the rule first. For each window, the adopted rule (points and
        return period as designed) on each forecast archive against that model's own levels, at leads of 1 to 7 days, in the gauge flood
-       seasons all three archives cover (Gu 2016&ndash;2023, Deyr 2016&ndash;2022): the first forecast issue that met the rule, and how long before
-       the second gauge crossed its own 1-in-3 level. The GloFAS archive is issued about twice a week ({res['glofas_issues_per_year']:.0f} issues a
-       year), Google's daily, which can cost GloFAS up to four days here. The live pipeline reads Google at leads 1&ndash;5 (see the
-       <a href="../">comparison page</a>).</p>
+       seasons of 2016&ndash;2023: the first forecast issue that met the rule, and how long before the second gauge crossed its own 1-in-3
+       level. Every model is scored only on the issue dates the GloFAS forecast archive holds (it is not daily and has no issues from July to
+       September), so each gets the same chances. Its first Deyr issue each year is in early October, so a flood that starts before then
+       (the Shabelle in 2020, gauges over on 1 October) cannot be forecast ahead by any model here. The old Google archive ends in June
+       2023, so it has no Deyr 2023. The last row of each
+       window lists the years a forecast met the rule in a season the gauges did not record as a flood. The live pipeline reads Google at
+       leads 1&ndash;5 (see the <a href="../">comparison page</a>).</p>
     <div class="tablewrap"><table class="data"><thead><tr><th>Window</th><th>Year</th><th>Gauges over 1-in-3</th><th>Google (old)</th><th>Google (new)</th><th>GloFAS v4</th></tr></thead>
       <tbody>{l_rows}</tbody></table></div>
 
@@ -215,12 +258,13 @@ table.yg td {{ width:26px; min-width:26px; font-size:10.5px; }}
           tracking against the reference gauge, every window at least twice), judged on the two-gauge benchmark of
           <code>scripts/envelope_search.py</code>. GEOGloWS is left out, as in the adopted design.</li>
       <li>The two caps reconstruct the design's two decisions: activate no more often than 1-in-3 (8 of 25 years), and release in no more
-          than 8 river-seasons (the change to Deyr Shabelle on 18 September 2026). With both, the search returns the adopted design on the old
+          than 8 seasons, each Gu or Deyr of a given year counted once whichever river activates (the change to Deyr Shabelle on
+          18 September 2026, which took the adopted design from 10 such seasons to 8). With both, the search returns the adopted design on the old
           models, which the script asserts. The search is written out in <code>scripts/google_model_selection.py</code>; the pick of
           <code>model_selection.choose</code> is not used because it has no tracking tie-break and depends on candidate order.</li>
       <li>Dollow is the Juba main-stem gauge, as live; the design ran on the Dawa-branch point and the reconstruction still returns the adopted design.</li>
-      <li>The Deyr windows were designed on GloFAS version 5 while the live forecast is version 4: see the
-          <a href="../../glofas-version/">GloFAS version switch</a>.</li>
+      <li>Any window on GloFAS version 5 (Deyr in the adopted design, and Gu Shabelle too in the capped pick) is fitted on version 5 while
+          the live forecast is version 4: see the <a href="../../glofas-version/">GloFAS version switch</a>.</li>
     </ul>
   </article>
 

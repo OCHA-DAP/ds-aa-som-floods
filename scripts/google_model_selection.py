@@ -117,19 +117,33 @@ def tracking(cands):
     return out
 
 
-def forecast_lead(window, models, rp, n_req, years):
-    """Per year: the gauges' crossing day (two gauges over their own 1-in-3)
-    and, per model, the first issue whose forecast (leads 1-7, ensemble median)
-    met the window's rule against that model's own levels."""
-    gx = L.gauge_crossings(*window, 3, span=years)
+def first_issue_on(model, window, rp, n_req, years, issues):
+    """somlib.first_issue_dates, restricted to the given issue dates: year ->
+    first issue whose forecast (leads 1-7, ensemble median) put n_req points
+    over their own level (levels from the model's reanalysis)."""
+    river, season = window
+    rf = L.reforecast(model)
+    rf = rf[rf.station.isin(TRIGGER_STATIONS[river]) & rf.leadtime_days.between(1, 7)
+            & rf.valid_time.dt.month.isin(SEASONS[season]) & rf.issued_time.isin(issues)]
+    med = rf.groupby(["issued_time", "valid_time", "station"]).discharge.median().unstack("station")
+    thr = L.model_thresholds(model, river, season, rp)
+    cols = [c for c in thr.index if c in med.columns and not np.isnan(thr[c])]
+    votes = (med[cols] >= thr[cols]).sum(axis=1)
+    hit = votes[votes >= n_req].reset_index()
     out = {}
-    for y in sorted(gx):
-        row = {"gauges": gx[y]}
-        for m in models:
-            fi = L.first_issue_dates(m, *window, rp, n_req, span=years)
-            row[m] = fi[y][0] if y in fi else None
-        out[y] = row
+    for _, row in hit.sort_values(["issued_time", "valid_time"]).iterrows():
+        y = row["valid_time"].year
+        if y in years and y not in out:
+            out[y] = row["issued_time"].normalize()
     return out
+
+
+def forecast_lead(window, models, rp, n_req, years, issues):
+    """Per model: first qualifying issue per year, on common issue dates only;
+    and the gauges' crossing day (two gauges over their own 1-in-3)."""
+    gx = L.gauge_crossings(*window, 3, span=years)
+    fi = {m: first_issue_on(m, window, rp, n_req, years, issues) for m in models}
+    return {"gauges": gx, "first": fi}
 
 
 def run():
@@ -148,14 +162,17 @@ def run():
     got = config_of(out["old"]["capped"][1])
     assert got == {w: TRIGGER_CONFIG[w] for w in WINDOWS}, got
     assert out["old"]["capped"][2]["years"] == [2006, 2013, 2014, 2016, 2018, 2019, 2020, 2023]
-    # forecast side: same rule (the adopted settings) on each forecast archive
-    gu_years = list(range(2016, 2024))    # Gu seasons all three archives cover
-    deyr_years = list(range(2016, 2023))  # the old Google archive ends June 2023
+    # forecast side: the adopted rule on each forecast archive, scored only on
+    # the issue dates the GloFAS v4 reforecast holds (it is not daily and has no
+    # issues in July-September), so every model gets the same chances
+    issues = set(L.reforecast("glofas_v4").issued_time.dt.normalize().unique())
+    lead_years = list(range(2016, 2024))  # new Google and GloFAS v4 both cover 2016-2023
     out["lead"] = {w: forecast_lead(w, [OLD_G, NEW_G, "glofas_v4"], TRIGGER_CONFIG[w]["rp"], TRIGGER_CONFIG[w]["n_req"],
-                                    gu_years if w[1] == "gu" else deyr_years) for w in WINDOWS}
-    out["lead_years"] = {"gu": gu_years, "deyr": deyr_years}
-    rf = L.reforecast("glofas_v4")
-    out["glofas_issues_per_year"] = float(rf.groupby(rf.issued_time.dt.year).issued_time.nunique().median())
+                                    lead_years, issues) for w in WINDOWS}
+    out["lead_years"] = lead_years
+    out["old_google_deyr_last"] = 2022  # the old Google archive ends June 2023
+    gl_months = sorted(L.reforecast("glofas_v4").issued_time.dt.month.unique())
+    out["glofas_issue_months"] = [int(m) for m in gl_months]
     return out
 
 
@@ -174,9 +191,11 @@ if __name__ == "__main__":
             b = res[tag][k]
             print(f"  {k}: {describe(b[1], b[2]) if b else None}")
         print("  ties at the capped pick's backtest score:", len(res[tag]["ties"]), res[tag]["ties"])
-    print("\nlead (adopted settings):")
-    for w, rows in res["lead"].items():
-        print(" ", w, {y: {k: (str(v.date()) if v is not None else None) for k, v in row.items()} for y, row in rows.items()})
-    print("GloFAS v4 reforecast issues per year (median):", res["glofas_issues_per_year"])
+    print("\nlead (adopted settings, GloFAS issue dates only):")
+    for w, x in res["lead"].items():
+        print(" ", w, "gauges", {y: str(d.date()) for y, d in x["gauges"].items()})
+        for m, fi in x["first"].items():
+            print("     ", m, {y: str(d.date()) for y, d in fi.items()})
+    print("GloFAS v4 issue months:", res["glofas_issue_months"])
     sys.stdout.flush()
     os._exit(0)
