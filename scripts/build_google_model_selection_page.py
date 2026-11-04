@@ -170,6 +170,7 @@ def main():
 <link rel="stylesheet" href="../../assets/site.css">
 <style>
 {B.STYLE}
+{B.NAV_CSS}
 table.yg td {{ width:26px; min-width:26px; font-size:10.5px; }}
 </style>
 </head>
@@ -185,6 +186,7 @@ table.yg td {{ width:26px; min-width:26px; font-size:10.5px; }}
          Nigeria, Somalia never selected its points by correlation. Everything on 1999&ndash;2023. Analysis of {B.API_CHECKED}.</p>
     </div>
   </header>
+  {B.nav_html('som-models')}
 
   <article>
     <div class="stats">
