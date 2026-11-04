@@ -104,20 +104,35 @@ def forecast_years(model, river, season, rp, n_req, span):
     return sorted(L.first_issue_dates(model, river, season, rp, n_req, span=span))
 
 
-def tracking(model, river, season):
-    """Median best-lag Spearman of the window's points against the river's SWALIM
-    gauges, as on the trigger page (scripts/model_selection.py best_lag_rho)."""
-    sys.path.insert(0, str(REPO / "scripts"))
-    from model_selection import best_lag_rho
+def best_lag_rho(model_s, gauge_s):
+    """Copied from scripts/page_additions/station_metrics.py (which runs its whole
+    table on import): best Spearman over lags L.MIN_LAG..L.MAX_LAG, shifting the
+    gauge's FULL-YEAR record by calendar days."""
+    best = 0.0
+    for lag in range(L.MIN_LAG, L.MAX_LAG + 1):
+        g = gauge_s.copy()
+        g.index = g.index - pd.Timedelta(days=lag)
+        j = pd.concat([model_s, g], axis=1, join="inner").dropna()
+        if len(j) < L.MIN_OBS:
+            continue
+        r = j.iloc[:, 0].corr(j.iloc[:, 1], method="spearman")
+        if pd.notna(r) and abs(r) > abs(best):
+            best = float(r)
+    return best
 
+
+def tracking(model, river, season):
+    """Best-lag rank correlation of each point with its SWALIM gauge in the
+    season, exactly as in the trigger page's station table
+    (scripts/page_additions/station_metrics.py)."""
     lv = L.levels()
     out = {}
     for st in TRIGGER_STATIONS[river]:
-        g = lv[lv.station == st].set_index("date")["level_m"].dropna().sort_index()
-        g = g[g.index.month.isin(SEASONS[season]) & g.index.year.isin(L.SPAN)]
-        if len(g) < L.MIN_OBS:
+        g_all = lv[lv.station == st].set_index("date")["level_m"].dropna().sort_index()
+        s = L.season_series(model, st, season)
+        if len(s) < 100 or not len(g_all):
             continue
-        out[st] = best_lag_rho(L.season_series(model, st, season), g)
+        out[st] = best_lag_rho(s, g_all)
     return out
 
 
@@ -176,6 +191,7 @@ def run():
 if __name__ == "__main__":
     if sys.argv[1:] == ["fetch"]:
         fetch()
+        sys.stdout.flush()
         os._exit(0)
     res = run()
     fmt = lambda d: {y: (str(a.date()) if not isinstance(a, tuple) else (str(a[0].date()), str(a[1].date()))) for y, a in d.items()}
@@ -199,4 +215,5 @@ if __name__ == "__main__":
         print(w, "MISMATCH old levels on new flows:", res[w]["mismatch"],
               "| bench 2024-25 flood", sorted(y for y in b[0] if y > 2023), "severe", sorted(y for y in b[1] if y > 2023),
               "assessable", sorted(y for y in b[2] if y > 2023))
+    sys.stdout.flush()
     os._exit(0)

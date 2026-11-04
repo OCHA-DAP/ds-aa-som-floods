@@ -242,8 +242,8 @@ def main():
     <script>drawSM(document.getElementById('sm-{w[0]}'), {json.dumps(spec)});</script>
     <h3>Levels at each point</h3>
     <p>1-in-{c['rp']} level fitted on the March&ndash;May seasonal maxima 1999&ndash;2023 of each model's own record (Weibull
-       plotting position, as in the trigger analysis), mean March&ndash;May flow, and the best-lag rank correlation with the
-       point's SWALIM gauge (m³/s).</p>
+       plotting position, as in the trigger analysis) and mean March&ndash;May flow (m³/s), and the best-lag rank correlation with the
+       point's SWALIM gauge, computed as in the trigger page's station table.</p>
     <div class="tablewrap"><table class="data"><thead><tr><th>Point</th><th>Old level</th><th>New level</th><th>New / old</th>
       <th>Old mean</th><th>New mean</th><th>Old correlation</th><th>New correlation</th></tr></thead><tbody>{x['levels']}</tbody></table></div>
     <details><summary>Other return periods, same vote count</summary>
@@ -251,6 +251,10 @@ def main():
       <tbody>{x['sweep']}</tbody></table></div></details>"""
 
     jx, sx = win[jw], win[sw]
+    dj = jx['perf'][NEW]['rho'] - jx['perf'][OLD]['rho']
+    track_juba = "about as well as the old model" if abs(dj) < 0.02 else ("better than the old model" if dj > 0 else "less well than the old model")
+    assert sx['perf'][NEW]['rho'] - sx['perf'][OLD]['rho'] >= 0.02, "the page says the Shabelle tracks better"
+    assert all(len(res[w]['mismatch']) > len(res[w][OLD]['years']) for w in G.GU)
     page = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -318,7 +322,7 @@ details {{ margin:10px 0 0; font-size:13.5px; }} details summary {{ cursor:point
       <div class="stat"><div class="v">{jx['perf'][OLD]['n']} &rarr; {jx['perf'][NEW]['n']}</div><div class="l">Gu Juba activations 1999&ndash;2023, old &rarr; new</div></div>
       <div class="stat"><div class="v">{sx['perf'][OLD]['n']} &rarr; {sx['perf'][NEW]['n']}</div><div class="l">Gu Shabelle activations 1999&ndash;2023, old &rarr; new</div></div>
       <div class="stat"><div class="v">{rp_text(env['old']['n'])} &rarr; {rp_text(env['new']['n'])}</div><div class="l">all four windows together, old &rarr; new</div></div>
-      <div class="stat flag"><div class="v">{smin}&ndash;{smax} days</div><div class="l">later on the new model, in every year both models activate</div></div>
+      <div class="stat flag"><div class="v">{smin}&ndash;{smax} days</div><div class="l">later on the new model, wherever both models meet the rule (record or forecast)</div></div>
     </div>
 
     <h2><span class="num">1</span>What changes</h2>
@@ -326,15 +330,16 @@ details {{ margin:10px 0 0; font-size:13.5px; }} details summary {{ cursor:point
       <li><strong>Activation years.</strong> Gu Juba: {yrs(res[jw][OLD]['years'])} on the old model, {yrs(res[jw][NEW]['years'])} on the new.
           Gu Shabelle: {yrs(res[sw][OLD]['years'])} on the old, {yrs(res[sw][NEW]['years'])} on the new. Both windows drop 2013, which the river
           gauges did not record as a Gu flood season on either river; the Shabelle adds 2023, a severe Gu season on the gauges.</li>
-      <li><strong>Timing.</strong> In every year both models activate, the new model meets the rule later: {smin} to {smax} days, on its
-          record and on its forecasts alike. The detail per year is in the timing tables below.</li>
+      <li><strong>Timing.</strong> Wherever both models meet the rule in the same year, on the record or on the forecasts, the new model
+          meets it later: by {smin} to {smax} days. The detail per year is in the timing tables below.</li>
       <li><strong>All four windows together</strong> (Deyr unchanged on GloFAS version 5, as designed): {env['old']['n']} activations
           ({rp_text(env['old']['n'])}) on the old model, {env['new']['n']} ({rp_text(env['new']['n'])}) on the new;
           severe years caught {len(env['old']['severe_caught'])} and {len(env['new']['severe_caught'])} of {len(severe_all)};
           activations outside a flood season: {yrs(env['old']['no_flood'])} and {yrs(env['new']['no_flood'])}.</li>
       <li><strong>Levels.</strong> The new model runs higher at these points, so the levels rise: Juba points {ratio_j.min():.1f}&ndash;{ratio_j.max():.1f}
           times the old levels, Shabelle points {ratio_s.min():.1f}&ndash;{ratio_s.max():.1f} times. Its March&ndash;May flows track the SWALIM
-          gauges as well as the old model on the Juba and better on the Shabelle (median correlation {sx['perf'][OLD]['rho']:.2f} &rarr; {sx['perf'][NEW]['rho']:.2f}).</li>
+          gauges {track_juba} on the Juba (median correlation {jx['perf'][OLD]['rho']:.2f} &rarr; {jx['perf'][NEW]['rho']:.2f}) and better on the
+          Shabelle ({sx['perf'][OLD]['rho']:.2f} &rarr; {sx['perf'][NEW]['rho']:.2f}).</li>
       <li><strong>After 2023</strong>, which only the new model covers: Gu Juba activates in {yrs(set(res[jw][NEW]['years_ext']) - set(L.SPAN))}
           (first day {d(res[jw][NEW]['first_cross'].get(2024))}), a flood season on the Juba gauges; Gu Shabelle does not activate in 2024,
           which its gauges record as severe. Neither window activates in 2025. These years sit outside the calibration record.</li>
