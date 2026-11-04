@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New Google model: re-running the model choice &mdash; Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Variant of the new-Google-model comparison: the design's choice of model per river-season window re-run with the new Google model as a candidate.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+<style>
+.hero.hero-sub { padding:40px 44px 34px; } .hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; } .crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+article { padding:8px 44px 24px; max-width:960px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9); margin:40px 0 10px; line-height:1.25; }
+article h2 .num { color:var(--b5); font-size:15px; margin-right:8px; }
+article h3 { font-size:15px; color:var(--n9); margin:26px 0 6px; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; } article a { color:var(--b6); } article strong { color:var(--n9); }
+article code { background:var(--n05); border:1px solid #e2e7e7; padding:1px 5px; border-radius:3px; font-size:12.5px; }
+table.data { border-collapse:collapse; width:100%; margin:14px 0; font-size:13px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 10px 6px; vertical-align:bottom; }
+table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8); vertical-align:top; }
+table.data td.n { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; } table.data td em { font-style:normal; color:var(--b6); font-weight:600; }
+table.data.cmp td:first-child { width:46%; } table.data.cmp td { width:27%; }
+table.data tr.pick td { background:var(--b05); } .tablewrap { overflow-x:auto; } .muted { color:#6b7683; font-size:12px; }
+table.yg { border-collapse:separate; border-spacing:2px; margin:12px 0 6px; font-size:11.5px; }
+table.yg th { font-weight:500; color:#6b7683; font-size:10.5px; padding:0 0 2px; text-align:center; }
+table.yg th.rl { text-align:right; padding-right:8px; white-space:nowrap; color:var(--n8); font-size:12px; font-weight:500; }
+table.yg td { width:24px; min-width:24px; height:22px; text-align:center; border-radius:3px; background:#f3f5f7; color:#9aa4ae; font-variant-numeric:tabular-nums; }
+table.yg td.nd { background:repeating-linear-gradient(45deg,#f6f7f8 0 3px,#e9ecef 3px 5px); }
+table.yg td.z { color:#c4cbd2; } table.yg td.part { color:var(--n8); background:#e6ebf0; }
+table.yg td.act { background:#1f5c8b; color:#fff; font-weight:700; }
+table.yg td.fl { background:#f6dfb8; color:#7a4d06; font-weight:700; } table.yg td.sev { background:#d9822b; color:#fff; font-weight:700; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; margin:26px 0 6px; }
+.stat { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5); border-radius:5px; padding:14px 16px 12px; }
+.stat.flag { border-top-color:#e0a04b; } .stat .v { font-family:'Merriweather',Georgia,serif; font-size:23px; font-weight:700; color:var(--b6); line-height:1.15; }
+.stat.flag .v { color:#b0722b; } .stat .l { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--n7); margin-top:6px; line-height:1.45; }
+.callout { margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
+.callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
+.figcap { font-size:12px !important; color:var(--n7) !important; line-height:1.5 !important; }
+details { margin:10px 0 0; font-size:13.5px; } details summary { cursor:pointer; color:var(--b6); }
+.provenance { margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7; font-size:12px; color:var(--n7); line-height:1.7; } .provenance a { color:var(--b6); }
+@media (max-width:640px) { article { padding:4px 22px 16px; } .hero.hero-sub { padding:32px 22px 28px; } .provenance { margin:28px 22px 32px; } }
+
+table.yg td { width:26px; min-width:26px; font-size:10.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero hero-sub">
+    <div class="inner">
+      <p class="crumb"><a href="../../">Somalia Riverine Flood Trigger</a> / <a href="../">new Google model</a> / variant</p>
+      <h1>New Google model: re-running the model choice</h1>
+      <p>The <a href="../" style="color:#fff">comparison page</a> keeps the adopted design and swaps the new Google model in where
+         Google is used (the two Gu windows). Here the design's choice of model for each river-season window is re-run with the new
+         Google model as a candidate, alongside GloFAS versions 4 and 5. The monitoring points stay the seven SWALIM gauges: unlike
+         Nigeria, Somalia never selected its points by correlation. Everything on 1999&ndash;2023. Analysis of 4 November 2026.</p>
+    </div>
+  </header>
+
+  <article>
+    <div class="stats">
+      <div class="stat"><div class="v">4 of 4</div><div class="l">windows where the new Google model tracks the gauges better than GloFAS</div></div>
+      <div class="stat"><div class="v">1 of 4</div><div class="l">windows it carries under the design's caps</div></div>
+      <div class="stat"><div class="v">3 of 4</div><div class="l">windows it carries without the season cap</div></div>
+      <div class="stat"><div class="v">7 of 7</div><div class="l">severe years caught by every option below</div></div>
+    </div>
+
+    <h2><span class="num">1</span>The short answer</h2>
+    <ul>
+      <li><strong>Tracking.</strong> The new Google model follows the river gauges more closely than GloFAS in all four windows. The
+          change is largest in Deyr, where the old Google model was weak (0.60 and
+          0.62) and the new one is not (0.87 and
+          0.87). That weakness is why Deyr went to GloFAS.</li>
+      <li><strong>The design's search, re-run.</strong> With the design's two caps (activate in at most 8 of 25 years, release in at most
+          8 river-seasons), the search hands the new Google model only <b>Gu Juba</b>; GloFAS version 5 takes the other three windows.
+          With the year cap alone, the new model also takes Gu Shabelle and Deyr Shabelle. Deyr Juba stays on GloFAS version 5 either way.</li>
+      <li><strong>Forecast lead in Deyr.</strong> On the Shabelle, the new Google model's forecasts met the rule before GloFAS version 4's in
+          both Deyr flood seasons of the shared archive (2019, 2020). On the Juba there is one Deyr flood season to judge by (2017): GloFAS met the
+          rule well ahead and neither Google model met it.</li>
+    </ul>
+    <div class="callout warn"><strong>Where the search and the design's own principle disagree.</strong> Under both caps the search moves Gu
+      Shabelle from Google to GloFAS version 5, which tracks that window worst of the three (0.71
+      against 0.86 for the new Google model). It does so only because GloFAS activates in 2005, a flood
+      season, which lifts the count from 7 to 8 years. The design's stated rule was that where the backtest cannot tell models apart,
+      tracking and forecast lead decide. That points to the 7-year option: the adopted design with the new Google model in both Gu
+      windows (1-in-3.7, all severe years, no activation outside a flood season). Which to adopt is for the working group.</div>
+
+    <h2><span class="num">2</span>How each model tracks the gauges</h2>
+    <p>The search's own measure, used to break ties: mean best-lag rank correlation of the window's points with the river's reference
+       gauge (Luuq on the Juba, Belet Weyne on the Shabelle), 1999&ndash;2023. The comparison page reports a different measure (each point
+       against its own gauge, as in the trigger page's station table), so the values differ; in Gu Juba the two measures rank the old and
+       new Google models the other way round. Bold: best in the window.</p>
+    <div class="tablewrap"><table class="data"><thead><tr><th>Window</th><th>Google (old)</th><th>Google (new)</th><th>GloFAS v4</th><th>GloFAS v5</th></tr></thead>
+      <tbody><tr><td>Gu Juba</td><td class=n><b>0.87</b> <span class=muted>(adopted)</span></td><td class=n>0.85</td><td class=n>0.82</td><td class=n>0.81</td></tr><tr><td>Deyr Juba</td><td class=n>0.60</td><td class=n><b>0.87</b></td><td class=n>0.84</td><td class=n>0.82 <span class=muted>(adopted)</span></td></tr><tr><td>Gu Shabelle</td><td class=n>0.77 <span class=muted>(adopted)</span></td><td class=n><b>0.86</b></td><td class=n>0.83</td><td class=n>0.71</td></tr><tr><td>Deyr Shabelle</td><td class=n>0.62</td><td class=n><b>0.87</b></td><td class=n>0.67</td><td class=n>0.81 <span class=muted>(adopted)</span></td></tr></tbody></table></div>
+
+    <h2><span class="num">3</span>The design search, re-run</h2>
+    <p>For every window the search tries each model, a station return period from 1-in-3 to 1-in-6 and a vote count from two to all-but-one
+       points, with every window activating at least twice. It then takes the combination of the four windows with the most activation
+       years under the caps, and among those the one that catches most severe years, has fewest activations outside a flood season, the
+       fewest unanimous rules, the best tracking and the lowest return periods. Run on the old models it reproduces the adopted design
+       exactly. Under both caps, the new-model pick is the only model assignment with its backtest score.</p>
+    <div class="tablewrap"><table class="data"><thead><tr><th>Option</th><th>Gu Juba</th><th>Deyr Juba</th><th>Gu Shabelle</th><th>Deyr Shabelle</th>
+      <th>Years</th><th>River-seasons</th><th>Severe caught</th><th>Outside a flood season</th></tr></thead><tbody><tr><td><b>Adopted design (old Google, GloFAS v4/v5)</b></td><td>Google (old)<br><span class=muted>3 of 4, 1-in-5</span></td><td>GloFAS v5<br><span class=muted>3 of 4, 1-in-4</span></td><td>Google (old)<br><span class=muted>2 of 3, 1-in-6</span></td><td>GloFAS v5<br><span class=muted>2 of 3, 1-in-5</span></td><td class=n>8 (1-in-3.2)</td><td class=n>8</td><td class=n>7 of 7</td><td>2013</td></tr><tr><td><b>New Google: design caps (8 years, 8 seasons)</b></td><td>Google (new)<br><span class=muted>3 of 4, 1-in-5</span></td><td>GloFAS v5<br><span class=muted>3 of 4, 1-in-4</span></td><td>GloFAS v5<br><span class=muted>2 of 3, 1-in-6</span></td><td>GloFAS v5<br><span class=muted>2 of 3, 1-in-5</span></td><td class=n>8 (1-in-3.2)</td><td class=n>8</td><td class=n>7 of 7</td><td>none</td></tr><tr><td><b>New Google: years cap only (8 years)</b></td><td>Google (new)<br><span class=muted>3 of 4, 1-in-5</span></td><td>GloFAS v5<br><span class=muted>3 of 4, 1-in-4</span></td><td>Google (new)<br><span class=muted>2 of 3, 1-in-5</span></td><td>Google (new)<br><span class=muted>2 of 3, 1-in-5</span></td><td class=n>8 (1-in-3.2)</td><td class=n>11</td><td class=n>7 of 7</td><td>none</td></tr><tr><td><b>New Google: 7 years, 8 seasons</b></td><td>Google (new)<br><span class=muted>3 of 4, 1-in-5</span></td><td>GloFAS v5<br><span class=muted>3 of 4, 1-in-4</span></td><td>Google (new)<br><span class=muted>2 of 3, 1-in-6</span></td><td>GloFAS v5<br><span class=muted>2 of 3, 1-in-5</span></td><td class=n>7 (1-in-3.7)</td><td class=n>8</td><td class=n>7 of 7</td><td>none</td></tr></tbody></table></div>
+    <p>Activation years by option (G: released in Gu, D: in Deyr, GD: both). River gauges: F a flood season, S a severe one.</p>
+    <div class="tablewrap"><table class="yg" aria-label="Activation years for the four designs"><thead><tr><th class=rl></th><th>99</th><th>00</th><th>01</th><th>02</th><th>03</th><th>04</th><th>05</th><th>06</th><th>07</th><th>08</th><th>09</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th>20</th><th>21</th><th>22</th><th>23</th></tr></thead><tbody><tr><th class=rl>River gauges</th><td class="no" title="1999: no flood season"></td><td class="no" title="2000: no flood season"></td><td class="no" title="2001: no flood season"></td><td class="no" title="2002: no flood season"></td><td class="fl" title="2003: flood season (two gauges over 1-in-3)">F</td><td class="no" title="2004: no flood season"></td><td class="fl" title="2005: flood season (two gauges over 1-in-3)">F</td><td class="sev" title="2006: severe (two gauges over 1-in-5 in a window)">S</td><td class="no" title="2007: no flood season"></td><td class="fl" title="2008: flood season (two gauges over 1-in-3)">F</td><td class="no" title="2009: no flood season"></td><td class="fl" title="2010: flood season (two gauges over 1-in-3)">F</td><td class="no" title="2011: no flood season"></td><td class="no" title="2012: no flood season"></td><td class="no" title="2013: no flood season"></td><td class="sev" title="2014: severe (two gauges over 1-in-5 in a window)">S</td><td class="no" title="2015: no flood season"></td><td class="sev" title="2016: severe (two gauges over 1-in-5 in a window)">S</td><td class="fl" title="2017: flood season (two gauges over 1-in-3)">F</td><td class="sev" title="2018: severe (two gauges over 1-in-5 in a window)">S</td><td class="sev" title="2019: severe (two gauges over 1-in-5 in a window)">S</td><td class="sev" title="2020: severe (two gauges over 1-in-5 in a window)">S</td><td class="no" title="2021: no flood season"></td><td class="no" title="2022: no flood season"></td><td class="sev" title="2023: severe (two gauges over 1-in-5 in a window)">S</td></tr><tr><th class=rl>Adopted</th><td class="z" title="1999: no activation"></td><td class="z" title="2000: no activation"></td><td class="z" title="2001: no activation"></td><td class="z" title="2002: no activation"></td><td class="z" title="2003: no activation"></td><td class="z" title="2004: no activation"></td><td class="z" title="2005: no activation"></td><td class="act" title="2006: released in Deyr">D</td><td class="z" title="2007: no activation"></td><td class="z" title="2008: no activation"></td><td class="z" title="2009: no activation"></td><td class="z" title="2010: no activation"></td><td class="z" title="2011: no activation"></td><td class="z" title="2012: no activation"></td><td class="act" title="2013: released in Gu">G</td><td class="act" title="2014: released in Deyr">D</td><td class="z" title="2015: no activation"></td><td class="act" title="2016: released in Gu">G</td><td class="z" title="2017: no activation"></td><td class="act" title="2018: released in Gu">G</td><td class="act" title="2019: released in Deyr">D</td><td class="act" title="2020: released in Gu">G</td><td class="z" title="2021: no activation"></td><td class="z" title="2022: no activation"></td><td class="act" title="2023: released in Deyr">D</td></tr><tr><th class=rl>Design caps</th><td class="z" title="1999: no activation"></td><td class="z" title="2000: no activation"></td><td class="z" title="2001: no activation"></td><td class="z" title="2002: no activation"></td><td class="z" title="2003: no activation"></td><td class="z" title="2004: no activation"></td><td class="act" title="2005: released in Gu">G</td><td class="act" title="2006: released in Deyr">D</td><td class="z" title="2007: no activation"></td><td class="z" title="2008: no activation"></td><td class="z" title="2009: no activation"></td><td class="z" title="2010: no activation"></td><td class="z" title="2011: no activation"></td><td class="z" title="2012: no activation"></td><td class="z" title="2013: no activation"></td><td class="act" title="2014: released in Deyr">D</td><td class="z" title="2015: no activation"></td><td class="act" title="2016: released in Gu">G</td><td class="z" title="2017: no activation"></td><td class="act" title="2018: released in Gu">G</td><td class="act" title="2019: released in Deyr">D</td><td class="act" title="2020: released in Gu">G</td><td class="z" title="2021: no activation"></td><td class="z" title="2022: no activation"></td><td class="act" title="2023: released in Deyr">D</td></tr><tr><th class=rl>Years cap only</th><td class="z" title="1999: no activation"></td><td class="z" title="2000: no activation"></td><td class="z" title="2001: no activation"></td><td class="z" title="2002: no activation"></td><td class="z" title="2003: no activation"></td><td class="z" title="2004: no activation"></td><td class="z" title="2005: no activation"></td><td class="act" title="2006: released in Deyr">D</td><td class="z" title="2007: no activation"></td><td class="z" title="2008: no activation"></td><td class="z" title="2009: no activation"></td><td class="act" title="2010: released in Gu and Deyr">GD</td><td class="z" title="2011: no activation"></td><td class="z" title="2012: no activation"></td><td class="z" title="2013: no activation"></td><td class="act" title="2014: released in Deyr">D</td><td class="z" title="2015: no activation"></td><td class="act" title="2016: released in Gu">G</td><td class="z" title="2017: no activation"></td><td class="act" title="2018: released in Gu">G</td><td class="act" title="2019: released in Deyr">D</td><td class="act" title="2020: released in Gu and Deyr">GD</td><td class="z" title="2021: no activation"></td><td class="z" title="2022: no activation"></td><td class="act" title="2023: released in Gu and Deyr">GD</td></tr><tr><th class=rl>7 years</th><td class="z" title="1999: no activation"></td><td class="z" title="2000: no activation"></td><td class="z" title="2001: no activation"></td><td class="z" title="2002: no activation"></td><td class="z" title="2003: no activation"></td><td class="z" title="2004: no activation"></td><td class="z" title="2005: no activation"></td><td class="act" title="2006: released in Deyr">D</td><td class="z" title="2007: no activation"></td><td class="z" title="2008: no activation"></td><td class="z" title="2009: no activation"></td><td class="z" title="2010: no activation"></td><td class="z" title="2011: no activation"></td><td class="z" title="2012: no activation"></td><td class="z" title="2013: no activation"></td><td class="act" title="2014: released in Deyr">D</td><td class="z" title="2015: no activation"></td><td class="act" title="2016: released in Gu">G</td><td class="z" title="2017: no activation"></td><td class="act" title="2018: released in Gu">G</td><td class="act" title="2019: released in Deyr">D</td><td class="act" title="2020: released in Gu">G</td><td class="z" title="2021: no activation"></td><td class="z" title="2022: no activation"></td><td class="act" title="2023: released in Gu and Deyr">GD</td></tr></tbody></table></div>
+
+    <h2><span class="num">4</span>Forecast lead</h2>
+    <p>The other half of the design's judgement: which forecast reaches the rule first. For each window, the adopted rule (points and
+       return period as designed) on each forecast archive against that model's own levels, at leads of 1 to 7 days, in the gauge flood
+       seasons all three archives cover (Gu 2016&ndash;2023, Deyr 2016&ndash;2022): the first forecast issue that met the rule, and how long before
+       the second gauge crossed its own 1-in-3 level. The GloFAS archive is issued about twice a week (104 issues a
+       year), Google's daily, which can cost GloFAS up to four days here. The live pipeline reads Google at leads 1&ndash;5 (see the
+       <a href="../">comparison page</a>).</p>
+    <div class="tablewrap"><table class="data"><thead><tr><th>Window</th><th>Year</th><th>Gauges over 1-in-3</th><th>Google (old)</th><th>Google (new)</th><th>GloFAS v4</th></tr></thead>
+      <tbody><tr><td>Gu Juba<br><span class=muted>3 of 4, 1-in-5</span></td><td><b>2016</b></td><td class=n>1 May</td><td class=n>1 May <span class=muted>(same day)</span></td><td class=n>8 May <span class=muted>(7 d after)</span></td><td class=n>11 May <span class=muted>(10 d after)</span></td></tr><tr><td></td><td><b>2018</b></td><td class=n>17 Apr</td><td class=n>15 Apr <span class=muted>(2 d before)</span></td><td class=n>18 Apr <span class=muted>(1 d after)</span></td><td class=n>4 May <span class=muted>(17 d after)</span></td></tr><tr><td></td><td><b>2020</b></td><td class=n>22 Apr</td><td class=n>24 Apr <span class=muted>(2 d after)</span></td><td class=n>28 Apr <span class=muted>(6 d after)</span></td><td class=n>1 May <span class=muted>(9 d after)</span></td></tr><tr><td></td><td><b>2023</b></td><td class=n>25 Mar</td><td class=n>&ndash;</td><td class=n>&ndash;</td><td class=n>&ndash;</td></tr><tr><td>Deyr Juba<br><span class=muted>3 of 4, 1-in-4</span></td><td><b>2017</b></td><td class=n>7 Nov</td><td class=n>&ndash;</td><td class=n>&ndash;</td><td class=n>19 Oct <span class=muted>(19 d before)</span></td></tr><tr><td>Gu Shabelle<br><span class=muted>2 of 3, 1-in-6</span></td><td><b>2016</b></td><td class=n>11 May</td><td class=n>30 Apr <span class=muted>(11 d before)</span></td><td class=n>9 May <span class=muted>(2 d before)</span></td><td class=n>8 May <span class=muted>(3 d before)</span></td></tr><tr><td></td><td><b>2018</b></td><td class=n>7 May</td><td class=n>27 Apr <span class=muted>(10 d before)</span></td><td class=n>1 May <span class=muted>(6 d before)</span></td><td class=n>11 May <span class=muted>(4 d after)</span></td></tr><tr><td></td><td><b>2020</b></td><td class=n>5 May</td><td class=n>22 Apr <span class=muted>(13 d before)</span></td><td class=n>2 May <span class=muted>(3 d before)</span></td><td class=n>&ndash;</td></tr><tr><td></td><td><b>2023</b></td><td class=n>17 Apr</td><td class=n>26 Apr <span class=muted>(9 d after)</span></td><td class=n>3 May <span class=muted>(16 d after)</span></td><td class=n>&ndash;</td></tr><tr><td>Deyr Shabelle<br><span class=muted>2 of 3, 1-in-5</span></td><td><b>2019</b></td><td class=n>14 Oct</td><td class=n>2 Oct <span class=muted>(12 d before)</span></td><td class=n>24 Sep <span class=muted>(20 d before)</span></td><td class=n>2 Oct <span class=muted>(12 d before)</span></td></tr><tr><td></td><td><b>2020</b></td><td class=n>1 Oct</td><td class=n>&ndash;</td><td class=n>24 Sep <span class=muted>(7 d before)</span></td><td class=n>2 Oct <span class=muted>(1 d after)</span></td></tr></tbody></table></div>
+
+    <h2><span class="num">5</span>Method</h2>
+    <ul>
+      <li>Candidates exactly as in <code>scripts/model_selection.py</code> (models, return periods 1-in-3 to 1-in-6, two to all-but-one votes,
+          tracking against the reference gauge, every window at least twice), judged on the two-gauge benchmark of
+          <code>scripts/envelope_search.py</code>. GEOGloWS is left out, as in the adopted design.</li>
+      <li>The two caps reconstruct the design's two decisions: activate no more often than 1-in-3 (8 of 25 years), and release in no more
+          than 8 river-seasons (the change to Deyr Shabelle on 18 September 2026). With both, the search returns the adopted design on the old
+          models, which the script asserts. The search is written out in <code>scripts/google_model_selection.py</code>; the pick of
+          <code>model_selection.choose</code> is not used because it has no tracking tie-break and depends on candidate order.</li>
+      <li>Dollow is the Juba main-stem gauge, as live; the design ran on the Dawa-branch point and the reconstruction still returns the adopted design.</li>
+      <li>The Deyr windows were designed on GloFAS version 5 while the live forecast is version 4: see the
+          <a href="../../glofas-version/">GloFAS version switch</a>.</li>
+    </ul>
+  </article>
+
+  <p class="provenance">Generated 4 November 2026 by
+    <code>scripts/build_google_model_selection_page.py</code> (numbers in <code>scripts/google_model_selection.py</code>) in
+    <a href="https://github.com/OCHA-DAP/ds-aa-som-floods">ds-aa-som-floods</a>. Back to the <a href="../">comparison page</a>.</p>
+</div>
+</body>
+</html>
