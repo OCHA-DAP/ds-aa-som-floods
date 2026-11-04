@@ -30,7 +30,11 @@ from src.constants import TRIGGER_CONFIG, TRIGGER_STATIONS  # noqa: E402
 OUT = REPO / "pages" / "google-model-update"
 OLD, NEW = G.OLD, G.NEW
 C_OLD, C_NEW = "#2a78d6", "#eb6834"  # validated pair (dataviz validate_palette.js, light)
-YEARS = list(range(L.Y0, 2026))
+# Every old-vs-new comparison uses only the years both versions cover: the record 1999-2023 (the
+# calibration years) and, for forecasts, the Gu seasons both archives cover (2016-2023). 2024-2025
+# exist only in the new model and are reported separately.
+YEARS = list(L.SPAN)
+NEW_ONLY = [2024, 2025]
 ST = {"dollow": "Dollow", "luuq": "Luuq", "bardheere": "Bardheere", "bualle": "Bualle",
       "belet_weyne": "Belet Weyne", "bulo_burti": "Bulo Burti", "jowhar": "Jowhar"}
 API_CHECKED = "4 November 2026"
@@ -82,6 +86,19 @@ def main():
     bench_all = {w: res[w]["bench_ext"] for w in G.GU}
     deyr_years = res["deyr"]
 
+    def may_years(model):
+        rf = L.reforecast(model)
+        return set(rf.loc[rf.valid_time.dt.month == 5, "valid_time"].dt.year)  # archive covers May
+    FC = sorted(may_years(OLD) & may_years(NEW) & set(YEARS))  # forecast years both archives cover
+    for w in G.GU:  # restrict every comparison to the shared years
+        for m in (OLD, NEW):
+            x = res[w][m]
+            x["first_cross_all"], x["first_issue_all"] = x["first_cross"], x["first_issue"]
+            x["first_cross"] = {y: v for y, v in x["first_cross_all"].items() if y in YEARS}
+            x["first_issue"] = {y: v for y, v in x["first_issue_all"].items() if y in FC}
+        res[w]["mismatch_all"] = res[w]["mismatch"]
+        res[w]["mismatch"] = [y for y in res[w]["mismatch_all"] if y in YEARS]
+
     # ------------------------------------------------------------ envelope
     union_old = set().union(*(res[w][OLD]["years"] for w in G.GU), *deyr_years.values())
     union_new = set().union(*(res[w][NEW]["years"] for w in G.GU), *deyr_years.values())
@@ -127,11 +144,9 @@ def main():
             rows.append((f"{lab}: points over", cells))
         for model, lab in ((OLD, "Old model"), (NEW, "New model")):
             fi = r[model]["first_issue"]
-            rf = L.reforecast(model)
-            have = set(rf.loc[rf.valid_time.dt.month == 5, "valid_time"].dt.year)  # archive covers May
             cells = {}
             for y in YEARS:
-                if y not in have:
+                if y not in FC:
                     continue
                 cells[y] = (("&#9679;", "act", f"{y}: a forecast issued {d(fi[y][0])} met the rule")
                             if y in fi else ("", "z", f"{y}: no forecast at leads 1-7 met the rule"))
@@ -180,6 +195,20 @@ def main():
                   "levels": lrows, "perf": perf, "sweep": sweep, "n_pts": n_pts, "c": c,
                   "lv": lv, "t_years": t_years}
 
+    # ------------------------------------------------------------ new model only, 2024-2025
+    def season_class(w, y):
+        fl, sev, ok = bench_all[w]
+        return "severe" if y in sev else "flood" if y in fl else "no flood" if y in ok else "not assessable"
+    no_rows = ""
+    for w in G.GU:
+        c, x = TRIGGER_CONFIG[w], res[w][NEW]
+        mx = x["votes"].groupby(x["votes"].index.year).max()
+        for y in NEW_ONLY:
+            fc, fi = x["first_cross_all"].get(y), x["first_issue_all"].get(y, (None,))[0]
+            no_rows += (f"<tr><td>Gu {w[0].title()}</td><td><b>{y}</b></td><td class=n>{int(mx.get(y, 0))} of {len(TRIGGER_STATIONS[w[0]])}</td>"
+                        f"<td>{'met, ' + d(fc) if fc is not None else 'not met'}</td>"
+                        f"<td>{'met, issued ' + d(fi) if fi is not None else 'not met'}</td><td>{season_class(w, y)}</td></tr>")
+
     # ------------------------------------------------------------ headline numbers
     jw, sw = ("juba", "gu"), ("shabelle", "gu")
     shift_days = []
@@ -215,8 +244,8 @@ def main():
     <p>Each row of the grid is one series, each column one year. River gauges: <b>F</b> a flood season (two gauges over
        their own 1-in-3 level), <b>S</b> a severe one (two over 1-in-5). Model rows give the most points over their own
        level on any one day of March to May; a filled cell is a year the rule is met (at least {c['n_req']}). Forecast rows mark
-       a year in which one forecast, at leads of 1 to 7 days, met the rule. Grey: no data (the old model ends in 2023, its
-       forecasts start in 2016). Hover a cell for details.</p>
+       a year in which one forecast, at leads of 1 to 7 days, met the rule. Years 1999&ndash;2023, the years both versions cover;
+       forecasts 2016&ndash;2023, the Gu seasons both forecast archives cover (hatched before). Hover a cell for details.</p>
     {x['grid']}
     <div class="tablewrap"><table class="data cmp"><thead><tr><th></th><th>Old model</th><th>New model</th></tr></thead><tbody>
       <tr><td>Activations 1999&ndash;2023</td><td>{po['n']} ({po['rp']})</td><td><em>{pn['n']} ({pn['rp']})</em></td></tr>
@@ -238,7 +267,7 @@ def main():
     <div class="sm-grid" id="sm-{w[0]}"></div>
     <p class="figcap">Daily flow at the point ranked {c['n_req']}{'rd' if c['n_req'] == 3 else 'nd'} highest of {x['n_pts']}, as a share of
        that point's own 1-in-{c['rp']} level, March to May, on each model's record. The rule is met on days the line reaches
-       100%; dots mark the first such day. Years shown: every year either model or either forecast met the rule.</p>
+       100%; dots mark the first such day. Years shown: every year from 1999 to 2023 in which either model or either forecast met the rule.</p>
     <script>drawSM(document.getElementById('sm-{w[0]}'), {json.dumps(spec)});</script>
     <h3>Levels at each point</h3>
     <p>1-in-{c['rp']} level fitted on the March&ndash;May seasonal maxima 1999&ndash;2023 of each model's own record (Weibull
@@ -340,16 +369,16 @@ details {{ margin:10px 0 0; font-size:13.5px; }} details summary {{ cursor:point
           times the old levels, Shabelle points {ratio_s.min():.1f}&ndash;{ratio_s.max():.1f} times. Its March&ndash;May flows track the SWALIM
           gauges {track_juba} on the Juba (median correlation {jx['perf'][OLD]['rho']:.2f} &rarr; {jx['perf'][NEW]['rho']:.2f}) and better on the
           Shabelle ({sx['perf'][OLD]['rho']:.2f} &rarr; {sx['perf'][NEW]['rho']:.2f}).</li>
-      <li><strong>After 2023</strong>, which only the new model covers: Gu Juba activates in {yrs(set(res[jw][NEW]['years_ext']) - set(L.SPAN))}
-          (first day {d(res[jw][NEW]['first_cross'].get(2024))}), a flood season on the Juba gauges; Gu Shabelle does not activate in 2024,
-          which its gauges record as severe. Neither window activates in 2025. These years sit outside the calibration record.</li>
+      <li><strong>Same years throughout.</strong> Every old-versus-new comparison on this page uses only the years both versions
+          cover: the record 1999&ndash;2023 (the calibration years) and, for forecasts, the Gu seasons 2016&ndash;2023. The new model's
+          2024 and 2025 are reported separately in section 6.</li>
     </ul>
 
     <div class="callout warn"><strong>Before Google switches Flood Hub to the new model.</strong> On {API_CHECKED} the Flood Hub API still
       serves the old model (same gauge identifiers, unchanged warning levels). The monitoring pipeline reads Google with Gu levels fitted
       on the old model, frozen in the pipeline's threshold file. If the API moves to the new model before those levels are refitted,
       the old levels would sit far below the new model's ordinary Gu flows: on the new record they would have activated Gu Juba in
-      {len(res[jw]['mismatch'])} and Gu Shabelle in {len(res[sw]['mismatch'])} of the {len(YEARS)} Gu seasons 1999&ndash;2025. The refitted levels
+      {len(res[jw]['mismatch'])} and Gu Shabelle in {len(res[sw]['mismatch'])} of the {len(YEARS)} Gu seasons 1999&ndash;2023. The refitted levels
       are the "new level" columns below. Signals that the switch has happened: Flood Hub's warning levels or gauge model identifiers change
       for these gauges, or the gauge identifiers move from <code>hybas_</code> to <code>subhybas_</code> as in the new dataset (not confirmed).</div>
 
@@ -378,14 +407,22 @@ details {{ margin:10px 0 0; font-size:13.5px; }} details summary {{ cursor:point
        ({rp_text(env['new']['n'])}). Whether to re-tune for the new model is a design decision for the working group; this page only
        shows the adopted settings carried over.</p>
 
-    <h2><span class="num">6</span>Method</h2>
+    <h2><span class="num">6</span>New model only: 2024 and 2025</h2>
+    <p>The new record and forecast archive run two years past the old ones, so these years have no old-model counterpart and are
+       kept out of every comparison above. Levels are still those fitted on 1999&ndash;2023; the gauge season uses the same gauge levels
+       on the gauges still reporting.</p>
+    <div class="tablewrap"><table class="data"><thead><tr><th>Window</th><th>Year</th><th>Most points over on one day</th><th>Record</th>
+      <th>Forecast (leads 1&ndash;7)</th><th>Gauge season</th></tr></thead><tbody>{no_rows}</tbody></table></div>
+
+    <h2><span class="num">7</span>Method</h2>
     <ul>
       <li>Exactly the trigger page's code (<code>scripts/page_additions/somlib.py</code>), run on each model's data in turn:
           per-point levels by Weibull plotting position with log-log interpolation on March&ndash;May maxima 1999&ndash;2023; a day
           counts when at least the required number of points are at or over their own level; forecasts at leads 1&ndash;7 days
           against the same levels.</li>
-      <li>The river-gauge benchmark is unchanged (two SWALIM gauges over their own level, levels fitted 2000&ndash;2023). For 2024
-          and 2025 the same levels are applied to the gauges still reporting.</li>
+      <li>Same years for both versions: levels fitted on 1999&ndash;2023 for both; activations, timing, scores, correlations and the
+          old-levels-on-new-flows count all over 1999&ndash;2023; forecasts over the Gu seasons 2016&ndash;2023.</li>
+      <li>The river-gauge benchmark is unchanged (two SWALIM gauges over their own level, levels fitted 2000&ndash;2023).</li>
       <li>The old model run here reproduces the adopted Gu activation years (2013, 2016, 2018, 2020 on both rivers).</li>
       <li>Data: Google Runoff Reanalysis &amp; Reforecast, public Google Cloud bucket <code>flood-forecasting</code>,
           old version <code>model_id_8583a5c2_v0</code>, new version <code>distributed_model_2026_11</code> (CC-BY-4.0).</li>
@@ -411,11 +448,12 @@ details {{ margin:10px 0 0; font-size:13.5px; }} details summary {{ cursor:point
             "rule": TRIGGER_CONFIG[w],
             "levels": {m: res[w][m]["levels"].round(1).to_dict() for m in (OLD, NEW)},
             "years": {m: res[w][m]["years"] for m in (OLD, NEW)},
-            "years_to_2025": {m: res[w][m]["years_ext"] for m in (OLD, NEW)},
             "first_day": {m: {y: str(x.date()) for y, x in res[w][m]["first_cross"].items()} for m in (OLD, NEW)},
             "first_forecast_issue": {m: {y: str(x[0].date()) for y, x in res[w][m]["first_issue"].items()} for m in (OLD, NEW)},
             "tracking": {m: res[w][m]["tracking"] for m in (OLD, NEW)},
-            "old_levels_on_new_flows": res[w]["mismatch"],
+            "old_levels_on_new_flows_1999_2023": res[w]["mismatch"],
+            "new_only_2024_2025": {"years": [y for y in res[w][NEW]["years_ext"] if y in NEW_ONLY],
+                                   "first_day": {y: str(v.date()) for y, v in res[w][NEW]["first_cross_all"].items() if y in NEW_ONLY}},
         } for w in G.GU},
         "envelope": {k: ser(v) for k, v in env.items()},
         "severe_years": sorted(severe_all),
