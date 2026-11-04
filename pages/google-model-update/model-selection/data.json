@@ -1,0 +1,180 @@
+{
+ "generated": "2026-11-04",
+ "tracking": {
+  "gu_juba": {
+   "google_grrr": 0.87,
+   "glofas_v5": 0.81,
+   "glofas_v4": 0.82,
+   "google_grrr_2026_11": 0.85
+  },
+  "deyr_juba": {
+   "google_grrr": 0.6,
+   "glofas_v4": 0.84,
+   "glofas_v5": 0.82,
+   "google_grrr_2026_11": 0.87
+  },
+  "gu_shabelle": {
+   "google_grrr": 0.77,
+   "glofas_v4": 0.83,
+   "glofas_v5": 0.71,
+   "google_grrr_2026_11": 0.86
+  },
+  "deyr_shabelle": {
+   "google_grrr": 0.62,
+   "glofas_v5": 0.81,
+   "glofas_v4": 0.67,
+   "google_grrr_2026_11": 0.87
+  }
+ },
+ "options": {
+  "Adopted design (old Google, GloFAS v4/v5)": {
+   "config": {
+    "gu_juba": {
+     "source": "google_grrr",
+     "rp": 5,
+     "n_req": 3
+    },
+    "deyr_juba": {
+     "source": "glofas_v5",
+     "rp": 4,
+     "n_req": 3
+    },
+    "gu_shabelle": {
+     "source": "google_grrr",
+     "rp": 6,
+     "n_req": 2
+    },
+    "deyr_shabelle": {
+     "source": "glofas_v5",
+     "rp": 5,
+     "n_req": 2
+    }
+   },
+   "years": [
+    2006,
+    2013,
+    2014,
+    2016,
+    2018,
+    2019,
+    2020,
+    2023
+   ],
+   "river_seasons": 8,
+   "severe_caught": 7,
+   "outside_flood": [
+    2013
+   ]
+  },
+  "New Google: design caps (8 years, 8 seasons)": {
+   "config": {
+    "gu_juba": {
+     "source": "google_grrr_2026_11",
+     "rp": 5,
+     "n_req": 3
+    },
+    "deyr_juba": {
+     "source": "glofas_v5",
+     "rp": 4,
+     "n_req": 3
+    },
+    "gu_shabelle": {
+     "source": "glofas_v5",
+     "rp": 6,
+     "n_req": 2
+    },
+    "deyr_shabelle": {
+     "source": "glofas_v5",
+     "rp": 5,
+     "n_req": 2
+    }
+   },
+   "years": [
+    2005,
+    2006,
+    2014,
+    2016,
+    2018,
+    2019,
+    2020,
+    2023
+   ],
+   "river_seasons": 8,
+   "severe_caught": 7,
+   "outside_flood": []
+  },
+  "New Google: years cap only (8 years)": {
+   "config": {
+    "gu_juba": {
+     "source": "google_grrr_2026_11",
+     "rp": 5,
+     "n_req": 3
+    },
+    "deyr_juba": {
+     "source": "glofas_v5",
+     "rp": 4,
+     "n_req": 3
+    },
+    "gu_shabelle": {
+     "source": "google_grrr_2026_11",
+     "rp": 5,
+     "n_req": 2
+    },
+    "deyr_shabelle": {
+     "source": "google_grrr_2026_11",
+     "rp": 5,
+     "n_req": 2
+    }
+   },
+   "years": [
+    2006,
+    2010,
+    2014,
+    2016,
+    2018,
+    2019,
+    2020,
+    2023
+   ],
+   "river_seasons": 11,
+   "severe_caught": 7,
+   "outside_flood": []
+  },
+  "New Google: 7 years, 8 seasons": {
+   "config": {
+    "gu_juba": {
+     "source": "google_grrr_2026_11",
+     "rp": 5,
+     "n_req": 3
+    },
+    "deyr_juba": {
+     "source": "glofas_v5",
+     "rp": 4,
+     "n_req": 3
+    },
+    "gu_shabelle": {
+     "source": "google_grrr_2026_11",
+     "rp": 6,
+     "n_req": 2
+    },
+    "deyr_shabelle": {
+     "source": "glofas_v5",
+     "rp": 5,
+     "n_req": 2
+    }
+   },
+   "years": [
+    2006,
+    2014,
+    2016,
+    2018,
+    2019,
+    2020,
+    2023
+   ],
+   "river_seasons": 8,
+   "severe_caught": 7,
+   "outside_flood": []
+  }
+ }
+}

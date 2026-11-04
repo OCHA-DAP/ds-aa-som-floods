@@ -40,6 +40,70 @@ ST = {"dollow": "Dollow", "luuq": "Luuq", "bardheere": "Bardheere", "bualle": "B
 API_CHECKED = "4 November 2026"
 
 
+STYLE = """.hero.hero-sub { padding:40px 44px 34px; } .hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; } .crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+article { padding:8px 44px 24px; max-width:960px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9); margin:40px 0 10px; line-height:1.25; }
+article h2 .num { color:var(--b5); font-size:15px; margin-right:8px; }
+article h3 { font-size:15px; color:var(--n9); margin:26px 0 6px; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; } article a { color:var(--b6); } article strong { color:var(--n9); }
+article code { background:var(--n05); border:1px solid #e2e7e7; padding:1px 5px; border-radius:3px; font-size:12.5px; }
+table.data { border-collapse:collapse; width:100%; margin:14px 0; font-size:13px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 10px 6px; vertical-align:bottom; }
+table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8); vertical-align:top; }
+table.data td.n { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; } table.data td em { font-style:normal; color:var(--b6); font-weight:600; }
+table.data.cmp td:first-child { width:46%; } table.data.cmp td { width:27%; }
+table.data tr.pick td { background:var(--b05); } .tablewrap { overflow-x:auto; } .muted { color:#6b7683; font-size:12px; }
+table.yg { border-collapse:separate; border-spacing:2px; margin:12px 0 6px; font-size:11.5px; }
+table.yg th { font-weight:500; color:#6b7683; font-size:10.5px; padding:0 0 2px; text-align:center; }
+table.yg th.rl { text-align:right; padding-right:8px; white-space:nowrap; color:var(--n8); font-size:12px; font-weight:500; }
+table.yg td { width:24px; min-width:24px; height:22px; text-align:center; border-radius:3px; background:#f3f5f7; color:#9aa4ae; font-variant-numeric:tabular-nums; }
+table.yg td.nd { background:repeating-linear-gradient(45deg,#f6f7f8 0 3px,#e9ecef 3px 5px); }
+table.yg td.z { color:#c4cbd2; } table.yg td.part { color:var(--n8); background:#e6ebf0; }
+table.yg td.act { background:#1f5c8b; color:#fff; font-weight:700; }
+table.yg td.fl { background:#f6dfb8; color:#7a4d06; font-weight:700; } table.yg td.sev { background:#d9822b; color:#fff; font-weight:700; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; margin:26px 0 6px; }
+.stat { background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5); border-radius:5px; padding:14px 16px 12px; }
+.stat.flag { border-top-color:#e0a04b; } .stat .v { font-family:'Merriweather',Georgia,serif; font-size:23px; font-weight:700; color:var(--b6); line-height:1.15; }
+.stat.flag .v { color:#b0722b; } .stat .l { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--n7); margin-top:6px; line-height:1.45; }
+.callout { margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
+.callout.warn { background:#fdf3e7; border-left-color:#e0a04b; }
+.figcap { font-size:12px !important; color:var(--n7) !important; line-height:1.5 !important; }
+details { margin:10px 0 0; font-size:13.5px; } details summary { cursor:pointer; color:var(--b6); }
+.provenance { margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7; font-size:12px; color:var(--n7); line-height:1.7; } .provenance a { color:var(--b6); }
+@media (max-width:640px) { article { padding:4px 22px 16px; } .hero.hero-sub { padding:32px 22px 28px; } .provenance { margin:28px 22px 32px; } }
+"""
+
+
+# ------------------------------------------------------------------ cross-page navigation
+# The four new-Google-model pages (two per framework) carry the same bar so each
+# links to the others; absolute URLs because they live on two Pages sites.
+NAV_PAGES = [
+    ("Nigeria", [("nga", "Comparison", "https://ocha-dap.github.io/ds-aa-nga-flooding/exploration/2026/cerf/google-model-update/"),
+                 ("nga-gauges", "Gauges re-selected", "https://ocha-dap.github.io/ds-aa-nga-flooding/exploration/2026/cerf/google-model-update/reselected-gauges/")]),
+    ("Somalia", [("som", "Comparison", "https://ocha-dap.github.io/ds-aa-som-floods/google-model-update/"),
+                 ("som-models", "Model choice re-run", "https://ocha-dap.github.io/ds-aa-som-floods/google-model-update/model-selection/")]),
+]
+NAV_CSS = """
+.gnav { display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 22px; padding:11px 44px; background:#f5f7f7;
+  border-bottom:1px solid #e2e7e7; font-size:13px; color:#5e6a6b; }
+.gnav .t { font-weight:700; color:#3f4748; }
+.gnav .g { white-space:nowrap; } .gnav .g b { color:#3f4748; font-weight:500; margin-right:6px; }
+.gnav a { color:#1e795f; text-decoration:none; } .gnav a:hover { text-decoration:underline; }
+.gnav span.cur { color:#1f2324; font-weight:700; }
+@media (max-width:640px) { .gnav { padding:10px 22px; } }
+"""
+
+
+def nav_html(current):
+    groups = []
+    for country, pages in NAV_PAGES:
+        links = " &middot; ".join(f'<span class="cur" aria-current="page">{label}</span>' if key == current
+                                  else f'<a href="{url}">{label}</a>' for key, label, url in pages)
+        groups.append(f'<span class="g"><b>{country}</b>{links}</span>')
+    return f'<nav class="gnav" aria-label="New Google model pages"><span class="t">New Google model (Nov 2026)</span>{"".join(groups)}</nav>'
+
+
 def e(x):
     return html.escape(str(x))
 
@@ -296,38 +360,8 @@ def main():
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/site.css">
 <style>
-.hero.hero-sub {{ padding:40px 44px 34px; }} .hero.hero-sub h1 {{ font-size:28px; }}
-.crumb {{ font-size:12px; margin:0 0 14px; }} .crumb a {{ color:rgba(255,255,255,.85); text-decoration:none; }}
-article {{ padding:8px 44px 24px; max-width:960px; }}
-article h2 {{ font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9); margin:40px 0 10px; line-height:1.25; }}
-article h2 .num {{ color:var(--b5); font-size:15px; margin-right:8px; }}
-article h3 {{ font-size:15px; color:var(--n9); margin:26px 0 6px; }}
-article p, article li {{ font-size:14.5px; color:var(--n8); line-height:1.65; }} article a {{ color:var(--b6); }} article strong {{ color:var(--n9); }}
-article code {{ background:var(--n05); border:1px solid #e2e7e7; padding:1px 5px; border-radius:3px; font-size:12.5px; }}
-table.data {{ border-collapse:collapse; width:100%; margin:14px 0; font-size:13px; }}
-table.data th {{ text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 10px 6px; vertical-align:bottom; }}
-table.data td {{ border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8); vertical-align:top; }}
-table.data td.n {{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }} table.data td em {{ font-style:normal; color:var(--b6); font-weight:600; }}
-table.data.cmp td:first-child {{ width:46%; }} table.data.cmp td {{ width:27%; }}
-table.data tr.pick td {{ background:var(--b05); }} .tablewrap {{ overflow-x:auto; }} .muted {{ color:#6b7683; font-size:12px; }}
-table.yg {{ border-collapse:separate; border-spacing:2px; margin:12px 0 6px; font-size:11.5px; }}
-table.yg th {{ font-weight:500; color:#6b7683; font-size:10.5px; padding:0 0 2px; text-align:center; }}
-table.yg th.rl {{ text-align:right; padding-right:8px; white-space:nowrap; color:var(--n8); font-size:12px; font-weight:500; }}
-table.yg td {{ width:24px; min-width:24px; height:22px; text-align:center; border-radius:3px; background:#f3f5f7; color:#9aa4ae; font-variant-numeric:tabular-nums; }}
-table.yg td.nd {{ background:repeating-linear-gradient(45deg,#f6f7f8 0 3px,#e9ecef 3px 5px); }}
-table.yg td.z {{ color:#c4cbd2; }} table.yg td.part {{ color:var(--n8); background:#e6ebf0; }}
-table.yg td.act {{ background:#1f5c8b; color:#fff; font-weight:700; }}
-table.yg td.fl {{ background:#f6dfb8; color:#7a4d06; font-weight:700; }} table.yg td.sev {{ background:#d9822b; color:#fff; font-weight:700; }}
-.stats {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; margin:26px 0 6px; }}
-.stat {{ background:#fff; border:1px solid #e2e7e7; border-top:3px solid var(--b5); border-radius:5px; padding:14px 16px 12px; }}
-.stat.flag {{ border-top-color:#e0a04b; }} .stat .v {{ font-family:'Merriweather',Georgia,serif; font-size:23px; font-weight:700; color:var(--b6); line-height:1.15; }}
-.stat.flag .v {{ color:#b0722b; }} .stat .l {{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--n7); margin-top:6px; line-height:1.45; }}
-.callout {{ margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }}
-.callout.warn {{ background:#fdf3e7; border-left-color:#e0a04b; }}
-.figcap {{ font-size:12px !important; color:var(--n7) !important; line-height:1.5 !important; }}
-details {{ margin:10px 0 0; font-size:13.5px; }} details summary {{ cursor:pointer; color:var(--b6); }}
-.provenance {{ margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7; font-size:12px; color:var(--n7); line-height:1.7; }} .provenance a {{ color:var(--b6); }}
-@media (max-width:640px) {{ article {{ padding:4px 22px 16px; }} .hero.hero-sub {{ padding:32px 22px 28px; }} .provenance {{ margin:28px 22px 32px; }} }}
+{STYLE}
+{NAV_CSS}
 {SM_CSS}
 </style>
 <script>{SM_JS}</script>
@@ -345,6 +379,7 @@ details {{ margin:10px 0 0; font-size:13.5px; }} details summary {{ cursor:point
          and the readiness leg run on GloFAS and do not change. {API_CHECKED}.</p>
     </div>
   </header>
+  {nav_html('som')}
 
   <article>
     <div class="stats">
@@ -372,6 +407,8 @@ details {{ margin:10px 0 0; font-size:13.5px; }} details summary {{ cursor:point
       <li><strong>Same years throughout.</strong> Every old-versus-new comparison on this page uses only the years both versions
           cover: the record 1999&ndash;2023 (the calibration years) and, for forecasts, the Gu seasons 2016&ndash;2023. The new model's
           2024 and 2025 are reported separately in section 6.</li>
+      <li><strong>Model choice.</strong> This page keeps the adopted choice of model per window. A
+          <a href="model-selection/">variant page</a> re-runs that choice with the new Google model as a candidate.</li>
     </ul>
 
     <div class="callout warn"><strong>Before Google switches Flood Hub to the new model.</strong> On {API_CHECKED} the Flood Hub API still
