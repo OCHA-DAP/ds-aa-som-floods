@@ -12,6 +12,7 @@ Gu months Mar-May, levels fitted on 1999-2023 seasonal maxima by Weibull
 plotting position, Juba 3 of 4 over 1-in-5, Shabelle 2 of 3 over 1-in-6,
 forecast leads 1-7 with valid_time = issued_time + leadtime.
 
+    uv pip install --python .venv/bin/python zarr gcsfs scipy  # fetch + correlation deps, not in pyproject
     .venv/bin/python scripts/google_model_update.py fetch   # once, ~1 min
     .venv/bin/python scripts/google_model_update.py         # print the comparison
 """
