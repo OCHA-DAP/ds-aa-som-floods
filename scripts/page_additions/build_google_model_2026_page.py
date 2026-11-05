@@ -206,9 +206,9 @@ def score(rec, m, basis, span):
                 missed_severe=sorted(sev - f), POD=pod, FAR=far, F1=f1)
 
 
-def save(fig, name):
+def save(fig, name, tight=True):
     FIGS.mkdir(parents=True, exist_ok=True)
-    fig.savefig(FIGS / f"{name}.svg", format="svg", bbox_inches="tight")
+    fig.savefig(FIGS / f"{name}.svg", format="svg", bbox_inches="tight" if tight else None)
     plt.close(fig)
     return f"figures/{name}.svg"
 
@@ -216,13 +216,13 @@ def save(fig, name):
 # ------------------------------------------------------- figure: season-by-season grid
 def fig_backtest(R, season, basis):
     span = SCORE_RA if basis == "ra" else SCORE_FC
-    models = [m for m in MODELS[season] if basis == "ra" or m in FC_SPAN]
+    models = MODELS[season]
     lines = []
     for river in RIVERS:
         rec = R[(river, season)]
         for m in models:
             lines.append((f"{river.title()}: {SHORT[m]}", rec, m))
-    fig, ax = plt.subplots(figsize=(12.6, 0.6 * len(lines) + 2.4))
+    fig, ax = plt.subplots(figsize=(13.4, 0.6 * len(lines) + 2.6))
     for i, (name, rec, m) in enumerate(lines[::-1]):
         f, yr = activations_of(rec, m, basis), years_of(rec, m, basis)
         for j, y in enumerate(YEARS):
@@ -234,6 +234,9 @@ def fig_backtest(R, season, basis):
                 kind = "miss_sev" if y in rec["severe"] else "miss" if y in rec["flood"] else "quiet"
             ax.add_patch(Rectangle((j - 0.46, i - 0.36), 0.92, 0.72, facecolor=CELL[kind],
                                    edgecolor="white" if kind != "none" else GRID, linewidth=0.8))
+        if basis == "fc" and m not in FC_SPAN:
+            ax.text(len(YEARS) / 2, i, "no forecast archive", ha="center", va="center", fontsize=9.5, color=FAINT)
+            continue
         s = score(rec, m, basis, span)
         sev_txt = f"{len(s['caught'])} of {len(s['severe'])} severe seasons" if s["severe"] else "no severe season in archive"
         ax.text(len(YEARS) + 0.2, i + 0.14, sev_txt, va="center", fontsize=9.5, color=INK)
@@ -242,9 +245,9 @@ def fig_backtest(R, season, basis):
     ax.axhline(len(models) - 0.5, color=INK, linewidth=1.0)
     for edge_year in (span[0] - 0.5, span[1] + 0.5):
         ax.axvline(YEARS.index(int(edge_year + 0.5)) - 0.5, color=INK, linewidth=0.9, ls=":", zorder=4)
-    ax.text(YEARS.index(span[0]) - 0.5, len(lines) - 0.45, f" tallies count {rng(span)}", ha="left", va="bottom", fontsize=8.5, color=FAINT)
+    ax.text(YEARS.index(span[0]) - 0.5, -0.62, f" dotted lines: the tallies on the right count {rng(span)}", ha="left", va="top", fontsize=8.5, color=FAINT)
     ax.set_xlim(-0.6, len(YEARS) + 5.6)
-    ax.set_ylim(-0.6, len(lines) - 0.4)
+    ax.set_ylim(-1.1, len(lines) - 0.4)
     ax.set_yticks(range(len(lines)), [ln[0] for ln in lines[::-1]], fontsize=10.5)
     ax.set_xticks(range(0, len(YEARS), 2), [str(y) for y in YEARS[::2]], fontsize=9.5)
     ax.tick_params(length=0)
@@ -260,7 +263,8 @@ def fig_backtest(R, season, basis):
     ax.legend(handles=H, ncol=4, fontsize=9.5, loc="upper center", bbox_to_anchor=(0.45, -0.08))
     what = "reanalysis" if basis == "ra" else "forecasts, first issue reaching the threshold (leads 1 to 7 days)"
     ax.set_title(f"{SEASON_TITLE[season]}, {what}", fontsize=12, loc="left")
-    return save(fig, f"backtest_{season}_{basis}")
+    fig.subplots_adjust(left=0.16, right=0.985, top=0.92, bottom=0.26 if len(lines) <= 6 else 0.2)
+    return save(fig, f"backtest_{season}_{basis}", tight=False)
 
 
 # ---------------------------------------------------------- figure: timing vs the gauges
@@ -338,6 +342,46 @@ def fig_timing(R, season):
     ax.set_title(f"{SEASON_TITLE[season]}: days between the threshold being reached and the second gauge crossing its 1-in-3, five largest gauge floods per river", fontsize=11, pad=40)
     fig.subplots_adjust(left=0.04, right=0.98)
     return save(fig, f"timing_{season}")
+
+
+def timing_stats(R, season, basis, m):
+    """Days before the second gauge crossed its 1-in-3 (positive = before), over the five largest
+    gauge floods per river where the source reached the threshold: (mean, median, n reached, n seasons)."""
+    ds, n_all = [], 0
+    for river, y, rank in _timing_seasons(season):
+        rec = R[(river, season)]
+        mm = rec["models"][m]
+        if y not in mm[f"{basis}_years"] or y not in rec["bench"]:
+            continue
+        n_all += 1
+        d = mm[basis].get(y)
+        if ok(d):
+            ds.append((rec["bench"][y] - d).days)
+    if not ds:
+        return (None, None, 0, n_all)
+    return (float(np.mean(ds)), float(np.median(ds)), len(ds), n_all)
+
+
+def timing_summary_html(R):
+    fmt_d = lambda v: ("same day" if round(v) == 0 else f"{abs(v):.0f} d {'before' if v > 0 else 'after'}")
+    head = ("<table class='data'><thead><tr><th rowspan='2'>Source</th><th colspan='2'>Deyr</th><th colspan='2'>Gu</th></tr>"
+            "<tr><th>reanalysis</th><th>forecasts</th><th>reanalysis</th><th>forecasts</th></tr></thead><tbody>")
+    out = [head]
+    for m in [NEW, "google_grrr", "glofas_v4", "glofas_v5"]:
+        cells = [f"<td>{SHORT[m]}</td>"]
+        for season in ("deyr", "gu"):
+            for basis in ("ra", "fc"):
+                if basis == "fc" and m not in FC_SPAN:
+                    cells.append("<td class='muted'>no archive</td>")
+                    continue
+                mean, med, n, n_all = timing_stats(R, season, basis, m)
+                if n == 0:
+                    cells.append(f"<td class='muted'>not reached in {n_all} seasons</td>")
+                else:
+                    cells.append(f"<td>mean {fmt_d(mean)}<span class='y'>median {fmt_d(med)}; reached in {n} of {n_all} seasons</span></td>")
+        out.append("<tr>" + "".join(cells) + "</tr>")
+    out.append("</tbody></table>")
+    return "\n".join(out)
 
 
 def fig_timeline(R, season, year):
@@ -894,6 +938,17 @@ def findings(R, C):
     lead = lambda x, b: (f"{(b - x).days} d before" if (b - x).days > 0 else f"{(x - b).days} d after") if ok(x) else "not reached"
     out.append(f"<b>Deyr 2023, forecasts against the gauges:</b> Juba, GloFAS v4 {lead(d('juba','deyr','glofas_v4','fc',2023), bj)}, new model {lead(d('juba','deyr',NEW,'fc',2023), bj)}; "
                f"Shabelle, GloFAS v4 {lead(d('shabelle','deyr','glofas_v4','fc',2023), bs)}, new model {lead(d('shabelle','deyr',NEW,'fc',2023), bs)}. The current Google archive ends June 2023.")
+    tl = []
+    for season in ("deyr", "gu"):
+        bits = []
+        for m in [NEW, "google_grrr", "glofas_v4"]:
+            mean, med, n, n_all = timing_stats(R, season, "fc", m)
+            if n:
+                bits.append(f"{SHORT[m]} {'+' if mean >= 0 else ''}{mean:.0f} d ({n} of {n_all})")
+            else:
+                bits.append(f"{SHORT[m]} not reached")
+        tl.append(f"{season.title()}: " + ", ".join(bits))
+    out.append("<b>Average timing on the forecasts</b> (days before the second gauge crossed, five largest gauge floods per river, seasons reached): " + "; ".join(tl) + ".")
     out.append(f"<b>New model after 2023:</b> Deyr 2024 {after_2023(R, 'deyr', 2024)}. Gu 2024 {after_2023(R, 'gu', 2024)}. 2025: not reached in either season.")
     ratios = {}
     for season in ("deyr", "gu"):
@@ -948,6 +1003,7 @@ def build():
     cons_txt = lambda xs: ", ".join(xs) if xs else "none"
     FIND = findings(R, C)
     T = {s: score_table(R, s) for s in ("deyr", "gu")}
+    TS = timing_summary_html(R)
 
     # everything behind the page, for review
     dump, sc = {}, []
@@ -1083,6 +1139,10 @@ table.tim th[colspan] {{ text-align:left; }}
        threshold before that, bars to the right after. Solid: reanalysis. Light: forecasts.</p>
     <figure class="chart"><img src="{F['tm_deyr']}" alt="Deyr timing"></figure>
     <figure class="chart"><img src="{F['tm_gu']}" alt="Gu timing"></figure>
+    <h3>Average timing</h3>
+    <p>Days between the threshold being reached and the second gauge crossing its 1-in-3, over the same five seasons per river,
+       counting only seasons in which the source reached the threshold. Positive: before the gauges.</p>
+    <div class="tablewrap">{TS}</div>
 
     <h2><span class="num">6</span>Event chronologies: Deyr 2023, Deyr 2019, Gu 2024</h2>
     <p>Gauge rows: circle, first day over the 1-in-3; diamond, first day over the 1-in-5; tick, peak. Source rows: threshold reached on

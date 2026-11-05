@@ -83,6 +83,7 @@ table.tim th[colspan] { text-align:left; }
 <li><b>New model against GloFAS v4:</b> Deyr Juba, reanalysis: 1 fewer severe season reached and 1 fewer season with no gauge flood; Deyr Shabelle, reanalysis: 1 more severe season reached and 1 fewer season with no gauge flood; Deyr Juba, forecasts: 2 more seasons with no gauge flood; Deyr Shabelle, forecasts: 1 more severe season reached; Gu Shabelle, reanalysis: 2 more severe seasons reached; Gu Shabelle, forecasts: 2 more severe seasons reached. Windows not listed are equal.</li>
 <li><b>New model against GloFAS v5:</b> Deyr Juba, reanalysis: 1 fewer severe season reached and 2 more seasons with no gauge flood; Deyr Shabelle, reanalysis: 1 more season with no gauge flood; Gu Shabelle, reanalysis: 1 more severe season reached. Windows not listed are equal.</li>
 <li><b>Deyr 2023, forecasts against the gauges:</b> Juba, GloFAS v4 4 d before, new model 3 d after; Shabelle, GloFAS v4 not reached, new model 3 d before. The current Google archive ends June 2023.</li>
+<li><b>Average timing on the forecasts</b> (days before the second gauge crossed, five largest gauge floods per river, seasons reached): Deyr: Google, new +3 d (4 of 7), Google, current +12 d (1 of 3), GloFAS v4 +7 d (5 of 8); Gu: Google, new -4 d (6 of 8), Google, current +2 d (6 of 7), GloFAS v4 -8 d (6 of 9).</li>
 <li><b>New model after 2023:</b> Deyr 2024 threshold not reached on both records (gauges: Juba flood, Shabelle severe). Gu 2024 threshold reached on the Juba on both records (gauges: Juba flood, Shabelle severe). 2025: not reached in either season.</li>
 <li><b>Scale:</b> new model levels are 2.0 to 2.6 times the current Google model's on the Juba in Deyr, 1.7 to 1.9 on the Shabelle; in Gu 1.7 to 2.2 and 1.2 to 1.3.</li>
     </ul>
@@ -161,6 +162,15 @@ table.tim th[colspan] { text-align:left; }
        threshold before that, bars to the right after. Solid: reanalysis. Light: forecasts.</p>
     <figure class="chart"><img src="figures/timing_deyr.svg" alt="Deyr timing"></figure>
     <figure class="chart"><img src="figures/timing_gu.svg" alt="Gu timing"></figure>
+    <h3>Average timing</h3>
+    <p>Days between the threshold being reached and the second gauge crossing its 1-in-3, over the same five seasons per river,
+       counting only seasons in which the source reached the threshold. Positive: before the gauges.</p>
+    <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th colspan='2'>Deyr</th><th colspan='2'>Gu</th></tr><tr><th>reanalysis</th><th>forecasts</th><th>reanalysis</th><th>forecasts</th></tr></thead><tbody>
+<tr><td>Google, new</td><td>mean 2 d after<span class='y'>median 2 d after; reached in 4 of 10 seasons</span></td><td>mean 3 d before<span class='y'>median 2 d before; reached in 4 of 7 seasons</span></td><td>mean 10 d after<span class='y'>median 10 d after; reached in 6 of 10 seasons</span></td><td>mean 4 d after<span class='y'>median 4 d after; reached in 6 of 8 seasons</span></td></tr>
+<tr><td>Google, current</td><td>mean 2 d before<span class='y'>median 5 d before; reached in 5 of 8 seasons</span></td><td>mean 12 d before<span class='y'>median 12 d before; reached in 1 of 3 seasons</span></td><td>mean 2 d after<span class='y'>median 4 d after; reached in 5 of 9 seasons</span></td><td>mean 2 d before<span class='y'>median 1 d before; reached in 6 of 7 seasons</span></td></tr>
+<tr><td>GloFAS v4</td><td>mean 6 d before<span class='y'>median 4 d before; reached in 5 of 8 seasons</span></td><td>mean 7 d before<span class='y'>median 4 d before; reached in 5 of 8 seasons</span></td><td>mean 8 d after<span class='y'>median 6 d after; reached in 5 of 9 seasons</span></td><td>mean 8 d after<span class='y'>median 8 d after; reached in 6 of 9 seasons</span></td></tr>
+<tr><td>GloFAS v5</td><td>mean 1 d after<span class='y'>median same day; reached in 5 of 8 seasons</span></td><td class='muted'>no archive</td><td>mean 4 d after<span class='y'>median 2 d after; reached in 6 of 9 seasons</span></td><td class='muted'>no archive</td></tr>
+</tbody></table></div>
 
     <h2><span class="num">6</span>Event chronologies: Deyr 2023, Deyr 2019, Gu 2024</h2>
     <p>Gauge rows: circle, first day over the 1-in-3; diamond, first day over the 1-in-5; tick, peak. Source rows: threshold reached on
