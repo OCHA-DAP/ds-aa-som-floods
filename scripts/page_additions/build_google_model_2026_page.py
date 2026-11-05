@@ -482,7 +482,7 @@ def fig_ranks():
     Juba then Shabelle. Columns: the gauges and the four models. Each model cell carries the season's
     rank on the model's reanalysis (large, coloured) and on its forecast archive (small, below)."""
     models = [NEW, "google_grrr", "glofas_v4", "glofas_v5"]
-    fig, axes = plt.subplots(1, 2, figsize=(13.0, 0.56 * 2 * N_RANK + 2.6))
+    fig, axes = plt.subplots(1, 2, figsize=(14.0, 0.56 * 2 * N_RANK + 2.6))
     for ax, season in zip(axes, ("deyr", "gu")):
         ms = [m for m in models if m in MODELS[season]]
         rows, ra_mat, fc_mat, ylab = [], [], [], []
@@ -516,8 +516,8 @@ def fig_ranks():
                     ax.text(j, i - 0.12, f"{int(v)}", ha="center", va="center", fontsize=10.5, color="white" if dark else BODY)
                     ax.text(j, i + 0.27, "forecasts " + (f"{int(f)}" if not np.isnan(f) else "none") if n_fc.get(ms[j - 1], 0) else "no archive",
                             ha="center", va="center", fontsize=7, color="white" if dark else FAINT)
-        labels = [f"gauges\n({n_ra['gauge']} seasons)"] + [
-            f"{SHORT[m].replace(', ', ' ')}\nreanalysis ({n_ra[m]})" + (f"\nforecasts ({n_fc[m]})" if n_fc[m] else "") for m in ms]
+        labels = [f"gauges\n{n_ra['gauge']} seasons"] + [
+            f"{SHORT[m].replace(', ', ' ')}\n{n_ra[m]}" + (f" / {n_fc[m]}" if n_fc[m] else "") + " seasons" for m in ms]
         ax.set_xticks(range(len(labels)), labels, fontsize=8.5)
         ax.set_yticks(range(len(rows)), ylab, fontsize=10)
         ax.tick_params(length=0)
@@ -529,9 +529,9 @@ def fig_ranks():
         ax.tick_params(which="minor", length=0)
         ax.axhline(rows.count("juba") - 0.5, color=INK, linewidth=1.2)
         ax.set_title(SEASON_TITLE[season], fontsize=12)
-    fig.suptitle(f"The {N_RANK} worst gauge seasons on each river, worst first (label: second gauge, % of its 1-in-3), "
-                 "and the rank each source gives them in its own record: 1 = highest, dark = high", x=0.02, ha="left", fontsize=11)
-    fig.subplots_adjust(wspace=0.55, top=0.9, bottom=0.14)
+    fig.suptitle(f"The {N_RANK} worst gauge seasons on each river and each source's own rank of them (1 = highest; small print: rank on the forecasts)",
+                 x=0.02, ha="left", fontsize=11.5)
+    fig.subplots_adjust(wspace=0.5, top=0.9, bottom=0.12)
     return save(fig, "ranks")
 
 
@@ -771,7 +771,8 @@ table.data .y {{ display:block; font-size:11px; color:var(--n7); }}
     <p>The gauges' five worst seasons, worst first, and the rank each source gives the same seasons in its own record. A season's
        index is the level its second-highest station reached, as a share of that station's own 1-in-3 on that source.</p>
     <figure class="chart"><img src="{F['rk']}" alt="Seasons ranked by each source">
-      <figcaption>In the top five of every source that covers the season. Deyr: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
+      <figcaption>Row label: the second gauge's peak as a share of its 1-in-3. Column label: seasons in the record, reanalysis / forecasts.
+        In the top five of every source that covers the season. Deyr: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
         Gu: Juba {cons_txt(C['gu']['juba'][0])}; Shabelle {cons_txt(C['gu']['shabelle'][0])}.
         In the top five of fewer than half the sources. Deyr: Juba {cons_txt(C['deyr']['juba'][1])}; Shabelle {cons_txt(C['deyr']['shabelle'][1])}.
         Gu: Juba {cons_txt(C['gu']['juba'][1])}; Shabelle {cons_txt(C['gu']['shabelle'][1])}. Belet Weyne's Gu record is capped at 8.30 m in six seasons.</figcaption></figure>
