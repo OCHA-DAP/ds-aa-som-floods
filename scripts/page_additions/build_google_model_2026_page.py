@@ -55,6 +55,8 @@ MODELS = {"deyr": [NEW, "google_grrr", "glofas_v4", "glofas_v5"], "gu": [NEW, "g
 # each model's record: reanalysis years and forecast-archive years
 RA_SPAN = {NEW: (1999, 2025), "google_grrr": (1999, 2023), "glofas_v4": (1999, 2023), "glofas_v5": (1999, 2023)}
 FC_SPAN = {NEW: (2016, 2025), "google_grrr": (2016, 2023), "glofas_v4": (2003, 2023)}   # v5: no archive
+# the current Google archive ends 2023-06-30: it holds Gu 2023 but no Deyr 2023
+FC_END = {("google_grrr", "deyr"): 2022}
 SCORE_RA = (1999, 2023)          # every model and the gauges overlap here
 SCORE_FC = (2016, 2023)          # every forecast archive overlaps here
 YEARS = list(range(1999, 2026))
@@ -144,7 +146,7 @@ def record():
                 ra = L.first_crossing_dates(m, river, season, *cfg(river, season), span=ra_years)
                 fc, fc_years = {}, []
                 if m in FC_SPAN:
-                    fc_years = list(range(FC_SPAN[m][0], FC_SPAN[m][1] + 1))
+                    fc_years = list(range(FC_SPAN[m][0], FC_END.get((m, season), FC_SPAN[m][1]) + 1))
                     fc = {y: v[0] for y, v in L.first_issue_dates(m, river, season, *cfg(river, season), span=fc_years).items()}
                 models[m] = dict(ra=ra, fc=fc, ra_years=set(ra_years), fc_years=set(fc_years))
             R[(river, season)] = dict(flood=fl, severe=sev, assess=assess,
@@ -425,7 +427,9 @@ def score_table(R, season, basis):
         out.append(f"<tr class='riv'><td colspan='8'>{river.title()}: severe seasons {yrs(sev)}</td></tr>")
         for m in models:
             s = score(rec, m, basis, span)
-            out.append(f"<tr><td>{SHORT[m]}</td><td>{len(s['caught'])} of {len(s['severe'])}<span class='y'>{yrs(s['caught'])}</span></td>"
+            yr = years_of(rec, m, basis)
+            tag = "" if yr >= set(range(span[0], span[1] + 1)) else f"<span class='y'>archive {min(yr)} to {max(yr)}</span>"
+            out.append(f"<tr><td>{SHORT[m]}{tag}</td><td>{len(s['caught'])} of {len(s['severe'])}<span class='y'>{yrs(s['caught'])}</span></td>"
                        f"<td>{len(s['ordinary'])}<span class='y'>{yrs(s['ordinary'])}</span></td>"
                        f"<td>{len(s['false'])}<span class='y'>{yrs(s['false'])}</span></td>"
                        f"<td>{len(s['missed_severe'])}<span class='y'>{yrs(s['missed_severe'])}</span></td>"
@@ -549,8 +553,8 @@ table.sc {{ border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 
          Juba 1-in-{TRIGGER_CONFIG[('juba','gu')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','gu')]['rp']} in Gu.</p>
       <p><b>Two records per model.</b> <b>Reanalysis</b>: the model's historical run; the rule is read on it day by day.
          <b>Forecasts</b>: the first issue on which the rule is met at leads 1 to 7 days, which is what the live trigger reads.
-         Archives differ: GloFAS v4 2003 to 2023 (ensemble median, about two issues a week), the current Google model 2016 to 2023
-         (one trace, daily), the new Google model 2016 to 2025 (one trace, daily), GloFAS v5 none. Scores are given over
+         Archives differ: GloFAS v4 2003 to 2023 (ensemble median, about two issues a week), the current Google model 2016 to June 2023
+         (one trace, daily; it holds Gu 2023 but not Deyr 2023), the new Google model 2016 to 2025 (one trace, daily), GloFAS v5 none. Scores are given over
          {rng(SCORE_RA)} on the reanalysis and {rng(SCORE_FC)} on the forecasts, the years every record covers.</p>
       <p><b>The gauges.</b> A river has a <b>flood</b> in a season when two of its SWALIM gauges reach their own 1-in-3 level, and a
          <b>severe</b> flood at 1-in-5 (levels fitted on 2000 to 2023). A fire in a season with no flood is a <b>false fire</b>.
@@ -614,12 +618,17 @@ table.sc {{ border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 
           issue + n. The new archive's lead 0 is the day before the issue, and it is relabelled here so that day 1 is the issue day, as
           for GloFAS. "Leads 1 to 7" therefore spans the issue day to six days ahead for GloFAS and the new model, and one to seven
           days ahead for the current Google model, as in the rest of this site.</li>
+      <li>The same-day rule is sensitive at the margin on the new model. In Juba Deyr 2006 and 2017 and Juba Gu 2013 and 2023 all
+          four Juba outlets go over their levels within the season, by 1 to 4%, but never on the same day, so those seasons count
+          as not fired. The lead window also matters: read at leads 0 to 6 (the window used for GloFAS and the new model) the
+          current Google model does not fire in Gu 2023; read at leads 2 to 8 the new model's years are unchanged.</li>
+      <li>Three severe seasons rest on a gauge reading equal to its level: Shabelle Deyr 2020 (Jowhar 5.30 m against a 5.30 m
+          level), Shabelle Gu 2016 and Gu 2023 (Belet Weyne at its 8.30 m ceiling). The Juba Deyr 2023 peaks are capped at bank
+          full at all four gauges, and Dollow's Deyr record has eight seasons, the minimum for a fit.</li>
       <li>Sample sizes are small: {len(range(SCORE_FC[0], SCORE_FC[1] + 1))} seasons on the forecast record, and one to five severe seasons per window. GloFAS v4 forecasts are an
           ensemble median; both Google archives are a single trace.</li>
       <li>The current Google model's forecast archive has not been verified to be the same model as the live Flood Hub feed, and the
           new model's scale is not the live feed's scale. 2026 is in no archive.</li>
-      <li>The gauge record is censored at some stations (a flat maximum at bank full), so a season can be scored as severe or not on a
-          reading that sits exactly on the level.</li>
       <li>Everything on this page is generated by <code>scripts/page_additions/build_google_model_2026_page.py</code>; the dates, levels and
           scores behind every chart are in <code>data.json</code>.</li>
     </ul>
