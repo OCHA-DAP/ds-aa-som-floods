@@ -213,6 +213,10 @@ def score(rec, m, basis, span):
 def save(fig, name, tight=True):
     FIGS.mkdir(parents=True, exist_ok=True)
     fig.savefig(FIGS / f"{name}.svg", format="svg", bbox_inches="tight" if tight else None)
+    if os.environ.get("SOM_FIG_PNG_DIR"):  # raster copies for review, outside the repo
+        png = Path(os.environ["SOM_FIG_PNG_DIR"])
+        png.mkdir(parents=True, exist_ok=True)
+        fig.savefig(png / f"{name}.png", format="png", dpi=130, bbox_inches="tight" if tight else None)
     plt.close(fig)
     return f"figures/{name}.svg"
 
