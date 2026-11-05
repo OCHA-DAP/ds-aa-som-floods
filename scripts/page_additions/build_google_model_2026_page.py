@@ -1,5 +1,5 @@
 """Build pages/google-model-2026/: Google's November 2026 river model read with the trigger's
-own rules at the seven points, next to the sources the trigger runs on, on two records side by
+own rules at the seven stations, next to the sources the trigger runs on, on two records side by
 side: each model's reanalysis and each model's forecast archive. Scored against the SWALIM gauges.
 The page states what each record shows; it draws no conclusion.
 
@@ -58,8 +58,11 @@ RA_SPAN = {NEW: (1999, 2025), "google_grrr": (1999, 2023), "glofas_v4": (1999, 2
 FC_SPAN = {NEW: (2016, 2025), "google_grrr": (2016, 2023), "glofas_v4": (2003, 2023)}   # v5: no archive
 # the current Google archive ends 2023-06-30: it holds Gu 2023 but no Deyr 2023
 FC_END = {("google_grrr", "deyr"): 2022}
-TRIGGER_RP = 5                   # one return period at every point, on every source, and at the gauges
-BENCH_RP = 5
+TRIGGER_RP = 5                   # one return period at every station, on every source, and at the gauges
+BENCH_RP = 5                     # the scores: a severe flood is two gauges over their own 1-in-5
+TIMING_RP = 3                    # the timing and the ranking: the second gauge crossing its 1-in-3
+assert BENCH_RP == L.SEVERE_RP, "the gauge benchmark must be the library's severe level"
+MIN_DAYS = 30                    # a gauge season counts only with this many readings, as somlib.assessable_years
 SCORE_RA = (1999, 2023)          # every model and the gauges overlap here
 SCORE_FC = (2016, 2023)          # every forecast archive overlaps here
 YEARS = list(range(1999, 2026))
@@ -181,7 +184,7 @@ def record():
                     fc = first_issue_in_season(m, river, season, *cfg(river, season), span=fc_years)
                 models[m] = dict(ra=ra, fc=fc, ra_years=set(ra_years), fc_years=set(fc_years))
             R[(river, season)] = dict(flood=fl, severe=sev, assess=assess,
-                                      bench=L.gauge_crossings(river, season, BENCH_RP, span=YEARS),
+                                      bench=L.gauge_crossings(river, season, TIMING_RP, span=YEARS),
                                       peak=gauge_peaks(river, season), models=models)
     return R
 
@@ -293,7 +296,7 @@ def _timing_seasons(season):
 def fig_timing(R, season):
     """Days between the threshold being reached and the second gauge crossing its 1-in-3, as
     labelled bars: one row per season and source, the reanalysis as a solid bar and the forecasts
-    as a lighter bar beneath it. Right of zero: before the gauges; left: after."""
+    as a lighter bar beneath it. Left of zero: before the gauges; right: after."""
     models = MODELS[season]
     seasons = _timing_seasons(season)
     rows = []            # (river, year, rank, model) in drawing order, top first; model None = header line
@@ -307,7 +310,7 @@ def fig_timing(R, season):
     ax.axvspan(-40, 0, color="#F3F5F7", zorder=0)
     ax.axvspan(0, 40, color="#EBEEF1", zorder=0)
     ax.axvline(0, color=INK, linewidth=1.2, zorder=3)
-    ax.text(-20, ymax + 0.35, "threshold reached before the second gauge crossed its 1-in-5", ha="center", va="center", fontsize=9.5, color=INK, fontweight="bold")
+    ax.text(-20, ymax + 0.35, "threshold reached before the second gauge crossed its 1-in-3", ha="center", va="center", fontsize=9.5, color=INK, fontweight="bold")
     ax.text(20, ymax + 0.35, "threshold reached after", ha="center", va="center", fontsize=9.5, color=INK, fontweight="bold")
     n_at_rank = {}
     for river, y, rank in seasons:
@@ -317,7 +320,7 @@ def fig_timing(R, season):
         if m is None:
             word = "largest" if rank == 1 else str(rank) + ("nd" if rank == 2 else "rd" if rank == 3 else "th") + " largest"
             tie = ", tied" if n_at_rank[(river, rank)] > 1 else ""
-            no_b = "" if ok(R[(river, season)]["bench"].get(y)) else "; second gauge never over its 1-in-5, no timing"
+            no_b = "" if ok(R[(river, season)]["bench"].get(y)) else "; second gauge never over its 1-in-3, no timing"
             ax.text(-39, yc, f"{river.title()} {y}   ({word} gauge flood{tie}{no_b})", ha="left", va="center", fontsize=10, color=INK, fontweight="bold", zorder=5)
             if i:
                 ax.axhline(yc + 0.5, color="white", linewidth=3, zorder=2)
@@ -335,8 +338,6 @@ def fig_timing(R, season):
             if not have:
                 ax.text(1.2, yb, f"{tag}: no archive" if basis == "fc" else "outside the model record", va="center", fontsize=8.5, color=FAINT)
                 continue
-            if not ok(b):
-                continue
             if not ok(d):
                 ax.text(1.2, yb, f"{tag}: not reached", va="center", fontsize=8.5, color=FAINT)
                 continue
@@ -352,19 +353,19 @@ def fig_timing(R, season):
     ax.set_ylim(-0.7, ymax + 0.8)
     ax.set_xlim(-40, 40)
     ax.set_xticks([-30, -20, -10, 0, 10, 20, 30], ["30 before", "20", "10", "0", "10", "20", "30 after"])
-    ax.set_xlabel("days between the threshold being reached and the second gauge crossing its 1-in-5", fontsize=10)
+    ax.set_xlabel("days between the threshold being reached and the second gauge crossing its 1-in-3", fontsize=10)
     ax.tick_params(length=0)
     for sp in ax.spines.values():
         sp.set_visible(False)
     ax.text(0.5, 1.0, "solid bar: reanalysis.   light bar: first forecast issue reaching the threshold (leads 1 to 7 days).   colour: the source named at the left",
             transform=ax.transAxes, ha="center", va="bottom", fontsize=9.5, color=BODY)
-    ax.set_title(f"{SEASON_TITLE[season]}: days before or after the second gauge crossed its 1-in-5, five largest gauge floods per river", fontsize=11, pad=40, loc="left")
+    ax.set_title(f"{SEASON_TITLE[season]}: days before or after the second gauge crossed its 1-in-3, five largest gauge floods per river", fontsize=11, pad=40, loc="left")
     fig.subplots_adjust(left=0.04, right=0.98)
     return save(fig, f"timing_{season}")
 
 
 def timing_stats(R, season, basis, m):
-    """Days before the second gauge crossed its 1-in-5 (positive = before), over the five largest
+    """Days before the second gauge crossed its 1-in-3 (positive = before), over the five largest
     gauge floods per river where the source reached the threshold: (mean, median, n reached, n seasons)."""
     ds, n_all = [], 0
     for river, y, rank in _timing_seasons(season):
@@ -509,11 +510,11 @@ def fig_timeline(R, season, year):
         ax.grid(axis="x", color=GRID, linewidth=0.8)
         ax.set_axisbelow(True)
     if has_exp:
-        from src.constants import C_JUBA, C_SHAB
         ex = sc.exposure()
         ex = ex[(ex.valid_date >= A) & (ex.valid_date <= B)]
         fd, n_d = sc.flood_date(season, year)
-        for axe, river_d, colr in ((axes[1], "juba", "#6B7683"), (axes[3], "shabelle", "#6B7683")):
+        colr = "#6B7683"
+        for axe, river_d in ((axes[1], "juba"), (axes[3], "shabelle")):
             e = ex[ex.pcode.isin(DISTRICTS[river_d])].groupby("valid_date")["sum"].sum()
             axe.fill_between(e.index, e.values, color=colr, alpha=0.15, lw=0)
             axe.plot(e.index, e.values, color=colr, lw=1.4)
@@ -544,125 +545,11 @@ def fig_timeline(R, season, year):
     return save(fig, f"timeline_{season}_{year}")
 
 
-def sc_colour(st):
-    import season_charts as sc
-    return sc.C[st]
-
-
-# --------------------------------------------------- figure: one season at all seven points
-def fig_season(R, season, year):
-    """One season in the style of the activation-timing page: per river, the new model at each
-    station as a filled share of its own trigger level, the station's gauge as a dashed share of
-    its own 1-in-3, the days the threshold was reached (new model and the source running the
-    window today), and flood exposure in the 14 districts where FloodScan covers the season."""
-    import season_charts as sc
-    a, b = WINDOW[season]
-    A, B = pd.Timestamp(f"{year}-{a}"), pd.Timestamp(f"{year}-{b}")
-    lv = L.levels()
-    live = {"deyr": "glofas_v4", "gu": "google_grrr"}[season]
-    has_exp = year <= 2023
-    n_rows = 3 if has_exp else 2
-    fig, axes = plt.subplots(n_rows, 1, figsize=(11.5, 9.6 if has_exp else 7.4), sharex=True,
-                             gridspec_kw=dict(height_ratios=[3, 3, 1.5] if has_exp else [3, 3]))
-    for ax, river in zip(axes[:2], RIVERS):
-        rec = R[(river, season)]
-        rp, n = cfg(river, season)
-        sts = TRIGGER_STATIONS[river]
-        d = L.daily(NEW)
-        d = d[(d.date >= A) & (d.date <= B) & d.station.isin(sts)]
-        ends = []
-        for st in sts:
-            s = d[d.station == st].sort_values("date")
-            thr = L.model_threshold(NEW, st, season, rp)
-            if s.empty or np.isnan(thr):
-                continue
-            pct = 100 * s.discharge / thr
-            ax.fill_between(s.date, pct, color=sc.C[st], alpha=0.22, lw=0)
-            ax.plot(s.date, pct, color=sc.C[st], lw=1.3)
-            ends.append([pct.iloc[-1], st])
-        glev = L.gauge_levels(river, season, 3)
-        for st in sts:
-            level = glev.get(st, np.nan)
-            if np.isnan(level):
-                continue
-            w = lv[(lv.station == st) & (lv.date >= A) & (lv.date <= B)].sort_values("date")
-            if len(w):
-                ax.plot(w.date, 100 * w.level_m / level, color=sc.C[st], lw=1.4, ls=(0, (5, 2)))
-        ax.axhline(100, color=sc.VOTE, ls="--", lw=1.1, zorder=3)
-        top = max(ax.get_ylim()[1], 130)
-        marks = []
-        ra = rec["models"][NEW]["ra"].get(year)
-        if ok(ra):
-            marks.append((ra, COL[NEW], f"new model\n{ra:%d %b}"))
-        if year in rec["models"][live]["ra_years"]:
-            rl = rec["models"][live]["ra"].get(year)
-            if ok(rl):
-                marks.append((rl, COL[live], f"{SHORT[live]}\n{rl:%d %b}"))
-        bd = rec["bench"].get(year)
-        if ok(bd):
-            marks.append((bd, INK, f"second gauge\n{bd:%d %b}"))
-        for k, (dte, colr, lab) in enumerate(sorted(marks, key=lambda t: t[0])):
-            ax.axvline(dte, color=colr, lw=1.3, alpha=0.85)
-            ax.annotate(lab, xy=(dte, top * (0.99 - 0.16 * k)), xytext=(5, 0), textcoords="offset points", color=colr,
-                        fontsize=8.5, va="top", ha="left")
-        gap = top * 0.075
-        ends.sort()
-        for i in range(1, len(ends)):
-            if ends[i][0] - ends[i - 1][0] < gap:
-                ends[i][0] = ends[i - 1][0] + gap
-        for yv, st in ends:
-            ax.text(B + pd.Timedelta(days=2), min(yv, top * 0.98), NAME[st], color=sc.C[st], fontsize=9, va="center", fontweight="bold")
-        ax.set_ylabel("% of its own level", color=FAINT, fontsize=9.5)
-        outcome = f"threshold reached {ra:%d %b}" if ok(ra) else "threshold not reached"
-        ax.text(0, 1.07, f"{river.title()}   ·   rule {n} of {len(sts)} over 1-in-{rp}   ·   new model: {outcome}", transform=ax.transAxes, fontsize=12, color=INK)
-        ax.grid(axis="y", color="#F2F5F5", lw=1)
-        ax.set_axisbelow(True)
-        for sp in ("top", "right", "left"):
-            ax.spines[sp].set_visible(False)
-        ax.tick_params(colors=FAINT, labelsize=9, length=0)
-        ax.spines["bottom"].set_color("#E4E9E9")
-        ax.set_xlim(A, B + pd.Timedelta(days=int((B - A).days * 0.09)))
-        ax.set_ylim(0, top)
-    if has_exp:
-        axe = axes[2]
-        from floodscan_districts import DISTRICTS
-        from src.constants import C_JUBA, C_SHAB
-        ex = sc.exposure()
-        ex = ex[(ex.valid_date >= A) & (ex.valid_date <= B)]
-        for river_d, colr in (("juba", C_JUBA), ("shabelle", C_SHAB)):
-            e = ex[ex.pcode.isin(DISTRICTS[river_d])].groupby("valid_date")["sum"].sum()
-            axe.fill_between(e.index, e.values, color=colr, alpha=0.12, lw=0)
-            axe.plot(e.index, e.values, color=colr, lw=1.4, label=f"{river_d.title()} districts ({len(DISTRICTS[river_d])})")
-        axe.legend(fontsize=8.5, loc="upper left", frameon=False)
-        fd, _ = sc.flood_date(season, year)
-        if fd is not None:
-            axe.axvline(fd, color=INK, lw=1.3, alpha=0.85)
-            axe.annotate(f"third district\n{fd:%d %b}", xy=(fd, axe.get_ylim()[1] * 0.98), xytext=(5, 0), textcoords="offset points",
-                         color=INK, fontsize=8.5, va="top", ha="left")
-        axe.set_ylabel("people exposed", color=FAINT, fontsize=9.5)
-        axe.text(0, 1.13, "Flood exposure, 14 anticipatory-action districts", transform=axe.transAxes, fontsize=11, color=INK)
-        axe.grid(axis="y", color="#F2F5F5", lw=1)
-        axe.set_axisbelow(True)
-        for sp in ("top", "right", "left"):
-            axe.spines[sp].set_visible(False)
-        axe.spines["bottom"].set_color("#E4E9E9")
-        axe.tick_params(colors=FAINT, labelsize=9, length=0)
-        axe.set_ylim(0, None)
-        axe.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v/1000:.0f}k" if v else "0"))
-    axes[-1].xaxis.set_major_locator(mdates.DayLocator(bymonthday=[1, 15]))
-    axes[-1].xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
-    fig.text(0.008, 0.99, f"{season.title()} {year}", fontsize=15, color=INK, va="top")
-    fig.text(0.008, 0.963, "Solid: new Google model per station, % of its trigger level.  Dashed, same colour: the station's gauge, % of its 1-in-3.  Red dashes: 100%.",
-             fontsize=9.5, color=FAINT, va="top")
-    fig.tight_layout(rect=(0, 0, 1, 0.945))
-    return save(fig, f"season_{season}_{year}")
-
-
 # -------------------------------------------------------- figure: seasons ranked by peak
 RANK_COLS = [("gauge", None), (NEW, "ra"), (NEW, "fc"), ("google_grrr", "ra"), ("google_grrr", "fc"),
              ("glofas_v4", "ra"), ("glofas_v4", "fc"), ("glofas_v5", "ra")]
 N_RANK = 5
-RANK_RP = BENCH_RP   # each station's peak is read as a share of its own 1-in-5 level on that source
+RANK_RP = TIMING_RP   # each station's peak is read as a share of its own 1-in-3 level on that source
 
 
 def _fc_peaks(m, st, season):
@@ -687,7 +574,7 @@ def season_index(season, river, source, basis):
             if np.isnan(lev[st]):
                 continue
             g = lv[(lv.station == st) & lv.date.dt.month.isin(SEASONS[season])].set_index("date").level_m.dropna()
-            gm = g.groupby(g.index.year).max()
+            gm = g.groupby(g.index.year).max()[g.groupby(g.index.year).size() >= MIN_DAYS]
             cols[st] = gm[gm.index.isin(YEARS)] / lev[st]
     else:
         for st in TRIGGER_STATIONS[river]:
@@ -741,99 +628,74 @@ def consistency(season, top_n=5):
     return out
 
 
-def fig_ranks(season):
-    """One figure: Deyr and Gu side by side. Rows: the gauges' N_RANK worst seasons on each river,
-    Juba then Shabelle. Columns: the gauges and the four models. Each model cell carries the season's
-    rank on the model's reanalysis (large, coloured) and on its forecast archive (small, below)."""
-    models = [NEW, "google_grrr", "glofas_v4", "glofas_v5"]
-    fig, ax = plt.subplots(figsize=(7.4, 0.42 * 2 * N_RANK + 1.9))
-    for _ in (season,):
-        ms = [m for m in models if m in MODELS[season]]
-        rows, ra_mat, fc_mat, ylab = [], [], [], []
-        n_ra, n_fc = {}, {}
-        for river in RIVERS:
-            P, Rk = rank_table(season, river)
-            top = Rk["gauge"].dropna().sort_values().index[:N_RANK]
-            n_ra["gauge"] = int(Rk["gauge"].notna().sum())
-            for m in ms:
-                n_ra[m] = int(Rk[(m, "ra")].notna().sum())
-                n_fc[m] = int(Rk[(m, "fc")].notna().sum()) if (m, "fc") in Rk.columns else 0
-            for y in top:
-                ra_mat.append([Rk.loc[y, "gauge"]] + [Rk[(m, "ra")].loc[y] for m in ms])
-                fc_mat.append([np.nan] + [Rk[(m, "fc")].loc[y] if (m, "fc") in Rk.columns else np.nan for m in ms])
-                ylab.append(f"{river.title()} {int(y)}   {100 * P.loc[y, 'gauge']:.0f}%")
-                rows.append(river)
-        ra_mat, fc_mat = np.array(ra_mat, dtype=float), np.array(fc_mat, dtype=float)
-        shown = np.where(np.isnan(ra_mat), np.nan, 1 - (ra_mat - 1) / 24)
-        ax.imshow(shown, cmap="Blues", vmin=0, vmax=1, aspect="auto")
-        for i in range(ra_mat.shape[0]):
-            for j in range(ra_mat.shape[1]):
-                v = ra_mat[i, j]
-                if np.isnan(v):
-                    ax.add_patch(Rectangle((j - 0.5, i - 0.5), 1, 1, facecolor="white", edgecolor=GRID, linewidth=0.8))
-                    continue
-                dark = shown[i, j] > 0.55
-                f = fc_mat[i, j]
-                if j == 0:
-                    ax.text(j, i, f"{int(v)}", ha="center", va="center", fontsize=9.5, color="white" if dark else BODY)
-                else:
-                    ax.text(j, i - 0.13, f"{int(v)}", ha="center", va="center", fontsize=9.5, color="white" if dark else BODY)
-                    ax.text(j, i + 0.27, "forecasts " + (f"{int(f)}" if not np.isnan(f) else "none") if n_fc.get(ms[j - 1], 0) else "no archive",
-                            ha="center", va="center", fontsize=6.5, color="white" if dark else FAINT)
-        labels = [f"gauges\n{n_ra['gauge']}"] + [
-            f"{SHORT[m].replace(', ', chr(10))}\n{n_ra[m]}" + (f" / {n_fc[m]}" if n_fc[m] else "") for m in ms]
-        ax.set_xticks(range(len(labels)), labels, fontsize=8)
-        ax.set_yticks(range(len(rows)), ylab, fontsize=9)
-        ax.tick_params(length=0)
-        for sp in ax.spines.values():
-            sp.set_visible(False)
-        ax.set_xticks(np.arange(-0.5, len(labels), 1), minor=True)
-        ax.set_yticks(np.arange(-0.5, len(rows), 1), minor=True)
-        ax.grid(which="minor", color="white", linewidth=1.4)
-        ax.tick_params(which="minor", length=0)
-        ax.axhline(rows.count("juba") - 0.5, color=INK, linewidth=1.2)
-    ax.set_title(f"{SEASON_TITLE[season]}", fontsize=11.5)
-    fig.subplots_adjust(top=0.9, bottom=0.12)
-    return save(fig, f"ranks_{season}")
-
-
 # --------------------------------------------- figure: correlation with the gauge, by station
+CORR_RP = 3   # a 1-in-3 season: the gauge over its own 1-in-3, or the model over its own
+
+
 def best_lag_rho(model_series, gauge_series, lags=range(-10, 31), min_obs=60):
-    """Best Spearman rank correlation over lags, as scripts/model_selection.py: positive lag means
-    the model leads the gauge by that many days."""
-    best = 0.0
+    """Highest Spearman rank correlation over lags, pairing the model on day t with the gauge on
+    day t + lag (by date, so gaps between seasons do not shift the pairing). A positive lag means
+    the model rises before the gauge. Returns (rho, lag, n pairs at that lag)."""
+    best = (np.nan, None, 0)
     for lag in lags:
-        j = pd.concat([model_series, gauge_series.shift(-lag)], axis=1, join="inner").dropna()
+        g = gauge_series.copy()
+        g.index = g.index - pd.Timedelta(days=lag)
+        j = pd.concat([model_series, g], axis=1, join="inner").dropna()
         if len(j) < min_obs:
             continue
         r = j.iloc[:, 0].corr(j.iloc[:, 1], method="spearman")
-        if pd.notna(r) and abs(r) > abs(best):
-            best = float(r)
+        if pd.notna(r) and (np.isnan(best[0]) or r > best[0]):
+            best = (float(r), int(lag), int(len(j)))
     return best
 
 
 def correlations():
+    """Per season, station and model: rank correlation at the best lag over the 1-in-3 seasons,
+    and over every season with a gauge record for reference (rho_all_seasons)."""
     lv = L.levels()
     rows = []
     for season in ("deyr", "gu"):
         for st in STATIONS:
+            river = RIVER_OF[st]
             g = lv[(lv.station == st)].set_index("date").level_m.dropna().sort_index()
             g = g[g.index.month.isin(SEASONS[season]) & g.index.year.isin(range(SCORE_RA[0], SCORE_RA[1] + 1))]
+            size = g.groupby(g.index.year).size()
+            with_record = set(size[size >= MIN_DAYS].index)
+            g = g[g.index.year.isin(with_record)]
+            g3 = L.gauge_levels(river, season, CORR_RP)[st]
+            gmax = g.groupby(g.index.year).max()
+            g_ev = set(gmax[gmax >= g3].index) if not np.isnan(g3) else set()
             for m in [NEW, "google_grrr", "glofas_v4", "glofas_v5"]:
                 x = L.season_series(m, st, season)
-                rows.append(dict(season=season, station=st, model=m, rho=best_lag_rho(x, g) if len(g) else np.nan, n_days=int(len(g))))
+                m3 = L.model_threshold(m, st, season, CORR_RP)
+                xmax = x.groupby(x.index.year).max()
+                m_ev = set(xmax[xmax >= m3].index) & with_record if not np.isnan(m3) else set()
+                ev = g_ev | m_ev
+                rho, lag, n = best_lag_rho(x[x.index.year.isin(ev)], g[g.index.year.isin(ev)]) if ev else (np.nan, None, 0)
+                rho_all, lag_all, n_all = best_lag_rho(x, g) if len(g) else (np.nan, None, 0)
+                rows.append(dict(season=season, station=st, model=m, rho=rho, lag_days=lag, n_days=n, n_seasons=len(ev),
+                                 n_gauge_events=len(g_ev), n_model_events=len(m_ev), seasons=sorted(int(y) for y in ev),
+                                 rho_all_seasons=rho_all, lag_all_seasons=lag_all, n_seasons_with_record=len(with_record)))
     return pd.DataFrame(rows)
 
 
 def fig_corr(CR):
     ms = [NEW, "google_grrr", "glofas_v4", "glofas_v5"]
-    fig, axes = plt.subplots(1, 2, figsize=(11.6, 0.52 * len(STATIONS) + 2.2))
+    fig, axes = plt.subplots(1, 2, figsize=(11.6, 0.56 * len(STATIONS) + 2.3))
     for ax, season in zip(axes, ("deyr", "gu")):
-        mat = [[float(CR[(CR.season == season) & (CR.station == st) & (CR.model == m)].rho.iloc[0]) for m in ms] for st in STATIONS]
+        sub = lambda st, m: CR[(CR.season == season) & (CR.station == st) & (CR.model == m)].iloc[0]
+        mat = [[float(sub(st, m).rho) for m in ms] for st in STATIONS]
         heat(ax, mat, [SHORT[m].replace(", ", chr(10)) for m in ms], [NAME[s] for s in STATIONS] if season == "deyr" else [""] * len(STATIONS),
-             vmin=0.3, vmax=0.95, cmap="Greens")
+             vmin=0.0, vmax=1.0, cmap="Greens")
+        for i, st in enumerate(STATIONS):
+            for j, m in enumerate(ms):
+                r = sub(st, m)
+                if not np.isnan(r.rho):
+                    ax.text(j, i + 0.3, f"{int(r.n_seasons)} seasons", ha="center", va="center", fontsize=6.5,
+                            color="white" if r.rho > 0.62 else BODY)
         ax.set_title(f"{SEASON_TITLE[season]}\n(dark = high)", fontsize=10)
-    fig.suptitle("Rank correlation between each model's daily flow and the gauge level at the best lag, seasons with a gauge record to 2023", x=0.02, ha="left", fontsize=11)
+    fig.suptitle("Rank correlation at the best lag between each model's daily flow and the gauge level, 1-in-3 seasons with a gauge record to 2023",
+                 x=0.02, ha="left", fontsize=11)
     fig.subplots_adjust(wspace=0.08, top=0.8)
     return save(fig, "correlation")
 
@@ -852,7 +714,7 @@ def fig_levels():
             ax.text(max(o, nw) * 1.1, y, f"{nw / o:.1f}x", va="center", fontsize=8.5, color=FAINT)
         ax.set_xlim(0, 1250)
         ax.set_title(SEASON_TITLE[season])
-        ax.set_xlabel(f"1-in-{TRIGGER_RP} level at the point, m³/s (ratio: new over current)")
+        ax.set_xlabel(f"1-in-{TRIGGER_RP} level at the station, m³/s (ratio: new over current)")
         style_ax(ax, grid="x")
     axes[0].set_yticks(ys, [NAME[s] for s in STATIONS])
     fig.legend(*axes[0].get_legend_handles_labels(), ncol=2, fontsize=9, loc="upper center", bbox_to_anchor=(0.5, 1.02), frameon=False)
@@ -877,7 +739,7 @@ def station_scores():
             lev5 = L.gauge_levels(r, season, BENCH_RP)[st]
             s = lv[lv.station == st].set_index("date").level_m.dropna()
             s = s[s.index.month.isin(SEASONS[season]) & s.index.year.isin(span)]
-            am = s.groupby(s.index.year).max()
+            am = s.groupby(s.index.year).max()[s.groupby(s.index.year).size() >= MIN_DAYS]
             if np.isnan(lev5) or len(am) < 8:
                 continue
             sev, have = set(am[am >= lev5].index), set(am.index)
@@ -888,8 +750,8 @@ def station_scores():
                 pod = len(f & sev) / len(sev) if sev else np.nan
                 far = len(f - sev) / len(f) if f else np.nan
                 prec = 1 - far if f else np.nan
-                rows.append(dict(season=season, station=st, model=m, n_years=len(have), n_severe=len(sev), POD=pod, FAR=far,
-                                 F1=2 * pod * prec / (pod + prec) if f and (pod + prec) > 0 else 0.0))
+                f1 = np.nan if np.isnan(pod) else (2 * pod * prec / (pod + prec) if f and (pod + prec) > 0 else 0.0)
+                rows.append(dict(season=season, station=st, model=m, n_years=len(have), n_severe=len(sev), POD=pod, FAR=far, F1=f1))
     return pd.DataFrame(rows)
 
 
@@ -903,7 +765,7 @@ def fig_stations(S, season):
         mat = [[float(S[(S.season == season) & (S.station == st) & (S.model == m)][met].iloc[0]) for m in ms] for st in sts]
         heat(ax, mat, [SHORT[m].replace(", ", chr(10)) for m in ms], ylab if met == "POD" else [""] * len(sts), cmap="Greys" if met == "FAR" else "Greens")
         ax.set_title(title + "\n(dark = high)", fontsize=9.5)
-    fig.suptitle(f"{SEASON_TITLE[season]}, reanalysis, seasons with a gauge record to 2023, each point against its own gauge", x=0.02, ha="left", fontsize=11)
+    fig.suptitle(f"{SEASON_TITLE[season]}, reanalysis, seasons with a gauge record to 2023, each station's model against its gauge", x=0.02, ha="left", fontsize=11)
     fig.subplots_adjust(wspace=0.25, top=0.78)
     return save(fig, f"stations_{season}")
 
@@ -946,7 +808,7 @@ def rank_html(season):
     """The gauges' N_RANK worst seasons per river and each source's own rank of them, as a table.
     Cell: rank on the reanalysis / rank on the forecasts. Shaded where the rank is within the top N_RANK."""
     models = [m for m in [NEW, "google_grrr", "glofas_v4", "glofas_v5"] if m in MODELS[season]]
-    head = ("<table class='data rk'><thead><tr><th>Season</th><th>Second-highest gauge, % of its 1-in-5</th>"
+    head = ("<table class='data rk'><thead><tr><th>Season</th><th>Second-highest gauge, % of its 1-in-3</th>"
             + "".join(f"<th>{SHORT[m]}<span class='y'>reanalysis / forecasts</span></th>" for m in models)
             + "</tr></thead><tbody>")
     out = [head]
@@ -963,12 +825,59 @@ def rank_html(season):
                 if np.isnan(ra):
                     cells.append("<td class='muted'>no record</td>")
                     continue
-                fc_txt = f"{int(fc)}" if (has_fc and not np.isnan(fc)) else "no archive"
+                fc_txt = (f"{int(fc)}" if not np.isnan(fc) else "no rank") if has_fc else "no archive"
                 cls = " class='top'" if (ra <= N_RANK) else ""
                 cells.append(f"<td{cls}>{int(ra)} <span class='muted'>/ {fc_txt}</span></td>")
             out.append("<tr>" + "".join(cells) + "</tr>")
     out.append("</tbody></table>")
     return "\n".join(out)
+
+
+def span_text(R):
+    """The scored reanalysis seasons per river and season, from the gauge record itself."""
+    parts = []
+    for season in ("deyr", "gu"):
+        for river in RIVERS:
+            a = sorted(y for y in R[(river, season)]["assess"] if SCORE_RA[0] <= y <= SCORE_RA[1])
+            parts.append((f"{river.title()} {season.title()}", f"{a[0]} to {a[-1]}" if a else "none"))
+    by_span = {}
+    for name, sp in parts:
+        by_span.setdefault(sp, []).append(name)
+    return "; ".join(f"{sp} for {', '.join(names)}" for sp, names in by_span.items())
+
+
+def levels_note():
+    """Google, new against Google, current at the TRIGGER_RP level, from the levels themselves."""
+    ratios = {}
+    for season in ("deyr", "gu"):
+        for st in STATIONS:
+            o, nw = L.model_threshold("google_grrr", st, season, TRIGGER_RP), L.model_threshold(NEW, st, season, TRIGGER_RP)
+            if not (np.isnan(o) or np.isnan(nw)):
+                ratios[(season, st)] = nw / o
+    hi = [k for k, v in ratios.items() if v > 1]
+    (season, st), top = max(ratios.items(), key=lambda kv: kv[1])
+    where = f"{NAME[st]} in {season.title()}"
+    if len(hi) == len(ratios):
+        return f"Google, new levels are higher than Google, current's at every station, by the most at {where}."
+    if not hi:
+        return "Google, new levels are lower than Google, current's at every station."
+    return (f"Google, new levels are higher than Google, current's at {len(hi)} of {len(ratios)} stations, by the most at {where}, "
+            f"and lower at {', '.join(NAME[k[1]] + ' in ' + k[0].title() for k in ratios if k not in hi)}.")
+
+
+def clean(x):
+    """Plain JSON: numpy scalars to Python, NaN to null, nested."""
+    if isinstance(x, dict):
+        return {str(k): clean(v) for k, v in x.items()}
+    if isinstance(x, (list, tuple, set)):
+        return [clean(v) for v in x]
+    if isinstance(x, (np.integer,)):
+        return int(x)
+    if isinstance(x, (float, np.floating)):
+        return None if np.isnan(x) else float(x)
+    if isinstance(x, (pd.Timestamp,)):
+        return x.strftime("%Y-%m-%d")
+    return x
 
 
 def near_miss_note(R):
@@ -991,8 +900,8 @@ def near_miss_note(R):
             if all(v >= 1 for v in ratios.values()):
                 items.append(f"{season.title()} {y} (smallest margin {100 * (min(ratios.values()) - 1):.1f}%)")
     if not items:
-        return "On Google, new, no season has all four Juba trigger points above their levels without the same-day rule being met."
-    return ("On Google, new, all four Juba trigger points go above their levels within the season but never on the same day in "
+        return "On the Google, new reanalysis, no season has all four Juba stations above their levels without the same-day rule being met."
+    return ("On the Google, new reanalysis, all four Juba stations go above their levels within the season but never on the same day in "
             + ", ".join(items) + ".")
 
 
@@ -1053,7 +962,7 @@ def findings(R, C):
         mean, med, n, n_all = timing_stats(R, season, "fc", m)
         if n == 0:
             return "not reached"
-        if round(mean) == 0:
+        if int(np.floor(abs(mean) + 0.5)) == 0:
             return "on the day the second gauge crossed"
         return ("before" if mean > 0 else "after") + " the second gauge crossed"
     def earlier(season):
@@ -1075,23 +984,13 @@ def findings(R, C):
         if a_ == b_:
             return f"Google, new and GloFAS v4 {a_}{earlier(season)}"
         return f"Google, new {a_}; GloFAS v4 {b_}"
-    out.append("<strong>Timing on the forecasts</strong> (mean over the largest gauge floods from 2016, seasons with the threshold reached; the second gauge crossing its 1-in-5). "
+    out.append("<strong>Timing on the forecasts</strong> (mean days before the second gauge crossed its 1-in-3, over the largest gauge floods from 2016 in which the threshold was reached). "
                f"Deyr: {pair('deyr')}; Google, current {when('deyr', 'google_grrr')} (its Deyr archive ends in 2022). "
                f"Gu: {pair('gu')}; Google, current {when('gu', 'google_grrr')}.")
     out.append(f"<strong>Google, new after 2023.</strong> Deyr 2024: {after_2023(R, 'deyr', 2024)}. Gu 2024: {after_2023(R, 'gu', 2024)}. "
                f"Deyr 2025: {after_2023(R, 'deyr', 2025)}. Gu 2025: {after_2023(R, 'gu', 2025)}.")
-    out.append("<strong>Trigger levels.</strong> Google, new levels are higher than Google, current's at every point, by the most on the Juba in Deyr.")
+    out.append("<strong>Trigger levels.</strong> " + levels_note())
     return "\n".join(f"<li>{x}</li>" for x in out)
-
-
-def v4_full_archive(R, season):
-    """GloFAS v4's forecast record over its whole archive, 2003 to 2023, as one sentence per river."""
-    parts = []
-    for river in RIVERS:
-        s = score(R[(river, season)], "glofas_v4", "fc", FC_SPAN["glofas_v4"])
-        parts.append(f"{river.title()}: reaches the threshold in {yrs(s['threshold_reached'])}; severe seasons {yrs(s['severe'])}, of which it catches {yrs(s['caught'])}; "
-                     f"threshold reached with no gauge flood {yrs(s['false'])}.")
-    return " ".join(parts)
 
 
 def after_2023(R, season, y):
@@ -1103,7 +1002,7 @@ def after_2023(R, season, y):
         outc.append(f"{r.title()} {'severe flood' if y in rec['severe'] else 'no severe flood' if y in rec['assess'] else 'no gauge record'}")
     say = lambda rs: ("threshold reached on the " + " and ".join(rs)) if rs else "threshold not reached"
     if act_r == fc_r:
-        rec_txt = say(act_r) + " on both records"
+        rec_txt = say(act_r) + (" on both records" if act_r else " on either record")
     else:
         rec_txt = f"reanalysis: {say(act_r)}; forecasts: {say(fc_r)}"
     return f"{rec_txt} (gauges: {', '.join(outc)})"
@@ -1132,13 +1031,14 @@ def build():
     TODAY = _dt.date.today().isoformat()
     TS = timing_summary_html(R)
     NEAR_MISS = near_miss_note(R)
+    SPAN_TXT = span_text(R)
 
     # everything behind the page, for review
     dump, sc = {}, []
     for (river, season), rec in R.items():
         dump[f"{river}_{season}"] = dict(
             flood_1in3=sorted(rec["flood"]), severe=sorted(rec["severe"]), assessable=sorted(rec["assess"]),
-            second_gauge_1in5={str(y): v.strftime("%Y-%m-%d") for y, v in rec["bench"].items()},
+            second_gauge_1in3={str(y): v.strftime("%Y-%m-%d") for y, v in rec["bench"].items()},
             gauge_peak={str(y): v.strftime("%Y-%m-%d") for y, v in rec["peak"].items()},
             models={m: dict(reanalysis={str(y): v.strftime("%Y-%m-%d") for y, v in mm["ra"].items()},
                             forecast={str(y): v.strftime("%Y-%m-%d") for y, v in mm["fc"].items()},
@@ -1159,14 +1059,14 @@ def build():
             ranks[f"{river}_{season}"] = dict(
                 index={str(int(y)): {("gauge" if k == "gauge" else f"{k[0]}_{k[1]}"): (None if pd.isna(v) else round(float(v), 3)) for k, v in P.loc[y].items()} for y in P.index},
                 rank={str(int(y)): {("gauge" if k == "gauge" else f"{k[0]}_{k[1]}"): (None if pd.isna(v) else int(v)) for k, v in Rk.loc[y].items()} for y in Rk.index})
-    (OUT / "data.json").write_text(json.dumps(dict(
+    (OUT / "data.json").write_text(json.dumps(clean(dict(
         outlets=_read_json("chosen_outlets.json"), trigger_levels=levels, record=dump, scores=sc, benchmark_ranks=ranks,
         gauge_levels={f"{r}_{se}": {f"1in{rp}": {st: (None if np.isnan(v) else float(v)) for st, v in L.gauge_levels(r, se, rp).items()} for rp in (3, 5)}
                       for r in RIVERS for se in ("deyr", "gu")},
         timing_stats=[dict(season=se, basis=b, model=m, **dict(zip(("mean_days_before", "median_days_before", "n_reached", "n_seasons"), timing_stats(R, se, b, m))))
                       for se in ("deyr", "gu") for b in ("ra", "fc") for m in MODELS[se] if b == "ra" or m in FC_SPAN],
         station_scores=json.loads(ST.to_json(orient="records")),
-        correlations=json.loads(CR.to_json(orient="records"))), indent=1, default=str))
+        correlations=json.loads(CR.to_json(orient="records")))), indent=1))
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1174,7 +1074,7 @@ def build():
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Google's new river model: Somalia Riverine Flood Trigger</title>
-<meta name="description" content="Google's November 2026 river model at the seven Somalia trigger points, scored with the trigger's rules and compared with GloFAS v4, GloFAS v5 and the current Google model, on the reanalysis and on the forecast archives, against the SWALIM gauges.">
+<meta name="description" content="Google's November 2026 river model at the seven Somalia trigger stations, scored with the trigger's rules and compared with GloFAS v4, GloFAS v5 and the current Google model, on the reanalysis and on the forecast archives, against the SWALIM gauges.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -1223,7 +1123,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <div class="inner">
       <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / Google's new river model</p>
       <h1>Google's new river model</h1>
-      <p>Google's November 2026 river model at the seven trigger points, scored with the trigger's rules and compared with GloFAS v4,
+      <p>Google's November 2026 river model at the seven trigger stations, scored with the trigger's rules and compared with GloFAS v4,
          GloFAS v5 and the current Google model, on each model's reanalysis and forecast archive, against the SWALIM gauges.
          The live Flood Hub feed does not run the new model. Generated {TODAY} from the source data.</p>
     </div>
@@ -1232,13 +1132,14 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <div class="callout">
       <p><strong>Sources:</strong> Google, new (the November 2026 model); Google, current (Google's published 2024 model, not verified as the live
          Flood Hub model); GloFAS v4 (runs Deyr today); GloFAS v5 (the model the Deyr thresholds were designed on). <strong>Records:</strong> reanalysis, the model's own
-         record of the past; forecasts, the first forecast issue dated in the season that reaches the threshold at any lead from 1 to 7 days, as the live trigger reads them.
+         record of the past; forecasts, the first issue dated in the season that reaches the threshold at any lead from 1 to 7 days. The live trigger reads forecasts this way.
          Archives: GloFAS v4 2003 to 2023, Google, current 2016 to June 2023, Google, new 2016 to 2025, GloFAS v5 none.</p>
-      <p><strong>Threshold rule:</strong> three of the four Juba points, or two of the three Shabelle points, over their own 1-in-{TRIGGER_RP} level on the
-         same day, each model's own levels on its 1999 to 2023 seasonal maxima, the same return period at every point and in both seasons. Scores: seasons with a
-         gauge record, 2001 to 2023 on the Juba in Deyr and 2002 to 2023 otherwise, on the reanalysis; {rng(SCORE_FC)} on the forecasts (Google, current in Deyr: 2016 to 2022).</p>
+      <p><strong>Threshold rule:</strong> three of the four Juba stations, or two of the three Shabelle stations, over their own 1-in-{TRIGGER_RP} level on the
+         same day, each model's own levels on its 1999 to 2023 seasonal maxima, the same return period at every station and in both seasons. Scores: seasons with a
+         gauge record, {SPAN_TXT}, on the reanalysis; {rng(SCORE_FC)} on the forecasts (Google, current in Deyr: 2016 to 2022).</p>
       <p><strong>Gauge benchmark:</strong> a severe flood is two SWALIM gauges on the same river over their own 1-in-{BENCH_RP} level, fitted on 2000 to 2023.
-         A threshold reached in a season with no severe flood counts against the source. Gauge data run to July 2026.</p>
+         A threshold reached in a season with no severe flood counts against the source. The ranking of seasons and the timing use the second gauge's
+         1-in-{TIMING_RP}. Gauge data run to July 2026.</p>
     </div>
 
     <h2><span class="num">1</span>Key takeaways</h2>
@@ -1248,7 +1149,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
 
     <h2><span class="num">2</span>Benchmark: the largest floods at the gauges</h2>
     <p>The five largest gauge floods per river, largest first, and each source's own rank of them (1 = highest; reanalysis / forecasts).
-       Index: the second-highest gauge's peak as a percentage of its own 1-in-{BENCH_RP}; for a model, the same at its trigger points. Tied seasons share a rank.
+       Index: the second-highest gauge's peak as a percentage of its own 1-in-{TIMING_RP}; for a model, the same at its stations. Tied seasons share a rank.
        Shaded cells: top five on the reanalysis. No record: season outside the reanalysis. No archive: no forecast archive. The notes under each table
        list only seasons covered by at least three records.</p>
     <h3>Deyr</h3>
@@ -1262,8 +1163,8 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        8.30 m, which six Gu seasons reach, so those seasons tie at that gauge.</p>
 
     <h2><span class="num">3</span>Trigger levels of the two Google models</h2>
-    <p>The level each trigger point must reach, on Google, current and on Google, new, fitted the same way.</p>
-    <figure class="chart"><img src="{F['lv']}" alt="Trigger levels, Google current and new"><figcaption>Trigger level at each point, m³/s; labels give new over current.</figcaption></figure>
+    <p>The level each station must reach, on Google, current and on Google, new, fitted the same way.</p>
+    <figure class="chart"><img src="{F['lv']}" alt="Trigger levels, Google current and new"><figcaption>Level at each station, m³/s; labels give new over current.</figcaption></figure>
 
     <h2><span class="num">4</span>Threshold outcome and scores by season</h2>
     <p>Each model's threshold outcome in every season against the gauge benchmark, on the reanalysis and on the forecasts. White cells are
@@ -1272,21 +1173,22 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <figure class="chart"><img src="{F['bt_deyr_ra']}" alt="Deyr, reanalysis, outcome by season"><figcaption>Deyr, reanalysis.</figcaption></figure>
     <figure class="chart"><img src="{F['bt_deyr_fc']}" alt="Deyr, forecasts, outcome by season"><figcaption>Deyr, forecasts: first issue reaching the threshold, leads 1 to 7 days.</figcaption></figure>
     <div class="tablewrap">{T['deyr']}</div>
-    <p class="note">Severe floods counted are those in the record scored; gauges report from 2001 on the Juba and 2002 on the Shabelle.</p>
+    <p class="note">Severe floods counted are those in the seasons scored: {SPAN_TXT}.</p>
     <h3>Gu</h3>
     <figure class="chart"><img src="{F['bt_gu_ra']}" alt="Gu, reanalysis, outcome by season"><figcaption>Gu, reanalysis.</figcaption></figure>
     <figure class="chart"><img src="{F['bt_gu_fc']}" alt="Gu, forecasts, outcome by season"><figcaption>Gu, forecasts: first issue reaching the threshold, leads 1 to 7 days.</figcaption></figure>
     <div class="tablewrap">{T['gu']}</div>
-    <p class="note">Read at leads 0 to 6 instead of 1 to 7, Google, current does not reach the threshold in Gu 2023 on the Shabelle.</p>
+    <p class="note">The Google, current archive labels the issue day lead 0; the page reads its leads 1 to 7, the seven days after the issue day, as the live
+       trigger does. Read at leads 0 to 6 instead, Google, current does not reach the threshold in Gu 2023 on the Shabelle.</p>
 
-    <h2><span class="num">5</span>Timing against the second gauge crossing its 1-in-5</h2>
-    <p>The five largest gauge floods per river. Zero is the day the second gauge crossed its 1-in-5; bars to the left reached the
+    <h2><span class="num">5</span>Timing against the second gauge crossing its 1-in-3</h2>
+    <p>The five largest gauge floods per river. Zero is the day the second gauge crossed its 1-in-3; bars to the left reached the
        threshold before that day, bars to the right after it. Solid: reanalysis. Light: first forecast issue reaching the threshold (leads 1 to 7 days).</p>
     <figure class="chart"><img src="{F['tm_deyr']}" alt="Deyr timing"><figcaption>Deyr.</figcaption></figure>
     <figure class="chart"><img src="{F['tm_gu']}" alt="Gu timing"><figcaption>Gu.</figcaption></figure>
     <h3>Average timing</h3>
-    <p>Mean and median days between the threshold being reached and the second gauge crossing its 1-in-5, over the same seasons,
-       counting only seasons in which the source reached the threshold; forecasts from 2016, the years every archive covers.</p>
+    <p>Mean and median days between the threshold being reached and the second gauge crossing its 1-in-3, over the seasons above that fall in the
+       scored years (reanalysis to 2023, forecasts 2016 to 2023), counting only seasons in which the source reached the threshold.</p>
     <div class="tablewrap">{TS}</div>
 
     <h2><span class="num">6</span>Event chronologies: Deyr 2023, Deyr 2019, Gu 2024</h2>
@@ -1296,18 +1198,24 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        the dotted line is the day the third of the 14 framework districts went over its own 1-in-5 flooded population.</p>
     <figure class="chart"><img src="{F['tl_deyr_2023']}" alt="Deyr 2023 day by day"><figcaption>Deyr 2023.</figcaption></figure>
     <figure class="chart"><img src="{F['tl_deyr_2019']}" alt="Deyr 2019 day by day"><figcaption>Deyr 2019.</figcaption></figure>
-    <figure class="chart"><img src="{F['tl_gu_2024']}" alt="Gu 2024 day by day"><figcaption>Gu 2024. FloodScan does not cover 2024.</figcaption></figure>
+    <figure class="chart"><img src="{F['tl_gu_2024']}" alt="Gu 2024 day by day"><figcaption>Gu 2024. FloodScan does not cover 2024. On the Juba, Bardheere has no record and Bualle's is too short, so the Juba benchmark rests on Dollow and Luuq.</figcaption></figure>
 
-    <h2><span class="num">7</span>POD, FAR and F1 by trigger point</h2>
-    <p>Each trigger point against its own gauge, reanalysis {rng(SCORE_RA)}: a severe flood is the gauge over its own 1-in-{BENCH_RP}.</p>
-    <figure class="chart"><img src="{F['st_deyr']}" alt="Deyr, POD, FAR and F1 per trigger point"><figcaption>Deyr.</figcaption></figure>
-    <figure class="chart"><img src="{F['st_gu']}" alt="Gu, POD, FAR and F1 per trigger point"><figcaption>Gu.</figcaption></figure>
+    <h2><span class="num">7</span>POD, FAR and F1 by station</h2>
+    <p>Each station's model against its gauge, reanalysis, seasons with a gauge record to 2023. Here a severe season is that one gauge over its own 1-in-{BENCH_RP},
+       not the two-gauge benchmark used elsewhere.</p>
+    <figure class="chart"><img src="{F['st_deyr']}" alt="Deyr, POD, FAR and F1 per station"><figcaption>Deyr.</figcaption></figure>
+    <figure class="chart"><img src="{F['st_gu']}" alt="Gu, POD, FAR and F1 per station"><figcaption>Gu.</figcaption></figure>
 
-    <h2><span class="num">8</span>Correlation with the gauges by trigger point</h2>
-    <p>Spearman rank correlation between each model's daily flow at the trigger point and the daily level at its gauge, in the season
-       months, at the lag between 10 days behind and 30 days ahead that gives the highest value. It measures day-to-day tracking, not
-       whether a threshold is reached.</p>
-    <figure class="chart"><img src="{F['corr']}" alt="Correlation with the gauges by trigger point"><figcaption>Deyr and Gu, reanalysis {rng(SCORE_RA)}.</figcaption></figure>
+    <h2><span class="num">8</span>Correlation with the gauges by station</h2>
+    <p>For each station, the model's daily flow is set against the gauge's daily level in 1-in-3 seasons: seasons in which the gauge went over its
+       own 1-in-3 level or the model went over its own, among seasons with a gauge record to 2023. Spearman rank correlation orders the days by
+       model flow and, separately, by gauge level, and measures how far the two orders agree: 1 means the model's highest days are the gauge's
+       highest days, 0 means no relation. It uses the order of the days, not their values, so the scale of the model does not matter. The lag
+       is the shift in days between the two series that gives the highest agreement, tried from 10 days behind to 30 days ahead; a positive lag
+       means the model rises before the gauge. The figure shows the value at the best lag. It measures day-to-day tracking in flood seasons,
+       not whether a threshold is reached.</p>
+    <figure class="chart"><img src="{F['corr']}" alt="Correlation with the gauges by station"><figcaption>Deyr and Gu, reanalysis, 1-in-3 seasons with a gauge record to 2023;
+       the small figure under each value is the number of seasons.</figcaption></figure>
 
     <h2><span class="num">9</span>Notes</h2>
     <ul class="notes">
@@ -1319,7 +1227,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
       <li>{NEAR_MISS}</li>
       <li>Shabelle Deyr 2020, Gu 2016 and Gu 2023 count as severe floods on a gauge reading equal to its 1-in-5 level (Jowhar 5.30 m; Belet Weyne at its 8.30 m
           ceiling). The Juba Deyr 2023 peaks are capped at bank full. Dollow's Deyr record covers eight seasons only.</li>
-      <li>Forecast windows cover 7 or 8 seasons (Google, current in Deyr: 7), with 0 to 3 severe floods each. GloFAS forecasts are an ensemble median, the Google archives
+      <li>Forecast windows cover 7 or 8 seasons (Google, current in Deyr: 7), with 0 to 3 severe floods each. GloFAS forecasts are the middle value of the ensemble members, the Google archives
           a single trace. The Google, current archive has not been verified as the live Flood Hub model; Google, new flows are on a different scale
           from the live feed's. 2026 is in no archive.</li>
       <li>The dates, levels, ranks and scores behind every chart and table are published beside this page.</li>
