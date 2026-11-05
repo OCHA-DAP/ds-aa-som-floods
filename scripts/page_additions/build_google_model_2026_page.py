@@ -261,11 +261,11 @@ def fig_timing(R, season):
     H = 0.36             # bar height
     fig, ax = plt.subplots(figsize=(11.6, 0.56 * len(rows) + 2.4))
     ymax = len(rows)
-    ax.axvspan(-40, 0, color="#F9ECE9", zorder=0)
-    ax.axvspan(0, 40, color="#EAF3EE", zorder=0)
+    ax.axvspan(-40, 0, color="#EAF3EE", zorder=0)
+    ax.axvspan(0, 40, color="#F9ECE9", zorder=0)
     ax.axvline(0, color=INK, linewidth=1.2, zorder=3)
-    ax.text(20, ymax + 0.35, "threshold reached BEFORE the gauges confirmed the flood", ha="center", va="center", fontsize=9.5, color="#2F6B4A", fontweight="bold")
-    ax.text(-20, ymax + 0.35, "threshold reached AFTER", ha="center", va="center", fontsize=9.5, color="#9E4B3F", fontweight="bold")
+    ax.text(-20, ymax + 0.35, "threshold reached BEFORE the gauges confirmed the flood", ha="center", va="center", fontsize=9.5, color="#2F6B4A", fontweight="bold")
+    ax.text(20, ymax + 0.35, "threshold reached AFTER", ha="center", va="center", fontsize=9.5, color="#9E4B3F", fontweight="bold")
     ylabels = []
     for i, (river, y, rank, m) in enumerate(rows):
         yc = ymax - 1 - i
@@ -287,10 +287,10 @@ def fig_timing(R, season):
             if not ok(d) or not ok(b):
                 ax.text(1.2, yb, "not reached" if ok(b) else "no gauge flood", va="center", fontsize=8, color=FAINT)
                 continue
-            n = (b - d).days
+            n = (d - b).days            # negative: before the gauges (left), positive: after (right)
             x = max(min(n, 38), -38)
             ax.barh(yb, x, height=H, color=COL[m], alpha=alpha, edgecolor="white", linewidth=0.5, zorder=4)
-            lab = f"{abs(n)} d {'before' if n > 0 else 'after'}" if n else "same day"
+            lab = f"{abs(n)} d {'before' if n < 0 else 'after'}" if n else "same day"
             if abs(n) > 38:
                 lab += " (bar cut)"
             ax.text(x + (1.2 if n >= 0 else -1.2), yb, lab, va="center", ha="left" if n >= 0 else "right", fontsize=8, color=BODY, zorder=5)
@@ -298,7 +298,7 @@ def fig_timing(R, season):
     ax.set_yticks([yc for yc, _ in ylabels], [lab for _, lab in ylabels], fontsize=9)
     ax.set_ylim(-0.7, ymax + 0.8)
     ax.set_xlim(-40, 40)
-    ax.set_xticks([-30, -20, -10, 0, 10, 20, 30], ["30 after", "20", "10", "0", "10", "20", "30 before"])
+    ax.set_xticks([-30, -20, -10, 0, 10, 20, 30], ["30 before", "20", "10", "0", "10", "20", "30 after"])
     ax.set_xlabel("days between the threshold being reached and the second gauge crossing its 1-in-3", fontsize=10)
     ax.tick_params(length=0)
     for sp in ax.spines.values():
@@ -1006,8 +1006,8 @@ table.tim th[colspan] {{ text-align:left; }}
 
     <h2><span class="num">5</span>Timing against the gauges</h2>
     <p>How early each source reached the threshold, for the gauges' five worst seasons on each river. Zero is the day the river's
-       second gauge crossed its 1-in-3 level. A bar to the right means the threshold was reached that many days before the gauges
-       confirmed the flood; to the left, that many days after. Solid bars are the reanalysis, light bars the forecasts.</p>
+       second gauge crossed its 1-in-3 level. A bar to the left means the threshold was reached that many days before the gauges
+       confirmed the flood; to the right, that many days after. Solid bars are the reanalysis, light bars the forecasts.</p>
     <figure class="chart"><img src="{F['tm_deyr']}" alt="Deyr timing"></figure>
     <figure class="chart"><img src="{F['tm_gu']}" alt="Gu timing"></figure>
     <h3>Three seasons on a calendar</h3>
