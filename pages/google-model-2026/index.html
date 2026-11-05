@@ -35,7 +35,8 @@ table.data caption { text-align:left; font-family:'Merriweather',Georgia,serif; 
 table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 10px 6px; }
 table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8); vertical-align:top; }
 table.data tr.riv td { color:var(--n9); font-weight:500; padding-top:12px; border-bottom:1px solid #d9dfdf; background:#fff; }
-table.data td:first-child { white-space:nowrap; }
+table.data td:first-child, table.data td:nth-child(2) { white-space:nowrap; }
+table.data td:nth-child(4), table.data td:nth-child(7) { border-right:1px solid #e2e7e7; }
 table.data th[colspan] { text-align:center; border-bottom:1px solid #e2e7e7; }
 table.data .y { display:block; font-size:11px; color:var(--n7); }
 .provenance { margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7; font-size:12px; color:var(--n7); line-height:1.7; }
@@ -79,17 +80,14 @@ table.data .y { display:block; font-size:11px; color:var(--n7); }
     <h2><span class="num">2</span>Deyr, season by season</h2>
     <figure class="chart"><img src="figures/backtest_deyr_ra.svg" alt="Deyr, reanalysis, season by season"><figcaption>Reanalysis. One row per model and river, one cell per season.</figcaption></figure>
     <figure class="chart"><img src="figures/backtest_deyr_fc.svg" alt="Deyr, forecasts, season by season"><figcaption>Forecasts, leads 1 to 7. Blank cells are seasons outside the archive.</figcaption></figure>
-    <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th colspan='3'>Reanalysis, 1999 to 2023</th><th colspan='3'>Forecasts, 2016 to 2023</th></tr><tr><th>severe caught</th><th>no gauge flood</th><th>F1</th><th>severe caught</th><th>no gauge flood</th><th>F1</th></tr></thead><tbody>
-<tr class='riv'><td colspan='7'>Juba</td></tr>
-<tr><td>Google, new</td><td>1 of 3</td><td>2</td><td style="background:rgba(30,121,95,0.25)">0.40</td><td>1 of 1</td><td>2</td><td style="background:rgba(30,121,95,0.29)">0.50</td></tr>
-<tr><td>Google, current</td><td>2 of 3</td><td>2</td><td style="background:rgba(30,121,95,0.32)">0.57</td><td>0 of 0 <span class='muted'>(2016 to 2022)</span></td><td>1</td><td>n/a</td></tr>
-<tr><td>GloFAS v4</td><td>2 of 3</td><td>3</td><td style="background:rgba(30,121,95,0.32)">0.57</td><td>1 of 1</td><td>0</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
-<tr><td>GloFAS v5</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td><td class='muted' colspan='3'>no forecast archive</td></tr>
-<tr class='riv'><td colspan='7'>Shabelle</td></tr>
-<tr><td>Google, new</td><td>4 of 5</td><td>1</td><td style="background:rgba(30,121,95,0.42)">0.80</td><td>3 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
-<tr><td>Google, current</td><td>4 of 5</td><td>0</td><td style="background:rgba(30,121,95,0.45)">0.89</td><td>1 of 2 <span class='muted'>(2016 to 2022)</span></td><td>0</td><td style="background:rgba(30,121,95,0.36)">0.67</td></tr>
-<tr><td>GloFAS v4</td><td>3 of 5</td><td>2</td><td style="background:rgba(30,121,95,0.33)">0.60</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
-<tr><td>GloFAS v5</td><td>4 of 5</td><td>0</td><td style="background:rgba(30,121,95,0.45)">0.89</td><td class='muted' colspan='3'>no forecast archive</td></tr>
+    <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th><th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr><tr><th>severe caught</th><th>no gauge flood</th><th>F1</th><th>severe caught</th><th>no gauge flood</th><th>F1</th></tr></thead><tbody>
+<tr><td>Google, new</td><td class='muted'>reanalysis 1999 to 2023</td><td>1 of 3</td><td>2</td><td style="background:rgba(30,121,95,0.25)">0.40</td><td>4 of 5</td><td>1</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
+<tr><td>Google, new</td><td class='muted'>forecasts 2016 to 2023</td><td>1 of 1</td><td>2</td><td style="background:rgba(30,121,95,0.29)">0.50</td><td>3 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
+<tr><td>Google, current</td><td class='muted'>reanalysis 1999 to 2023</td><td>2 of 3</td><td>2</td><td style="background:rgba(30,121,95,0.32)">0.57</td><td>4 of 5</td><td>0</td><td style="background:rgba(30,121,95,0.45)">0.89</td></tr>
+<tr><td>Google, current</td><td class='muted'>forecasts 2016 to 2023</td><td>0 of 0 <span class='muted'>(to 2022)</span></td><td>1</td><td>n/a</td><td>1 of 2 <span class='muted'>(to 2022)</span></td><td>0</td><td style="background:rgba(30,121,95,0.36)">0.67</td></tr>
+<tr><td>GloFAS v4</td><td class='muted'>reanalysis 1999 to 2023</td><td>2 of 3</td><td>3</td><td style="background:rgba(30,121,95,0.32)">0.57</td><td>3 of 5</td><td>2</td><td style="background:rgba(30,121,95,0.33)">0.60</td></tr>
+<tr><td>GloFAS v4</td><td class='muted'>forecasts 2016 to 2023</td><td>1 of 1</td><td>0</td><td style="background:rgba(30,121,95,0.50)">1.00</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
+<tr><td>GloFAS v5</td><td class='muted'>reanalysis 1999 to 2023</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td><td>4 of 5</td><td>0</td><td style="background:rgba(30,121,95,0.45)">0.89</td></tr>
 </tbody></table></div>
     <p class="muted" style="font-size:12.5px;margin-top:-10px">Severe caught: of the severe seasons in the scoring span. No gauge flood: seasons with the threshold reached and no flood at the gauges. F1 combines the two; POD, FAR and the years are in <code>data.json</code>.</p>
     <p class="muted" style="font-size:13px">New model, Deyr 2024: threshold not reached on both records; gauges: Juba flood, Shabelle severe. Deyr 2025: threshold not reached on both records; gauges: Juba nothing, Shabelle nothing.</p>
@@ -97,15 +95,13 @@ table.data .y { display:block; font-size:11px; color:var(--n7); }
     <h2><span class="num">3</span>Gu, season by season</h2>
     <figure class="chart"><img src="figures/backtest_gu_ra.svg" alt="Gu, reanalysis, season by season"><figcaption>Reanalysis.</figcaption></figure>
     <figure class="chart"><img src="figures/backtest_gu_fc.svg" alt="Gu, forecasts, season by season"><figcaption>Forecasts, leads 1 to 7.</figcaption></figure>
-    <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th colspan='3'>Reanalysis, 1999 to 2023</th><th colspan='3'>Forecasts, 2016 to 2023</th></tr><tr><th>severe caught</th><th>no gauge flood</th><th>F1</th><th>severe caught</th><th>no gauge flood</th><th>F1</th></tr></thead><tbody>
-<tr class='riv'><td colspan='7'>Juba</td></tr>
-<tr><td>Google, new</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
-<tr><td>Google, current</td><td>2 of 3</td><td>1</td><td style="background:rgba(30,121,95,0.38)">0.71</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
-<tr><td>GloFAS v4</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
-<tr class='riv'><td colspan='7'>Shabelle</td></tr>
-<tr><td>Google, new</td><td>3 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.50)">1.00</td><td>3 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
-<tr><td>Google, current</td><td>2 of 3</td><td>1</td><td style="background:rgba(30,121,95,0.38)">0.71</td><td>3 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
-<tr><td>GloFAS v4</td><td>1 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.29)">0.50</td><td>1 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.29)">0.50</td></tr>
+    <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th><th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr><tr><th>severe caught</th><th>no gauge flood</th><th>F1</th><th>severe caught</th><th>no gauge flood</th><th>F1</th></tr></thead><tbody>
+<tr><td>Google, new</td><td class='muted'>reanalysis 1999 to 2023</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td><td>3 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
+<tr><td>Google, new</td><td class='muted'>forecasts 2016 to 2023</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td><td>3 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
+<tr><td>Google, current</td><td class='muted'>reanalysis 1999 to 2023</td><td>2 of 3</td><td>1</td><td style="background:rgba(30,121,95,0.38)">0.71</td><td>2 of 3</td><td>1</td><td style="background:rgba(30,121,95,0.38)">0.71</td></tr>
+<tr><td>Google, current</td><td class='muted'>forecasts 2016 to 2023</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td><td>3 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
+<tr><td>GloFAS v4</td><td class='muted'>reanalysis 1999 to 2023</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td><td>1 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.29)">0.50</td></tr>
+<tr><td>GloFAS v4</td><td class='muted'>forecasts 2016 to 2023</td><td>2 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.42)">0.80</td><td>1 of 3</td><td>0</td><td style="background:rgba(30,121,95,0.29)">0.50</td></tr>
 </tbody></table></div>
     <p class="muted" style="font-size:13px">New model, Gu 2024: threshold reached on the Juba on both records; gauges: Juba flood, Shabelle severe. Gu 2025: threshold not reached on both records; gauges: Juba no gauge record, Shabelle nothing.</p>
 

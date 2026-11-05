@@ -592,24 +592,21 @@ def num(v):
 
 
 def score_table(R, season):
-    """One compact table per season: rows per source and river, the reanalysis and forecast
-    scores side by side, counts only (the years are in the grids above)."""
-    hdr = ("<table class='data'><thead><tr><th rowspan='2'>Source</th>"
-           f"<th colspan='3'>Reanalysis, {rng(SCORE_RA)}</th><th colspan='3'>Forecasts, {rng(SCORE_FC)}</th></tr>"
+    """One table per season: a row per source and record, the two rivers side by side."""
+    hdr = ("<table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th>"
+           "<th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr>"
            "<tr><th>severe caught</th><th>no gauge flood</th><th>F1</th><th>severe caught</th><th>no gauge flood</th><th>F1</th></tr></thead><tbody>")
     out = [hdr]
-    for river in RIVERS:
-        rec = R[(river, season)]
-        out.append(f"<tr class='riv'><td colspan='7'>{river.title()}</td></tr>")
-        for m in MODELS[season]:
-            cells = [f"<td>{SHORT[m]}</td>"]
-            for basis, span in (("ra", SCORE_RA), ("fc", SCORE_FC)):
-                if basis == "fc" and m not in FC_SPAN:
-                    cells.append("<td class='muted' colspan='3'>no forecast archive</td>")
-                    continue
+    for m in MODELS[season]:
+        for basis, span in (("ra", SCORE_RA), ("fc", SCORE_FC)):
+            if basis == "fc" and m not in FC_SPAN:
+                continue
+            cells = [f"<td>{SHORT[m]}</td><td class='muted'>{'reanalysis ' + rng(SCORE_RA) if basis == 'ra' else 'forecasts ' + rng(SCORE_FC)}</td>"]
+            for river in RIVERS:
+                rec = R[(river, season)]
                 s = score(rec, m, basis, span)
                 yr = years_of(rec, m, basis)
-                tag = "" if yr >= set(range(span[0], span[1] + 1)) else f" <span class='muted'>({min(yr)} to {max(yr)})</span>"
+                tag = "" if yr >= set(range(span[0], span[1] + 1)) else f" <span class='muted'>(to {max(yr)})</span>"
                 cells.append(f"<td>{len(s['caught'])} of {len(s['severe'])}{tag}</td><td>{len(s['false'])}</td>"
                              f"<td{shade(s['F1'])}>{num(s['F1'])}</td>")
             out.append("<tr>" + "".join(cells) + "</tr>")
@@ -720,7 +717,8 @@ table.data caption {{ text-align:left; font-family:'Merriweather',Georgia,serif;
 table.data th {{ text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 10px 6px; }}
 table.data td {{ border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8); vertical-align:top; }}
 table.data tr.riv td {{ color:var(--n9); font-weight:500; padding-top:12px; border-bottom:1px solid #d9dfdf; background:#fff; }}
-table.data td:first-child {{ white-space:nowrap; }}
+table.data td:first-child, table.data td:nth-child(2) {{ white-space:nowrap; }}
+table.data td:nth-child(4), table.data td:nth-child(7) {{ border-right:1px solid #e2e7e7; }}
 table.data th[colspan] {{ text-align:center; border-bottom:1px solid #e2e7e7; }}
 table.data .y {{ display:block; font-size:11px; color:var(--n7); }}
 .provenance {{ margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7; font-size:12px; color:var(--n7); line-height:1.7; }}
