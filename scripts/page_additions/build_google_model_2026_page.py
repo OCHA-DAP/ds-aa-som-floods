@@ -347,10 +347,10 @@ def fig_season(R, season, year):
 
 
 # -------------------------------------------------------- figure: seasons ranked by peak
-REF = {"juba": "luuq", "shabelle": "belet_weyne"}
 RANK_COLS = [("gauge", None), (NEW, "ra"), (NEW, "fc"), ("google_grrr", "ra"), ("google_grrr", "fc"),
              ("glofas_v4", "ra"), ("glofas_v4", "fc"), ("glofas_v5", "ra")]
 N_RANK = 12
+RANK_RP = 3   # each station's peak is read as a share of its own 1-in-3 level on that source
 
 
 def _fc_peaks(m, st, season):
@@ -362,22 +362,64 @@ def _fc_peaks(m, st, season):
     return mx[mx.index.isin(years)]
 
 
+def season_index(season, river, source, basis):
+    """Per year, the median across the river's stations of the season peak as a share of that
+    station's own 1-in-RANK_RP level on the same source. Forecast peaks are read against the
+    model's reanalysis levels, as the trigger reads them."""
+    cols = {}
+    if source == "gauge":
+        lv = L.levels()
+        lev = L.gauge_levels(river, season, RANK_RP)
+        for st in TRIGGER_STATIONS[river]:
+            if np.isnan(lev[st]):
+                continue
+            g = lv[(lv.station == st) & lv.date.dt.month.isin(SEASONS[season])].set_index("date").level_m.dropna()
+            gm = g.groupby(g.index.year).max()
+            cols[st] = gm[gm.index.isin(YEARS)] / lev[st]
+    else:
+        for st in TRIGGER_STATIONS[river]:
+            lev = L.model_threshold(source, st, season, RANK_RP)
+            if basis == "ra":
+                x = L.season_series(source, st, season, span=RA_SPAN[source])
+                cols[st] = x.groupby(x.index.year).max() / lev
+            else:
+                cols[st] = _fc_peaks(source, st, season) / lev
+    # the second-highest station share: the level the river's second gauge reaches, as in the benchmark
+    df = pd.DataFrame(cols)
+    return df.apply(lambda r: r.dropna().nlargest(2).min() if r.notna().sum() >= 2 else np.nan, axis=1)
+
+
 def rank_table(season, river):
-    """Season peaks at the reference point per source, and each source's rank of every season."""
-    st = REF[river]
-    lv = L.levels()
-    g = lv[(lv.station == st) & lv.date.dt.month.isin(SEASONS[season])].set_index("date").level_m.dropna()
-    gm = g.groupby(g.index.year).max()
-    peaks = {"gauge": gm[gm.index.isin(YEARS)]}
+    """Season index per source (all stations), and each source's rank of every season."""
+    idx = {"gauge": season_index(season, river, "gauge", None)}
     for m, basis in RANK_COLS[1:]:
-        if basis == "ra":
-            x = L.season_series(m, st, season, span=RA_SPAN[m])
-            peaks[(m, basis)] = x.groupby(x.index.year).max()
-        elif m in FC_SPAN:
-            peaks[(m, basis)] = _fc_peaks(m, st, season)
-    P = pd.DataFrame(peaks)
+        if basis == "ra" or m in FC_SPAN:
+            idx[(m, basis)] = season_index(season, river, m, basis)
+    P = pd.DataFrame(idx)
     ranks = P.rank(ascending=False, method="min")
     return P, ranks
+
+
+def consistency(season, top_n=5):
+    """Per river: the gauges' worst seasons that every source with a record ranks in its top_n,
+    and those that fewer than half the sources do."""
+    out = {}
+    for river in RIVERS:
+        P, Rk = rank_table(season, river)
+        top = Rk["gauge"].dropna().sort_values().index[:N_RANK]
+        srcs = [c for c in Rk.columns if c != "gauge"]
+        all_top, few_top = [], []
+        for y in top:
+            r = Rk.loc[y, srcs].dropna()
+            if len(r) == 0:
+                continue
+            k = int((r <= top_n).sum())
+            if k == len(r):
+                all_top.append(f"{int(y)} ({len(r)} sources)")
+            elif k * 2 < len(r):
+                few_top.append(f"{int(y)} ({k} of {len(r)})")
+        out[river] = (all_top, few_top)
+    return out
 
 
 def fig_ranks(season):
@@ -401,11 +443,11 @@ def fig_ranks(season):
         labels = []
         for k in keys:
             if k == "gauge":
-                labels.append(f"gauge\n{NAME[REF[river]]}\n({n[k]} seasons)")
+                labels.append(f"gauges\n({n[k]} seasons)")
             else:
                 labels.append(f"{SHORT[k[0]].replace(', ', ' ')}\n{'reanalysis' if k[1] == 'ra' else 'forecasts'}\n({n[k]} seasons)")
         ax.set_xticks(range(len(keys)), labels, fontsize=8.5)
-        ax.set_yticks(range(len(top)), [f"{int(y)}  {P.loc[y, 'gauge']:.2f} m" for y in top], fontsize=9.5)
+        ax.set_yticks(range(len(top)), [f"{int(y)}  {100 * P.loc[y, 'gauge']:.0f}%" for y in top], fontsize=9.5)
         ax.tick_params(length=0)
         for sp in ax.spines.values():
             sp.set_visible(False)
@@ -413,8 +455,8 @@ def fig_ranks(season):
         ax.set_yticks(np.arange(-0.5, len(top), 1), minor=True)
         ax.grid(which="minor", color="white", linewidth=1.4)
         ax.tick_params(which="minor", length=0)
-        ax.set_title(f"{river.title()}: the {N_RANK} worst seasons at the {NAME[REF[river]]} gauge, worst first, and where each source ranks them", fontsize=11)
-    fig.suptitle(f"{SEASON_TITLE[season]}: rank of each season's peak within each source's own record, 1 = highest (dark = high)", x=0.02, ha="left", fontsize=12)
+        ax.set_title(f"{river.title()}: the {N_RANK} worst seasons at the gauges, worst first (row label: % of its 1-in-3 reached by the second gauge), and where each source ranks them", fontsize=10.5)
+    fig.suptitle(f"{SEASON_TITLE[season]}: rank of each season within each source's own record, all stations, 1 = highest (dark = high)", x=0.02, ha="left", fontsize=12)
     fig.subplots_adjust(hspace=0.42, top=0.93)
     return save(fig, f"ranks_{season}")
 
@@ -555,6 +597,8 @@ def build():
     F["g24"] = fig_season(R, "gu", 2024)
     F["lv"] = fig_levels()
     F["rk_deyr"], F["rk_gu"] = fig_ranks("deyr"), fig_ranks("gu")
+    C = {s: consistency(s) for s in ("deyr", "gu")}
+    cons_txt = lambda xs: ", ".join(xs) if xs else "none"
     T = {f"{s}_{b}": score_table(R, s, b) for s in ("deyr", "gu") for b in ("ra", "fc")}
 
     # everything behind the page, for review
@@ -623,108 +667,81 @@ table.sc {{ border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 
   <header class="hero hero-sub">
     <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / Google's new river model</p>
     <h1>Google's new river model</h1>
-    <p>Google's November 2026 river model, read at the seven trigger points with the trigger's own rules, next to
-       the three sources the trigger has used: GloFAS v4 (runs Deyr today), the current Google model (runs Gu today)
-       and GloFAS v5 (the Deyr design). Each model is shown on two records, its reanalysis and its forecast archive,
-       and scored against the SWALIM gauges. The live Flood Hub feed does not run the new model yet.</p>
+    <p>Google's November 2026 river model at the seven trigger points, read with the trigger's own rules next to GloFAS v4,
+       GloFAS v5 and the current Google model, on each model's reanalysis and on its forecast archive, against the SWALIM
+       gauges. The live Flood Hub feed does not run the new model yet.</p>
   </header>
   <article>
     <div class="key">
-      <p><b>The threshold.</b> A window's <b>threshold is reached</b> when three of the four Juba gauges, or two of the three Shabelle
-         gauges, are over their own level on the same day in the model being read. Levels are each model's own return levels (Weibull plotting position on its
-         1999 to 2023 seasonal maxima): Juba 1-in-{TRIGGER_CONFIG[('juba','deyr')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','deyr')]['rp']} in Deyr,
-         Juba 1-in-{TRIGGER_CONFIG[('juba','gu')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','gu')]['rp']} in Gu.</p>
-      <p><b>Two records per model.</b> <b>Reanalysis</b>: the model's own record of the past, read day by day.
-         <b>Forecasts</b>: the first issue on which the threshold is reached at leads 1 to 7 days, which is what the live trigger reads.
-         Archives differ: GloFAS v4 2003 to 2023 (ensemble median, about two issues a week), the current Google model 2016 to June 2023
-         (one trace, daily; it holds Gu 2023 but not Deyr 2023), the new Google model 2016 to 2025 (one trace, daily), GloFAS v5 none. Scores are given over
-         {rng(SCORE_RA)} on the reanalysis and {rng(SCORE_FC)} on the forecasts; where an archive is shorter, the table says so.</p>
-      <p><b>The gauges.</b> A river has a <b>flood</b> in a season when two of its SWALIM gauges reach their own 1-in-3 level, and a
-         <b>severe</b> flood at 1-in-5 (levels fitted on 2000 to 2023). A season with the threshold reached and no gauge flood is counted as a false alarm.
-         Gauge data run to July 2026, so the new model's 2024 and 2025 seasons are scored on gauges too.</p>
+      <p><b>Threshold reached:</b> three of the four Juba points, or two of the three Shabelle points, over their own level on the
+         same day (Juba 1-in-{TRIGGER_CONFIG[('juba','deyr')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','deyr')]['rp']} in Deyr, Juba 1-in-{TRIGGER_CONFIG[('juba','gu')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','gu')]['rp']} in Gu, each model's
+         own levels on its 1999 to 2023 seasonal maxima).</p>
+      <p><b>Reanalysis:</b> the model's own record of the past. <b>Forecasts:</b> the first issue reaching the threshold at leads 1 to 7 days,
+         what the live trigger reads. Archives: GloFAS v4 2003 to 2023, current Google 2016 to June 2023, new Google 2016 to 2025,
+         GloFAS v5 none. Scores: {rng(SCORE_RA)} on the reanalysis, {rng(SCORE_FC)} on the forecasts.</p>
+      <p><b>Gauges:</b> a flood is two SWALIM gauges on the river at their own 1-in-3 level, severe at 1-in-5. Gauge data run to July 2026.</p>
     </div>
 
     <h2>The worst floods first: the benchmark</h2>
-    <p>Before any threshold, the worst seasons at the gauge, worst first, and where each source ranks the same seasons in its own
-       record. The peak of every season at the reference point (Luuq on the Juba, Belet Weyne on the Shabelle) is ranked within
-       each source's record, 1 being that source's highest peak. The rows are the gauge's twelve worst seasons; the columns are the
-       rank each source gives them. A season a source ranks far down its list is one it did not see as a large flood. A blank
-       cell is a season outside that archive. Reanalysis ranks are over {rng(SCORE_RA)} (the new model to 2025); forecast ranks
-       are over each archive, GloFAS v4 2003 to 2023, the current Google model 2016 to June 2023, the new model 2016 to 2025.</p>
-    <figure><img src="{F['rk_deyr']}" alt="Deyr, seasons ranked by peak"></figure>
-    <figure><img src="{F['rk_gu']}" alt="Gu, seasons ranked by peak"></figure>
-    <p class="read">Belet Weyne's Gu record is capped at 8.30 m, so its top six Gu seasons share the same reading and their order carries no information.</p>
+    <p>The gauges' twelve worst seasons, worst first, and the rank each source gives the same seasons in its own record. A season's
+       index is the level its second-highest station reached, as a share of that station's own 1-in-3 on that source.</p>
+    <figure><img src="{F['rk_deyr']}" alt="Deyr, seasons ranked"></figure>
+    <p class="read">Deyr, in the top five of every source that covers the season: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
+       In the top five of fewer than half: Juba {cons_txt(C['deyr']['juba'][1])}; Shabelle {cons_txt(C['deyr']['shabelle'][1])}.</p>
+    <figure><img src="{F['rk_gu']}" alt="Gu, seasons ranked"></figure>
+    <p class="read">Gu, in the top five of every source that covers the season: Juba {cons_txt(C['gu']['juba'][0])}; Shabelle {cons_txt(C['gu']['shabelle'][0])}.
+       In the top five of fewer than half: Juba {cons_txt(C['gu']['juba'][1])}; Shabelle {cons_txt(C['gu']['shabelle'][1])}.
+       Belet Weyne's Gu record is capped at 8.30 m in six seasons.</p>
 
     <h2>Deyr</h2>
-    <h3>Season by season</h3>
     <figure><img src="{F['bt_deyr_ra']}" alt="Deyr, reanalysis, season by season"></figure>
     <figure><img src="{F['bt_deyr_fc']}" alt="Deyr, forecasts, season by season"></figure>
-    <h3>Scores</h3>
     {T['deyr_ra']}
     {T['deyr_fc']}
-    <p class="read">GloFAS v4 over its whole forecast archive, 2003 to 2023. {v4_full_archive(R, 'deyr')}</p>
-    <p class="read">The new model after 2023. Deyr 2024: {after_2023(R, 'deyr', 2024)}. Deyr 2025: {after_2023(R, 'deyr', 2025)}.</p>
+    <p class="read">New model, Deyr 2024: {after_2023(R, 'deyr', 2024)}. Deyr 2025: {after_2023(R, 'deyr', 2025)}.</p>
 
     <h2>Gu</h2>
-    <h3>Season by season</h3>
     <figure><img src="{F['bt_gu_ra']}" alt="Gu, reanalysis, season by season"></figure>
     <figure><img src="{F['bt_gu_fc']}" alt="Gu, forecasts, season by season"></figure>
-    <h3>Scores</h3>
     {T['gu_ra']}
     {T['gu_fc']}
-    <p class="read">GloFAS v4 over its whole forecast archive, 2003 to 2023. {v4_full_archive(R, 'gu')}</p>
-    <p class="read">The new model after 2023. Gu 2024: {after_2023(R, 'gu', 2024)}. Gu 2025: {after_2023(R, 'gu', 2025)}.</p>
+    <p class="read">New model, Gu 2024: {after_2023(R, 'gu', 2024)}. Gu 2025: {after_2023(R, 'gu', 2025)}.</p>
 
     <h2>Timing against the gauges</h2>
-    <p>One row per flood season. The vertical line is the day the second gauge crossed its 1-in-3 level. Green side: the
-       threshold was reached before that day. Red side: after it. Grey column: not reached that season. The bar is the river's peak.</p>
-    <h3>Deyr</h3>
+    <p>One row per flood season; the line is the day the second gauge crossed its 1-in-3 level.</p>
     <figure><img src="{F['tm_deyr_ra']}" alt="Deyr timing, reanalysis"></figure>
     <figure><img src="{F['tm_deyr_fc']}" alt="Deyr timing, forecasts"></figure>
-    <h3>Gu</h3>
     <figure><img src="{F['tm_gu_ra']}" alt="Gu timing, reanalysis"></figure>
     <figure><img src="{F['tm_gu_fc']}" alt="Gu timing, forecasts"></figure>
 
     <h2>Three seasons at all seven points</h2>
-    <p>The gauge as a share of its 1-in-3 level and each model's reanalysis at the same point as a share of its own trigger
-       level. Above the dotted 100% line is over the level. Lines above 400% are cut off. The last panel lists the dates on
-       both records.</p>
+    <p>The gauge as a share of its 1-in-3 level, each model's reanalysis as a share of its own trigger level; the last panel lists the dates.</p>
     <figure><img src="{F['d23']}" alt="Deyr 2023, all points"></figure>
     <figure><img src="{F['d24']}" alt="Deyr 2024, all points"></figure>
     <figure><img src="{F['g24']}" alt="Gu 2024, all points"></figure>
 
     <h2>Station by station</h2>
-    <p>Each point on its own against its own gauge, reanalysis, {rng(SCORE_RA)}: a severe season is the gauge over its own 1-in-5,
-       a false alarm is the model over its level with the gauge under its 1-in-3.</p>
+    <p>Each point against its own gauge, reanalysis {rng(SCORE_RA)}; severe is the gauge over its own 1-in-5, a false alarm is the model over its level with the gauge under its 1-in-3.</p>
     <figure><img src="{F['st_deyr']}" alt="Deyr station scores"></figure>
     <figure><img src="{F['st_gu']}" alt="Gu station scores"></figure>
 
     <h2>The two Google models are on different scales</h2>
-    <p>The trigger level at each point on the current Google model and on the new one, both fitted the same way.</p>
     <figure><img src="{F['lv']}" alt="Trigger levels, current against new"></figure>
 
     <h2>Notes</h2>
     <ul>
-      <li>Source: Google Runoff Reanalysis and Reforecast, November 2026 release, public bucket, CC-BY-4.0. Reanalysis 1981 to 2025;
-          reforecast 2016 to 2025 at leads 0 to 10 days. One HydroBasins outlet per station, chosen as the main-stem outlet within
-          15 km with the largest 1-in-5 flow; the outlet ids are in <code>data.json</code> beside this page.</li>
-      <li>Lead labelling differs between archives. GloFAS day n is the calendar day issue + (n - 1). The current Google archive's lead n is
-          issue + n. The new archive's lead 0 is the day before the issue, and it is relabelled here so that day 1 is the issue day, as
-          for GloFAS. "Leads 1 to 7" therefore spans the issue day to six days ahead for GloFAS and the new model, and one to seven
-          days ahead for the current Google model, as in the rest of this site.</li>
-      <li>The same-day rule is sensitive at the margin on the new model. In Juba Deyr 2006 and 2017 and Juba Gu 2013 and 2023 all
-          four Juba outlets go over their levels within the season, by 1 to 4%, but never on the same day, so those seasons count
-          as the threshold not reached. The lead window also matters: read at leads 0 to 6 (the window used for GloFAS and the new model) the
-          current Google model does not reach the threshold in Gu 2023; read at leads 2 to 8 the new model's years are unchanged.</li>
-      <li>Three severe seasons rest on a gauge reading equal to its level: Shabelle Deyr 2020 (Jowhar 5.30 m against a 5.30 m
-          level), Shabelle Gu 2016 and Gu 2023 (Belet Weyne at its 8.30 m ceiling). The Juba Deyr 2023 peaks are capped at bank
-          full at all four gauges, and Dollow's Deyr record has eight seasons, the minimum for a fit.</li>
-      <li>Sample sizes are small: {len(range(SCORE_FC[0], SCORE_FC[1] + 1))} seasons on the forecast record, and one to five severe seasons per window. GloFAS v4 forecasts are an
-          ensemble median; both Google archives are a single trace.</li>
-      <li>The current Google model's forecast archive has not been verified to be the same model as the live Flood Hub feed, and the
-          new model's scale is not the live feed's scale. 2026 is in no archive.</li>
-      <li>Everything on this page is generated by <code>scripts/page_additions/build_google_model_2026_page.py</code>; the dates, levels and
-          scores behind every chart are in <code>data.json</code>.</li>
+      <li>Source: Google Runoff Reanalysis and Reforecast, November 2026 release (reanalysis 1981 to 2025, reforecast 2016 to 2025, leads 0 to 10 days),
+          one HydroBasins outlet per station, the main-stem outlet within 15 km with the largest 1-in-5 flow; ids in <code>data.json</code>.</li>
+      <li>Leads: GloFAS day n is issue + (n - 1); the current Google archive's lead n is issue + n; the new archive is relabelled so day 1 is the
+          issue day. "Leads 1 to 7" is the issue day to six days ahead for GloFAS and the new model, one to seven days ahead for the current Google model.</li>
+      <li>On the new model, Juba Deyr 2006 and 2017 and Juba Gu 2013 and 2023 have all four points over their levels within the season, by 1 to 4%,
+          but never on the same day. Read at leads 0 to 6, the current Google model does not reach the threshold in Gu 2023.</li>
+      <li>Shabelle Deyr 2020, Gu 2016 and Gu 2023 count as severe on a gauge reading equal to its level (Jowhar 5.30 m; Belet Weyne at its 8.30 m
+          ceiling). The Juba Deyr 2023 peaks are capped at bank full. Dollow's Deyr record has eight seasons.</li>
+      <li>Eight seasons on the forecast record; one to five severe seasons per window. GloFAS forecasts are an ensemble median, the Google archives
+          a single trace. The current Google archive has not been verified as the live Flood Hub model; the new model's scale is not the live feed's.
+          2026 is in no archive.</li>
+      <li>Generated by <code>scripts/page_additions/build_google_model_2026_page.py</code>; dates, levels and scores in <code>data.json</code>.</li>
     </ul>
   </article>
 </div>
