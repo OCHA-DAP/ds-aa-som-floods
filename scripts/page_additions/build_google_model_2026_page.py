@@ -901,64 +901,64 @@ def rank_html(season):
 
 
 def findings(R, C):
-    """Summary findings, generated from the numbers on the page. Short, facts only."""
+    """Key takeaways: short statements without counts, generated from the same comparisons as the tables."""
     g = lambda s, r, m, b, span: score(R[(r, s)], m, b, span)
-    top = lambda xs: ", ".join(x.split(" (")[0] for x in xs if int(x.split("(")[1].split()[0]) >= 3) or "none"
-    out = [f"<b>Ranked in the top five by every record that covers the season</b> (three or more records): Deyr Juba {top(C['deyr']['juba'][0])}, Shabelle {top(C['deyr']['shabelle'][0])}; "
-           f"Gu Juba {top(C['gu']['juba'][0])}, Shabelle {top(C['gu']['shabelle'][0])}."]
+    top = lambda xs: [x.split(" (")[0] for x in xs if int(x.split("(")[1].split()[0]) >= 3]
+    out = []
+    agree = []
+    for season in ("deyr", "gu"):
+        for river in RIVERS:
+            ys = top(C[season][river][0])
+            if ys:
+                agree.append(f"{season.title()} {' and '.join(ys)} on the {river.title()}")
+    out.append("<strong>Largest floods.</strong> Every record ranks " + "; ".join(agree) + " among its five largest floods.")
     miss = []
     for season in ("deyr", "gu"):
         for river in RIVERS:
             sc_ = g(season, river, NEW, "ra", SCORE_RA)
             if sc_["missed_severe"]:
-                miss.append(f"{season.title()} {river.title()} {yrs(sc_['missed_severe'])}")
-    out.append("<b>Severe floods in which Google, new did not reach the threshold on its reanalysis:</b> " + ("; ".join(miss) or "none") + ".")
-    out.append(f"<b>Google, new after 2023:</b> Deyr 2024 {after_2023(R, 'deyr', 2024)}. Gu 2024 {after_2023(R, 'gu', 2024)}. 2025: threshold not reached in either season.")
-    # the new model against each other source, severe seasons with the threshold reached and seasons with no gauge flood
-    for other, name in (("google_grrr", "Google, current"), ("glofas_v4", "GloFAS v4"), ("glofas_v5", "GloFAS v5")):
-        parts = []
-        for season in ("deyr", "gu"):
-            for basis, span, lab in (("ra", SCORE_RA, "reanalysis"), ("fc", SCORE_FC, "forecasts")):
-                if basis == "fc" and other not in FC_SPAN:
-                    continue
-                for river in RIVERS:
-                    a_, b_ = g(season, river, NEW, basis, span), g(season, river, other, basis, span)
-                    dc, df_ = len(a_["caught"]) - len(b_["caught"]), len(a_["false"]) - len(b_["false"])
-                    if dc == 0 and df_ == 0:
-                        continue
-                    bits = []
-                    if dc:
-                        bits.append(f"{abs(dc)} {'more' if dc > 0 else 'fewer'} severe flood{'s' if abs(dc) > 1 else ''} with the threshold reached")
-                    if df_:
-                        bits.append(f"{abs(df_)} {'more' if df_ > 0 else 'fewer'} season{'s' if abs(df_) > 1 else ''} with no gauge flood")
-                    parts.append(f"{season.title()} {river.title()}, {lab}: " + " and ".join(bits))
-        out.append(f"<b>Google, new against {name}:</b> " + ("; ".join(parts) if parts else "no difference") + ". Season, river and record combinations not listed are equal.")
-    d = lambda r, s, m, b, y: R[(r, s)]["models"][m][b].get(y)
-    bj, bs = R[("juba", "deyr")]["bench"].get(2023), R[("shabelle", "deyr")]["bench"].get(2023)
-    lead = lambda x, b: (f"{(b - x).days} d before" if (b - x).days > 0 else f"{(x - b).days} d after") if ok(x) else "not reached"
-    out.append(f"<b>Deyr 2023, forecasts, days from the threshold to the second gauge crossing its 1-in-3:</b> Juba, GloFAS v4 {lead(d('juba','deyr','glofas_v4','fc',2023), bj)}, Google, new {lead(d('juba','deyr',NEW,'fc',2023), bj)}; "
-               f"Shabelle, GloFAS v4 {lead(d('shabelle','deyr','glofas_v4','fc',2023), bs)}, Google, new {lead(d('shabelle','deyr',NEW,'fc',2023), bs)}. The Google, current archive ends June 2023.")
-    tl = []
-    for season in ("deyr", "gu"):
-        bits = []
-        for m in [NEW, "google_grrr", "glofas_v4"]:
-            mean, med, n, n_all = timing_stats(R, season, "fc", m)
-            if n:
-                bits.append(f"{SHORT[m]} {abs(mean):.0f} d {'before' if mean > 0 else 'after'} ({n} of {n_all})")
-            else:
-                bits.append(f"{SHORT[m]} not reached")
-        tl.append(f"{season.title()}: " + "; ".join(bits))
-    out.append("<b>Forecasts, mean days between the threshold being reached and the second gauge crossing its 1-in-3</b> (five largest gauge floods per river, seasons reached). " + ". ".join(tl) + ".")
+                miss.append(f"{season.title()} {yrs(sc_['missed_severe'])} on the {river.title()}")
+    out.append("<strong>Severe floods Google, new did not reach on its reanalysis:</strong> " + ("; ".join(miss) or "none") + ".")
 
-    ratios = {}
-    for season in ("deyr", "gu"):
-        for river in RIVERS:
-            rp, _ = cfg(river, season)
-            rs = [L.model_threshold(NEW, st, season, rp) / L.model_threshold("google_grrr", st, season, rp) for st in TRIGGER_STATIONS[river]]
-            ratios[(season, river)] = (min(rs), max(rs))
-    out.append(f"<b>Trigger levels:</b> Google, new levels are {ratios[('deyr','juba')][0]:.1f} to {ratios[('deyr','juba')][1]:.1f} times Google, current on the Juba in Deyr, "
-               f"{ratios[('deyr','shabelle')][0]:.1f} to {ratios[('deyr','shabelle')][1]:.1f} on the Shabelle; in Gu {ratios[('gu','juba')][0]:.1f} to {ratios[('gu','juba')][1]:.1f} and {ratios[('gu','shabelle')][0]:.1f} to {ratios[('gu','shabelle')][1]:.1f}.")
-    return "\n".join(f"<li>{x.replace('<b>', '<strong>').replace('</b>', '</strong>')}</li>" for x in out)
+    def compare(other, name):
+        more_sev, fewer_sev, more_nf, fewer_nf = [], [], [], []
+        for season in ("deyr", "gu"):
+            for river in RIVERS:
+                for basis, span, lab in (("ra", SCORE_RA, "reanalysis"), ("fc", SCORE_FC, "forecasts")):
+                    if basis == "fc" and other not in FC_SPAN:
+                        continue
+                    a_, b_ = g(season, river, NEW, basis, span), g(season, river, other, basis, span)
+                    tag = f"{season.title()} {river.title()} {lab}"
+                    dc, df_ = len(a_["caught"]) - len(b_["caught"]), len(a_["false"]) - len(b_["false"])
+                    (more_sev if dc > 0 else fewer_sev).append(tag) if dc else None
+                    (more_nf if df_ > 0 else fewer_nf).append(tag) if df_ else None
+        parts = []
+        if more_sev:
+            parts.append("reaches the threshold in more severe floods in " + ", ".join(more_sev))
+        if fewer_sev:
+            parts.append("in fewer severe floods in " + ", ".join(fewer_sev))
+        if more_nf:
+            parts.append("has more seasons with the threshold reached and no gauge flood in " + ", ".join(more_nf))
+        if fewer_nf:
+            parts.append("fewer such seasons in " + ", ".join(fewer_nf))
+        return f"<strong>Google, new against {name}:</strong> " + ("; ".join(parts) if parts else "no difference") + ". Elsewhere the two are equal."
+
+    for other, name in (("google_grrr", "Google, current"), ("glofas_v4", "GloFAS v4"), ("glofas_v5", "GloFAS v5")):
+        out.append(compare(other, name))
+
+    def when(season, m):
+        mean, med, n, n_all = timing_stats(R, season, "fc", m)
+        if n == 0:
+            return "not reached"
+        if round(mean) == 0:
+            return "on the day the second gauge crossed"
+        return ("before" if mean > 0 else "after") + " the second gauge crossed"
+    out.append("<strong>Timing on the forecasts</strong> (mean over the five largest floods per river, seasons reached). Deyr: Google, new and GloFAS v4 reach the threshold "
+               f"{when('deyr', NEW)}, GloFAS v4 earlier. Gu: Google, new {when('gu', NEW)}; Google, current {when('gu', 'google_grrr')}; GloFAS v4 {when('gu', 'glofas_v4')}.")
+    out.append(f"<strong>After 2023.</strong> Deyr 2024, a severe Shabelle flood, was not reached by Google, new on either record. Gu 2024 was reached on the Juba only; "
+               "the Shabelle, a severe flood, was not reached. Neither 2025 season was reached.")
+    out.append("<strong>Trigger levels.</strong> Google, new levels are about twice Google, current's on the Juba and higher on the Shabelle.")
+    return "\n".join(f"<li>{x}</li>" for x in out)
 
 
 def v4_full_archive(R, season):
