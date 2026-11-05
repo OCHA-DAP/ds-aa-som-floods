@@ -478,41 +478,50 @@ def consistency(season, top_n=5):
 
 
 def fig_ranks(season):
-    fig, axes = plt.subplots(2, 1, figsize=(11.6, 2 * (0.5 * N_RANK + 2.0)))
-    for ax, river in zip(axes, RIVERS):
+    """One panel per season: the gauges' N_RANK worst seasons on each river, Juba then Shabelle,
+    and the rank every source gives the same season within its own record."""
+    rows, mats, labels_y = [], [], []
+    keys = None
+    for river in RIVERS:
         P, Rk = rank_table(season, river)
         top = Rk["gauge"].dropna().sort_values().index[:N_RANK]
-        cols = [c for c in RANK_COLS if c == ("gauge", None) and "gauge" in Rk.columns or (c != ("gauge", None) and c in Rk.columns)]
+        cols = [c for c in RANK_COLS if (c == ("gauge", None)) or (c in Rk.columns)]
         keys = ["gauge" if c == ("gauge", None) else c for c in cols]
-        mat = Rk.loc[top, keys].values.astype(float)
         n = {k: int(Rk[k].notna().sum()) for k in keys}
-        shown = np.where(np.isnan(mat), np.nan, 1 - (mat - 1) / 24)
-        ax.imshow(shown, cmap="Blues", vmin=0, vmax=1, aspect="auto")
-        for i in range(mat.shape[0]):
-            for j in range(mat.shape[1]):
-                v = mat[i, j]
-                if np.isnan(v):
-                    ax.add_patch(Rectangle((j - 0.5, i - 0.5), 1, 1, facecolor="white", edgecolor=GRID, linewidth=0.8))
-                    continue
-                ax.text(j, i, f"{int(v)}", ha="center", va="center", fontsize=9.5, color="white" if shown[i, j] > 0.55 else BODY)
-        labels = []
-        for k in keys:
-            if k == "gauge":
-                labels.append(f"gauges\n({n[k]} seasons)")
-            else:
-                labels.append(f"{SHORT[k[0]].replace(', ', ' ')}\n{'reanalysis' if k[1] == 'ra' else 'forecasts'}\n({n[k]} seasons)")
-        ax.set_xticks(range(len(keys)), labels, fontsize=8.5)
-        ax.set_yticks(range(len(top)), [f"{int(y)}  {100 * P.loc[y, 'gauge']:.0f}%" for y in top], fontsize=9.5)
-        ax.tick_params(length=0)
-        for sp in ax.spines.values():
-            sp.set_visible(False)
-        ax.set_xticks(np.arange(-0.5, len(keys), 1), minor=True)
-        ax.set_yticks(np.arange(-0.5, len(top), 1), minor=True)
-        ax.grid(which="minor", color="white", linewidth=1.4)
-        ax.tick_params(which="minor", length=0)
-        ax.set_title(f"{river.title()}: the {N_RANK} worst gauge seasons, worst first (label: second gauge, % of its 1-in-3)", fontsize=11)
-    fig.suptitle(f"{SEASON_TITLE[season]}: rank of each season within each source's own record, all stations, 1 = highest (dark = high)", x=0.02, ha="left", fontsize=12)
-    fig.subplots_adjust(hspace=0.42, top=0.93)
+        for y in top:
+            mats.append(Rk.loc[y, keys].values.astype(float))
+            labels_y.append(f"{river.title()} {int(y)}   {100 * P.loc[y, 'gauge']:.0f}%")
+            rows.append(river)
+    mat = np.array(mats)
+    fig, ax = plt.subplots(figsize=(11.6, 0.5 * len(rows) + 2.4))
+    shown = np.where(np.isnan(mat), np.nan, 1 - (mat - 1) / 24)
+    ax.imshow(shown, cmap="Blues", vmin=0, vmax=1, aspect="auto")
+    for i in range(mat.shape[0]):
+        for j in range(mat.shape[1]):
+            v = mat[i, j]
+            if np.isnan(v):
+                ax.add_patch(Rectangle((j - 0.5, i - 0.5), 1, 1, facecolor="white", edgecolor=GRID, linewidth=0.8))
+                continue
+            ax.text(j, i, f"{int(v)}", ha="center", va="center", fontsize=10, color="white" if shown[i, j] > 0.55 else BODY)
+    labels = []
+    for k in keys:
+        if k == "gauge":
+            labels.append(f"gauges\n({n[k]} seasons)")
+        else:
+            labels.append(f"{SHORT[k[0]].replace(', ', ' ')}\n{'reanalysis' if k[1] == 'ra' else 'forecasts'}\n({n[k]} seasons)")
+    ax.set_xticks(range(len(keys)), labels, fontsize=8.5)
+    ax.set_yticks(range(len(rows)), labels_y, fontsize=10)
+    ax.tick_params(length=0)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    ax.set_xticks(np.arange(-0.5, len(keys), 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, len(rows), 1), minor=True)
+    ax.grid(which="minor", color="white", linewidth=1.4)
+    ax.tick_params(which="minor", length=0)
+    n_juba = rows.count("juba")
+    ax.axhline(n_juba - 0.5, color=INK, linewidth=1.2)
+    ax.set_title(f"{SEASON_TITLE[season]}: the {N_RANK} worst gauge seasons on each river, worst first, and the rank each source gives them "
+                 f"(label: second gauge, % of its 1-in-3; 1 = that source's highest; dark = high)", fontsize=10.5)
     return save(fig, f"ranks_{season}")
 
 
