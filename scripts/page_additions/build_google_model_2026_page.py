@@ -58,10 +58,9 @@ RA_SPAN = {NEW: (1999, 2025), "google_grrr": (1999, 2023), "glofas_v4": (1999, 2
 FC_SPAN = {NEW: (2016, 2025), "google_grrr": (2016, 2023), "glofas_v4": (2003, 2023)}   # v5: no archive
 # the current Google archive ends 2023-06-30: it holds Gu 2023 but no Deyr 2023
 FC_END = {("google_grrr", "deyr"): 2022}
-TRIGGER_RP = 5                   # one return period at every station, on every source, and at the gauges
-BENCH_RP = 5                     # the scores: a severe flood is two gauges over their own 1-in-5
+TRIGGER_RP = 3                   # one return period at every station, on every source, and at the gauges
+BENCH_RP = 3                     # the scores: a gauge flood is two gauges over their own 1-in-3
 TIMING_RP = 3                    # the timing and the ranking: the second gauge crossing its 1-in-3
-assert BENCH_RP == L.SEVERE_RP, "the gauge benchmark must be the library's severe level"
 MIN_DAYS = 30                    # a gauge season counts only with this many readings, as somlib.assessable_years
 SCORE_RA = (1999, 2023)          # every model and the gauges overlap here
 SCORE_FC = (2016, 2023)          # every forecast archive overlaps here
@@ -173,7 +172,8 @@ def record():
     R = {}
     for season in ("deyr", "gu"):
         for river in RIVERS:
-            fl, sev, assess = L.benchmark(river, season, span=YEARS)
+            fl, _, assess = L.benchmark(river, season, span=YEARS)
+            sev = set(L.gauge_crossings(river, season, BENCH_RP, span=YEARS))   # the benchmark flood, at BENCH_RP
             models = {}
             for m in MODELS[season]:
                 ra_years = list(range(RA_SPAN[m][0], RA_SPAN[m][1] + 1))
@@ -255,9 +255,9 @@ def fig_backtest(R, season):
                                    edgecolor="white" if kind != "none" else GRID, linewidth=0.8))
         sc_ = score(rec, m, basis, span)
         n_sev, n_f = len(sc_["severe"]), len(sc_["false"])
-        sev_txt = f"reached in {len(sc_['caught'])} of {n_sev} severe {'flood' if n_sev == 1 else 'floods'}" if sc_["severe"] else "no severe flood in these seasons"
+        sev_txt = f"reached in {len(sc_['caught'])} of {n_sev} gauge {'flood' if n_sev == 1 else 'floods'}" if sc_["severe"] else "no gauge flood in these seasons"
         ax.text(len(YEARS) + 0.2, i + 0.14, sev_txt, va="center", fontsize=9, color=INK)
-        ax.text(len(YEARS) + 0.2, i - 0.2, f"reached in {n_f} {'season' if n_f == 1 else 'seasons'} with no severe flood", va="center", fontsize=9,
+        ax.text(len(YEARS) + 0.2, i - 0.2, f"reached in {n_f} {'season' if n_f == 1 else 'seasons'} with no gauge flood", va="center", fontsize=9,
                 color="#B07A1E" if sc_["false"] else FAINT)
     ax.axhline(len(lines) - n_juba - 0.5, color=INK, linewidth=1.0)
     for edge_year in (SCORE_FC[0] - 0.5, SCORE_FC[1] + 0.5):
@@ -271,10 +271,10 @@ def fig_backtest(R, season):
     ax.tick_params(length=0)
     for sp in ax.spines.values():
         sp.set_visible(False)
-    H = [Rectangle((0, 0), 1, 1, facecolor=CELL["hit"], label="threshold reached, severe flood"),
-         Rectangle((0, 0), 1, 1, facecolor=CELL["false"], label="threshold reached, no severe flood"),
-         Rectangle((0, 0), 1, 1, facecolor=CELL["miss"], label="severe flood, threshold not reached"),
-         Rectangle((0, 0), 1, 1, facecolor=CELL["quiet"], edgecolor=GRID, label="no severe flood, threshold not reached"),
+    H = [Rectangle((0, 0), 1, 1, facecolor=CELL["hit"], label="threshold reached, gauge flood"),
+         Rectangle((0, 0), 1, 1, facecolor=CELL["false"], label="threshold reached, no gauge flood"),
+         Rectangle((0, 0), 1, 1, facecolor=CELL["miss"], label="gauge flood, threshold not reached"),
+         Rectangle((0, 0), 1, 1, facecolor=CELL["quiet"], edgecolor=GRID, label="no gauge flood, threshold not reached"),
          Rectangle((0, 0), 1, 1, facecolor="white", edgecolor=GRID, label="no model record or no gauge record")]
     ax.legend(handles=H, ncol=3, fontsize=9.5, loc="upper center", bbox_to_anchor=(0.45, -0.06))
     ax.set_title(f"{SEASON_TITLE[season]}: reanalysis, and forecasts (first issue reaching the threshold, leads 1 to 7 days)", fontsize=12, loc="left")
@@ -503,7 +503,7 @@ def fig_timeline(R, season, year):
         ax.set_yticks([y for y, _ in ylab], [l for _, l in ylab], fontsize=10)
         ax.set_ylim(-1.2, n - 0.3)
         ax.set_xlim(A - pd.Timedelta(days=4), B)
-        state = ("severe flood at the gauges" if year in rec["severe"] else "no severe flood at the gauges" if year in rec["assess"] else "no gauge record")
+        state = ("gauge flood" if year in rec["severe"] else "no gauge flood" if year in rec["assess"] else "no gauge record")
         ax.set_title(f"{river.title()} ({state})", fontsize=11.5, loc="left")
         ax.tick_params(length=0, labelbottom=True, labelsize=8.5)
         for sp in ax.spines.values():
@@ -734,7 +734,7 @@ def fig_stations(S, season):
     ms = MODELS[season]
     sts = [s for s in STATIONS if s in set(S[S.season == season].station)]
     nsev = {st: int(S[(S.season == season) & (S.station == st)].n_severe.iloc[0]) for st in sts}
-    ylab = [f"{NAME[s]} ({nsev[s]} severe {'season' if nsev[s] == 1 else 'seasons'})" for s in sts]
+    ylab = [f"{NAME[s]} ({nsev[s]} flood {'season' if nsev[s] == 1 else 'seasons'})" for s in sts]
     fig, axes = plt.subplots(1, 3, figsize=(12.4, 0.5 * len(sts) + 2.3))
     for ax, met, title in zip(axes, ["POD", "FAR", "F1"], ["POD", "FAR", "F1"]):
         mat = [[float(S[(S.season == season) & (S.station == st) & (S.model == m)][met].iloc[0]) for m in ms] for st in sts]
@@ -755,6 +755,44 @@ def shade(v, reverse=False):
 
 def num(v):
     return "n/a" if v is None or (isinstance(v, float) and np.isnan(v)) else f"{v:.2f}"
+
+
+def score_both(R, seasons, m, basis, span):
+    """One score over both rivers (and over the seasons given): a year is reached when the
+    threshold is reached on either river, and a gauge flood when either river has one; the
+    universe is the scored years with a gauge record on either river."""
+    pairs = [(r, se) for se in seasons for r in RIVERS]
+    recs = {k: R[k] for k in pairs}
+    yrs = set(range(span[0], span[1] + 1))
+    model_years = set.intersection(*[years_of(rec, m, basis) for rec in recs.values()])
+    universe = yrs & model_years & set.union(*[rec["assess"] for rec in recs.values()])
+    f = set.union(*[activations_of(rec, m, basis) for rec in recs.values()]) & universe
+    sev = set.union(*[rec["severe"] for rec in recs.values()]) & universe
+    pod = len(f & sev) / len(sev) if sev else np.nan
+    far = len(f - sev) / len(f) if f else np.nan
+    prec = 1 - far if f else np.nan
+    f1 = np.nan if np.isnan(pod) else (2 * pod * prec / (pod + prec) if f and (pod + prec) > 0 else 0.0)
+    return dict(POD=pod, FAR=far, F1=f1, n_years=len(universe), reached=sorted(f), floods=sorted(sev), caught=sorted(f & sev), false=sorted(f - sev))
+
+
+def both_rivers_table(R):
+    cols = [("Deyr, both rivers", ("deyr",)), ("Gu, both rivers", ("gu",)), ("Either season, either river", ("deyr", "gu"))]
+    head = ("<table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th>"
+            + "".join(f"<th colspan='3'>{c}</th>" for c, _ in cols) + "</tr><tr>" + "<th>POD</th><th>FAR</th><th>F1</th>" * len(cols) + "</tr></thead><tbody>")
+    out = [head]
+    for m in [NEW, "google_grrr", "glofas_v4", "glofas_v5"]:
+        for basis, span in (("ra", SCORE_RA), ("fc", SCORE_FC)):
+            if basis == "fc" and m not in FC_SPAN:
+                continue
+            cells = [f"<td>{SHORT[m]}</td><td class='muted'>{'reanalysis' if basis == 'ra' else 'forecasts'}</td>"]
+            for _, seasons in cols:
+                b = score_both(R, seasons, m, basis, span)
+                cells.append(f"<td>{num(b['POD'])}<span class='y'>{len(b['caught'])} of {len(b['floods'])}</span></td>"
+                             f"<td>{num(b['FAR'])}<span class='y'>{len(b['false'])} of {len(b['reached'])} {'year' if len(b['reached']) == 1 else 'years'}</span></td>"
+                             f"<td>{num(b['F1'])}<span class='y'>{b['n_years']} years</span></td>")
+            out.append("<tr>" + "".join(cells) + "</tr>")
+    out.append("</tbody></table>")
+    return "\n".join(out)
 
 
 def score_table(R, season):
@@ -881,12 +919,12 @@ def near_miss_note(R):
 
 
 def compare_table(R):
-    """Google, new against each other source on the seasons both cover: severe floods with the
-    threshold reached, and seasons with the threshold reached and no severe flood."""
+    """Google, new against each other source on the seasons both cover: gauge floods with the
+    threshold reached, and seasons with the threshold reached and no gauge flood."""
     others = [("google_grrr", "Google, current"), ("glofas_v4", "GloFAS v4"), ("glofas_v5", "GloFAS v5")]
     head = ("<table class='data'><thead><tr><th rowspan='2'>Season</th><th rowspan='2'>River</th><th rowspan='2'>Record</th>"
             + "".join(f"<th colspan='2'>{name}</th>" for _, name in others) + "</tr><tr>"
-            + "".join("<th>severe floods reached<span class='y'>new / other</span></th><th>reached, no severe flood<span class='y'>new / other</span></th>" for _ in others)
+            + "".join("<th>gauge floods reached<span class='y'>new / other</span></th><th>reached, no gauge flood<span class='y'>new / other</span></th>" for _ in others)
             + "</tr></thead><tbody>")
     out = [head]
     for season in ("deyr", "gu"):
@@ -910,7 +948,7 @@ def compare_table(R):
                         x, y = len(a_[key]), len(b_[key])
                         cls = " class='top'" if x != y else ""
                         if tot == 0:
-                            cells.append(f"<td class='muted'>no severe flood{note}</td>")
+                            cells.append(f"<td class='muted'>no gauge flood{note}</td>")
                             continue
                         txt = f"{x} / {y}" + (f" of {tot}" if tot is not None else "")
                         cells.append(f"<td{cls}>{txt}{note}</td>")
@@ -937,7 +975,7 @@ def findings(R, C):
             sc_ = g(season, river, NEW, "ra", SCORE_RA)
             if sc_["missed_severe"]:
                 miss.append(f"{season.title()} {yrs(sc_['missed_severe'])} on the {river.title()}")
-    out.append("<strong>Severe floods with the threshold not reached by Google, new on its reanalysis:</strong> " + ("; ".join(miss) or "none") + ".")
+    out.append("<strong>Gauge floods with the threshold not reached by Google, new on its reanalysis:</strong> " + ("; ".join(miss) or "none") + ".")
 
     def compare(other, name):
         more_sev, fewer_sev, more_nf, fewer_nf = [], [], [], []
@@ -958,13 +996,13 @@ def findings(R, C):
                     (more_nf if df_ > 0 else fewer_nf).append(tag) if df_ else None
         parts = []
         if more_sev:
-            parts.append("threshold reached in more severe floods in " + ", ".join(more_sev))
+            parts.append("threshold reached in more gauge floods in " + ", ".join(more_sev))
         if fewer_sev:
-            parts.append("threshold reached in fewer severe floods in " + ", ".join(fewer_sev))
+            parts.append("threshold reached in fewer gauge floods in " + ", ".join(fewer_sev))
         if more_nf:
-            parts.append("more seasons with the threshold reached and no severe flood in " + ", ".join(more_nf))
+            parts.append("more seasons with the threshold reached and no gauge flood in " + ", ".join(more_nf))
         if fewer_nf:
-            parts.append("fewer seasons with the threshold reached and no severe flood in " + ", ".join(fewer_nf))
+            parts.append("fewer seasons with the threshold reached and no gauge flood in " + ", ".join(fewer_nf))
         if not parts:
             return f"<strong>Google, new against {name}:</strong> the same counts in every river, season and record."
         return f"<strong>Google, new against {name}:</strong> " + "; ".join(parts) + ". In every other river, season and record the counts are the same."
@@ -1009,7 +1047,7 @@ def after_2023(R, season, y):
     outc = []
     for r in RIVERS:
         rec = R[(r, season)]
-        outc.append(f"{r.title()} {'severe flood' if y in rec['severe'] else 'no severe flood' if y in rec['assess'] else 'no gauge record'}")
+        outc.append(f"{r.title()} {'gauge flood' if y in rec['severe'] else 'no gauge flood' if y in rec['assess'] else 'no gauge record'}")
     say = lambda rs: ("threshold reached on the " + " and ".join(rs)) if rs else "threshold not reached"
     if act_r == fc_r:
         rec_txt = say(act_r) + (" on both records" if act_r else " on either record")
@@ -1035,6 +1073,7 @@ def build():
     cons_txt = lambda xs: ", ".join(xs) if xs else "none"
     FIND = findings(R, C)
     T = {s: score_table(R, s) for s in ("deyr", "gu")}
+    TB = both_rivers_table(R)
     import datetime as _dt
     TODAY = _dt.date.today().isoformat()
     TS = timing_summary_html(R)
@@ -1146,9 +1185,9 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
       <p><strong>Threshold rule:</strong> three of the four Juba stations, or two of the three Shabelle stations, over their own 1-in-{TRIGGER_RP} level on the
          same day, each model's own levels on its 1999 to 2023 seasonal maxima, the same return period at every station and in both seasons. Scores: seasons with a
          gauge record, {SPAN_TXT}, on the reanalysis; {rng(SCORE_FC)} on the forecasts (Google, current in Deyr: 2016 to 2022).</p>
-      <p><strong>Gauge benchmark:</strong> a severe flood is two SWALIM gauges on the same river over their own 1-in-{BENCH_RP} level, fitted on 2000 to 2023.
-         A threshold reached in a season with no severe flood counts against the source. The ranking of seasons and the timing use the second gauge's
-         1-in-{TIMING_RP}. Gauge data run to July 2026.</p>
+      <p><strong>Gauge benchmark:</strong> a gauge flood is two SWALIM gauges on the same river over their own 1-in-{BENCH_RP} level, fitted on 2000 to 2023.
+         A threshold reached in a season with no gauge flood counts against the source. The ranking of seasons and the timing use the day the second
+         gauge crossed. Gauge data run to July 2026.</p>
     </div>
 
     <h2><span class="num">1</span>Key takeaways</h2>
@@ -1163,19 +1202,23 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <h3>Deyr</h3>
     <figure class="chart"><img src="{F['bt_deyr']}" alt="Deyr, outcome by season, reanalysis and forecasts"><figcaption>Deyr.</figcaption></figure>
     <div class="tablewrap">{T['deyr']}</div>
-    <p class="note">Severe floods counted are those in the seasons scored: {SPAN_TXT}.</p>
+    <p class="note">Gauge floods counted are those in the seasons scored: {SPAN_TXT}.</p>
     <h3>Gu</h3>
     <figure class="chart"><img src="{F['bt_gu']}" alt="Gu, outcome by season, reanalysis and forecasts"><figcaption>Gu.</figcaption></figure>
     <div class="tablewrap">{T['gu']}</div>
     <p class="note">The Google, current archive labels the issue day lead 0; the page reads its leads 1 to 7, the seven days after the issue day, as the live
        trigger does. Read at leads 0 to 6 instead, Google, current does not reach the threshold in Gu 2023 on the Shabelle.</p>
+    <h3>Both rivers together</h3>
+    <p>A year counts as reached when the threshold is reached on either river, and as a gauge flood when either river has one; the last column
+       joins the two seasons, so it is the share of years in which the framework as a whole would have reached a threshold.</p>
+    <div class="tablewrap">{TB}</div>
     <h3>Google, new against each other source</h3>
-    <p>Counts over the seasons both sources cover: severe floods with the threshold reached, and seasons with the threshold reached and no severe flood,
+    <p>Counts over the seasons both sources cover: gauge floods with the threshold reached, and seasons with the threshold reached and no gauge flood,
        Google, new first. Shaded where the two differ.</p>
     <div class="tablewrap">{CMP}</div>
 
     <h2><span class="num">3</span>POD, FAR and F1 by station</h2>
-    <p>Each station's model against its gauge, reanalysis, seasons with a gauge record to 2023. Here a severe season is that one gauge over its own 1-in-{BENCH_RP},
+    <p>Each station's model against its gauge, reanalysis, seasons with a gauge record to 2023. Here a flood season is that one gauge over its own 1-in-{BENCH_RP},
        not the two-gauge benchmark used elsewhere.</p>
     <figure class="chart"><img src="{F['st_deyr']}" alt="Deyr, POD, FAR and F1 per station"><figcaption>Deyr.</figcaption></figure>
     <figure class="chart"><img src="{F['st_gu']}" alt="Gu, POD, FAR and F1 per station"><figcaption>Gu.</figcaption></figure>
@@ -1230,9 +1273,8 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        days), one HydroBasins outlet per station, the main-stem outlet within 15 km with the largest 1-in-5 flow. Leads 1 to 7 cover the issue day and
        the six days after it for GloFAS and Google, new, and days 1 to 7 after the issue day for Google, current, following each archive's own labelling;
        only issues dated within October to December or March to May are read, and only days in those months count, so a threshold date of 1 October or
-       1 March means the level was already exceeded when the season opened. {NEAR_MISS} Shabelle Deyr 2020, Gu 2016 and Gu 2023 count as severe floods
-       on a gauge reading equal to its 1-in-5 level (Jowhar 5.30 m; Belet Weyne at its 8.30 m ceiling); the Juba Deyr 2023 peaks are capped at bank full;
-       Dollow's Deyr record covers eight seasons only. Forecast windows cover 7 or 8 seasons (Google, current in Deyr: 7), with 0 to 3 severe floods each;
+       1 March means the level was already exceeded when the season opened. {NEAR_MISS} A gauge reading equal to its level counts as a crossing; the Juba
+       Deyr 2023 peaks are capped at bank full; Dollow's Deyr record covers eight seasons only. Forecast windows cover 7 or 8 seasons (Google, current in Deyr: 7);
        GloFAS forecasts are the middle value of the ensemble members, the Google archives a single trace. The Google, current archive has not been verified
        as the live Flood Hub model; Google, new flows are on a different scale from the live feed's; 2026 is in no archive. The dates, levels, ranks and
        scores behind every chart and table are published beside this page.</p>
