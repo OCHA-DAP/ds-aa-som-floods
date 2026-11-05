@@ -1282,11 +1282,10 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     </div>
 
     <h2><span class="num">1</span>A 1-in-3 framework on Google, new</h2>
-    <p>Return periods chosen by a search over 1-in-3 to 1-in-10 at each river and season on the new model's reanalysis, for about eight season
-       activations in 25 years (one activation per season in which either river reaches its threshold), with the Juba stricter than the Shabelle,
-       scored against the two-gauge 1-in-5 floods. The levels are on the new model's own scale.</p>
+    <p>Return periods from a search over 1-in-3 to 1-in-10 per river and season on the reanalysis, for about eight season activations in 25 years
+       (one per season in which either river reaches its threshold), Juba stricter than Shabelle, scored against the two-gauge 1-in-5 floods.</p>
     <div class="tablewrap">{FW_A}</div>
-    <p class="note">{FW_SEASONS} {FW_FC} {FW_LV}</p>
+    <p class="note">{FW_SEASONS} {FW_FC}</p>
     <h3>POD, FAR and F1 against the 1-in-5 gauge floods</h3>
     <div class="tablewrap">{FW_B}</div>
 
