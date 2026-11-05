@@ -850,9 +850,9 @@ def num(v):
 def score_table(R, season):
     """One table per season: a row per source and record, the two rivers side by side."""
     hdr = ("<table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th>"
-           "<th colspan='5'>Juba</th><th colspan='5'>Shabelle</th></tr>"
-           "<tr><th>severe floods, threshold reached</th><th>threshold reached, no gauge flood</th><th>POD</th><th>FAR</th><th>F1</th>"
-           "<th>severe floods, threshold reached</th><th>threshold reached, no gauge flood</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>")
+           "<th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr>"
+           "<tr><th>POD<span class='y'>severe floods, threshold reached</span></th><th>FAR<span class='y'>threshold reached, no gauge flood</span></th><th>F1</th>"
+           "<th>POD<span class='y'>severe floods, threshold reached</span></th><th>FAR<span class='y'>threshold reached, no gauge flood</span></th><th>F1</th></tr></thead><tbody>")
     out = [hdr]
     for m in MODELS[season]:
         for basis, span in (("ra", SCORE_RA), ("fc", SCORE_FC)):
@@ -863,8 +863,9 @@ def score_table(R, season):
             for river in RIVERS:
                 rec = R[(river, season)]
                 s = score(rec, m, basis, span)
-                cells.append(f"<td>{len(s['caught'])} of {len(s['severe'])}</td><td>{len(s['false'])}</td>"
-                             f"<td{shade(s['POD'])}>{num(s['POD'])}</td><td{shade(s['FAR'], True)}>{num(s['FAR'])}</td><td{shade(s['F1'])}>{num(s['F1'])}</td>")
+                cells.append(f"<td{shade(s['POD'])}>{num(s['POD'])}<span class='y'>{len(s['caught'])} of {len(s['severe'])}</span></td>"
+                             f"<td{shade(s['FAR'], True)}>{num(s['FAR'])}<span class='y'>{len(s['false'])} of {len(s['threshold_reached'])} seasons</span></td>"
+                             f"<td{shade(s['F1'])}>{num(s['F1'])}</td>")
             out.append("<tr>" + "".join(cells) + "</tr>")
     out.append("</tbody></table>")
     return "\n".join(out)
@@ -912,6 +913,7 @@ def findings(R, C):
             if sc_["missed_severe"]:
                 miss.append(f"{season.title()} {river.title()} {yrs(sc_['missed_severe'])}")
     out.append("<b>Severe floods in which Google, new did not reach the threshold on its reanalysis:</b> " + ("; ".join(miss) or "none") + ".")
+    out.append(f"<b>Google, new after 2023:</b> Deyr 2024 {after_2023(R, 'deyr', 2024)}. Gu 2024 {after_2023(R, 'gu', 2024)}. 2025: threshold not reached in either season.")
     # the new model against each other source, severe seasons with the threshold reached and seasons with no gauge flood
     for other, name in (("google_grrr", "Google, current"), ("glofas_v4", "GloFAS v4"), ("glofas_v5", "GloFAS v5")):
         parts = []
@@ -947,7 +949,7 @@ def findings(R, C):
                 bits.append(f"{SHORT[m]} not reached")
         tl.append(f"{season.title()}: " + "; ".join(bits))
     out.append("<b>Forecasts, mean days between the threshold being reached and the second gauge crossing its 1-in-3</b> (five largest gauge floods per river, seasons reached). " + ". ".join(tl) + ".")
-    out.append(f"<b>Google, new after 2023:</b> Deyr 2024 {after_2023(R, 'deyr', 2024)}. Gu 2024 {after_2023(R, 'gu', 2024)}. 2025: threshold not reached in either season.")
+
     ratios = {}
     for season in ("deyr", "gu"):
         for river in RIVERS:
@@ -956,7 +958,7 @@ def findings(R, C):
             ratios[(season, river)] = (min(rs), max(rs))
     out.append(f"<b>Trigger levels:</b> Google, new levels are {ratios[('deyr','juba')][0]:.1f} to {ratios[('deyr','juba')][1]:.1f} times Google, current on the Juba in Deyr, "
                f"{ratios[('deyr','shabelle')][0]:.1f} to {ratios[('deyr','shabelle')][1]:.1f} on the Shabelle; in Gu {ratios[('gu','juba')][0]:.1f} to {ratios[('gu','juba')][1]:.1f} and {ratios[('gu','shabelle')][0]:.1f} to {ratios[('gu','shabelle')][1]:.1f}.")
-    return "\n".join(f"<li>{x}</li>" for x in out)
+    return "\n".join(f"<li>{x.replace('<b>', '<strong>').replace('</b>', '</strong>')}</li>" for x in out)
 
 
 def v4_full_archive(R, season):
@@ -1001,6 +1003,8 @@ def build():
     cons_txt = lambda xs: ", ".join(xs) if xs else "none"
     FIND = findings(R, C)
     T = {s: score_table(R, s) for s in ("deyr", "gu")}
+    import datetime as _dt
+    TODAY = _dt.date.today().isoformat()
     TS = timing_summary_html(R)
 
     # everything behind the page, for review
@@ -1032,7 +1036,7 @@ def build():
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Google's new river model: Somalia Riverine Flood Trigger</title>
-<meta name="description" content="Google's November 2026 river model at the seven Somalia trigger points, read with the trigger's rules next to GloFAS v4, GloFAS v5 and the current Google model, on the reanalysis and on the forecast archives, against the SWALIM gauges.">
+<meta name="description" content="Google's November 2026 river model at the seven Somalia trigger points, scored with the trigger's rules and compared with GloFAS v4, GloFAS v5 and the current Google model, on the reanalysis and on the forecast archives, against the SWALIM gauges.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -1042,38 +1046,35 @@ def build():
 .hero.hero-sub h1 {{ font-size:28px; }}
 .crumb {{ font-size:12px; margin:0 0 14px; }}
 .crumb a {{ color:rgba(255,255,255,.85); text-decoration:none; }}
-article {{ padding:8px 44px 24px; max-width:960px; }}
-article h2 {{ font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9); margin:44px 0 10px; line-height:1.25; }}
+article {{ padding:8px 44px 24px; max-width:880px; }}
+article h2 {{ font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9); margin:40px 0 10px; line-height:1.25; }}
 article h2 .num {{ color:var(--b5); font-size:15px; margin-right:8px; }}
 article h3 {{ font-family:'Merriweather',Georgia,serif; font-size:15.5px; color:var(--n9); margin:26px 0 6px; }}
 article p, article li {{ font-size:14.5px; color:var(--n8); line-height:1.65; }}
 article ul {{ padding-left:22px; }}
+article strong {{ color:var(--n9); }}
 article code {{ background:var(--n05); border:1px solid #e2e7e7; padding:1px 5px; border-radius:3px; font-size:12.5px; color:var(--b7); }}
 .muted {{ color:#6b7683; }}
-figure.chart {{ margin:18px 0 26px; }}
+p.note {{ font-size:13px; color:var(--n7); margin:6px 0 0; }}
+figure.chart {{ margin:24px 0 30px; }}
 figure.chart img {{ width:100%; height:auto; display:block; }}
 figure.chart figcaption {{ font-size:13px; color:#55606d; line-height:1.55; margin-top:10px; padding-left:2px; }}
 .callout {{ margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }}
 .callout p {{ margin:0 0 7px; font-size:13.5px; }}
 .callout p:last-child {{ margin:0; }}
-.callout b {{ color:var(--n9); }}
-.tablewrap {{ overflow-x:auto; }}
+.callout strong {{ color:var(--n9); }}
 .takeaways {{ margin:18px 0 6px; padding:0; list-style:none; }}
-.takeaways li {{ border-left:3px solid var(--b1); padding:0 0 0 14px; margin:0 0 14px; font-size:14px; }}
-.takeaways b {{ color:var(--n9); }}
-.pair {{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }}
-@media (max-width:760px) {{ .pair {{ grid-template-columns:1fr; }} }}
+.takeaways li {{ border-left:3px solid var(--b1); padding:0 0 0 14px; margin:0 0 16px; }}
+.tablewrap {{ overflow-x:auto; }}
 table.data {{ border-collapse:collapse; width:100%; margin:16px 0 22px; font-size:13px; }}
-table.data caption {{ text-align:left; font-family:'Merriweather',Georgia,serif; font-size:14px; color:var(--n9); padding:0 0 8px; }}
 table.data th {{ text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 10px 6px; }}
+table.data th[colspan] {{ text-align:center; border-bottom:1px solid #e2e7e7; }}
 table.data td {{ border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8); vertical-align:top; }}
 table.data tr.riv td {{ color:var(--n9); font-weight:500; padding-top:12px; border-bottom:1px solid #d9dfdf; background:#fff; }}
 table.data td:first-child, table.data td:nth-child(2) {{ white-space:nowrap; }}
-table.data td:nth-child(7) {{ border-right:1px solid #e2e7e7; }}
-table.data th[colspan] {{ text-align:center; border-bottom:1px solid #e2e7e7; }}
+table.data td:nth-child(5) {{ border-right:1px solid #e2e7e7; }}
 table.data .y {{ display:block; font-size:11px; color:var(--n7); font-weight:400; text-transform:none; letter-spacing:0; }}
-table.data td.top {{ background:var(--b05); }}
-table.tim th[colspan] {{ text-align:left; }}
+table.data td.top {{ background:rgba(30,121,95,.12); }}
 .notes li {{ font-size:13px; color:var(--n7); margin:0 0 8px; }}
 @media (max-width:640px) {{ article {{ padding:4px 22px 16px; }} .hero.hero-sub {{ padding:32px 22px 28px; }} }}
 </style>
@@ -1084,60 +1085,66 @@ table.tim th[colspan] {{ text-align:left; }}
     <div class="inner">
       <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / Google's new river model</p>
       <h1>Google's new river model</h1>
-      <p>Google's November 2026 river model (Google, new) at the seven trigger points, scored with the trigger's rules and compared
-         with GloFAS v4, GloFAS v5 and the current Google model (Google, current), on each model's reanalysis and forecast archive,
-         against the SWALIM gauges. The live Flood Hub feed does not run Google, new.</p>
+      <p>Google's November 2026 river model at the seven trigger points, scored with the trigger's rules and compared with GloFAS v4,
+         GloFAS v5 and the current Google model, on each model's reanalysis and forecast archive, against the SWALIM gauges.
+         The live Flood Hub feed does not run the new model. Generated {TODAY} from the source data.</p>
     </div>
   </header>
   <article>
     <div class="callout">
-      <p><b>Threshold rule:</b> three of the four Juba points, or two of the three Shabelle points, over their own level on the
+      <p><strong>Sources:</strong> Google, new (the November 2026 model); Google, current (the model behind the live Flood Hub feed); GloFAS v4
+         (runs Deyr today); GloFAS v5 (the Deyr design model). <strong>Records:</strong> reanalysis, the model's own record of the past;
+         forecasts, the first forecast issue in the season whose leads 1 to 7 days reach the threshold, which is what the live trigger reads.
+         Archives: GloFAS v4 2003 to 2023, Google, current 2016 to June 2023, Google, new 2016 to 2025, GloFAS v5 none.</p>
+      <p><strong>Threshold rule:</strong> three of the four Juba points, or two of the three Shabelle points, over their own level on the
          same day (Juba 1-in-{TRIGGER_CONFIG[('juba','deyr')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','deyr')]['rp']} in Deyr, Juba 1-in-{TRIGGER_CONFIG[('juba','gu')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','gu')]['rp']} in Gu, each model's
-         own levels on its 1999 to 2023 seasonal maxima).</p>
-      <p><b>Records:</b> <b>reanalysis</b>, the model's own record of the past; <b>forecasts</b>, the first forecast issue in the season whose leads
-         1 to 7 days reach the threshold, which is what the live trigger reads. Archives: GloFAS v4 2003 to 2023, Google, current 2016 to June 2023, Google, new 2016 to 2025,
-         GloFAS v5 none. Scores: {rng(SCORE_RA)} on the reanalysis, {rng(SCORE_FC)} on the forecasts.</p>
-      <p><b>Gauge benchmark:</b> a flood is two SWALIM gauges on the same river over their own 1-in-3 level; a severe flood is over the 1-in-5. Gauge data run to July 2026.
-         <b>Scores:</b> POD, the share of severe floods with the threshold reached; FAR, the share of threshold seasons with no gauge flood; F1, the harmonic mean of POD and 1 minus FAR.</p>
+         own levels on its 1999 to 2023 seasonal maxima). Scores: {rng(SCORE_RA)} on the reanalysis, {rng(SCORE_FC)} on the forecasts.</p>
+      <p><strong>Gauge benchmark:</strong> a flood is two SWALIM gauges on the same river over their own 1-in-3 level; a severe flood is over the 1-in-5.
+         Gauge data run to July 2026. <strong>Scores:</strong> POD, the share of severe floods with the threshold reached; FAR, the share of
+         threshold seasons with no gauge flood; F1, the harmonic mean of POD and 1 minus FAR.</p>
     </div>
 
-    <h2><span class="num">1</span>Summary of results</h2>
+    <h2><span class="num">1</span>Key takeaways</h2>
     <ul class="takeaways">
 {FIND}
     </ul>
 
     <h2><span class="num">2</span>Benchmark: the largest floods at the gauges</h2>
     <p>The five largest gauge floods per river, largest first, and each source's own rank of them (1 = highest; reanalysis / forecasts).
-       Index: the second-highest gauge's peak as a percentage of its own 1-in-3; for a model, the same at its trigger points. Ties are in printed order.</p>
+       Index: the second-highest gauge's peak as a percentage of its own 1-in-3; for a model, the same at its trigger points. Ties are in printed order.
+       Shaded cells: top five on the reanalysis. No record: season outside the reanalysis. No archive: no forecast archive.</p>
     <h3>Deyr</h3>
     <div class="tablewrap">{RK['deyr']}</div>
-    <p class="muted" style="font-size:12.5px">In the top five of every source that covers the season: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
+    <p class="note">In the top five of every record that covers the season: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
        In the top five of fewer than half: Juba {cons_txt(C['deyr']['juba'][1])}; Shabelle {cons_txt(C['deyr']['shabelle'][1])}.</p>
     <h3>Gu</h3>
     <div class="tablewrap">{RK['gu']}</div>
-    <p class="muted" style="font-size:12.5px">In the top five of every source that covers the season: Juba {cons_txt(C['gu']['juba'][0])}; Shabelle {cons_txt(C['gu']['shabelle'][0])}.
-       In the top five of fewer than half: Juba {cons_txt(C['gu']['juba'][1])}; Shabelle {cons_txt(C['gu']['shabelle'][1])}. Belet Weyne's Gu record is capped at 8.30 m in six seasons.
-       Shaded cells: top five on the reanalysis. The counts above include the forecast records. No record: season outside the reanalysis. No archive: no forecast archive.</p>
+    <p class="note">In the top five of every record that covers the season: Juba {cons_txt(C['gu']['juba'][0])}; Shabelle {cons_txt(C['gu']['shabelle'][0])}.
+       In the top five of fewer than half: Juba {cons_txt(C['gu']['juba'][1])}; Shabelle {cons_txt(C['gu']['shabelle'][1])}. Belet Weyne's Gu record is capped at 8.30 m in six seasons.</p>
 
-    <h2><span class="num">3</span>Deyr: threshold outcome by season</h2>
-    <figure class="chart"><img src="{F['bt_deyr_ra']}" alt="Deyr, reanalysis, season by season"><figcaption>Reanalysis. One row per model and river, one cell per season; blank cells are seasons outside the record or without a gauge record.</figcaption></figure>
-    <figure class="chart"><img src="{F['bt_deyr_fc']}" alt="Deyr, forecasts, season by season"><figcaption>Forecasts, leads 1 to 7. Blank cells are seasons outside the archive or without a gauge record; the tallies count 2016 to 2023.</figcaption></figure>
+    <h2><span class="num">3</span>Trigger levels of the two Google models</h2>
+    <p>The level each trigger point must reach, on Google, current and on Google, new, fitted the same way.</p>
+    <figure class="chart"><img src="{F['lv']}" alt="Trigger levels, Google current and new"><figcaption>Trigger level at each point, m³/s; labels give new over current.</figcaption></figure>
+
+    <h2><span class="num">4</span>Threshold outcome by season</h2>
+    <p>Each model's threshold outcome in every season against the gauge benchmark, on the reanalysis and on the forecasts. Blank cells are
+       seasons outside the record or without a gauge record; the dotted lines mark the seasons the tallies and the tables count.</p>
+    <h3>Deyr</h3>
+    <figure class="chart"><img src="{F['bt_deyr_ra']}" alt="Deyr, reanalysis, outcome by season"><figcaption>Deyr, reanalysis.</figcaption></figure>
+    <figure class="chart"><img src="{F['bt_deyr_fc']}" alt="Deyr, forecasts, outcome by season"><figcaption>Deyr, forecasts: first issue reaching the threshold, leads 1 to 7 days.</figcaption></figure>
     <div class="tablewrap">{T['deyr']}</div>
-    <p class="muted" style="font-size:12.5px;margin-top:-10px">POD: share of severe floods with the threshold reached. FAR: share of threshold seasons with no gauge flood.
-       F1: the harmonic mean of POD and 1 minus FAR. Severe floods counted are those in the record scored (gauges report from 2001 on the Juba and 2002 on the Shabelle).</p>
-    <p class="muted" style="font-size:13px">Google, new, Deyr 2024: {after_2023(R, 'deyr', 2024)}. Deyr 2025: {after_2023(R, 'deyr', 2025)}.</p>
-
-    <h2><span class="num">4</span>Gu: threshold outcome by season</h2>
-    <figure class="chart"><img src="{F['bt_gu_ra']}" alt="Gu, reanalysis, season by season"><figcaption>Reanalysis.</figcaption></figure>
-    <figure class="chart"><img src="{F['bt_gu_fc']}" alt="Gu, forecasts, season by season"><figcaption>Forecasts, leads 1 to 7.</figcaption></figure>
+    <p class="note">Severe floods counted are those in the record scored; gauges report from 2001 on the Juba and 2002 on the Shabelle.</p>
+    <h3>Gu</h3>
+    <figure class="chart"><img src="{F['bt_gu_ra']}" alt="Gu, reanalysis, outcome by season"><figcaption>Gu, reanalysis.</figcaption></figure>
+    <figure class="chart"><img src="{F['bt_gu_fc']}" alt="Gu, forecasts, outcome by season"><figcaption>Gu, forecasts: first issue reaching the threshold, leads 1 to 7 days.</figcaption></figure>
     <div class="tablewrap">{T['gu']}</div>
-    <p class="muted" style="font-size:13px">Google, new, Gu 2024: {after_2023(R, 'gu', 2024)}. Gu 2025: {after_2023(R, 'gu', 2025)}.</p>
+    <p class="note">Read at leads 0 to 6 instead of 1 to 7, Google, current does not reach the threshold in Gu 2023.</p>
 
     <h2><span class="num">5</span>Timing against the second gauge crossing its 1-in-3</h2>
     <p>The five largest gauge floods per river. Zero is the day the second gauge crossed its 1-in-3; bars to the left reached the
        threshold before that day, bars to the right after it. Solid: reanalysis. Light: first forecast issue reaching the threshold (leads 1 to 7 days).</p>
-    <figure class="chart"><img src="{F['tm_deyr']}" alt="Deyr timing"></figure>
-    <figure class="chart"><img src="{F['tm_gu']}" alt="Gu timing"></figure>
+    <figure class="chart"><img src="{F['tm_deyr']}" alt="Deyr timing"><figcaption>Deyr.</figcaption></figure>
+    <figure class="chart"><img src="{F['tm_gu']}" alt="Gu timing"><figcaption>Gu.</figcaption></figure>
     <h3>Average timing</h3>
     <p>Mean and median days between the threshold being reached and the second gauge crossing its 1-in-3, over the same seasons,
        counting only seasons in which the source reached the threshold.</p>
@@ -1146,25 +1153,23 @@ table.tim th[colspan] {{ text-align:left; }}
     <h2><span class="num">6</span>Event chronologies: Deyr 2023, Deyr 2019, Gu 2024</h2>
     <p>Gauge rows: circle, first day over the 1-in-3; diamond, first day over the 1-in-5; tick, peak. Source rows: threshold reached on
        the reanalysis (filled), first forecast issue reaching the threshold (hollow). FloodScan people in flooded area, by river, where it covers the season.</p>
-    <figure class="chart"><img src="{F['tl_deyr_2023']}" alt="Deyr 2023 day by day"></figure>
-    <figure class="chart"><img src="{F['tl_deyr_2019']}" alt="Deyr 2019 day by day"></figure>
-    <figure class="chart"><img src="{F['tl_gu_2024']}" alt="Gu 2024 day by day"></figure>
+    <figure class="chart"><img src="{F['tl_deyr_2023']}" alt="Deyr 2023 day by day"><figcaption>Deyr 2023.</figcaption></figure>
+    <figure class="chart"><img src="{F['tl_deyr_2019']}" alt="Deyr 2019 day by day"><figcaption>Deyr 2019.</figcaption></figure>
+    <figure class="chart"><img src="{F['tl_gu_2024']}" alt="Gu 2024 day by day"><figcaption>Gu 2024. FloodScan does not cover 2024.</figcaption></figure>
 
     <h2><span class="num">7</span>POD, FAR and F1 by trigger point</h2>
     <p>Each trigger point against its own gauge, reanalysis {rng(SCORE_RA)}: a severe flood is the gauge over its own 1-in-5, no gauge flood is the gauge under its 1-in-3.</p>
-    <figure class="chart"><img src="{F['st_deyr']}" alt="Deyr, POD, FAR and F1 per trigger point"></figure>
-    <figure class="chart"><img src="{F['st_gu']}" alt="Gu, POD, FAR and F1 per trigger point"></figure>
+    <figure class="chart"><img src="{F['st_deyr']}" alt="Deyr, POD, FAR and F1 per trigger point"><figcaption>Deyr.</figcaption></figure>
+    <figure class="chart"><img src="{F['st_gu']}" alt="Gu, POD, FAR and F1 per trigger point"><figcaption>Gu.</figcaption></figure>
 
-    <h2><span class="num">8</span>Trigger levels of the two Google models</h2>
-    <figure class="chart"><img src="{F['lv']}" alt="Trigger levels, Google current and new"><figcaption>Trigger level at each point, m³/s, Google, current and Google, new, fitted the same way; labels give new over current.</figcaption></figure>
-    <h2><span class="num">9</span>Data and method notes</h2>
+    <h2><span class="num">8</span>Data and method notes</h2>
     <ul class="notes">
       <li>Source: Google Runoff Reanalysis and Reforecast, November 2026 release (reanalysis 1981 to 2025, reforecast 2016 to 2025, leads 0 to 10 days),
-          one HydroBasins outlet per station, the main-stem outlet within 15 km with the largest 1-in-5 flow; ids in <code>data.json</code>.</li>
+          one HydroBasins outlet per station, the main-stem outlet within 15 km with the largest 1-in-5 flow.</li>
       <li>Leads 1 to 7 are the issue day and the six days after it for GloFAS and Google, new, and days 1 to 7 after the issue day for Google, current,
-          following each archive's own labelling.</li>
+          following each archive's own labelling. Only issues dated within October to December or March to May are read.</li>
       <li>On Google, new, Juba Deyr 2006 and 2017 and Juba Gu 2013 and 2023 have all four trigger points above their levels within the season, by 1 to 4%,
-          but never on the same day. Read at leads 0 to 6, Google, current does not reach the threshold in Gu 2023.</li>
+          but never on the same day.</li>
       <li>Shabelle Deyr 2020, Gu 2016 and Gu 2023 count as severe floods on a gauge reading equal to its 1-in-5 level (Jowhar 5.30 m; Belet Weyne at its 8.30 m
           ceiling). The Juba Deyr 2023 peaks are capped at bank full. Dollow's Deyr record has eight seasons.</li>
       <li>Forecast windows cover 7 or 8 seasons (Google, current in Deyr: 7), with 0 to 3 severe floods each. GloFAS forecasts are an ensemble median, the Google archives
