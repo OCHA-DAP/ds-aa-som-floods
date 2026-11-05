@@ -236,69 +236,148 @@ def fig_backtest(R, season, basis):
 
 
 # ---------------------------------------------------------- figure: timing vs the gauges
-def worst_third(season, river):
-    """Seasons in the worst third of the gauge ranking (second-gauge share index): year -> gauge rank."""
-    _, Rk = rank_table(season, river)
-    g = Rk["gauge"].dropna()
-    cut = int(np.ceil(len(g) / 3))
-    return {int(y): int(r) for y, r in g.items() if r <= cut}
-
-
-def _timing_rows(R, season, basis):
-    rows = []
-    wt = {river: worst_third(season, river) for river in RIVERS}
-    years = set().union(*(set(wt[r]) for r in RIVERS))
+def _timing_seasons(season):
+    """The gauges' N_RANK worst seasons per river (the benchmark tables), with their gauge rank."""
+    out = []
     for river in RIVERS:
-        rec = R[(river, season)]
-        for y, rank in sorted(wt[river].items(), key=lambda kv: kv[1]):
-            if basis == "fc" and y < SCORE_FC[0]:
-                continue
-            if y in rec["bench"]:
-                rows.append((river, y, rec["bench"][y], rec["peak"].get(y), rank))
-    return rows
+        _, Rk = rank_table(season, river)
+        g = Rk["gauge"].dropna().sort_values()
+        for y, r in g.head(N_RANK).items():
+            out.append((river, int(y), int(r)))
+    return out
 
 
-def fig_timing(R, season, basis):
-    rows = _timing_rows(R, season, basis)
-    models = [m for m in MODELS[season] if basis == "ra" or m in FC_SPAN]
-    fig, ax = plt.subplots(figsize=(11.6, 0.52 * len(rows) + 2.8))
-    ax.axvspan(-30, 0, color="#F9ECE9", zorder=0)
-    ax.axvspan(0, 42, color="#EAF3EE", zorder=0)
-    ax.axvspan(-42, -30, color="#F2F4F5", zorder=0)
-    ax.text(21, len(rows) - 0.35, "threshold reached before the second gauge crossed", ha="center", va="center", fontsize=9, color="#2F6B4A", fontweight="bold")
-    ax.text(-15, len(rows) - 0.35, "threshold reached after", ha="center", va="center", fontsize=9, color="#9E4B3F", fontweight="bold")
-    ax.text(-36, len(rows) - 0.35, "threshold\nnot reached", ha="center", va="center", fontsize=8.5, color=BODY, fontweight="bold")
-    ax.axvline(0, color=INK, linewidth=1.2, zorder=2)
-    ax.axvline(-30, color="white", linewidth=1.5, zorder=1)
-    n_juba = sum(1 for r in rows if r[0] == "juba")
-    if 0 < n_juba < len(rows):
-        ax.axhline(len(rows) - n_juba - 0.5, color=INK, linewidth=1.0, zorder=2)
-    for i, (river, y, b, pk, sev) in enumerate(rows[::-1]):
-        ax.axhline(i, color="white", linewidth=1.0, zorder=0.5)
-        if ok(pk):
-            ax.scatter((b - pk).days, i, marker="|", s=200, color=INK, linewidths=1.6, zorder=3)
+def fig_timing(R, season):
+    """Days between the threshold being reached and the second gauge crossing its 1-in-3, as
+    labelled bars: one row per season and source, the reanalysis as a solid bar and the forecasts
+    as a lighter bar beneath it. Right of zero: before the gauges; left: after."""
+    models = MODELS[season]
+    seasons = _timing_seasons(season)
+    rows = []            # (river, year, rank, model) in drawing order, top first; model None = header line
+    for river, y, rank in seasons:
+        rows.append((river, y, rank, None))
+        for m in models:
+            rows.append((river, y, rank, m))
+    H = 0.36             # bar height
+    fig, ax = plt.subplots(figsize=(11.6, 0.56 * len(rows) + 2.4))
+    ymax = len(rows)
+    ax.axvspan(-40, 0, color="#F9ECE9", zorder=0)
+    ax.axvspan(0, 40, color="#EAF3EE", zorder=0)
+    ax.axvline(0, color=INK, linewidth=1.2, zorder=3)
+    ax.text(20, ymax + 0.35, "threshold reached BEFORE the gauges confirmed the flood", ha="center", va="center", fontsize=9.5, color="#2F6B4A", fontweight="bold")
+    ax.text(-20, ymax + 0.35, "threshold reached AFTER", ha="center", va="center", fontsize=9.5, color="#9E4B3F", fontweight="bold")
+    ylabels = []
+    for i, (river, y, rank, m) in enumerate(rows):
+        yc = ymax - 1 - i
+        if m is None:
+            ax.text(-39, yc, f"{river.title()} {y}   (gauge rank {rank})", ha="left", va="center", fontsize=10, color=INK, fontweight="bold", zorder=5)
+            if i:
+                ax.axhline(yc + 0.5, color="white", linewidth=3, zorder=2)
+            continue
         rec = R[(river, season)]
-        for k, m in enumerate(models):
-            if y not in years_of(rec, m, basis):
+        b = rec["bench"].get(y)
+        mm = rec["models"][m]
+        for k, (basis, alpha) in enumerate((("ra", 1.0), ("fc", 0.45))):
+            yb = yc + (0.2 if k == 0 else -0.2)
+            have = y in mm[f"{basis}_years"]
+            d = mm[basis].get(y)
+            if not have:
+                ax.text(1.2, yb, "no archive" if basis == "fc" else "no record", va="center", fontsize=8, color=FAINT)
                 continue
-            dy = (k - (len(models) - 1) / 2) * 0.2
-            d = rec["models"][m][basis].get(y)
-            x = max(min((b - d).days, 41), -29) if ok(d) else -36 + (k - (len(models) - 1) / 2) * 2.2
-            ax.scatter(x, i + dy, s=58, color=COL[m], edgecolors="white", linewidths=0.9, zorder=4)
-    ax.set_yticks(range(len(rows)), [f"{y} {r.title()}  (gauge rank {s})" for r, y, _, _, s in rows[::-1]], fontsize=10.5)
-    ax.set_xlim(-42, 42)
-    ax.set_ylim(-0.6, len(rows) + 0.1)
-    ax.set_xticks([-30, -20, -10, 0, 10, 20, 30, 40], ["30 after", "20", "10", "0", "10", "20", "30", "40 before"])
-    ax.set_xlabel("days between the threshold being reached and the second gauge crossing its 1-in-3 level", fontsize=10.5)
+            if not ok(d) or not ok(b):
+                ax.text(1.2, yb, "not reached" if ok(b) else "no gauge flood", va="center", fontsize=8, color=FAINT)
+                continue
+            n = (b - d).days
+            x = max(min(n, 38), -38)
+            ax.barh(yb, x, height=H, color=COL[m], alpha=alpha, edgecolor="white", linewidth=0.5, zorder=4)
+            lab = f"{abs(n)} d {'before' if n > 0 else 'after'}" if n else "same day"
+            if abs(n) > 38:
+                lab += " (bar cut)"
+            ax.text(x + (1.2 if n >= 0 else -1.2), yb, lab, va="center", ha="left" if n >= 0 else "right", fontsize=8, color=BODY, zorder=5)
+        ylabels.append((yc, f"{SHORT[m]}"))
+    ax.set_yticks([yc for yc, _ in ylabels], [lab for _, lab in ylabels], fontsize=9)
+    ax.set_ylim(-0.7, ymax + 0.8)
+    ax.set_xlim(-40, 40)
+    ax.set_xticks([-30, -20, -10, 0, 10, 20, 30], ["30 after", "20", "10", "0", "10", "20", "30 before"])
+    ax.set_xlabel("days between the threshold being reached and the second gauge crossing its 1-in-3", fontsize=10)
     ax.tick_params(length=0)
     for sp in ax.spines.values():
         sp.set_visible(False)
-    H = [Line2D([], [], marker="o", ls="", color=COL[m], markersize=8, label=SHORT[m]) for m in models]
-    H += [Line2D([], [], marker="|", ls="", color=INK, markersize=12, markeredgewidth=1.6, label="tick: day of the river's peak")]
-    ax.legend(handles=H, ncol=len(H), fontsize=10, loc="upper center", bbox_to_anchor=(0.5, -0.13))
-    what = "reanalysis" if basis == "ra" else "forecasts, first issue at leads 1 to 7"
-    ax.set_title(f"{SEASON_TITLE[season]}: {what}. Worst third of seasons at the gauges", fontsize=12)
-    return save(fig, f"timing_{season}_{basis}")
+    Hh = [Rectangle((0, 0), 1, 1, facecolor=BODY, alpha=1.0, label="solid: reanalysis"),
+          Rectangle((0, 0), 1, 1, facecolor=BODY, alpha=0.45, label="light: forecasts, first issue at leads 1 to 7")]
+    ax.legend(handles=Hh, ncol=2, fontsize=9, loc="upper center", bbox_to_anchor=(0.5, -0.05), frameon=False)
+    ax.set_title(f"{SEASON_TITLE[season]}: the gauges' {N_RANK} worst seasons per river", fontsize=12, pad=26)
+    fig.subplots_adjust(left=0.16)
+    return save(fig, f"timing_{season}")
+
+
+def fig_timeline(R, season, year):
+    """Calendar timeline for one season: x runs across the season, one row per source and a
+    gauges row, Juba in the upper panel and Shabelle in the lower. Filled marker: the day the
+    threshold was reached on the reanalysis; hollow: the first forecast issue that reached it.
+    Gauges row: dark marker where the second gauge crossed its 1-in-3, tick at the peak."""
+    a, b = WINDOW[season]
+    A, B = pd.Timestamp(f"{year}-{a}"), pd.Timestamp(f"{year}-{b}")
+    models = MODELS[season]
+    fig, axes = plt.subplots(2, 1, figsize=(11.6, 0.5 * (len(models) + 1) * 2 + 2.2), sharex=True)
+    for ax, river in zip(axes, RIVERS):
+        rec = R[(river, season)]
+        n = len(models) + 1
+        ylab = []
+        for i, m in enumerate(models):
+            yc = n - 1 - i
+            ax.axhline(yc, color=GRID, linewidth=0.8, zorder=0)
+            mm = rec["models"][m]
+            notes = []
+            for basis, filled in (("ra", True), ("fc", False)):
+                if year not in mm[f"{basis}_years"]:
+                    notes.append("no forecast archive" if basis == "fc" else "no record")
+                    continue
+                d = mm[basis].get(year)
+                if not ok(d):
+                    notes.append(f"{'reanalysis' if basis == 'ra' else 'forecasts'}: not reached")
+                    continue
+                if filled:
+                    ax.scatter(d, yc, s=90, color=COL[m], edgecolors="white", linewidths=0.8, zorder=4)
+                    ax.text(d, yc + 0.22, d.strftime("%d %b"), ha="center", va="bottom", fontsize=8, color=COL[m])
+                else:
+                    ax.scatter(d, yc, s=110, facecolors="none", edgecolors=COL[m], linewidths=1.6, zorder=4)
+                    ax.text(d, yc - 0.22, d.strftime("%d %b"), ha="center", va="top", fontsize=8, color=COL[m])
+            if notes:
+                ax.text(B + pd.Timedelta(days=1), yc, "; ".join(notes), va="center", ha="left", fontsize=8, color=FAINT, clip_on=False)
+            ylab.append((yc, SHORT[m]))
+        bd, pk = rec["bench"].get(year), rec["peak"].get(year)
+        ax.axhline(0, color=GRID, linewidth=0.8, zorder=0)
+        if ok(bd):
+            ax.scatter(bd, 0, s=100, marker="D", color=INK, zorder=4)
+            ax.text(bd, 0.24, f"2nd gauge over 1-in-3\n{bd:%d %b}", ha="center", va="bottom", fontsize=8, color=INK)
+            ax.axvline(bd, color=INK, lw=0.9, ls=":", zorder=1)
+        else:
+            ax.text(B + pd.Timedelta(days=1), 0, "no gauge flood", va="center", ha="left", fontsize=8, color=FAINT, clip_on=False)
+        if ok(pk):
+            ax.scatter(pk, 0, s=180, marker="|", color=INK, linewidths=1.8, zorder=4)
+            ax.text(pk, -0.24, f"peak {pk:%d %b}", ha="center", va="top", fontsize=8, color=INK)
+        ylab.append((0, "gauges"))
+        ax.set_yticks([y for y, _ in ylab], [l for _, l in ylab], fontsize=9.5)
+        ax.set_ylim(-0.8, n - 0.2)
+        ax.set_xlim(A, B)
+        state = "severe" if year in rec["severe"] else "flood" if year in rec["flood"] else "no gauge flood" if year in rec["assess"] else "no gauge record"
+        ax.set_title(f"{river.title()}: {state}", fontsize=11, loc="left")
+        ax.tick_params(length=0)
+        for sp in ax.spines.values():
+            sp.set_visible(False)
+        ax.grid(axis="x", color=GRID, linewidth=0.8)
+        ax.set_axisbelow(True)
+    axes[1].xaxis.set_major_locator(mdates.DayLocator(bymonthday=[1, 15]))
+    axes[1].xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
+    Hh = [Line2D([], [], marker="o", ls="", color=BODY, markersize=8, label="filled: threshold reached, reanalysis"),
+          Line2D([], [], marker="o", ls="", markerfacecolor="none", markeredgecolor=BODY, markersize=9, markeredgewidth=1.6, label="hollow: first forecast issue"),
+          Line2D([], [], marker="D", ls="", color=INK, markersize=7, label="second gauge over its 1-in-3"),
+          Line2D([], [], marker="|", ls="", color=INK, markersize=12, markeredgewidth=1.8, label="river peak")]
+    fig.legend(handles=Hh, ncol=4, fontsize=9, loc="upper center", bbox_to_anchor=(0.5, 0.02), frameon=False)
+    fig.suptitle(f"{season.title()} {year}: when each source reached the threshold, and when the gauges did", x=0.02, ha="left", fontsize=12)
+    fig.subplots_adjust(hspace=0.5, top=0.9, bottom=0.14, right=0.76)
+    return save(fig, f"timeline_{season}_{year}")
 
 
 # --------------------------------------------------- figure: one season at all seven points
@@ -780,14 +859,15 @@ def build():
     for s in ("deyr", "gu"):
         for b in ("ra", "fc"):
             F[f"bt_{s}_{b}"] = fig_backtest(R, s, b)
-            F[f"tm_{s}_{b}"] = fig_timing(R, s, b)
+        F[f"tm_{s}"] = fig_timing(R, s)
         F[f"st_{s}"] = fig_stations(ST, s)
     F["d23"] = fig_season(R, "deyr", 2023)
     F["d24"] = fig_season(R, "deyr", 2024)
     F["g24"] = fig_season(R, "gu", 2024)
     F["lv"] = fig_levels()
     RK = {s: rank_html(s) for s in ("deyr", "gu")}
-    TD = {k: timing_dates_html(R, *k) for k in (("deyr", 2023), ("deyr", 2019), ("gu", 2024))}
+    for k in (("deyr", 2023), ("deyr", 2019), ("gu", 2024)):
+        F[f"tl_{k[0]}_{k[1]}"] = fig_timeline(R, *k)
     C = {s: consistency(s) for s in ("deyr", "gu")}
     cons_txt = lambda xs: ", ".join(xs) if xs else "none"
     FIND = findings(R, C)
@@ -925,21 +1005,17 @@ table.tim th[colspan] {{ text-align:left; }}
     <p class="muted" style="font-size:13px">New model, Gu 2024: {after_2023(R, 'gu', 2024)}. Gu 2025: {after_2023(R, 'gu', 2025)}.</p>
 
     <h2><span class="num">5</span>Timing against the gauges</h2>
-    <p>How early each source reached the threshold, season by season. Rows are the seasons in the worst third of the gauge ranking that
-       had a gauge flood, ordered by gauge rank, Juba above the line and Shabelle below. The vertical line at zero is the day the river's
-       second gauge crossed its 1-in-3 level. A dot to the right of it (green) means that source reached the threshold that many days
-       before the gauges confirmed the flood; to the left (red), that many days after; in the grey column, not at all that season.
-       The tick is the day of the river's peak.</p>
-    <figure class="chart"><img src="{F['tm_deyr_ra']}" alt="Deyr timing, reanalysis"><figcaption>Deyr, reanalysis.</figcaption></figure>
-    <figure class="chart"><img src="{F['tm_deyr_fc']}" alt="Deyr timing, forecasts"><figcaption>Deyr, forecasts. GloFAS v5 has no archive; the current Google archive ends June 2023.</figcaption></figure>
-    <figure class="chart"><img src="{F['tm_gu_ra']}" alt="Gu timing, reanalysis"><figcaption>Gu, reanalysis.</figcaption></figure>
-    <figure class="chart"><img src="{F['tm_gu_fc']}" alt="Gu timing, forecasts"><figcaption>Gu, forecasts.</figcaption></figure>
-    <h3>Three seasons in dates</h3>
-    <p>The day each source reached the threshold, on its reanalysis and on its forecasts, against the day the river's second gauge
-       crossed its 1-in-3 and the day of the peak.</p>
-    <div class="tablewrap">{TD[('deyr', 2023)]}</div>
-    <div class="tablewrap">{TD[('deyr', 2019)]}</div>
-    <div class="tablewrap">{TD[('gu', 2024)]}</div>
+    <p>How early each source reached the threshold, for the gauges' five worst seasons on each river. Zero is the day the river's
+       second gauge crossed its 1-in-3 level. A bar to the right means the threshold was reached that many days before the gauges
+       confirmed the flood; to the left, that many days after. Solid bars are the reanalysis, light bars the forecasts.</p>
+    <figure class="chart"><img src="{F['tm_deyr']}" alt="Deyr timing"></figure>
+    <figure class="chart"><img src="{F['tm_gu']}" alt="Gu timing"></figure>
+    <h3>Three seasons on a calendar</h3>
+    <p>The day each source reached the threshold, on its reanalysis (filled) and on its forecasts (hollow), against the day the river's
+       second gauge crossed its 1-in-3 and the day of the peak.</p>
+    <figure class="chart"><img src="{F['tl_deyr_2023']}" alt="Deyr 2023 timeline"></figure>
+    <figure class="chart"><img src="{F['tl_deyr_2019']}" alt="Deyr 2019 timeline"></figure>
+    <figure class="chart"><img src="{F['tl_gu_2024']}" alt="Gu 2024 timeline"></figure>
 
     <h2><span class="num">6</span>Three seasons at all seven points</h2>
     <p>The new model at each station as a share of its own trigger level, the station's gauge dashed as a share of its 1-in-3, the days
