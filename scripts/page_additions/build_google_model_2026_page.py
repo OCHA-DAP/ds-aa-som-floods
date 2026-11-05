@@ -876,9 +876,6 @@ def build():
             F[f"bt_{s}_{b}"] = fig_backtest(R, s, b)
         F[f"tm_{s}"] = fig_timing(R, s)
         F[f"st_{s}"] = fig_stations(ST, s)
-    F["d23"] = fig_season(R, "deyr", 2023)
-    F["d24"] = fig_season(R, "deyr", 2024)
-    F["g24"] = fig_season(R, "gu", 2024)
     F["lv"] = fig_levels()
     for k in (("deyr", 2023), ("deyr", 2019), ("gu", 2024)):
         F[f"tl_{k[0]}_{k[1]}"] = fig_timeline(R, *k)
@@ -1026,18 +1023,11 @@ table.tim th[colspan] {{ text-align:left; }}
     <figure class="chart"><img src="{F['tm_deyr']}" alt="Deyr timing"></figure>
     <figure class="chart"><img src="{F['tm_gu']}" alt="Gu timing"></figure>
 
-    <h2><span class="num">6</span>Three seasons at all seven points</h2>
-    <p>The new model at each station as a share of its own trigger level, the station's gauge dashed as a share of its 1-in-3, the days
-       the threshold was reached (new model, the source running the window today, and the second gauge), and flood exposure in the 14
-       districts where FloodScan covers the season (to 2023). Deyr 2023 and Gu 2024 are the two most recent floods; Deyr 2024 is the
-       severe Shabelle season the new model did not reach.</p>
-    <figure class="chart"><img src="{F['d23']}" alt="Deyr 2023, all points"></figure>
-    <figure class="chart"><img src="{F['d24']}" alt="Deyr 2024, all points"></figure>
-    <figure class="chart"><img src="{F['g24']}" alt="Gu 2024, all points"></figure>
-    <h3>The same seasons day by day</h3>
-    <p>One row per gauge: the first day in the season it crossed its 1-in-3, the first day it crossed its 1-in-5, and its peak. One row per source:
-       the day the threshold was reached on its reanalysis (filled) and the first forecast issue that reached it (hollow). Deyr 2019 is
-       added as the Shabelle's second-worst gauge season.</p>
+    <h2><span class="num">6</span>Three seasons day by day</h2>
+    <p>Deyr 2023 and Gu 2024, the two most recent floods, and Deyr 2019, the Shabelle's second-worst gauge season. One row per gauge:
+       the first day in the season it crossed its 1-in-3, the first day it crossed its 1-in-5, and its peak. One row per source: the
+       day the threshold was reached on its reanalysis (filled) and the first forecast issue that reached it (hollow). Flood exposure in
+       the 14 districts at the bottom where FloodScan covers the season (to 2023).</p>
     <figure class="chart"><img src="{F['tl_deyr_2023']}" alt="Deyr 2023 day by day"></figure>
     <figure class="chart"><img src="{F['tl_deyr_2019']}" alt="Deyr 2019 day by day"></figure>
     <figure class="chart"><img src="{F['tl_gu_2024']}" alt="Gu 2024 day by day"></figure>
