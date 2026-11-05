@@ -477,13 +477,13 @@ def consistency(season, top_n=5):
     return out
 
 
-def fig_ranks():
+def fig_ranks(season):
     """One figure: Deyr and Gu side by side. Rows: the gauges' N_RANK worst seasons on each river,
     Juba then Shabelle. Columns: the gauges and the four models. Each model cell carries the season's
     rank on the model's reanalysis (large, coloured) and on its forecast archive (small, below)."""
     models = [NEW, "google_grrr", "glofas_v4", "glofas_v5"]
-    fig, axes = plt.subplots(1, 2, figsize=(14.0, 0.56 * 2 * N_RANK + 2.6))
-    for ax, season in zip(axes, ("deyr", "gu")):
+    fig, ax = plt.subplots(figsize=(10.5, 0.56 * 2 * N_RANK + 2.4))
+    for _ in (season,):
         ms = [m for m in models if m in MODELS[season]]
         rows, ra_mat, fc_mat, ylab = [], [], [], []
         n_ra, n_fc = {}, {}
@@ -528,11 +528,10 @@ def fig_ranks():
         ax.grid(which="minor", color="white", linewidth=1.4)
         ax.tick_params(which="minor", length=0)
         ax.axhline(rows.count("juba") - 0.5, color=INK, linewidth=1.2)
-        ax.set_title(SEASON_TITLE[season], fontsize=12)
-    fig.suptitle(f"The {N_RANK} worst gauge seasons on each river and each source's own rank of them (1 = highest; small print: rank on the forecasts)",
-                 x=0.02, ha="left", fontsize=11.5)
-    fig.subplots_adjust(wspace=0.5, top=0.9, bottom=0.12)
-    return save(fig, "ranks")
+    ax.set_title(f"{SEASON_TITLE[season]}: the {N_RANK} worst gauge seasons on each river and each source's own rank of them "
+                 "(1 = highest; small print: rank on the forecasts)", fontsize=11.5)
+    fig.subplots_adjust(top=0.9, bottom=0.12)
+    return save(fig, f"ranks_{season}")
 
 
 # ------------------------------------------------------------ figure: scale of the levels
@@ -671,7 +670,7 @@ def build():
     F["d24"] = fig_season(R, "deyr", 2024)
     F["g24"] = fig_season(R, "gu", 2024)
     F["lv"] = fig_levels()
-    F["rk"] = fig_ranks()
+    F["rk_deyr"], F["rk_gu"] = fig_ranks("deyr"), fig_ranks("gu")
     C = {s: consistency(s) for s in ("deyr", "gu")}
     cons_txt = lambda xs: ", ".join(xs) if xs else "none"
     T = {s: score_table(R, s) for s in ("deyr", "gu")}
@@ -770,12 +769,14 @@ table.data .y {{ display:block; font-size:11px; color:var(--n7); }}
     <h2><span class="num">1</span>The worst floods first: the benchmark</h2>
     <p>The gauges' five worst seasons, worst first, and the rank each source gives the same seasons in its own record. A season's
        index is the level its second-highest station reached, as a share of that station's own 1-in-3 on that source.</p>
-    <figure class="chart"><img src="{F['rk']}" alt="Seasons ranked by each source">
+    <figure class="chart"><img src="{F['rk_deyr']}" alt="Deyr, seasons ranked by each source">
       <figcaption>Row label: the second gauge's peak as a share of its 1-in-3. Column label: seasons in the record, reanalysis / forecasts.
-        In the top five of every source that covers the season. Deyr: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
-        Gu: Juba {cons_txt(C['gu']['juba'][0])}; Shabelle {cons_txt(C['gu']['shabelle'][0])}.
-        In the top five of fewer than half the sources. Deyr: Juba {cons_txt(C['deyr']['juba'][1])}; Shabelle {cons_txt(C['deyr']['shabelle'][1])}.
-        Gu: Juba {cons_txt(C['gu']['juba'][1])}; Shabelle {cons_txt(C['gu']['shabelle'][1])}. Belet Weyne's Gu record is capped at 8.30 m in six seasons.</figcaption></figure>
+        In the top five of every source that covers the season: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
+        In the top five of fewer than half the sources: Juba {cons_txt(C['deyr']['juba'][1])}; Shabelle {cons_txt(C['deyr']['shabelle'][1])}.</figcaption></figure>
+    <figure class="chart"><img src="{F['rk_gu']}" alt="Gu, seasons ranked by each source">
+      <figcaption>In the top five of every source that covers the season: Juba {cons_txt(C['gu']['juba'][0])}; Shabelle {cons_txt(C['gu']['shabelle'][0])}.
+        In the top five of fewer than half the sources: Juba {cons_txt(C['gu']['juba'][1])}; Shabelle {cons_txt(C['gu']['shabelle'][1])}.
+        Belet Weyne's Gu record is capped at 8.30 m in six seasons.</figcaption></figure>
 
     <h2><span class="num">2</span>Deyr, season by season</h2>
     <figure class="chart"><img src="{F['bt_deyr_ra']}" alt="Deyr, reanalysis, season by season"><figcaption>Reanalysis. One row per model and river, one cell per season.</figcaption></figure>
