@@ -962,20 +962,30 @@ def fw_score(F, keys, basis, span):
 
 
 def framework_html(F):
+    """One table: level, activation years, floods not reached, activations with no flood, timing. One
+    score table for the combined scopes. Two notes: the forecast replay and the station levels."""
     name = lambda k: f"{k[0].title()} {k[1].title()}"
-    # A. levels and years
-    a = ["<table class='data'><thead><tr><th>River, season</th><th>Level</th><th>Station levels, m³/s</th><th>Reanalysis activations<span class='y'>1999 to 2023</span></th>"
-         "<th>Forecast activations<span class='y'>2016 to 2025</span></th><th>1-in-5 gauge floods<span class='y'>to 2023</span></th><th>Not reached</th><th>Reached, no 1-in-5 flood</th></tr></thead><tbody>"]
+    half_up = lambda v: int(np.floor(v + 0.5))
+    word = lambda v: "same day" if half_up(v) == 0 else f"{abs(half_up(v))} d {'before' if half_up(v) > 0 else 'after'}"
+    a = ["<table class='data'><thead><tr><th>River, season</th><th>Level</th><th>Activations<span class='y'>reanalysis 1999 to 2023</span></th>"
+         "<th>1-in-5 gauge floods not reached</th><th>Reached, no 1-in-5 flood</th><th>Timing, mean<span class='y'>against the second gauge's 1-in-3; reanalysis / forecasts</span></th></tr></thead><tbody>"]
+    fc_note = []
     for k, x in F.items():
-        sev = sorted(x["sev"] & x["assess"] & set(range(SCORE_RA[0], SCORE_RA[1] + 1)))
-        ra23 = {y for y in x["ra"] if y <= SCORE_RA[1]} & x["assess"]
-        a.append(f"<tr><td>{name(k)}</td><td>1-in-{x['rp']}</td><td>{', '.join(f'{NAME[st]} {v:.0f}' for st, v in x['thr'].items())}</td>"
-                 f"<td>{yrs(x['ra'])}</td><td>{yrs(x['fc'])}</td><td>{yrs(sev)}</td><td>{yrs(set(sev) - ra23)}</td><td>{yrs(ra23 - set(sev))}</td></tr>")
+        scored = set(range(SCORE_RA[0], SCORE_RA[1] + 1)) & x["assess"]
+        sev = x["sev"] & scored
+        ra23 = set(x["ra"]) & scored
+        d_ra = [-(x["ra"][y] - x["bench"][y]).days for y in ra23 if ok(x["bench"].get(y))]
+        d_fc = [-(x["fc"][y] - x["bench"][y]).days for y in x["fc"] if y <= SCORE_RA[1] and ok(x["bench"].get(y))]
+        tm = (word(float(np.mean(d_ra))) if d_ra else "none") + " / " + (word(float(np.mean(d_fc))) if d_fc else "none")
+        a.append(f"<tr><td>{name(k)}</td><td>1-in-{x['rp']}</td><td>{yrs(x['ra'])}</td><td>{yrs(sev - ra23)}</td><td>{yrs(ra23 - sev)}</td><td>{tm}</td></tr>")
+        ra16 = {y for y in x["ra"] if y >= FRAMEWORK_FC_SPAN[0]}
+        extra, missing = set(x["fc"]) - ra16, ra16 - set(x["fc"])
+        if extra or missing:
+            fc_note.append(f"{name(k)}: " + "; ".join(filter(None, [f"forecasts add {yrs(extra)}" if extra else "", f"forecasts do not reach {yrs(missing)}" if missing else ""])))
     a.append("</tbody></table>")
-    # B. scores
     b_ = ["<table class='data'><thead><tr><th rowspan='2'>Scope</th><th colspan='3'>Reanalysis, seasons with a gauge record to 2023</th><th colspan='3'>Forecasts 2016 to 2023</th></tr>"
           "<tr><th>POD</th><th>FAR</th><th>F1</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>"]
-    scopes = [(name(k), [k]) for k in F] + [("Deyr, both rivers", [k for k in F if k[1] == "deyr"]), ("Gu, both rivers", [k for k in F if k[1] == "gu"]), ("Either season, either river", list(F))]
+    scopes = [("Deyr, both rivers", [k for k in F if k[1] == "deyr"]), ("Gu, both rivers", [k for k in F if k[1] == "gu"]), ("Either season, either river", list(F))]
     for lab, keys in scopes:
         cells = [f"<td>{lab}</td>"]
         for basis, span in (("ra", SCORE_RA), ("fc", SCORE_FC)):
@@ -984,34 +994,9 @@ def framework_html(F):
                          f"<td>{num(sc_['FAR'])}<span class='y'>{len(sc_['false'])} of {len(sc_['reached'])}</span></td><td>{num(sc_['F1'])}</td>")
         b_.append("<tr>" + "".join(cells) + "</tr>")
     b_.append("</tbody></table>")
-    # C. timing
-    c = ["<table class='data'><thead><tr><th>River, season</th><th>Year</th><th>Second gauge over its 1-in-3</th><th>Reanalysis</th><th>Forecasts<span class='y'>first issue</span></th></tr></thead><tbody>"]
-    diffs = {"ra": [], "fc": []}
-    for k, x in F.items():
-        for y in sorted(set(x["ra"]) | set(x["fc"])):
-            bd = x["bench"].get(y)
-            cells = [f"<td>{name(k)}</td><td>{y}</td><td>{fmt(bd) if ok(bd) else 'never'}</td>"]
-            for basis in ("ra", "fc"):
-                d = x[basis].get(y)
-                if basis == "fc" and y < FRAMEWORK_FC_SPAN[0]:
-                    cells.append("<td class='muted'>no archive</td>")
-                elif not ok(d):
-                    cells.append("<td class='muted'>not reached</td>")
-                elif not ok(bd):
-                    cells.append(f"<td>{fmt(d)}</td>")
-                else:
-                    n = (d - bd).days
-                    if y <= SCORE_RA[1]:
-                        diffs[basis].append(-n)
-                    lab = "same day" if n == 0 else f"{abs(n)} d " + ("before" if n < 0 else "after")
-                    cells.append(f"<td>{fmt(d)}<span class='y'>{lab}</span></td>")
-            c.append("<tr>" + "".join(cells) + "</tr>")
-    c.append("</tbody></table>")
-    half_up = lambda v: int(np.floor(v + 0.5))
-    word = lambda v: "same day" if half_up(v) == 0 else f"{abs(half_up(v))} d {'before' if half_up(v) > 0 else 'after'}"
-    mean_txt = "; ".join(f"{'reanalysis' if b == 'ra' else 'forecasts'}: mean {word(float(np.mean(v)))}, median {word(float(np.median(v)))} over {len(v)} activations"
-                         for b, v in diffs.items() if v)
-    return "\n".join(a), "\n".join(b_), "\n".join(c), mean_txt
+    fc_txt = ("Forecasts 2016 to 2025 reproduce every reanalysis activation from 2016" + (" except: " + "; ".join(fc_note) if fc_note else "") + ".")
+    lv_txt = "Levels, m³/s: " + "; ".join(f"{name(k)} " + ", ".join(f"{NAME[st]} {v:.0f}" for st, v in x["thr"].items()) for k, x in F.items()) + "."
+    return "\n".join(a), "\n".join(b_), fc_txt, lv_txt
 
 
 def compare_table(R):
@@ -1177,7 +1162,7 @@ def build():
     SPAN_TXT = span_text(R)
     CMP = compare_table(R)
     FW = framework(R)
-    FW_A, FW_B, FW_C, FW_MEAN = framework_html(FW)
+    FW_A, FW_B, FW_FC, FW_LV = framework_html(FW)
     fw_deyr = {y for k, x in FW.items() if k[1] == "deyr" for y in x["ra"] if y <= SCORE_RA[1]}
     fw_gu = {y for k, x in FW.items() if k[1] == "gu" for y in x["ra"] if y <= SCORE_RA[1]}
     FW_SEASONS = (f"Deyr {yrs(fw_deyr)}; Gu {yrs(fw_gu)}: {len(fw_deyr) + len(fw_gu)} season activations in {len(YEARS) - 2} years, one per "
@@ -1301,12 +1286,9 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        activations in 25 years (one activation per season in which either river reaches its threshold), with the Juba stricter than the Shabelle,
        scored against the two-gauge 1-in-5 floods. The levels are on the new model's own scale.</p>
     <div class="tablewrap">{FW_A}</div>
-    <p class="note">{FW_SEASONS}</p>
+    <p class="note">{FW_SEASONS} {FW_FC} {FW_LV}</p>
     <h3>POD, FAR and F1 against the 1-in-5 gauge floods</h3>
     <div class="tablewrap">{FW_B}</div>
-    <h3>Timing against the second gauge crossing its 1-in-3</h3>
-    <div class="tablewrap">{FW_C}</div>
-    <p class="note">Activations to 2023 with a gauge crossing, {FW_MEAN}.</p>
 
     <h2><span class="num">2</span>Key takeaways</h2>
     <ul class="takeaways">
