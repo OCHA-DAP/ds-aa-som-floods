@@ -886,7 +886,7 @@ def fig_stations(S, season):
     nsev = {st: int(S[(S.season == season) & (S.station == st)].n_severe.iloc[0]) for st in sts}
     ylab = [f"{NAME[s]} ({nsev[s]} severe)" for s in sts]
     fig, axes = plt.subplots(1, 3, figsize=(12.4, 0.5 * len(sts) + 2.3))
-    for ax, met, title in zip(axes, ["POD", "FAR", "F1"], ["POD: share of severe floods\nwith the threshold reached", "FAR: share of threshold seasons\nwith no gauge flood", "F1"]):
+    for ax, met, title in zip(axes, ["POD", "FAR", "F1"], ["POD", "FAR", "F1"]):
         mat = [[float(S[(S.season == season) & (S.station == st) & (S.model == m)][met].iloc[0]) for m in ms] for st in sts]
         heat(ax, mat, [SHORT[m].replace(", ", chr(10)) for m in ms], ylab if met == "POD" else [""] * len(sts), cmap="Greens")
         ax.set_title(title + "\n(dark = high)", fontsize=9.5)
@@ -911,8 +911,7 @@ def score_table(R, season):
     """One table per season: a row per source and record, the two rivers side by side."""
     hdr = ("<table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th>"
            "<th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr>"
-           "<tr><th>POD<span class='y'>severe floods, threshold reached</span></th><th>FAR<span class='y'>threshold reached, no gauge flood</span></th><th>F1</th>"
-           "<th>POD<span class='y'>severe floods, threshold reached</span></th><th>FAR<span class='y'>threshold reached, no gauge flood</span></th><th>F1</th></tr></thead><tbody>")
+           "<tr><th>POD</th><th>FAR</th><th>F1</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>")
     out = [hdr]
     for m in MODELS[season]:
         for basis, span in (("ra", SCORE_RA), ("fc", SCORE_FC)):
@@ -1227,8 +1226,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
          own levels on its 1999 to 2023 seasonal maxima). Scores: seasons with a gauge record, 2001 to 2023 on the Juba in Deyr and 2002 to 2023
          otherwise, on the reanalysis; {rng(SCORE_FC)} on the forecasts (Google, current in Deyr: 2016 to 2022).</p>
       <p><strong>Gauge benchmark:</strong> a flood is two SWALIM gauges on the same river over their own 1-in-3 level; a severe flood is over the 1-in-5.
-         Gauge data run to July 2026. <strong>Scores:</strong> POD, the share of severe floods with the threshold reached; FAR, the share of
-         threshold seasons with no gauge flood; F1, the harmonic mean of POD and 1 minus FAR.</p>
+         Gauge data run to July 2026. Scores are POD on severe floods, FAR on seasons with no gauge flood, and F1.</p>
     </div>
 
     <h2><span class="num">1</span>Key takeaways</h2>

@@ -69,8 +69,7 @@ table.data td.top { background:rgba(30,121,95,.12); }
          own levels on its 1999 to 2023 seasonal maxima). Scores: seasons with a gauge record, 2001 to 2023 on the Juba in Deyr and 2002 to 2023
          otherwise, on the reanalysis; 2016 to 2023 on the forecasts (Google, current in Deyr: 2016 to 2022).</p>
       <p><strong>Gauge benchmark:</strong> a flood is two SWALIM gauges on the same river over their own 1-in-3 level; a severe flood is over the 1-in-5.
-         Gauge data run to July 2026. <strong>Scores:</strong> POD, the share of severe floods with the threshold reached; FAR, the share of
-         threshold seasons with no gauge flood; F1, the harmonic mean of POD and 1 minus FAR.</p>
+         Gauge data run to July 2026. Scores are POD on severe floods, FAR on seasons with no gauge flood, and F1.</p>
     </div>
 
     <h2><span class="num">1</span>Key takeaways</h2>
@@ -134,7 +133,7 @@ table.data td.top { background:rgba(30,121,95,.12); }
     <h3>Deyr</h3>
     <figure class="chart"><img src="figures/backtest_deyr_ra.svg" alt="Deyr, reanalysis, outcome by season"><figcaption>Deyr, reanalysis.</figcaption></figure>
     <figure class="chart"><img src="figures/backtest_deyr_fc.svg" alt="Deyr, forecasts, outcome by season"><figcaption>Deyr, forecasts: first issue reaching the threshold, leads 1 to 7 days.</figcaption></figure>
-    <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th><th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr><tr><th>POD<span class='y'>severe floods, threshold reached</span></th><th>FAR<span class='y'>threshold reached, no gauge flood</span></th><th>F1</th><th>POD<span class='y'>severe floods, threshold reached</span></th><th>FAR<span class='y'>threshold reached, no gauge flood</span></th><th>F1</th></tr></thead><tbody>
+    <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th><th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr><tr><th>POD</th><th>FAR</th><th>F1</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
 <tr><td>Google, new</td><td class='muted'>reanalysis</td><td>0.33<span class='y'>1 of 3</span></td><td>0.25<span class='y'>1 of 4 seasons</span></td><td>0.46</td><td>0.80<span class='y'>4 of 5</span></td><td>0.20<span class='y'>1 of 5 seasons</span></td><td>0.80</td></tr>
 <tr><td>Google, new</td><td class='muted'>forecasts</td><td>1.00<span class='y'>1 of 1</span></td><td>0.33<span class='y'>1 of 3 seasons</span></td><td>0.80</td><td>1.00<span class='y'>3 of 3</span></td><td>0.00<span class='y'>0 of 3 seasons</span></td><td>1.00</td></tr>
 <tr><td>Google, current</td><td class='muted'>reanalysis</td><td>0.67<span class='y'>2 of 3</span></td><td>0.25<span class='y'>1 of 4 seasons</span></td><td>0.71</td><td>0.80<span class='y'>4 of 5</span></td><td>0.00<span class='y'>0 of 5 seasons</span></td><td>0.89</td></tr>
@@ -147,7 +146,7 @@ table.data td.top { background:rgba(30,121,95,.12); }
     <h3>Gu</h3>
     <figure class="chart"><img src="figures/backtest_gu_ra.svg" alt="Gu, reanalysis, outcome by season"><figcaption>Gu, reanalysis.</figcaption></figure>
     <figure class="chart"><img src="figures/backtest_gu_fc.svg" alt="Gu, forecasts, outcome by season"><figcaption>Gu, forecasts: first issue reaching the threshold, leads 1 to 7 days.</figcaption></figure>
-    <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th><th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr><tr><th>POD<span class='y'>severe floods, threshold reached</span></th><th>FAR<span class='y'>threshold reached, no gauge flood</span></th><th>F1</th><th>POD<span class='y'>severe floods, threshold reached</span></th><th>FAR<span class='y'>threshold reached, no gauge flood</span></th><th>F1</th></tr></thead><tbody>
+    <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th><th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr><tr><th>POD</th><th>FAR</th><th>F1</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
 <tr><td>Google, new</td><td class='muted'>reanalysis</td><td>0.67<span class='y'>2 of 3</span></td><td>0.00<span class='y'>0 of 3 seasons</span></td><td>0.80</td><td>1.00<span class='y'>3 of 3</span></td><td>0.00<span class='y'>0 of 4 seasons</span></td><td>1.00</td></tr>
 <tr><td>Google, new</td><td class='muted'>forecasts</td><td>0.67<span class='y'>2 of 3</span></td><td>0.00<span class='y'>0 of 3 seasons</span></td><td>0.80</td><td>1.00<span class='y'>3 of 3</span></td><td>0.00<span class='y'>0 of 4 seasons</span></td><td>1.00</td></tr>
 <tr><td>Google, current</td><td class='muted'>reanalysis</td><td>0.67<span class='y'>2 of 3</span></td><td>0.25<span class='y'>1 of 4 seasons</span></td><td>0.71</td><td>0.67<span class='y'>2 of 3</span></td><td>0.25<span class='y'>1 of 4 seasons</span></td><td>0.71</td></tr>
