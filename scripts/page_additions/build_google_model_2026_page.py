@@ -315,8 +315,8 @@ def fig_timing(R, season):
             if abs(n) > 38:
                 lab += " (bar cut)"
             ax.text(x + (1.2 if n >= 0 else -1.2), yb, lab, va="center", ha="left" if n >= 0 else "right", fontsize=8, color=BODY, zorder=5)
-        ylabels.append((yc, f"{SHORT[m]}"))
-    ax.set_yticks([yc for yc, _ in ylabels], [lab for _, lab in ylabels], fontsize=9)
+        ax.text(-38, yc, SHORT[m], ha="left", va="center", fontsize=9, color=BODY, zorder=5)
+    ax.set_yticks([])
     ax.set_ylim(-0.7, ymax + 0.8)
     ax.set_xlim(-40, 40)
     ax.set_xticks([-30, -20, -10, 0, 10, 20, 30], ["30 before", "20", "10", "0", "10", "20", "30 after"])
@@ -328,7 +328,7 @@ def fig_timing(R, season):
           Rectangle((0, 0), 1, 1, facecolor=BODY, alpha=0.45, label="light: forecasts, first issue at leads 1 to 7")]
     ax.legend(handles=Hh, ncol=2, fontsize=9, loc="upper center", bbox_to_anchor=(0.5, -0.05), frameon=False)
     ax.set_title(f"{SEASON_TITLE[season]}: the gauges' {N_RANK} worst seasons per river", fontsize=12, pad=26)
-    fig.subplots_adjust(left=0.16)
+    fig.subplots_adjust(left=0.04, right=0.98)
     return save(fig, f"timing_{season}")
 
 
