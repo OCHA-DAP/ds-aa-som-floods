@@ -343,7 +343,7 @@ def fig_timeline(R, season, year):
             else:
                 pk = s.loc[s.level_m.idxmax(), "date"]
                 ax.scatter(pk, yc, s=170, marker="|", color=INK, linewidths=1.8, zorder=4)
-                ax.text(pk, yc - 0.2, f"peak {pk:%d %b}", ha="center", va="top", fontsize=7.5, color=INK)
+                ax.text(pk + pd.Timedelta(days=1), yc, f"peak {pk:%d %b}", ha="left", va="center", fontsize=7.5, color=INK)
                 for lev, marker, lab in ((g3[st], "o", "1-in-3"), (g5[st], "D", "1-in-5")):
                     if np.isnan(lev):
                         continue
@@ -351,7 +351,7 @@ def fig_timeline(R, season, year):
                     if len(c):
                         d = c.date.iloc[0]
                         ax.scatter(d, yc, s=70 if marker == "o" else 60, marker=marker, color=sc_colour(st), edgecolors="white", linewidths=0.8, zorder=5)
-                        ax.text(d, yc + 0.2, f"{lab} {d:%d %b}", ha="center", va="bottom", fontsize=7.5, color=sc_colour(st))
+                        ax.text(d, yc + (0.2 if marker == "o" else -0.2), f"{lab} {d:%d %b}", ha="center", va="bottom" if marker == "o" else "top", fontsize=7.5, color=sc_colour(st))
                     else:
                         notes.append(f"{lab} not reached")
             if notes:
