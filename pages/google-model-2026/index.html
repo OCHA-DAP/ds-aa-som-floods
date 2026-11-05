@@ -30,6 +30,9 @@ figure.chart figcaption { font-size:13px; color:#55606d; line-height:1.55; margi
 .callout p:last-child { margin:0; }
 .callout b { color:var(--n9); }
 .tablewrap { overflow-x:auto; }
+.takeaways { margin:18px 0 6px; padding:0; list-style:none; }
+.takeaways li { border-left:3px solid var(--b1); padding:0 0 0 14px; margin:0 0 14px; font-size:14px; }
+.takeaways b { color:var(--n9); }
 .pair { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
 @media (max-width:760px) { .pair { grid-template-columns:1fr; } }
 table.data { border-collapse:collapse; width:100%; margin:16px 0 22px; font-size:13px; }
@@ -70,7 +73,19 @@ table.tim th[colspan] { text-align:left; }
       <p><b>Gauges:</b> a flood is two SWALIM gauges on the river at their own 1-in-3 level, severe at 1-in-5. Gauge data run to July 2026.</p>
     </div>
 
-    <h2><span class="num">1</span>The worst floods first: the benchmark</h2>
+    <h2><span class="num">1</span>Findings</h2>
+    <ul class="takeaways">
+<li><b>Seasons every source that covers them ranks among its five worst</b> (at least three sources). Deyr: Juba 2023; Shabelle 2019. Gu: Juba 2018, 2020; Shabelle 2018.</li>
+<li><b>Deyr, reanalysis 1999 to 2023, severe seasons with the threshold reached.</b> Juba (3 severe): Google, new 1 of 3 with 2 no-flood; Google, current 2 of 3 with 2 no-flood; GloFAS v4 2 of 3 with 3 no-flood; GloFAS v5 2 of 3. Shabelle (5 severe): Google, new 4 of 5 with 1 no-flood; Google, current 4 of 5; GloFAS v4 3 of 5 with 2 no-flood; GloFAS v5 4 of 5.</li>
+<li><b>Deyr, forecasts 2016 to 2023, severe seasons with the threshold reached.</b> Juba (1 severe): Google, new 1 of 1 with 2 no-flood; Google, current 0 of 0 with 1 no-flood; GloFAS v4 1 of 1. Shabelle (3 severe): Google, new 3 of 3; Google, current 1 of 2; GloFAS v4 2 of 3.</li>
+<li><b>Gu, reanalysis 1999 to 2023, severe seasons with the threshold reached.</b> Juba (3 severe): Google, new 2 of 3; Google, current 2 of 3 with 1 no-flood; GloFAS v4 2 of 3. Shabelle (3 severe): Google, new 3 of 3; Google, current 2 of 3 with 1 no-flood; GloFAS v4 1 of 3.</li>
+<li><b>Gu, forecasts 2016 to 2023, severe seasons with the threshold reached.</b> Juba (3 severe): Google, new 2 of 3; Google, current 2 of 3; GloFAS v4 2 of 3. Shabelle (3 severe): Google, new 3 of 3; Google, current 3 of 3; GloFAS v4 1 of 3.</li>
+<li><b>Deyr 2023, days between the threshold and the gauges confirming the flood.</b> Juba (gauges 25 Oct): GloFAS v4 4 days before on its forecasts; new model 3 days after on its forecasts, 9 days after on its reanalysis; current Google 6 days after on its reanalysis, no forecast archive. Shabelle (gauges 06 Nov): GloFAS v4 not reached; current Google 5 days before on its reanalysis; new model 3 days before on its forecasts, 3 days after on its reanalysis.</li>
+<li><b>The new model after 2023.</b> Deyr 2024: threshold not reached on both records; gauges: Juba flood, Shabelle severe. Gu 2024: threshold reached on the Juba on both records; gauges: Juba flood, Shabelle severe. Deyr 2025: threshold not reached on both records; gauges: Juba nothing, Shabelle nothing. Gu 2025: threshold not reached on both records; gauges: Juba no gauge record, Shabelle nothing.</li>
+<li><b>Scale.</b> The new model's trigger levels are 2.0 to 2.6 times the current Google model's on the Juba in Deyr, 1.7 to 1.9 times on the Shabelle; in Gu 1.7 to 2.2 and 1.2 to 1.3.</li>
+    </ul>
+
+    <h2><span class="num">2</span>The worst floods first: the benchmark</h2>
     <p>The gauges' five worst seasons, worst first, and the rank each source gives the same seasons in its own record (1 is that
        source's highest; reanalysis / forecasts). A season's index is the level its second-highest station reached, as a share of
        that station's own 1-in-3 on that source.</p>
@@ -110,7 +125,7 @@ table.tim th[colspan] { text-align:left; }
        In the top five of fewer than half: Juba none; Shabelle 2024 (0 of 2). Belet Weyne's Gu record is capped at 8.30 m in six seasons.
        Shaded cells: ranked in that source's top five on its reanalysis.</p>
 
-    <h2><span class="num">2</span>Deyr, season by season</h2>
+    <h2><span class="num">3</span>Deyr, season by season</h2>
     <figure class="chart"><img src="figures/backtest_deyr_ra.svg" alt="Deyr, reanalysis, season by season"><figcaption>Reanalysis. One row per model and river, one cell per season; blank cells are seasons outside the record or without a gauge record.</figcaption></figure>
     <figure class="chart"><img src="figures/backtest_deyr_fc.svg" alt="Deyr, forecasts, season by season"><figcaption>Forecasts, leads 1 to 7. Blank cells are seasons outside the archive or without a gauge record; the tallies count 2016 to 2023.</figcaption></figure>
     <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th><th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr><tr><th>severe caught</th><th>no gauge flood</th><th>F1</th><th>severe caught</th><th>no gauge flood</th><th>F1</th></tr></thead><tbody>
@@ -126,7 +141,7 @@ table.tim th[colspan] { text-align:left; }
        No gauge flood: seasons with the threshold reached and no flood at the gauges. F1 combines the share of severe seasons caught with the share of threshold-reached seasons that had a gauge flood; the years are in <code>data.json</code>.</p>
     <p class="muted" style="font-size:13px">New model, Deyr 2024: threshold not reached on both records; gauges: Juba flood, Shabelle severe. Deyr 2025: threshold not reached on both records; gauges: Juba nothing, Shabelle nothing.</p>
 
-    <h2><span class="num">3</span>Gu, season by season</h2>
+    <h2><span class="num">4</span>Gu, season by season</h2>
     <figure class="chart"><img src="figures/backtest_gu_ra.svg" alt="Gu, reanalysis, season by season"><figcaption>Reanalysis.</figcaption></figure>
     <figure class="chart"><img src="figures/backtest_gu_fc.svg" alt="Gu, forecasts, season by season"><figcaption>Forecasts, leads 1 to 7.</figcaption></figure>
     <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th><th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr><tr><th>severe caught</th><th>no gauge flood</th><th>F1</th><th>severe caught</th><th>no gauge flood</th><th>F1</th></tr></thead><tbody>
@@ -139,7 +154,7 @@ table.tim th[colspan] { text-align:left; }
 </tbody></table></div>
     <p class="muted" style="font-size:13px">New model, Gu 2024: threshold reached on the Juba on both records; gauges: Juba flood, Shabelle severe. Gu 2025: threshold not reached on both records; gauges: Juba no gauge record, Shabelle nothing.</p>
 
-    <h2><span class="num">4</span>Timing against the gauges</h2>
+    <h2><span class="num">5</span>Timing against the gauges</h2>
     <p>How early each source reached the threshold, season by season. Rows are the seasons in the worst third of the gauge ranking that
        had a gauge flood, ordered by gauge rank, Juba above the line and Shabelle below. The vertical line at zero is the day the river's
        second gauge crossed its 1-in-3 level. A dot to the right of it (green) means that source reached the threshold that many days
@@ -179,7 +194,7 @@ table.tim th[colspan] { text-align:left; }
 <tr><td>GloFAS v4</td><td class='muted'>no archive</td><td class='muted'>no archive</td><td class='muted'>no archive</td><td class='muted'>no archive</td></tr>
 </tbody></table></div>
 
-    <h2><span class="num">5</span>Three seasons at all seven points</h2>
+    <h2><span class="num">6</span>Three seasons at all seven points</h2>
     <p>The new model at each station as a share of its own trigger level, the station's gauge dashed as a share of its 1-in-3, the days
        the threshold was reached (new model, the source running the window today, and the second gauge), and flood exposure in the 14
        districts where FloodScan covers the season (to 2023). Deyr 2023 and Gu 2024 are the two most recent floods; Deyr 2024 is the
@@ -188,12 +203,12 @@ table.tim th[colspan] { text-align:left; }
     <figure class="chart"><img src="figures/season_deyr_2024.svg" alt="Deyr 2024, all points"></figure>
     <figure class="chart"><img src="figures/season_gu_2024.svg" alt="Gu 2024, all points"></figure>
 
-    <h2><span class="num">6</span>Station by station</h2>
+    <h2><span class="num">7</span>Station by station</h2>
     <p>Each point against its own gauge, reanalysis 1999 to 2023; severe is the gauge over its own 1-in-5, a false alarm is the model over its level with the gauge under its 1-in-3.</p>
     <figure class="chart"><img src="figures/stations_deyr.svg" alt="Deyr station scores"><figcaption>Deyr.</figcaption></figure>
     <figure class="chart"><img src="figures/stations_gu.svg" alt="Gu station scores"><figcaption>Gu.</figcaption></figure>
 
-    <h2><span class="num">7</span>The two Google models are on different scales</h2>
+    <h2><span class="num">8</span>The two Google models are on different scales</h2>
     <figure class="chart"><img src="figures/levels.svg" alt="Trigger levels, current against new"><figcaption>The trigger level at each point on the current Google model and on the new one, both fitted the same way.</figcaption></figure>
   </article>
 
