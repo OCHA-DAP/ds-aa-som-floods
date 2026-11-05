@@ -1156,22 +1156,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
 {FIND}
     </ul>
 
-    <h2><span class="num">2</span>Benchmark: the largest floods at the gauges</h2>
-    <p>The five largest gauge floods per river, largest first, and each source's own rank of them (1 = highest; reanalysis / forecasts).
-       Index: the second-highest gauge's peak as a percentage of its own 1-in-{TIMING_RP}; for a model, the same at its stations. Tied seasons share a rank.
-       Shaded cells: top five on the reanalysis. No record: season outside the reanalysis. No archive: no forecast archive. The notes under each table
-       list only seasons covered by at least three records.</p>
-    <h3>Deyr</h3>
-    <div class="tablewrap">{RK['deyr']}</div>
-    <p class="note">In the top five of every record that covers the season: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
-       In the top five of fewer than half: Juba {cons_txt(C['deyr']['juba'][1])}; Shabelle {cons_txt(C['deyr']['shabelle'][1])}.</p>
-    <h3>Gu</h3>
-    <div class="tablewrap">{RK['gu']}</div>
-    <p class="note">In the top five of every record that covers the season: Juba {cons_txt(C['gu']['juba'][0])}; Shabelle {cons_txt(C['gu']['shabelle'][0])}.
-       In the top five of fewer than half: Juba {cons_txt(C['gu']['juba'][1])}; Shabelle {cons_txt(C['gu']['shabelle'][1])}. The Belet Weyne gauge reads no higher than
-       8.30 m, which six Gu seasons reach, so those seasons tie at that gauge.</p>
-
-    <h2><span class="num">3</span>Threshold outcome and scores by season</h2>
+    <h2><span class="num">2</span>Threshold outcome and scores by season</h2>
     <p>Each model's threshold outcome in every season against the gauge benchmark: under each source a reanalysis row and, where an archive exists,
        a forecast row. White cells are seasons outside the model record or without a gauge record. Reanalysis rows are tallied over every season
        with a gauge record, forecast rows between the dotted lines.</p>
@@ -1189,13 +1174,13 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        Google, new first. Shaded where the two differ.</p>
     <div class="tablewrap">{CMP}</div>
 
-    <h2><span class="num">4</span>POD, FAR and F1 by station</h2>
+    <h2><span class="num">3</span>POD, FAR and F1 by station</h2>
     <p>Each station's model against its gauge, reanalysis, seasons with a gauge record to 2023. Here a severe season is that one gauge over its own 1-in-{BENCH_RP},
        not the two-gauge benchmark used elsewhere.</p>
     <figure class="chart"><img src="{F['st_deyr']}" alt="Deyr, POD, FAR and F1 per station"><figcaption>Deyr.</figcaption></figure>
     <figure class="chart"><img src="{F['st_gu']}" alt="Gu, POD, FAR and F1 per station"><figcaption>Gu.</figcaption></figure>
 
-    <h2><span class="num">5</span>Correlation with the gauges by station</h2>
+    <h2><span class="num">4</span>Correlation with the gauges by station</h2>
     <p>For each station, the model's daily flow is set against the gauge's daily level in 1-in-3 seasons: seasons in which the gauge went over its
        own 1-in-3 level or the model went over its own, among seasons with a gauge record to 2023. Spearman rank correlation orders the days by
        model flow and, separately, by gauge level, and measures how far the two orders agree: 1 means the model's highest days are the gauge's
@@ -1205,6 +1190,21 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        not whether a threshold is reached.</p>
     <figure class="chart"><img src="{F['corr']}" alt="Correlation with the gauges by station"><figcaption>Deyr and Gu, reanalysis, 1-in-3 seasons with a gauge record to 2023;
        the small figure under each value is the number of seasons.</figcaption></figure>
+
+    <h2><span class="num">5</span>Benchmark: the largest floods at the gauges</h2>
+    <p>The five largest gauge floods per river, largest first, and each source's own rank of them (1 = highest; reanalysis / forecasts).
+       Index: the second-highest gauge's peak as a percentage of its own 1-in-{TIMING_RP}; for a model, the same at its stations. Tied seasons share a rank.
+       Shaded cells: top five on the reanalysis. No record: season outside the reanalysis. No archive: no forecast archive. The notes under each table
+       list only seasons covered by at least three records.</p>
+    <h3>Deyr</h3>
+    <div class="tablewrap">{RK['deyr']}</div>
+    <p class="note">In the top five of every record that covers the season: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
+       In the top five of fewer than half: Juba {cons_txt(C['deyr']['juba'][1])}; Shabelle {cons_txt(C['deyr']['shabelle'][1])}.</p>
+    <h3>Gu</h3>
+    <div class="tablewrap">{RK['gu']}</div>
+    <p class="note">In the top five of every record that covers the season: Juba {cons_txt(C['gu']['juba'][0])}; Shabelle {cons_txt(C['gu']['shabelle'][0])}.
+       In the top five of fewer than half: Juba {cons_txt(C['gu']['juba'][1])}; Shabelle {cons_txt(C['gu']['shabelle'][1])}. The Belet Weyne gauge reads no higher than
+       8.30 m, which six Gu seasons reach, so those seasons tie at that gauge.</p>
 
     <h2><span class="num">6</span>Timing against the second gauge crossing its 1-in-3</h2>
     <p>The five largest gauge floods per river. Zero is the day the second gauge crossed its 1-in-3; bars to the left reached the
