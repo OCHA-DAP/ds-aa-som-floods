@@ -493,6 +493,17 @@
      },
      "reanalysis_years": "1999 to 2023",
      "forecast_years": "2003 to 2023"
+    },
+    "glofas_v5": {
+     "reanalysis": {
+      "2010": "2010-05-01",
+      "2016": "2016-05-02",
+      "2018": "2018-04-20",
+      "2020": "2020-04-30"
+     },
+     "forecast": {},
+     "reanalysis_years": "1999 to 2023",
+     "forecast_years": null
     }
    }
   },
@@ -626,6 +637,17 @@
      },
      "reanalysis_years": "1999 to 2023",
      "forecast_years": "2003 to 2023"
+    },
+    "glofas_v5": {
+     "reanalysis": {
+      "2005": "2005-05-26",
+      "2016": "2016-05-15",
+      "2018": "2018-05-07",
+      "2020": "2020-05-03"
+     },
+     "forecast": {},
+     "reanalysis_years": "1999 to 2023",
+     "forecast_years": null
     }
    }
   }
@@ -1388,6 +1410,40 @@
    "F1": 0.8
   },
   {
+   "river": "juba",
+   "season": "gu",
+   "model": "glofas_v5",
+   "basis": "ra",
+   "span": "1999 to 2023",
+   "n_years": 22,
+   "threshold_reached": [
+    2010,
+    2016,
+    2018,
+    2020
+   ],
+   "severe": [
+    2018,
+    2020,
+    2023
+   ],
+   "caught": [
+    2018,
+    2020
+   ],
+   "ordinary": [
+    2010,
+    2016
+   ],
+   "false": [],
+   "missed_severe": [
+    2023
+   ],
+   "POD": 0.6666666666666666,
+   "FAR": 0.0,
+   "F1": 0.8
+  },
+  {
    "river": "shabelle",
    "season": "gu",
    "model": "grrr_2026_11",
@@ -1618,6 +1674,40 @@
    "POD": 0.3333333333333333,
    "FAR": 0.0,
    "F1": 0.5
+  },
+  {
+   "river": "shabelle",
+   "season": "gu",
+   "model": "glofas_v5",
+   "basis": "ra",
+   "span": "1999 to 2023",
+   "n_years": 22,
+   "threshold_reached": [
+    2005,
+    2016,
+    2018,
+    2020
+   ],
+   "severe": [
+    2016,
+    2020,
+    2023
+   ],
+   "caught": [
+    2016,
+    2020
+   ],
+   "ordinary": [
+    2005,
+    2018
+   ],
+   "false": [],
+   "missed_severe": [
+    2023
+   ],
+   "POD": 0.6666666666666666,
+   "FAR": 0.0,
+   "F1": 0.8
   }
  ],
  "station_scores": [
@@ -1902,6 +1992,15 @@
   },
   {
    "season": "gu",
+   "station": "dollow",
+   "model": "glofas_v5",
+   "n_years": 9,
+   "POD": 1.0,
+   "FAR": 0.3333333333,
+   "F1": 0.8
+  },
+  {
+   "season": "gu",
    "station": "luuq",
    "model": "grrr_2026_11",
    "n_years": 22,
@@ -1929,6 +2028,15 @@
   },
   {
    "season": "gu",
+   "station": "luuq",
+   "model": "glofas_v5",
+   "n_years": 22,
+   "POD": 0.75,
+   "FAR": 0.2,
+   "F1": 0.7741935484
+  },
+  {
+   "season": "gu",
    "station": "bardheere",
    "model": "grrr_2026_11",
    "n_years": 22,
@@ -1949,6 +2057,15 @@
    "season": "gu",
    "station": "bardheere",
    "model": "glofas_v4",
+   "n_years": 22,
+   "POD": 0.5,
+   "FAR": 0.2,
+   "F1": 0.6153846154
+  },
+  {
+   "season": "gu",
+   "station": "bardheere",
+   "model": "glofas_v5",
    "n_years": 22,
    "POD": 0.5,
    "FAR": 0.2,
@@ -1983,6 +2100,15 @@
   },
   {
    "season": "gu",
+   "station": "bualle",
+   "model": "glofas_v5",
+   "n_years": 16,
+   "POD": 0.6666666667,
+   "FAR": 0.2,
+   "F1": 0.7272727273
+  },
+  {
+   "season": "gu",
    "station": "belet_weyne",
    "model": "grrr_2026_11",
    "n_years": 22,
@@ -2007,6 +2133,15 @@
    "POD": 0.25,
    "FAR": 0.0,
    "F1": 0.4
+  },
+  {
+   "season": "gu",
+   "station": "belet_weyne",
+   "model": "glofas_v5",
+   "n_years": 22,
+   "POD": 0.5,
+   "FAR": 0.0,
+   "F1": 0.6666666667
   },
   {
    "season": "gu",
@@ -2037,6 +2172,15 @@
   },
   {
    "season": "gu",
+   "station": "bulo_burti",
+   "model": "glofas_v5",
+   "n_years": 22,
+   "POD": 0.75,
+   "FAR": 0.0,
+   "F1": 0.8571428571
+  },
+  {
+   "season": "gu",
    "station": "jowhar",
    "model": "grrr_2026_11",
    "n_years": 25,
@@ -2061,6 +2205,15 @@
    "POD": 0.1428571429,
    "FAR": 0.75,
    "F1": 0.1818181818
+  },
+  {
+   "season": "gu",
+   "station": "jowhar",
+   "model": "glofas_v5",
+   "n_years": 25,
+   "POD": 0.2857142857,
+   "FAR": 0.5,
+   "F1": 0.3636363636
   }
  ]
 }
