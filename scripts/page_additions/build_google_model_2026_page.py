@@ -245,7 +245,7 @@ def fig_backtest(R, season, basis):
     ax.axhline(len(models) - 0.5, color=INK, linewidth=1.0)
     for edge_year in (span[0] - 0.5, span[1] + 0.5):
         ax.axvline(YEARS.index(int(edge_year + 0.5)) - 0.5, color=INK, linewidth=0.9, ls=":", zorder=4)
-    ax.text(YEARS.index(span[0]) - 0.5, -0.62, f" dotted lines: the tallies on the right count {rng(span)}", ha="left", va="top", fontsize=8.5, color=FAINT)
+    ax.text(YEARS.index(span[0]) - 0.5, -0.62, f" dotted lines: the tallies on the right count the seasons with a gauge record between them ({rng(span)})", ha="left", va="top", fontsize=8.5, color=FAINT)
     ax.set_xlim(-0.6, len(YEARS) + 5.6)
     ax.set_ylim(-1.1, len(lines) - 0.4)
     ax.set_yticks(range(len(lines)), [ln[0] for ln in lines[::-1]], fontsize=10.5)
@@ -353,6 +353,8 @@ def timing_stats(R, season, basis, m):
         mm = rec["models"][m]
         if y not in mm[f"{basis}_years"] or y not in rec["bench"]:
             continue
+        if basis == "fc" and y < SCORE_FC[0]:
+            continue
         n_all += 1
         d = mm[basis].get(y)
         if ok(d):
@@ -419,7 +421,7 @@ def fig_timeline(R, season, year):
                 pk = s.loc[s.level_m.idxmax(), "date"]
                 ax.scatter(pk, yc, s=170, marker="|", color=INK, linewidths=1.8, zorder=4)
                 near_edge = (B - pk).days < 14
-                ax.text(pk + pd.Timedelta(days=-2 if near_edge else 2), yc, f"peak {pk:%d %b}", ha="right" if near_edge else "left", va="center", fontsize=8.5, color=INK)
+                ax.text(pk + pd.Timedelta(days=-3 if near_edge else 3), yc, f"peak {pk:%d %b}", ha="right" if near_edge else "left", va="center", fontsize=8.5, color=INK)
                 first = {}
                 for lab, lev in (("1-in-3", g3[st]), ("1-in-5", g5[st])):
                     c = s[s.level_m >= lev] if not np.isnan(lev) else s.iloc[0:0]
@@ -490,7 +492,7 @@ def fig_timeline(R, season, year):
         ex = sc.exposure()
         ex = ex[(ex.valid_date >= A) & (ex.valid_date <= B)]
         fd, _ = sc.flood_date(season, year)
-        for axe, river_d, colr in ((axes[1], "juba", C_JUBA), (axes[3], "shabelle", C_SHAB)):
+        for axe, river_d, colr in ((axes[1], "juba", "#6B7683"), (axes[3], "shabelle", "#6B7683")):
             e = ex[ex.pcode.isin(DISTRICTS[river_d])].groupby("valid_date")["sum"].sum()
             axe.fill_between(e.index, e.values, color=colr, alpha=0.15, lw=0)
             axe.plot(e.index, e.values, color=colr, lw=1.4)
@@ -900,14 +902,13 @@ def score_table(R, season):
         for basis, span in (("ra", SCORE_RA), ("fc", SCORE_FC)):
             if basis == "fc" and m not in FC_SPAN:
                 continue
-            yr0 = years_of(R[("juba", season)], m, basis) & set(range(span[0], span[1] + 1))
-            cells = [f"<td>{SHORT[m]}</td><td class='muted'>{'reanalysis' if basis == 'ra' else 'forecasts'} {min(yr0)} to {max(yr0)}</td>"]
+            cells = [f"<td>{SHORT[m]}</td><td class='muted'>{'reanalysis' if basis == 'ra' else 'forecasts'}</td>"]
             for river in RIVERS:
                 rec = R[(river, season)]
                 s = score(rec, m, basis, span)
-                cells.append(f"<td{shade(s['POD'])}>{num(s['POD'])}<span class='y'>{len(s['caught'])} of {len(s['severe'])}</span></td>"
-                             f"<td{shade(s['FAR'], True)}>{num(s['FAR'])}<span class='y'>{len(s['false'])} of {len(s['threshold_reached'])} seasons</span></td>"
-                             f"<td{shade(s['F1'])}>{num(s['F1'])}</td>")
+                cells.append(f"<td>{num(s['POD'])}<span class='y'>{len(s['caught'])} of {len(s['severe'])}</span></td>"
+                             f"<td>{num(s['FAR'])}<span class='y'>{len(s['false'])} of {len(s['threshold_reached'])} seasons</span></td>"
+                             f"<td>{num(s['F1'])}</td>")
             out.append("<tr>" + "".join(cells) + "</tr>")
     out.append("</tbody></table>")
     return "\n".join(out)
@@ -945,7 +946,7 @@ def rank_html(season):
 def findings(R, C):
     """Key takeaways: short statements without counts, generated from the same comparisons as the tables."""
     g = lambda s, r, m, b, span: score(R[(r, s)], m, b, span)
-    top = lambda xs: [x.split(" (")[0] for x in xs if int(x.split("(")[1].split()[0]) >= 3]
+    top = lambda xs: [x.split(" (")[0] for x in xs]
     out = []
     agree = []
     for season in ("deyr", "gu"):
@@ -953,7 +954,7 @@ def findings(R, C):
             ys = top(C[season][river][0])
             if ys:
                 agree.append(f"{season.title()} {' and '.join(ys)} on the {river.title()}")
-    out.append("<strong>Largest floods.</strong> Every record that covers them ranks " + "; ".join(agree) + " among the largest gauge floods on that river.")
+    out.append("<strong>Largest floods.</strong> In the top five of every record that covers them: " + "; ".join(agree) + ".")
     miss = []
     for season in ("deyr", "gu"):
         for river in RIVERS:
@@ -998,8 +999,14 @@ def findings(R, C):
         if round(mean) == 0:
             return "on the day the second gauge crossed"
         return ("before" if mean > 0 else "after") + " the second gauge crossed"
-    out.append("<strong>Timing on the forecasts</strong> (mean over the largest gauge floods, seasons with the threshold reached). Deyr: Google, new and GloFAS v4 "
-               f"{when('deyr', NEW)}, GloFAS v4 earlier; Google, current {when('deyr', 'google_grrr')}, on few seasons. Gu: Google, new {when('gu', NEW)}; Google, current {when('gu', 'google_grrr')}; GloFAS v4 {when('gu', 'glofas_v4')}.")
+    def earlier(season):
+        a_, b_ = timing_stats(R, season, "fc", NEW)[0], timing_stats(R, season, "fc", "glofas_v4")[0]
+        if a_ is None or b_ is None:
+            return ""
+        return ", GloFAS v4 earlier" if b_ > a_ else ", Google, new earlier" if a_ > b_ else ", the same on average"
+    out.append("<strong>Timing on the forecasts</strong> (mean over the largest gauge floods from 2016, seasons with the threshold reached). Deyr: Google, new "
+               f"{when('deyr', NEW)}; GloFAS v4 {when('deyr', 'glofas_v4')}{earlier('deyr')}; Google, current {when('deyr', 'google_grrr')}, on few seasons. "
+               f"Gu: Google, new {when('gu', NEW)}; Google, current {when('gu', 'google_grrr')}; GloFAS v4 {when('gu', 'glofas_v4')}.")
     out.append(f"<strong>After 2023.</strong> Deyr 2024, a severe Shabelle flood: threshold not reached by Google, new on either record. Gu 2024: threshold reached on the Juba only; "
                "on the Shabelle, a severe flood, not reached. 2025: threshold not reached in either season.")
     out.append("<strong>Trigger levels.</strong> Google, new levels are higher than Google, current's at every point, by the most on the Juba in Deyr.")
@@ -1073,8 +1080,15 @@ def build():
                     sc.append(dict(river=river, season=season, **score(rec, m, "fc", FC_SPAN[m])))
     levels = {m: {s: {st: round(L.model_threshold(m, st, s, cfg(RIVER_OF[st], s)[0]), 1) for st in STATIONS} for s in ("deyr", "gu")}
               for m in [NEW, "google_grrr", "glofas_v4", "glofas_v5"]}
+    ranks = {}
+    for season in ("deyr", "gu"):
+        for river in RIVERS:
+            P, Rk = rank_table(season, river)
+            ranks[f"{river}_{season}"] = dict(
+                index={str(int(y)): {("gauge" if k == "gauge" else f"{k[0]}_{k[1]}"): (None if pd.isna(v) else round(float(v), 3)) for k, v in P.loc[y].items()} for y in P.index},
+                rank={str(int(y)): {("gauge" if k == "gauge" else f"{k[0]}_{k[1]}"): (None if pd.isna(v) else int(v)) for k, v in Rk.loc[y].items()} for y in Rk.index})
     (OUT / "data.json").write_text(json.dumps(dict(
-        outlets=_read_json("chosen_outlets.json"), trigger_levels=levels, record=dump, scores=sc,
+        outlets=_read_json("chosen_outlets.json"), trigger_levels=levels, record=dump, scores=sc, benchmark_ranks=ranks,
         station_scores=json.loads(ST.to_json(orient="records")),
         correlations=json.loads(CR.to_json(orient="records"))), indent=1, default=str))
 
@@ -1146,8 +1160,8 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
          Archives: GloFAS v4 2003 to 2023, Google, current 2016 to June 2023, Google, new 2016 to 2025, GloFAS v5 none.</p>
       <p><strong>Threshold rule:</strong> three of the four Juba points, or two of the three Shabelle points, over their own level on the
          same day (Juba 1-in-{TRIGGER_CONFIG[('juba','deyr')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','deyr')]['rp']} in Deyr, Juba 1-in-{TRIGGER_CONFIG[('juba','gu')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','gu')]['rp']} in Gu, each model's
-         own levels on its 1999 to 2023 seasonal maxima). Scores: seasons with a gauge record, 2001 to 2023 on the Juba and 2002 to 2023 on the
-         Shabelle, on the reanalysis; {rng(SCORE_FC)} on the forecasts (Google, current in Deyr: 2016 to 2022).</p>
+         own levels on its 1999 to 2023 seasonal maxima). Scores: seasons with a gauge record, 2001 to 2023 on the Juba in Deyr and 2002 to 2023
+         otherwise, on the reanalysis; {rng(SCORE_FC)} on the forecasts (Google, current in Deyr: 2016 to 2022).</p>
       <p><strong>Gauge benchmark:</strong> a flood is two SWALIM gauges on the same river over their own 1-in-3 level; a severe flood is over the 1-in-5.
          Gauge data run to July 2026. <strong>Scores:</strong> POD, the share of severe floods with the threshold reached; FAR, the share of
          threshold seasons with no gauge flood; F1, the harmonic mean of POD and 1 minus FAR.</p>
@@ -1187,7 +1201,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <figure class="chart"><img src="{F['bt_gu_ra']}" alt="Gu, reanalysis, outcome by season"><figcaption>Gu, reanalysis.</figcaption></figure>
     <figure class="chart"><img src="{F['bt_gu_fc']}" alt="Gu, forecasts, outcome by season"><figcaption>Gu, forecasts: first issue reaching the threshold, leads 1 to 7 days.</figcaption></figure>
     <div class="tablewrap">{T['gu']}</div>
-    <p class="note">Read at leads 0 to 6 instead of 1 to 7, Google, current does not reach the threshold in Gu 2023.</p>
+    <p class="note">Read at leads 0 to 6 instead of 1 to 7, Google, current does not reach the threshold in Gu 2023 on the Shabelle.</p>
 
     <h2><span class="num">5</span>Timing against the second gauge crossing its 1-in-3</h2>
     <p>The five largest gauge floods per river. Zero is the day the second gauge crossed its 1-in-3; bars to the left reached the
@@ -1196,7 +1210,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <figure class="chart"><img src="{F['tm_gu']}" alt="Gu timing"><figcaption>Gu.</figcaption></figure>
     <h3>Average timing</h3>
     <p>Mean and median days between the threshold being reached and the second gauge crossing its 1-in-3, over the same seasons,
-       counting only seasons in which the source reached the threshold.</p>
+       counting only seasons in which the source reached the threshold; forecasts from 2016, the years every archive covers.</p>
     <div class="tablewrap">{TS}</div>
 
     <h2><span class="num">6</span>Event chronologies: Deyr 2023, Deyr 2019, Gu 2024</h2>
@@ -1222,8 +1236,9 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <ul class="notes">
       <li>Source: Google Runoff Reanalysis and Reforecast, November 2026 release (reanalysis 1981 to 2025, reforecast 2016 to 2025, leads 0 to 10 days),
           one HydroBasins outlet per station, the main-stem outlet within 15 km with the largest 1-in-5 flow.</li>
-      <li>Leads 1 to 7 are the issue day and the six days after it for GloFAS and Google, new, and days 1 to 7 after the issue day for Google, current,
-          following each archive's own labelling. Only issues dated within October to December or March to May are read.</li>
+      <li>Leads 1 to 7 cover the issue day and the six days after it for GloFAS and Google, new, and days 1 to 7 after the issue day for Google, current,
+          following each archive's own labelling. Only issues dated within October to December or March to May are read, and only days in those months
+          count: a threshold date of 1 October or 1 March means the level was already exceeded when the season opened.</li>
       <li>On Google, new, Juba Deyr 2006 and 2017 and Juba Gu 2013 and 2023 have all four trigger points above their levels within the season, by 1 to 4%,
           but never on the same day.</li>
       <li>Shabelle Deyr 2020, Gu 2016 and Gu 2023 count as severe floods on a gauge reading equal to its 1-in-5 level (Jowhar 5.30 m; Belet Weyne at its 8.30 m
@@ -1231,7 +1246,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
       <li>Forecast windows cover 7 or 8 seasons (Google, current in Deyr: 7), with 0 to 3 severe floods each. GloFAS forecasts are an ensemble median, the Google archives
           a single trace. The Google, current archive has not been verified as the live Flood Hub model; the Google, new scale is not the live feed's.
           2026 is in no archive.</li>
-      <li>The dates, levels and scores behind every chart and table are published beside this page.</li>
+      <li>The dates, levels, ranks and scores behind every chart and table are published beside this page.</li>
     </ul>
   </article>
 </div>
