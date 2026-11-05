@@ -360,13 +360,13 @@ def fig_timeline(R, season, year):
             s = lv[(lv.station == st) & (lv.date.dt.year == year) & lv.date.dt.month.isin(SEASONS[season])].dropna(subset=["level_m"]).sort_values("date")
             edge = lambda d: "left" if (d - A).days < 12 else "right" if (B - d).days < 12 else "center"
             notes = []
-            if s.empty:
-                notes.append("no gauge record")
+            if len(s) < 30:
+                notes.append("no gauge record" if s.empty else "gauge record too short")
             else:
                 pk = s.loc[s.level_m.idxmax(), "date"]
                 ax.scatter(pk, yc, s=170, marker="|", color=INK, linewidths=1.8, zorder=4)
                 near_edge = (B - pk).days < 14
-                ax.text(pk + pd.Timedelta(days=-1 if near_edge else 1), yc, f"peak {pk:%d %b}", ha="right" if near_edge else "left", va="center", fontsize=8.5, color=INK)
+                ax.text(pk + pd.Timedelta(days=-2 if near_edge else 2), yc, f"peak {pk:%d %b}", ha="right" if near_edge else "left", va="center", fontsize=8.5, color=INK)
                 for lev, marker, lab in ((g3[st], "o", "1-in-3"), (g5[st], "D", "1-in-5")):
                     if np.isnan(lev):
                         continue
@@ -375,8 +375,6 @@ def fig_timeline(R, season, year):
                         d = c.date.iloc[0]
                         ax.scatter(d, yc, s=70 if marker == "o" else 60, marker=marker, color=sc_colour(st), edgecolors="white", linewidths=0.8, zorder=5)
                         ax.text(d, yc + (0.22 if marker == "o" else -0.22), f"{d:%d %b}", ha=edge(d), va="bottom" if marker == "o" else "top", fontsize=8.5, color=sc_colour(st))
-                    else:
-                        notes.append(f"{lab}: no")
             if notes:
                 ax.text(B - pd.Timedelta(days=1), yc, "; ".join(notes), va="center", ha="right", fontsize=7.5, color=FAINT, linespacing=1.1)
             ylab.append((yc, f"{NAME[st]} gauge"))
@@ -392,8 +390,12 @@ def fig_timeline(R, season, year):
                     continue
                 d = mm[basis].get(year)
                 if not ok(d):
-                    notes.append(f"{'reanalysis' if basis == 'ra' else 'forecasts'}: no")
+                    notes.append("not reached" if basis == "ra" else "forecasts: not reached")
                     continue
+            if notes == ["no record", "no forecast archive"]:
+                notes = ["no record"]
+            if notes == ["not reached", "forecasts: not reached"]:
+                notes = ["not reached"]
                 if filled:
                     ax.scatter(d, yc, s=90, color=COL[m], edgecolors="white", linewidths=0.8, zorder=4)
                     ax.text(d, yc + 0.22, d.strftime("%d %b"), ha="left" if (d - A).days < 12 else "right" if (B - d).days < 12 else "center", va="bottom", fontsize=8.5, color=COL[m])
@@ -741,12 +743,12 @@ def station_scores():
 def fig_stations(S, season):
     ms = MODELS[season]
     sts = [s for s in STATIONS if s in set(S[S.season == season].station)]
-    fig, axes = plt.subplots(1, 3, figsize=(11.6, 0.5 * len(sts) + 1.8))
-    for ax, met, title in zip(axes, ["POD", "FAR", "F1"], ["Severe seasons, threshold reached (share)", "Threshold reached, no gauge flood (share)", "F1"]):
+    fig, axes = plt.subplots(1, 3, figsize=(12.4, 0.5 * len(sts) + 1.9))
+    for ax, met, title in zip(axes, ["POD", "FAR", "F1"], ["Severe seasons caught (share)", "No gauge flood (share of seasons reached)", "F1"]):
         mat = [[float(S[(S.season == season) & (S.station == st) & (S.model == m)][met].iloc[0]) for m in ms] for st in sts]
         heat(ax, mat, [SHORT[m].replace(", ", chr(10)) for m in ms], [NAME[s] for s in sts] if met == "POD" else [""] * len(sts), reverse=(met == "FAR"))
-        ax.set_title(title + ("\n(dark = low)" if met == "FAR" else "\n(dark = high)"), fontsize=10)
-    fig.subplots_adjust(wspace=0.08)
+        ax.set_title(title + ("\n(dark = low)" if met == "FAR" else "\n(dark = high)"), fontsize=9.5)
+    fig.subplots_adjust(wspace=0.12)
     return save(fig, f"stations_{season}")
 
 
