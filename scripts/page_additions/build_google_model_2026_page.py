@@ -64,6 +64,9 @@ YEARS = list(range(1999, 2026))
 CELL = {"hit_sev": "#123F5F", "hit": "#3E86BE", "false": "#F4A93B", "miss_sev": "#B34036",
         "miss": "#E3B4AF", "quiet": "#EDF1F4", "none": "#FFFFFF"}
 WINDOW = {"deyr": ("10-01", "12-31"), "gu": ("03-01", "05-31")}
+# the 14 anticipatory-action districts by river (as scripts/page_additions/floodscan_districts.py)
+DISTRICTS = {"juba": ["SO2605", "SO2606", "SO2602", "SO2703", "SO2701", "SO2702"],
+             "shabelle": ["SO2001", "SO2002", "SO2003", "SO2101", "SO2103", "SO2302", "SO2305", "SO2301"]}
 BASIS_TITLE = {"ra": "reanalysis", "fc": "forecasts"}
 ok = lambda x: x is not None and not pd.isna(x)
 fmt = lambda d: d.strftime("%d %b") if ok(d) else "never"
@@ -344,10 +347,11 @@ def fig_timeline(R, season, year):
     import season_charts as sc
     n_rows = {r: len(TRIGGER_STATIONS[r]) + len(models) for r in RIVERS}
     has_exp = year <= 2023
-    ratios = [n_rows["juba"], n_rows["shabelle"]] + ([4] if has_exp else [])
+    ratios = ([n_rows["juba"], 3, n_rows["shabelle"], 3] if has_exp else [n_rows["juba"], n_rows["shabelle"]])
     fig, axes = plt.subplots(len(ratios), 1, figsize=(11.6, 0.5 * sum(ratios) + 2.6), sharex=True,
                              gridspec_kw=dict(height_ratios=ratios))
-    for ax, river in zip(axes[:2], RIVERS):
+    row_axes = [axes[0], axes[2]] if has_exp else [axes[0], axes[1]]
+    for ax, river in zip(row_axes, RIVERS):
         rec = R[(river, season)]
         sts = TRIGGER_STATIONS[river]
         g3, g5 = L.gauge_levels(river, season, 3), L.gauge_levels(river, season, 5)
@@ -424,24 +428,27 @@ def fig_timeline(R, season, year):
         ax.grid(axis="x", color=GRID, linewidth=0.8)
         ax.set_axisbelow(True)
     if has_exp:
-        axe = axes[2]
-        e = sc.exposure().set_index("valid_date")["sum"].groupby(level=0).sum()
-        e = e[(e.index >= A) & (e.index <= B)]
-        axe.fill_between(e.index, e.values, color=sc.SANDL, alpha=0.35, lw=0)
-        axe.plot(e.index, e.values, color=sc.SAND, lw=1.2)
+        from src.constants import C_JUBA, C_SHAB
+        ex = sc.exposure()
+        ex = ex[(ex.valid_date >= A) & (ex.valid_date <= B)]
         fd, _ = sc.flood_date(season, year)
-        if fd is not None:
-            axe.axvline(fd, color=INK, lw=1.1, ls=":", zorder=1)
-            axe.text(fd, axe.get_ylim()[1] * 0.95, f" third district over its 1-in-5 {fd:%d %b}", va="top", ha="left", fontsize=8.5, color=INK)
-        axe.set_title("Flood exposure, 14 districts (FloodScan)", fontsize=11, loc="left")
-        axe.set_ylabel("people", color=FAINT, fontsize=8.5)
-        axe.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v/1000:.0f}k" if v else "0"))
-        axe.set_ylim(0, None)
-        axe.tick_params(length=0, labelsize=8)
-        for sp in axe.spines.values():
-            sp.set_visible(False)
-        axe.grid(axis="y", color=GRID, linewidth=0.8)
-        axe.set_axisbelow(True)
+        for axe, river_d, colr in ((axes[1], "juba", C_JUBA), (axes[3], "shabelle", C_SHAB)):
+            e = ex[ex.pcode.isin(DISTRICTS[river_d])].groupby("valid_date")["sum"].sum()
+            axe.fill_between(e.index, e.values, color=colr, alpha=0.15, lw=0)
+            axe.plot(e.index, e.values, color=colr, lw=1.4)
+            if fd is not None:
+                axe.axvline(fd, color=INK, lw=1.1, ls=":", zorder=1)
+                if river_d == "juba":
+                    axe.text(fd, axe.get_ylim()[1] * 0.95, f" third of the 14 districts over its 1-in-5 {fd:%d %b}", va="top", ha="left", fontsize=8.5, color=INK)
+            axe.set_title(f"Flood exposure, {len(DISTRICTS[river_d])} {river_d.title()} districts (FloodScan)", fontsize=10.5, loc="left")
+            axe.set_ylabel("people", color=FAINT, fontsize=8.5)
+            axe.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v/1000:.0f}k" if v else "0"))
+            axe.set_ylim(0, None)
+            axe.tick_params(length=0, labelsize=8)
+            for sp in axe.spines.values():
+                sp.set_visible(False)
+            axe.grid(axis="y", color=GRID, linewidth=0.8)
+            axe.set_axisbelow(True)
     axes[-1].xaxis.set_major_locator(mdates.DayLocator(bymonthday=[1, 15]))
     axes[-1].xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
     Hh = [Line2D([], [], marker="o", ls="", color=BODY, markersize=7, label="gauge over its 1-in-3"),
@@ -536,10 +543,15 @@ def fig_season(R, season, year):
         ax.set_ylim(0, top)
     if has_exp:
         axe = axes[2]
-        e = sc.exposure().set_index("valid_date")["sum"].groupby(level=0).sum()
-        e = e[(e.index >= A) & (e.index <= B)]
-        axe.fill_between(e.index, e.values, color=sc.SANDL, alpha=0.35, lw=0)
-        axe.plot(e.index, e.values, color=sc.SAND, lw=1.2)
+        from floodscan_districts import DISTRICTS
+        from src.constants import C_JUBA, C_SHAB
+        ex = sc.exposure()
+        ex = ex[(ex.valid_date >= A) & (ex.valid_date <= B)]
+        for river_d, colr in (("juba", C_JUBA), ("shabelle", C_SHAB)):
+            e = ex[ex.pcode.isin(DISTRICTS[river_d])].groupby("valid_date")["sum"].sum()
+            axe.fill_between(e.index, e.values, color=colr, alpha=0.12, lw=0)
+            axe.plot(e.index, e.values, color=colr, lw=1.4, label=f"{river_d.title()} districts ({len(DISTRICTS[river_d])})")
+        axe.legend(fontsize=8.5, loc="upper left", frameon=False)
         fd, _ = sc.flood_date(season, year)
         if fd is not None:
             axe.axvline(fd, color=INK, lw=1.3, alpha=0.85)
