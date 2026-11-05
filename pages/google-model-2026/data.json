@@ -638,7 +638,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 23,
-   "fires": [
+   "activations": [
     2008,
     2019,
     2020,
@@ -674,7 +674,7 @@
    "basis": "fc",
    "span": "2016 to 2023",
    "n_years": 8,
-   "fires": [
+   "activations": [
     2019,
     2020,
     2023
@@ -702,7 +702,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 23,
-   "fires": [
+   "activations": [
     2006,
     2013,
     2019,
@@ -736,7 +736,7 @@
    "basis": "fc",
    "span": "2016 to 2023",
    "n_years": 7,
-   "fires": [
+   "activations": [
     2019
    ],
    "severe": [],
@@ -757,7 +757,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 23,
-   "fires": [
+   "activations": [
     2001,
     2005,
     2014,
@@ -796,7 +796,7 @@
    "basis": "fc",
    "span": "2016 to 2023",
    "n_years": 8,
-   "fires": [
+   "activations": [
     2017,
     2023
    ],
@@ -822,7 +822,7 @@
    "basis": "fc",
    "span": "2003 to 2023",
    "n_years": 21,
-   "fires": [
+   "activations": [
     2005,
     2014,
     2015,
@@ -859,7 +859,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 23,
-   "fires": [
+   "activations": [
     2006,
     2023
    ],
@@ -888,7 +888,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 22,
-   "fires": [
+   "activations": [
     2010,
     2014,
     2019,
@@ -926,7 +926,7 @@
    "basis": "fc",
    "span": "2016 to 2023",
    "n_years": 8,
-   "fires": [
+   "activations": [
     2019,
     2020,
     2023
@@ -955,7 +955,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 22,
-   "fires": [
+   "activations": [
     2006,
     2008,
     2014,
@@ -993,7 +993,7 @@
    "basis": "fc",
    "span": "2016 to 2023",
    "n_years": 7,
-   "fires": [
+   "activations": [
     2019
    ],
    "severe": [
@@ -1019,7 +1019,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 22,
-   "fires": [
+   "activations": [
     2010,
     2013,
     2014,
@@ -1058,7 +1058,7 @@
    "basis": "fc",
    "span": "2016 to 2023",
    "n_years": 8,
-   "fires": [
+   "activations": [
     2019,
     2020
    ],
@@ -1087,7 +1087,7 @@
    "basis": "fc",
    "span": "2003 to 2023",
    "n_years": 21,
-   "fires": [
+   "activations": [
     2010,
     2013,
     2014,
@@ -1126,7 +1126,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 22,
-   "fires": [
+   "activations": [
     2006,
     2014,
     2019,
@@ -1161,7 +1161,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 22,
-   "fires": [
+   "activations": [
     2016,
     2018,
     2020
@@ -1193,7 +1193,7 @@
    "basis": "fc",
    "span": "2016 to 2023",
    "n_years": 8,
-   "fires": [
+   "activations": [
     2016,
     2018,
     2020
@@ -1225,7 +1225,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 22,
-   "fires": [
+   "activations": [
     2013,
     2016,
     2018,
@@ -1260,7 +1260,7 @@
    "basis": "fc",
    "span": "2016 to 2023",
    "n_years": 8,
-   "fires": [
+   "activations": [
     2016,
     2018,
     2020
@@ -1292,7 +1292,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 22,
-   "fires": [
+   "activations": [
     2005,
     2010,
     2018,
@@ -1326,7 +1326,7 @@
    "basis": "fc",
    "span": "2016 to 2023",
    "n_years": 8,
-   "fires": [
+   "activations": [
     2016,
     2018,
     2020
@@ -1358,7 +1358,7 @@
    "basis": "fc",
    "span": "2003 to 2023",
    "n_years": 21,
-   "fires": [
+   "activations": [
     2005,
     2010,
     2016,
@@ -1394,7 +1394,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 22,
-   "fires": [
+   "activations": [
     2016,
     2018,
     2020,
@@ -1426,7 +1426,7 @@
    "basis": "fc",
    "span": "2016 to 2023",
    "n_years": 8,
-   "fires": [
+   "activations": [
     2016,
     2018,
     2020,
@@ -1458,7 +1458,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 22,
-   "fires": [
+   "activations": [
     2013,
     2016,
     2018,
@@ -1493,7 +1493,7 @@
    "basis": "fc",
    "span": "2016 to 2023",
    "n_years": 8,
-   "fires": [
+   "activations": [
     2016,
     2018,
     2020,
@@ -1525,7 +1525,7 @@
    "basis": "ra",
    "span": "1999 to 2023",
    "n_years": 22,
-   "fires": [
+   "activations": [
     2005,
     2010,
     2016,
@@ -1560,7 +1560,7 @@
    "basis": "fc",
    "span": "2016 to 2023",
    "n_years": 8,
-   "fires": [
+   "activations": [
     2016,
     2018
    ],
@@ -1591,7 +1591,7 @@
    "basis": "fc",
    "span": "2003 to 2023",
    "n_years": 21,
-   "fires": [
+   "activations": [
     2005,
     2010,
     2016,

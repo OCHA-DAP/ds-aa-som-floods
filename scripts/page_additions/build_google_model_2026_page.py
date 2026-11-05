@@ -155,7 +155,7 @@ def record():
     return R
 
 
-def fired(rec, m, basis):
+def activations_of(rec, m, basis):
     return set(rec["models"][m][basis])
 
 
@@ -165,13 +165,13 @@ def years_of(rec, m, basis):
 
 def score(rec, m, basis, span):
     yrs_ = set(range(span[0], span[1] + 1)) & years_of(rec, m, basis) & rec["assess"]
-    f = fired(rec, m, basis) & yrs_
+    f = activations_of(rec, m, basis) & yrs_
     sev, fl = rec["severe"] & yrs_, rec["flood"] & yrs_
     pod = len(f & sev) / len(sev) if sev else np.nan
     far = len(f - fl) / len(f) if f else np.nan
     prec = 1 - far if f else np.nan
     f1 = 2 * pod * prec / (pod + prec) if f and not np.isnan(pod) and (pod + prec) > 0 else (0.0 if f or sev else np.nan)
-    return dict(model=m, basis=basis, span=rng(span), n_years=len(yrs_), fires=sorted(f), severe=sorted(sev),
+    return dict(model=m, basis=basis, span=rng(span), n_years=len(yrs_), activations=sorted(f), severe=sorted(sev),
                 caught=sorted(f & sev), ordinary=sorted((f & fl) - sev), false=sorted(f - fl),
                 missed_severe=sorted(sev - f), POD=pod, FAR=far, F1=f1)
 
@@ -194,7 +194,7 @@ def fig_backtest(R, season, basis):
             lines.append((f"{river.title()}: {SHORT[m]}", rec, m))
     fig, ax = plt.subplots(figsize=(12.6, 0.6 * len(lines) + 2.4))
     for i, (name, rec, m) in enumerate(lines[::-1]):
-        f, yr = fired(rec, m, basis), years_of(rec, m, basis)
+        f, yr = activations_of(rec, m, basis), years_of(rec, m, basis)
         for j, y in enumerate(YEARS):
             if y not in yr or y not in rec["assess"]:
                 kind = "none"
@@ -443,19 +443,19 @@ def v4_full_archive(R, season):
     parts = []
     for river in RIVERS:
         s = score(R[(river, season)], "glofas_v4", "fc", FC_SPAN["glofas_v4"])
-        parts.append(f"{river.title()}: activates in {yrs(s['fires'])}; severe seasons {yrs(s['severe'])}, of which it catches {yrs(s['caught'])}; "
+        parts.append(f"{river.title()}: activates in {yrs(s['activations'])}; severe seasons {yrs(s['severe'])}, of which it catches {yrs(s['caught'])}; "
                      f"activations with no gauge flood {yrs(s['false'])}.")
     return " ".join(parts)
 
 
 def after_2023(R, season, y):
-    fired_r = [r.title() for r in RIVERS if y in R[(r, season)]["models"][NEW]["ra"]]
+    act_r = [r.title() for r in RIVERS if y in R[(r, season)]["models"][NEW]["ra"]]
     fc_r = [r.title() for r in RIVERS if y in R[(r, season)]["models"][NEW]["fc"]]
     outc = []
     for r in RIVERS:
         rec = R[(r, season)]
         outc.append(f"{r.title()} {'severe' if y in rec['severe'] else 'flood' if y in rec['flood'] else 'nothing' if y in rec['assess'] else 'no gauge record'}")
-    return (f"reanalysis {('activates on the ' + ' and '.join(fired_r)) if fired_r else 'no activation'}; "
+    return (f"reanalysis {('activates on the ' + ' and '.join(act_r)) if act_r else 'no activation'}; "
             f"forecasts {('activate on the ' + ' and '.join(fc_r)) if fc_r else 'no activation'}; gauges: {', '.join(outc)}")
 
 
