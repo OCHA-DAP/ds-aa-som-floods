@@ -51,7 +51,7 @@ RIVER_OF = {st: r for r, sts in TRIGGER_STATIONS.items() for st in sts}
 NAME = L.NAME
 SEASON_TITLE = {"deyr": "Deyr, Oct to Dec", "gu": "Gu, Mar to May"}
 SHORT = {NEW: "Google, new", "google_grrr": "Google, current", "glofas_v4": "GloFAS v4", "glofas_v5": "GloFAS v5"}
-COL = {**SOURCE_COLORS, NEW: "#0E8A7B"}
+COL = {**SOURCE_COLORS, NEW: "#6A4C93"}
 MODELS = {"deyr": [NEW, "google_grrr", "glofas_v4", "glofas_v5"], "gu": [NEW, "google_grrr", "glofas_v4", "glofas_v5"]}
 # each model's record: reanalysis years and forecast-archive years
 RA_SPAN = {NEW: (1999, 2025), "google_grrr": (1999, 2023), "glofas_v4": (1999, 2023), "glofas_v5": (1999, 2023)}
@@ -61,8 +61,8 @@ FC_END = {("google_grrr", "deyr"): 2022}
 SCORE_RA = (1999, 2023)          # every model and the gauges overlap here
 SCORE_FC = (2016, 2023)          # every forecast archive overlaps here
 YEARS = list(range(1999, 2026))
-CELL = {"hit_sev": "#123F5F", "hit": "#3E86BE", "false": "#F4A93B", "miss_sev": "#B34036",
-        "miss": "#E3B4AF", "quiet": "#EDF1F4", "none": "#FFFFFF"}
+CELL = {"hit_sev": "#123F5F", "hit": "#7FA7C9", "false": "#9A8C7A", "miss_sev": "#C2185B",
+        "miss": "#E9B9CB", "quiet": "#EDF1F4", "none": "#FFFFFF"}
 WINDOW = {"deyr": ("10-01", "12-31"), "gu": ("03-01", "05-31")}
 # the 14 anticipatory-action districts by river (as scripts/page_additions/floodscan_districts.py)
 DISTRICTS = {"juba": ["SO2605", "SO2606", "SO2602", "SO2703", "SO2701", "SO2702"],
@@ -235,11 +235,15 @@ def fig_backtest(R, season, basis):
             ax.add_patch(Rectangle((j - 0.46, i - 0.36), 0.92, 0.72, facecolor=CELL[kind],
                                    edgecolor="white" if kind != "none" else GRID, linewidth=0.8))
         s = score(rec, m, basis, span)
-        ax.text(len(YEARS) + 0.2, i + 0.14, f"{len(s['caught'])} of {len(s['severe'])} severe seasons", va="center", fontsize=9.5, color=INK)
+        sev_txt = f"{len(s['caught'])} of {len(s['severe'])} severe seasons" if s["severe"] else "no severe season in archive"
+        ax.text(len(YEARS) + 0.2, i + 0.14, sev_txt, va="center", fontsize=9.5, color=INK)
         ax.text(len(YEARS) + 0.2, i - 0.2, f"{len(s['false'])} with no gauge flood", va="center", fontsize=9.5,
                 color="#B07A1E" if s["false"] else FAINT)
     ax.axhline(len(models) - 0.5, color=INK, linewidth=1.0)
-    ax.set_xlim(-0.6, len(YEARS) + 4.8)
+    for edge_year in (span[0] - 0.5, span[1] + 0.5):
+        ax.axvline(YEARS.index(int(edge_year + 0.5)) - 0.5, color=INK, linewidth=0.9, ls=":", zorder=4)
+    ax.text(YEARS.index(span[0]) - 0.5, len(lines) - 0.45, f" tallies count {rng(span)}", ha="left", va="bottom", fontsize=8.5, color=FAINT)
+    ax.set_xlim(-0.6, len(YEARS) + 5.6)
     ax.set_ylim(-0.6, len(lines) - 0.4)
     ax.set_yticks(range(len(lines)), [ln[0] for ln in lines[::-1]], fontsize=10.5)
     ax.set_xticks(range(0, len(YEARS), 2), [str(y) for y in YEARS[::2]], fontsize=9.5)
@@ -254,8 +258,8 @@ def fig_backtest(R, season, basis):
          Rectangle((0, 0), 1, 1, facecolor=CELL["quiet"], edgecolor=GRID, label="no gauge flood, threshold not reached"),
          Rectangle((0, 0), 1, 1, facecolor="white", edgecolor=GRID, label="no record")]
     ax.legend(handles=H, ncol=4, fontsize=9.5, loc="upper center", bbox_to_anchor=(0.45, -0.08))
-    what = "reanalysis" if basis == "ra" else "forecasts (first issue reaching the threshold, leads 1 to 7 days)"
-    ax.set_title(f"{SEASON_TITLE[season]}, {what}: outcome by season; tallies count {rng(span)}", fontsize=12)
+    what = "reanalysis" if basis == "ra" else "forecasts, first issue reaching the threshold (leads 1 to 7 days)"
+    ax.set_title(f"{SEASON_TITLE[season]}, {what}", fontsize=12, loc="left")
     return save(fig, f"backtest_{season}_{basis}")
 
 
@@ -285,16 +289,16 @@ def fig_timing(R, season):
     H = 0.36             # bar height
     fig, ax = plt.subplots(figsize=(11.6, 0.56 * len(rows) + 2.4))
     ymax = len(rows)
-    ax.axvspan(-40, 0, color="#EAF3EE", zorder=0)
-    ax.axvspan(0, 40, color="#F9ECE9", zorder=0)
+    ax.axvspan(-40, 0, color="#F3F5F7", zorder=0)
+    ax.axvspan(0, 40, color="#EBEEF1", zorder=0)
     ax.axvline(0, color=INK, linewidth=1.2, zorder=3)
-    ax.text(-20, ymax + 0.35, "threshold reached before the second gauge crossed its 1-in-3", ha="center", va="center", fontsize=9.5, color="#2F6B4A", fontweight="bold")
-    ax.text(20, ymax + 0.35, "threshold reached after", ha="center", va="center", fontsize=9.5, color="#9E4B3F", fontweight="bold")
+    ax.text(-20, ymax + 0.35, "threshold reached before the second gauge crossed its 1-in-3", ha="center", va="center", fontsize=9.5, color=INK, fontweight="bold")
+    ax.text(20, ymax + 0.35, "threshold reached after", ha="center", va="center", fontsize=9.5, color=INK, fontweight="bold")
     ylabels = []
     for i, (river, y, rank, m) in enumerate(rows):
         yc = ymax - 1 - i
         if m is None:
-            ax.text(-39, yc, f"{river.title()} {y}   (gauge rank {rank})", ha="left", va="center", fontsize=10, color=INK, fontweight="bold", zorder=5)
+            ax.text(-39, yc, f"{river.title()} {y}   ({'largest' if rank == 1 else str(rank) + ('nd' if rank == 2 else 'rd' if rank == 3 else 'th') + ' largest'} gauge flood)", ha="left", va="center", fontsize=10, color=INK, fontweight="bold", zorder=5)
             if i:
                 ax.axhline(yc + 0.5, color="white", linewidth=3, zorder=2)
             continue
@@ -305,19 +309,20 @@ def fig_timing(R, season):
             yb = yc + (0.2 if k == 0 else -0.2)
             have = y in mm[f"{basis}_years"]
             d = mm[basis].get(y)
+            tag = "reanalysis" if basis == "ra" else "forecasts"
             if not have:
-                ax.text(1.2, yb, "no archive" if basis == "fc" else "no record", va="center", fontsize=8, color=FAINT)
+                ax.text(1.2, yb, f"{tag}: no archive" if basis == "fc" else "outside the model record", va="center", fontsize=8.5, color=FAINT)
                 continue
             if not ok(d) or not ok(b):
-                ax.text(1.2, yb, "not reached" if ok(b) else "no gauge flood", va="center", fontsize=8, color=FAINT)
+                ax.text(1.2, yb, f"{tag}: not reached" if ok(b) else "no gauge flood", va="center", fontsize=8.5, color=FAINT)
                 continue
             n = (d - b).days            # negative: before the gauges (left), positive: after (right)
             x = max(min(n, 38), -38)
-            ax.barh(yb, x, height=H, color=COL[m], alpha=alpha, edgecolor="white", linewidth=0.5, zorder=4)
+            ax.barh(yb, x if n else 0.4, height=H, color=COL[m], alpha=alpha, edgecolor="white", linewidth=0.5, zorder=4)
             lab = f"{abs(n)} d {'before' if n < 0 else 'after'}" if n else "same day"
             if abs(n) > 38:
                 lab += " (bar cut)"
-            ax.text(x + (1.2 if n >= 0 else -1.2), yb, lab, va="center", ha="left" if n >= 0 else "right", fontsize=8, color=BODY, zorder=5)
+            ax.text(x + (1.2 if n >= 0 else -1.2), yb, lab, va="center", ha="left" if n >= 0 else "right", fontsize=8.5, color=BODY, zorder=5)
         ax.text(-38, yc, SHORT[m], ha="left", va="center", fontsize=9, color=BODY, zorder=5)
     ax.set_yticks([])
     ax.set_ylim(-0.7, ymax + 0.8)
@@ -329,8 +334,8 @@ def fig_timing(R, season):
         sp.set_visible(False)
     Hh = [Rectangle((0, 0), 1, 1, facecolor=BODY, alpha=1.0, label="solid: reanalysis"),
           Rectangle((0, 0), 1, 1, facecolor=BODY, alpha=0.45, label="light: first forecast issue reaching the threshold (leads 1 to 7 days)")]
-    ax.legend(handles=Hh, ncol=2, fontsize=9, loc="upper center", bbox_to_anchor=(0.5, -0.05), frameon=False)
-    ax.set_title(f"{SEASON_TITLE[season]}: days between threshold exceedance and gauge confirmation, five largest gauge floods per river", fontsize=11.5, pad=26)
+    ax.legend(handles=Hh, ncol=2, fontsize=9.5, loc="lower center", bbox_to_anchor=(0.5, 1.0), frameon=False)
+    ax.set_title(f"{SEASON_TITLE[season]}: days between the threshold being reached and the second gauge crossing its 1-in-3, five largest gauge floods per river", fontsize=11, pad=40)
     fig.subplots_adjust(left=0.04, right=0.98)
     return save(fig, f"timing_{season}")
 
@@ -384,8 +389,8 @@ def fig_timeline(R, season, year):
                     c = s[s.level_m >= lev]
                     if len(c):
                         d = c.date.iloc[0]
-                        ax.scatter(d, yc, s=70 if marker == "o" else 60, marker=marker, color=sc_colour(st), edgecolors="white", linewidths=0.8, zorder=5)
-                        ax.text(d, yc + (0.22 if marker == "o" else -0.22), f"{d:%d %b}", ha=edge(d), va="bottom" if marker == "o" else "top", fontsize=8.5, color=sc_colour(st))
+                        ax.scatter(d, yc, s=70 if marker == "o" else 60, marker=marker, color=BODY, edgecolors="white", linewidths=0.8, zorder=5)
+                        ax.text(d, yc + (0.22 if marker == "o" else -0.22), f"{d:%d %b}", ha=edge(d), va="bottom" if marker == "o" else "top", fontsize=8.5, color=BODY)
             if notes:
                 ax.text(B - pd.Timedelta(days=1), yc, "; ".join(notes), va="center", ha="right", fontsize=7.5, color=FAINT, linespacing=1.1)
             ylab.append((yc, f"{NAME[st]} gauge"))
@@ -395,13 +400,21 @@ def fig_timeline(R, season, year):
             ax.axhline(yc, color=GRID, linewidth=0.8, zorder=0)
             mm = rec["models"][m]
             notes = []
+            same_day = (year in mm["ra_years"] and year in mm["fc_years"] and ok(mm["ra"].get(year)) and ok(mm["fc"].get(year))
+                        and mm["ra"].get(year) == mm["fc"].get(year))
             for basis, filled in (("ra", True), ("fc", False)):
                 if year not in mm[f"{basis}_years"]:
-                    notes.append("no forecast archive" if basis == "fc" else "no record")
+                    notes.append("no forecast archive" if basis == "fc" else "outside the model record")
                     continue
                 d = mm[basis].get(year)
                 if not ok(d):
                     notes.append("not reached" if basis == "ra" else "forecasts: not reached")
+                    continue
+                if same_day:
+                    if filled:
+                        ax.scatter(d, yc, s=90, color=COL[m], edgecolors="white", linewidths=0.8, zorder=4)
+                        ax.scatter(d, yc, s=150, facecolors="none", edgecolors=COL[m], linewidths=1.6, zorder=4)
+                        ax.text(d, yc + 0.22, d.strftime("%d %b") + " (both)", ha="center", va="bottom", fontsize=8.5, color=COL[m])
                     continue
                 if filled:
                     ax.scatter(d, yc, s=90, color=COL[m], edgecolors="white", linewidths=0.8, zorder=4)
@@ -409,8 +422,8 @@ def fig_timeline(R, season, year):
                 else:
                     ax.scatter(d, yc, s=110, facecolors="none", edgecolors=COL[m], linewidths=1.6, zorder=4)
                     ax.text(d, yc - 0.22, d.strftime("%d %b"), ha="left" if (d - A).days < 12 else "right" if (B - d).days < 12 else "center", va="top", fontsize=8.5, color=COL[m])
-            if notes == ["no record", "no forecast archive"]:
-                notes = ["no record"]
+            if notes == ["outside the model record", "no forecast archive"]:
+                notes = ["outside the model record"]
             if notes == ["not reached", "forecasts: not reached"]:
                 notes = ["not reached"]
             if notes:
@@ -419,10 +432,11 @@ def fig_timeline(R, season, year):
         ax.axhline(n - len(sts) - 0.5, color=INK, linewidth=0.9, zorder=1)
         ax.set_yticks([y for y, _ in ylab], [l for _, l in ylab], fontsize=10)
         ax.set_ylim(-0.7, n - 0.3)
-        ax.set_xlim(A, B)
-        state = "severe" if year in rec["severe"] else "flood" if year in rec["flood"] else "no gauge flood" if year in rec["assess"] else "no gauge record"
+        ax.set_xlim(A - pd.Timedelta(days=4), B)
+        state = ("severe flood season at the gauges" if year in rec["severe"] else "ordinary flood season at the gauges" if year in rec["flood"]
+                 else "no flood at the gauges" if year in rec["assess"] else "no gauge record")
         ax.set_title(f"{river.title()} ({state})", fontsize=11.5, loc="left")
-        ax.tick_params(length=0)
+        ax.tick_params(length=0, labelbottom=True, labelsize=8.5)
         for sp in ax.spines.values():
             sp.set_visible(False)
         ax.grid(axis="x", color=GRID, linewidth=0.8)
@@ -441,7 +455,7 @@ def fig_timeline(R, season, year):
                 if river_d == "juba":
                     axe.text(fd, axe.get_ylim()[1] * 0.95, f" third of the 14 districts over its 1-in-5 {fd:%d %b}", va="top", ha="left", fontsize=8.5, color=INK)
             axe.set_title(f"Flood exposure, {len(DISTRICTS[river_d])} {river_d.title()} districts (FloodScan)", fontsize=10.5, loc="left")
-            axe.set_ylabel("people", color=FAINT, fontsize=8.5)
+            axe.set_ylabel("people in flooded area", color=BODY, fontsize=9)
             axe.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v/1000:.0f}k" if v else "0"))
             axe.set_ylim(0, None)
             axe.tick_params(length=0, labelsize=8)
@@ -727,6 +741,10 @@ def fig_levels():
         style_ax(ax, grid="x")
     axes[0].set_yticks(ys, [NAME[s] for s in STATIONS])
     fig.legend(*axes[0].get_legend_handles_labels(), ncol=2, fontsize=9, loc="upper center", bbox_to_anchor=(0.5, 1.02), frameon=False)
+    for ax in axes:
+        ax.axhline(len(STATIONS) - len(TRIGGER_STATIONS["juba"]) - 0.5, color=INK, linewidth=0.9)
+        ax.text(ax.get_xlim()[1] * 0.98, len(STATIONS) - 0.6, "Juba", ha="right", va="top", fontsize=9, color=FAINT)
+        ax.text(ax.get_xlim()[1] * 0.98, len(STATIONS) - len(TRIGGER_STATIONS["juba"]) - 0.7, "Shabelle", ha="right", va="top", fontsize=9, color=FAINT)
     fig.subplots_adjust(wspace=0.06, top=0.84)
     return save(fig, "levels")
 
@@ -762,12 +780,14 @@ def station_scores():
 def fig_stations(S, season):
     ms = MODELS[season]
     sts = [s for s in STATIONS if s in set(S[S.season == season].station)]
-    fig, axes = plt.subplots(1, 3, figsize=(12.4, 0.5 * len(sts) + 1.9))
-    for ax, met, title in zip(axes, ["POD", "FAR", "F1"], ["Share of severe seasons with the threshold reached", "Share of threshold seasons without a gauge flood", "F1"]):
+    fig, axes = plt.subplots(1, 3, figsize=(12.4, 0.5 * len(sts) + 2.3))
+    for ax, met, title in zip(axes, ["POD", "FAR", "F1"], ["Severe seasons,\nthreshold reached (share)", "Threshold seasons,\nno gauge flood (share)", "F1 score"]):
         mat = [[float(S[(S.season == season) & (S.station == st) & (S.model == m)][met].iloc[0]) for m in ms] for st in sts]
-        heat(ax, mat, [SHORT[m].replace(", ", chr(10)) for m in ms], [NAME[s] for s in sts] if met == "POD" else [""] * len(sts), reverse=(met == "FAR"))
-        ax.set_title(title + ("\n(dark = low)" if met == "FAR" else "\n(dark = high)"), fontsize=9.5)
-    fig.subplots_adjust(wspace=0.12)
+        heat(ax, mat, [SHORT[m].replace(", ", chr(10)) for m in ms], [NAME[s] for s in sts] if met == "POD" else [""] * len(sts),
+             cmap="Oranges" if met == "FAR" else "Blues")
+        ax.set_title(title + "\n(dark = high)", fontsize=9.5)
+    fig.suptitle(f"{SEASON_TITLE[season]}, reanalysis {rng(SCORE_RA)}, each point against its own gauge", x=0.02, ha="left", fontsize=11)
+    fig.subplots_adjust(wspace=0.25, top=0.78)
     return save(fig, f"stations_{season}")
 
 
