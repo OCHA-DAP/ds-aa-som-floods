@@ -367,8 +367,15 @@ def fig_timeline(R, season, year):
                 ax.scatter(pk, yc, s=170, marker="|", color=INK, linewidths=1.8, zorder=4)
                 near_edge = (B - pk).days < 14
                 ax.text(pk + pd.Timedelta(days=-2 if near_edge else 2), yc, f"peak {pk:%d %b}", ha="right" if near_edge else "left", va="center", fontsize=8.5, color=INK)
+                first = {}
+                for lab, lev in (("1-in-3", g3[st]), ("1-in-5", g5[st])):
+                    c = s[s.level_m >= lev] if not np.isnan(lev) else s.iloc[0:0]
+                    first[lab] = c.date.iloc[0] if len(c) else None
                 for lev, marker, lab in ((g3[st], "o", "1-in-3"), (g5[st], "D", "1-in-5")):
                     if np.isnan(lev):
+                        continue
+                    # both levels crossed on the same day: show the 1-in-5 only
+                    if lab == "1-in-3" and first["1-in-5"] is not None and first["1-in-3"] == first["1-in-5"]:
                         continue
                     c = s[s.level_m >= lev]
                     if len(c):
