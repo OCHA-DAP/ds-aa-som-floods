@@ -76,12 +76,8 @@ table.data td.top { background:rgba(30,121,95,.12); }
     <ul class="takeaways">
 <li><strong>Largest floods.</strong> In the top five of every record that covers them: Deyr 2023 on the Juba; Deyr 2019 on the Shabelle; Gu 2018 and 2020 on the Juba; Gu 2018 on the Shabelle.</li>
 <li><strong>Severe floods with the threshold not reached by Google, new on its reanalysis:</strong> Deyr 2006, 2014 on the Juba; Deyr 2006 on the Shabelle; Gu 2023 on the Juba.</li>
-<li><strong>Google, new against Google, current:</strong> threshold reached in more severe floods in Deyr Shabelle forecasts (2016 to 2022), Gu Shabelle reanalysis; threshold reached in fewer severe floods in Deyr Juba reanalysis; more seasons with the threshold reached and no severe flood in Deyr Juba reanalysis, Deyr Juba forecasts (2016 to 2022); fewer seasons with the threshold reached and no severe flood in Gu Juba reanalysis, Gu Shabelle reanalysis. In every other river, season and record the counts are the same.</li>
 <li><strong>Google, new against GloFAS v4:</strong> threshold reached in more severe floods in Deyr Shabelle reanalysis, Deyr Shabelle forecasts, Gu Shabelle reanalysis, Gu Shabelle forecasts; threshold reached in fewer severe floods in Deyr Juba reanalysis; more seasons with the threshold reached and no severe flood in Deyr Juba forecasts; fewer seasons with the threshold reached and no severe flood in Deyr Shabelle reanalysis, Gu Juba reanalysis, Gu Shabelle reanalysis. In every other river, season and record the counts are the same.</li>
-<li><strong>Google, new against GloFAS v5:</strong> threshold reached in more severe floods in Gu Shabelle reanalysis; threshold reached in fewer severe floods in Deyr Juba reanalysis; more seasons with the threshold reached and no severe flood in Deyr Juba reanalysis, Deyr Shabelle reanalysis; fewer seasons with the threshold reached and no severe flood in Gu Juba reanalysis, Gu Shabelle reanalysis. In every other river, season and record the counts are the same.</li>
 <li><strong>Timing on the forecasts</strong> (mean days before the second gauge crossed its 1-in-3, over the largest gauge floods from 2016 in which the threshold was reached). Deyr: Google, new and GloFAS v4 before the second gauge crossed, GloFAS v4 earlier in the seasons both reached; Google, current before the second gauge crossed (its Deyr archive ends in 2022). Gu: Google, new and GloFAS v4 after the second gauge crossed, Google, new earlier in the seasons both reached; Google, current before the second gauge crossed.</li>
-<li><strong>Google, new after 2023.</strong> Deyr 2024: threshold not reached on either record (gauges: Juba no severe flood, Shabelle severe flood). Gu 2024: threshold reached on the Juba on both records (gauges: Juba no severe flood, Shabelle severe flood). Deyr 2025: threshold not reached on either record (gauges: Juba no severe flood, Shabelle no severe flood). Gu 2025: threshold not reached on either record (gauges: Juba no gauge record, Shabelle no severe flood).</li>
-<li><strong>Trigger levels.</strong> Google, new levels are higher than Google, current's at every station, by the most at Bardheere in Deyr.</li>
     </ul>
 
     <h2><span class="num">2</span>Benchmark: the largest floods at the gauges</h2>
@@ -125,16 +121,12 @@ table.data td.top { background:rgba(30,121,95,.12); }
        In the top five of fewer than half: Juba 2023 (3 of 7 records), 2005 (2 of 5 records); Shabelle 2023 (3 of 7 records). The Belet Weyne gauge reads no higher than
        8.30 m, which six Gu seasons reach, so those seasons tie at that gauge.</p>
 
-    <h2><span class="num">3</span>Trigger levels of the two Google models</h2>
-    <p>The level each station must reach, on Google, current and on Google, new, fitted the same way.</p>
-    <figure class="chart"><img src="figures/levels.svg" alt="Trigger levels, Google current and new"><figcaption>Level at each station, m³/s; labels give new over current.</figcaption></figure>
-
-    <h2><span class="num">4</span>Threshold outcome and scores by season</h2>
-    <p>Each model's threshold outcome in every season against the gauge benchmark, on the reanalysis and on the forecasts. White cells are
-       seasons outside the model record or without a gauge record; the dotted lines mark the seasons the tallies and the tables count.</p>
+    <h2><span class="num">3</span>Threshold outcome and scores by season</h2>
+    <p>Each model's threshold outcome in every season against the gauge benchmark: under each source a reanalysis row and, where an archive exists,
+       a forecast row. White cells are seasons outside the model record or without a gauge record. Reanalysis rows are tallied over every season
+       with a gauge record, forecast rows between the dotted lines.</p>
     <h3>Deyr</h3>
-    <figure class="chart"><img src="figures/backtest_deyr_ra.svg" alt="Deyr, reanalysis, outcome by season"><figcaption>Deyr, reanalysis.</figcaption></figure>
-    <figure class="chart"><img src="figures/backtest_deyr_fc.svg" alt="Deyr, forecasts, outcome by season"><figcaption>Deyr, forecasts: first issue reaching the threshold, leads 1 to 7 days.</figcaption></figure>
+    <figure class="chart"><img src="figures/backtest_deyr.svg" alt="Deyr, outcome by season, reanalysis and forecasts"><figcaption>Deyr.</figcaption></figure>
     <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th><th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr><tr><th>POD</th><th>FAR</th><th>F1</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
 <tr><td>Google, new</td><td class='muted'>reanalysis</td><td>0.33<span class='y'>1 of 3</span></td><td>0.75<span class='y'>3 of 4 seasons</span></td><td>0.29</td><td>0.80<span class='y'>4 of 5</span></td><td>0.20<span class='y'>1 of 5 seasons</span></td><td>0.80</td></tr>
 <tr><td>Google, new</td><td class='muted'>forecasts</td><td>1.00<span class='y'>1 of 1</span></td><td>0.67<span class='y'>2 of 3 seasons</span></td><td>0.50</td><td>1.00<span class='y'>3 of 3</span></td><td>0.00<span class='y'>0 of 3 seasons</span></td><td>1.00</td></tr>
@@ -146,8 +138,7 @@ table.data td.top { background:rgba(30,121,95,.12); }
 </tbody></table></div>
     <p class="note">Severe floods counted are those in the seasons scored: 2001 to 2023 for Juba Deyr; 2002 to 2023 for Shabelle Deyr, Juba Gu, Shabelle Gu.</p>
     <h3>Gu</h3>
-    <figure class="chart"><img src="figures/backtest_gu_ra.svg" alt="Gu, reanalysis, outcome by season"><figcaption>Gu, reanalysis.</figcaption></figure>
-    <figure class="chart"><img src="figures/backtest_gu_fc.svg" alt="Gu, forecasts, outcome by season"><figcaption>Gu, forecasts: first issue reaching the threshold, leads 1 to 7 days.</figcaption></figure>
+    <figure class="chart"><img src="figures/backtest_gu.svg" alt="Gu, outcome by season, reanalysis and forecasts"><figcaption>Gu.</figcaption></figure>
     <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Source</th><th rowspan='2'>Record</th><th colspan='3'>Juba</th><th colspan='3'>Shabelle</th></tr><tr><th>POD</th><th>FAR</th><th>F1</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
 <tr><td>Google, new</td><td class='muted'>reanalysis</td><td>0.67<span class='y'>2 of 3</span></td><td>0.33<span class='y'>1 of 3 seasons</span></td><td>0.67</td><td>1.00<span class='y'>3 of 3</span></td><td>0.40<span class='y'>2 of 5 seasons</span></td><td>0.75</td></tr>
 <tr><td>Google, new</td><td class='muted'>forecasts</td><td>0.67<span class='y'>2 of 3</span></td><td>0.33<span class='y'>1 of 3 seasons</span></td><td>0.67</td><td>1.00<span class='y'>3 of 3</span></td><td>0.25<span class='y'>1 of 4 seasons</span></td><td>0.86</td></tr>
@@ -159,8 +150,38 @@ table.data td.top { background:rgba(30,121,95,.12); }
 </tbody></table></div>
     <p class="note">The Google, current archive labels the issue day lead 0; the page reads its leads 1 to 7, the seven days after the issue day, as the live
        trigger does. Read at leads 0 to 6 instead, Google, current does not reach the threshold in Gu 2023 on the Shabelle.</p>
+    <h3>Google, new against each other source</h3>
+    <p>Counts over the seasons both sources cover: severe floods with the threshold reached, and seasons with the threshold reached and no severe flood,
+       Google, new first. Shaded where the two differ.</p>
+    <div class="tablewrap"><table class='data'><thead><tr><th rowspan='2'>Season</th><th rowspan='2'>River</th><th rowspan='2'>Record</th><th colspan='2'>Google, current</th><th colspan='2'>GloFAS v4</th><th colspan='2'>GloFAS v5</th></tr><tr><th>severe floods reached<span class='y'>new / other</span></th><th>reached, no severe flood<span class='y'>new / other</span></th><th>severe floods reached<span class='y'>new / other</span></th><th>reached, no severe flood<span class='y'>new / other</span></th><th>severe floods reached<span class='y'>new / other</span></th><th>reached, no severe flood<span class='y'>new / other</span></th></tr></thead><tbody>
+<tr><td>Deyr</td><td>Juba</td><td class='muted'>reanalysis</td><td class='top'>1 / 2 of 3</td><td class='top'>3 / 2</td><td class='top'>1 / 2 of 3</td><td>3 / 3</td><td class='top'>1 / 2 of 3</td><td class='top'>3 / 0</td></tr>
+<tr><td>Deyr</td><td>Juba</td><td class='muted'>forecasts</td><td class='muted'>no severe flood<span class='y'>2016 to 2022</span></td><td class='top'>2 / 1<span class='y'>2016 to 2022</span></td><td>1 / 1 of 1</td><td class='top'>2 / 1</td><td class='muted' colspan='2'>no archive</td></tr>
+<tr><td>Deyr</td><td>Shabelle</td><td class='muted'>reanalysis</td><td>4 / 4 of 5</td><td>1 / 1</td><td class='top'>4 / 3 of 5</td><td class='top'>1 / 2</td><td>4 / 4 of 5</td><td class='top'>1 / 0</td></tr>
+<tr><td>Deyr</td><td>Shabelle</td><td class='muted'>forecasts</td><td class='top'>2 / 1 of 2<span class='y'>2016 to 2022</span></td><td>0 / 0<span class='y'>2016 to 2022</span></td><td class='top'>3 / 2 of 3</td><td>0 / 0</td><td class='muted' colspan='2'>no archive</td></tr>
+<tr><td>Gu</td><td>Juba</td><td class='muted'>reanalysis</td><td>2 / 2 of 3</td><td class='top'>1 / 2</td><td>2 / 2 of 3</td><td class='top'>1 / 2</td><td>2 / 2 of 3</td><td class='top'>1 / 2</td></tr>
+<tr><td>Gu</td><td>Juba</td><td class='muted'>forecasts</td><td>2 / 2 of 3</td><td>1 / 1</td><td>2 / 2 of 3</td><td>1 / 1</td><td class='muted' colspan='2'>no archive</td></tr>
+<tr><td>Gu</td><td>Shabelle</td><td class='muted'>reanalysis</td><td class='top'>3 / 2 of 3</td><td class='top'>2 / 3</td><td class='top'>3 / 1 of 3</td><td class='top'>2 / 3</td><td class='top'>3 / 2 of 3</td><td class='top'>2 / 3</td></tr>
+<tr><td>Gu</td><td>Shabelle</td><td class='muted'>forecasts</td><td>3 / 3 of 3</td><td>1 / 1</td><td class='top'>3 / 1 of 3</td><td>1 / 1</td><td class='muted' colspan='2'>no archive</td></tr>
+</tbody></table></div>
 
-    <h2><span class="num">5</span>Timing against the second gauge crossing its 1-in-3</h2>
+    <h2><span class="num">4</span>POD, FAR and F1 by station</h2>
+    <p>Each station's model against its gauge, reanalysis, seasons with a gauge record to 2023. Here a severe season is that one gauge over its own 1-in-5,
+       not the two-gauge benchmark used elsewhere.</p>
+    <figure class="chart"><img src="figures/stations_deyr.svg" alt="Deyr, POD, FAR and F1 per station"><figcaption>Deyr.</figcaption></figure>
+    <figure class="chart"><img src="figures/stations_gu.svg" alt="Gu, POD, FAR and F1 per station"><figcaption>Gu.</figcaption></figure>
+
+    <h2><span class="num">5</span>Correlation with the gauges by station</h2>
+    <p>For each station, the model's daily flow is set against the gauge's daily level in 1-in-3 seasons: seasons in which the gauge went over its
+       own 1-in-3 level or the model went over its own, among seasons with a gauge record to 2023. Spearman rank correlation orders the days by
+       model flow and, separately, by gauge level, and measures how far the two orders agree: 1 means the model's highest days are the gauge's
+       highest days, 0 means no relation. It uses the order of the days, not their values, so the scale of the model does not matter. The lag
+       is the shift in days between the two series that gives the highest agreement, tried from 10 days behind to 30 days ahead; a positive lag
+       means the model rises before the gauge. The figure shows the value at the best lag. It measures day-to-day tracking in flood seasons,
+       not whether a threshold is reached.</p>
+    <figure class="chart"><img src="figures/correlation.svg" alt="Correlation with the gauges by station"><figcaption>Deyr and Gu, reanalysis, 1-in-3 seasons with a gauge record to 2023;
+       the small figure under each value is the number of seasons.</figcaption></figure>
+
+    <h2><span class="num">6</span>Timing against the second gauge crossing its 1-in-3</h2>
     <p>The five largest gauge floods per river. Zero is the day the second gauge crossed its 1-in-3; bars to the left reached the
        threshold before that day, bars to the right after it. Solid: reanalysis. Light: first forecast issue reaching the threshold (leads 1 to 7 days).</p>
     <figure class="chart"><img src="figures/timing_deyr.svg" alt="Deyr timing"><figcaption>Deyr.</figcaption></figure>
@@ -175,7 +196,7 @@ table.data td.top { background:rgba(30,121,95,.12); }
 <tr><td>GloFAS v5</td><td>mean 2 d after<span class='y'>median 1 d after; reached in 5 of 8 seasons</span></td><td class='muted'>no archive</td><td>mean 2 d after<span class='y'>median 2 d after; reached in 6 of 9 seasons</span></td><td class='muted'>no archive</td></tr>
 </tbody></table></div>
 
-    <h2><span class="num">6</span>Event chronologies: Deyr 2023, Deyr 2019, Deyr 2020</h2>
+    <h2><span class="num">7</span>Event chronologies: Deyr 2023, Deyr 2019, Deyr 2020</h2>
     <p>Gauge rows: circle, first day over the 1-in-3; diamond, first day over the 1-in-5 (only the diamond is shown when both fall on the same day);
        tick, the peak, dated in the row label. Source rows: threshold reached on the reanalysis (filled square), first forecast issue reaching the
        threshold (hollow square), one mark when both fall on the same day. FloodScan people in flooded area, by river, where it covers the season;
@@ -184,39 +205,18 @@ table.data td.top { background:rgba(30,121,95,.12); }
     <figure class="chart"><img src="figures/timeline_deyr_2019.svg" alt="Deyr 2019 day by day"><figcaption>Deyr 2019.</figcaption></figure>
     <figure class="chart"><img src="figures/timeline_deyr_2020.svg" alt="Deyr 2020 day by day"><figcaption>Deyr 2020. A 1 October date means the level was already exceeded when the season opened.</figcaption></figure>
 
-    <h2><span class="num">7</span>POD, FAR and F1 by station</h2>
-    <p>Each station's model against its gauge, reanalysis, seasons with a gauge record to 2023. Here a severe season is that one gauge over its own 1-in-5,
-       not the two-gauge benchmark used elsewhere.</p>
-    <figure class="chart"><img src="figures/stations_deyr.svg" alt="Deyr, POD, FAR and F1 per station"><figcaption>Deyr.</figcaption></figure>
-    <figure class="chart"><img src="figures/stations_gu.svg" alt="Gu, POD, FAR and F1 per station"><figcaption>Gu.</figcaption></figure>
-
-    <h2><span class="num">8</span>Correlation with the gauges by station</h2>
-    <p>For each station, the model's daily flow is set against the gauge's daily level in 1-in-3 seasons: seasons in which the gauge went over its
-       own 1-in-3 level or the model went over its own, among seasons with a gauge record to 2023. Spearman rank correlation orders the days by
-       model flow and, separately, by gauge level, and measures how far the two orders agree: 1 means the model's highest days are the gauge's
-       highest days, 0 means no relation. It uses the order of the days, not their values, so the scale of the model does not matter. The lag
-       is the shift in days between the two series that gives the highest agreement, tried from 10 days behind to 30 days ahead; a positive lag
-       means the model rises before the gauge. The figure shows the value at the best lag. It measures day-to-day tracking in flood seasons,
-       not whether a threshold is reached.</p>
-    <figure class="chart"><img src="figures/correlation.svg" alt="Correlation with the gauges by station"><figcaption>Deyr and Gu, reanalysis, 1-in-3 seasons with a gauge record to 2023;
-       the small figure under each value is the number of seasons.</figcaption></figure>
-
-    <h2><span class="num">9</span>Notes</h2>
-    <ul class="notes">
-      <li>Source: Google Runoff Reanalysis and Reforecast, November 2026 release (reanalysis 1981 to 2025, reforecast 2016 to 2025, leads 0 to 10 days),
-          one HydroBasins outlet per station, the main-stem outlet within 15 km with the largest 1-in-5 flow.</li>
-      <li>Leads 1 to 7 cover the issue day and the six days after it for GloFAS and Google, new, and days 1 to 7 after the issue day for Google, current,
-          following each archive's own labelling. Only issues dated within October to December or March to May are read, and only days in those months
-          count: a threshold date of 1 October or 1 March means the level was already exceeded when the season opened.</li>
-      <li>On the Google, new reanalysis, all four Juba stations go above their levels within the season but never on the same day in Gu 2013 (smallest margin 0.6%), Gu 2023 (smallest margin 1.7%).</li>
-      <li>Shabelle Deyr 2020, Gu 2016 and Gu 2023 count as severe floods on a gauge reading equal to its 1-in-5 level (Jowhar 5.30 m; Belet Weyne at its 8.30 m
-          ceiling). The Juba Deyr 2023 peaks are capped at bank full. Dollow's Deyr record covers eight seasons only.</li>
-      <li>Forecast windows cover 7 or 8 seasons (Google, current in Deyr: 7), with 0 to 3 severe floods each. GloFAS forecasts are the middle value of the ensemble members, the Google archives
-          a single trace. The Google, current archive has not been verified as the live Flood Hub model; Google, new flows are on a different scale
-          from the live feed's. 2026 is in no archive.</li>
-      <li>The dates, levels, ranks and scores behind every chart and table are published beside this page.</li>
-    </ul>
-  </article>
+    <h2><span class="num">8</span>Notes</h2>
+    <p class="note">Source: Google Runoff Reanalysis and Reforecast, November 2026 release (reanalysis 1981 to 2025, reforecast 2016 to 2025, leads 0 to 10
+       days), one HydroBasins outlet per station, the main-stem outlet within 15 km with the largest 1-in-5 flow. Leads 1 to 7 cover the issue day and
+       the six days after it for GloFAS and Google, new, and days 1 to 7 after the issue day for Google, current, following each archive's own labelling;
+       only issues dated within October to December or March to May are read, and only days in those months count, so a threshold date of 1 October or
+       1 March means the level was already exceeded when the season opened. On the Google, new reanalysis, all four Juba stations go above their levels within the season but never on the same day in Gu 2013 (smallest margin 0.6%), Gu 2023 (smallest margin 1.7%). Shabelle Deyr 2020, Gu 2016 and Gu 2023 count as severe floods
+       on a gauge reading equal to its 1-in-5 level (Jowhar 5.30 m; Belet Weyne at its 8.30 m ceiling); the Juba Deyr 2023 peaks are capped at bank full;
+       Dollow's Deyr record covers eight seasons only. Forecast windows cover 7 or 8 seasons (Google, current in Deyr: 7), with 0 to 3 severe floods each;
+       GloFAS forecasts are the middle value of the ensemble members, the Google archives a single trace. The Google, current archive has not been verified
+       as the live Flood Hub model; Google, new flows are on a different scale from the live feed's; 2026 is in no archive. The dates, levels, ranks and
+       scores behind every chart and table are published beside this page.</p>
+  </article>  </article>
 </div>
 </body>
 </html>
