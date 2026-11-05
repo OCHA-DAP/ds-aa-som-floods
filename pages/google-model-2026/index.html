@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Google's new river model: Somalia Riverine Flood Trigger</title>
+<meta name="description" content="Google's November 2026 river model at the seven Somalia trigger points: would it have carried Deyr, does it keep Gu, and when does it fire relative to the river gauges.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+.hero.hero-sub { padding:40px 44px 34px; }
+.hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; }
+.crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+article { padding:8px 44px 40px; max-width:1000px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9); margin:40px 0 8px; }
+article h3 { font-family:'Merriweather',Georgia,serif; font-size:16px; color:var(--n9); margin:26px 0 6px; }
+article p { font-size:14.5px; color:var(--n8); line-height:1.6; }
+.muted { color:var(--n7); }
+figure { margin:10px 0 4px; }
+figure img { width:100%; height:auto; display:block; }
+.answer { background:var(--b05); border-left:5px solid var(--b5); padding:12px 16px; border-radius:4px; margin:14px 0; font-size:14.5px; line-height:1.6; }
+.answer.flag { background:#fff7e8; border-left-color:#e0a04b; }
+.read { font-size:13px; color:var(--n7); margin:4px 0 0; }
+@media (max-width:640px) { article { padding:8px 22px 30px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero hero-sub">
+    <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / Google's new river model</p>
+    <h1>Google's new river model</h1>
+    <p>Google has a new river model (November 2026). We read it at the seven trigger points with the trigger's
+       own rules and asked two things: would it have carried Deyr instead of GloFAS, and when does it fire
+       compared with the rivers actually rising. The live Flood Hub feed does not run this model yet.</p>
+  </header>
+  <article>
+    <p class="read" style="margin-top:22px">A season is <b>severe</b> when two gauges on the river reach their own 1-in-5 level, a <b>flood</b> at 1-in-3.
+       A model <b>fires</b> when the trigger rule is met in its record: three of four Juba points, or two of three Shabelle
+       points, over their own levels on the same day. 1999 to 2023 for every source, to 2025 for the new model.</p>
+
+    <h2>Would Google have carried Deyr?</h2>
+    <div class="answer flag"><b>Juba: no.</b> It catches 1 of the 3 severe seasons; GloFAS v4 catches 2, v5 2, the Google model running today 2.
+       It fires 2 times with nothing at the gauges, v4 3 times, today's Google 3 times.<br>
+       <b>Shabelle: yes.</b> It catches 4 of 5 against v4's 3, with 1 false fire against 2, and it sees the 2023 flood that v4 never did.
+       Today's Google model matches it on the Shabelle (4 of 5, 0 false fires): it misses 2020 where the new one misses 2006.</div>
+    <figure><img src="figures/backtest_deyr.svg" alt="Deyr backtest grid"></figure>
+    <p class="read">One row per model and river, one cell per season: did it fire, and what did the gauges do.</p>
+    <figure><img src="figures/scores_deyr.svg" alt="Deyr scores"></figure>
+
+    <h2>Does it keep Gu?</h2>
+    <div class="answer"><b>Yes.</b> It catches Juba 2 of 3 and Shabelle 3 of 3 severe seasons, against 2 and 2
+       for the Google model running today, with 0 false fires against 2. It is the only source that fires in Gu 2023.</div>
+    <figure><img src="figures/backtest_gu.svg" alt="Gu backtest grid"></figure>
+    <figure><img src="figures/scores_gu.svg" alt="Gu scores"></figure>
+
+    <h2>Timing against the gauges</h2>
+    <p>Every season in which a river flooded. Zero is the day the second gauge crossed its 1-in-3 level.
+       Green side: the model fired before the gauges confirmed. Red side: after. Grey column: it never fired that season.</p>
+    <figure><img src="figures/timing_deyr.svg" alt="Deyr timing"></figure>
+    <p class="read">Deyr median: the new model fires +1 days before the gauges confirm (over 6 river-seasons), GloFAS v4 +5 (over 6).
+       GloFAS is earlier on the Juba. On the Shabelle in 2023 the new model is the one that fires at all.</p>
+    <figure><img src="figures/timing_gu.svg" alt="Gu timing"></figure>
+    <p class="read">Gu median: the new model -5 days (over 8), the Google model running today -2 (over 6).</p>
+    <h3>The same, read from the forecasts</h3>
+    <p>What the operator would have seen: the first forecast issue on which the rule was met at leads 1 to 7 days.
+       Forecast archives start in 2016 for both Google models; GloFAS v5 has none.</p>
+    <figure><img src="figures/timing_fc_deyr.svg" alt="Deyr forecast timing"></figure>
+    <figure><img src="figures/timing_fc_gu.svg" alt="Gu forecast timing"></figure>
+
+    <h3>Three seasons in full</h3>
+    <p>All seven points. The gauge as a share of its 1-in-3 level, each model at the same point as a share of its
+       own trigger level. Above the dotted 100% line means over the level. Lines above 400% are cut off.</p>
+    <figure><img src="figures/season_deyr_2023.svg" alt="Deyr 2023"></figure>
+    <p class="read">Deyr 2023. Juba: GloFAS v4 fired 21 Oct, the new model 03 Nov, the second gauge crossed 25 Oct.
+       Shabelle: only the new model fired, 09 Nov; the gauges crossed 06 Nov.</p>
+    <figure><img src="figures/season_deyr_2024.svg" alt="Deyr 2024"></figure>
+    <p class="read">Deyr 2024: the new model did not fire, gauges: severe. The Shabelle gauges crossed 18 Oct.</p>
+    <figure><img src="figures/season_gu_2024.svg" alt="Gu 2024"></figure>
+    <p class="read">Gu 2024: the new model fired on the Juba, gauges: severe. 2025: Deyr did not fire, gauges: nothing; Gu did not fire, gauges: nothing.</p>
+
+    <h2>Station by station</h2>
+    <p>The same scores for each point on its own, against that gauge's own levels.</p>
+    <figure><img src="figures/stations_deyr.svg" alt="Deyr station scores"></figure>
+    <figure><img src="figures/stations_gu.svg" alt="Gu station scores"></figure>
+
+    <h2>The numbers are on a different scale</h2>
+    <p>At the same points the new model's flows are several times the current Google model's. Every Google-based
+       level, the Gu triggers and the 1-in-6 line quoted at Luuq included, would have to be refitted.</p>
+    <figure><img src="figures/levels.svg" alt="Levels, current against new"></figure>
+
+    <p class="muted" style="font-size:12.5px;margin-top:30px">Source: Google Runoff Reanalysis and Reforecast, November 2026 release
+       (reanalysis 1981 to 2025, reforecast 2016 to 2025 at leads 0 to 10 days), one HydroBasins outlet per station. Levels are fitted on each
+       model's own 1999 to 2023 seasonal maxima. Gauges: SWALIM, to July 2026. Forecast issues use leads 1 to 7 days, lead 1 being the issue day.
+       The dates behind the charts are in <code>data.json</code> beside this page; the seven-station extracts are on the team's storage.</p>
+  </article>
+</div>
+</body>
+</html>
