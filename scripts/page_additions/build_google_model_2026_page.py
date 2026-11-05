@@ -336,7 +336,8 @@ def fig_timeline(R, season, year):
         for i, st in enumerate(sts):
             yc = n - 1 - i
             ax.axhline(yc, color=GRID, linewidth=0.8, zorder=0)
-            s = lv[(lv.station == st) & (lv.date >= A) & (lv.date <= B)].dropna(subset=["level_m"]).sort_values("date")
+            s = lv[(lv.station == st) & (lv.date.dt.year == year) & lv.date.dt.month.isin(SEASONS[season])].dropna(subset=["level_m"]).sort_values("date")
+            edge = lambda d: "left" if (d - A).days < 12 else "right" if (B - d).days < 12 else "center"
             notes = []
             if s.empty:
                 notes.append("no gauge record")
@@ -352,7 +353,7 @@ def fig_timeline(R, season, year):
                     if len(c):
                         d = c.date.iloc[0]
                         ax.scatter(d, yc, s=70 if marker == "o" else 60, marker=marker, color=sc_colour(st), edgecolors="white", linewidths=0.8, zorder=5)
-                        ax.text(d, yc + (0.2 if marker == "o" else -0.2), f"{lab} {d:%d %b}", ha="center", va="bottom" if marker == "o" else "top", fontsize=7.5, color=sc_colour(st))
+                        ax.text(d, yc + (0.2 if marker == "o" else -0.2), f"{lab} {d:%d %b}", ha=edge(d), va="bottom" if marker == "o" else "top", fontsize=7.5, color=sc_colour(st))
                     else:
                         notes.append(f"{lab} not reached")
             if notes:
@@ -374,10 +375,10 @@ def fig_timeline(R, season, year):
                     continue
                 if filled:
                     ax.scatter(d, yc, s=90, color=COL[m], edgecolors="white", linewidths=0.8, zorder=4)
-                    ax.text(d, yc + 0.2, d.strftime("%d %b"), ha="center", va="bottom", fontsize=7.5, color=COL[m])
+                    ax.text(d, yc + 0.2, d.strftime("%d %b"), ha="left" if (d - A).days < 12 else "right" if (B - d).days < 12 else "center", va="bottom", fontsize=7.5, color=COL[m])
                 else:
                     ax.scatter(d, yc, s=110, facecolors="none", edgecolors=COL[m], linewidths=1.6, zorder=4)
-                    ax.text(d, yc - 0.2, d.strftime("%d %b"), ha="center", va="top", fontsize=7.5, color=COL[m])
+                    ax.text(d, yc - 0.2, d.strftime("%d %b"), ha="left" if (d - A).days < 12 else "right" if (B - d).days < 12 else "center", va="top", fontsize=7.5, color=COL[m])
             if notes:
                 ax.text(B - pd.Timedelta(days=1), yc, "; ".join(notes), va="center", ha="right", fontsize=7.5, color=FAINT, linespacing=1.1)
             ylab.append((yc, SHORT[m]))
@@ -1034,7 +1035,7 @@ table.tim th[colspan] {{ text-align:left; }}
     <figure class="chart"><img src="{F['d24']}" alt="Deyr 2024, all points"></figure>
     <figure class="chart"><img src="{F['g24']}" alt="Gu 2024, all points"></figure>
     <h3>The same seasons day by day</h3>
-    <p>One row per gauge: the first day it crossed its 1-in-3, the first day it crossed its 1-in-5, and its peak. One row per source:
+    <p>One row per gauge: the first day in the season it crossed its 1-in-3, the first day it crossed its 1-in-5, and its peak. One row per source:
        the day the threshold was reached on its reanalysis (filled) and the first forecast issue that reached it (hollow). Deyr 2019 is
        added as the Shabelle's second-worst gauge season.</p>
     <figure class="chart"><img src="{F['tl_deyr_2023']}" alt="Deyr 2023 day by day"></figure>
