@@ -39,6 +39,10 @@ Layout, with the script that writes each directory:
   `scripts/page_additions/ensemble_agreement_figs.py`.
 - `activation-timing/`: season charts of the dates the trigger is met
   (`scripts/page_additions/build_timing_page.py`).
+- `google-model-2026/`: Google's November 2026 river model read with the trigger's rules
+  against the live sources (`scripts/page_additions/build_google_model_2026_page.py`; the
+  seven-station extracts come from blob `ds-aa-som-floods/google_grrr_2026_11/`, or a local
+  copy via `SOM_GRRR_2026_DIR`). Everything in the directory is generated.
 - `trigger/`: the multi-source study the adopted design was compared with
   (`scripts/build_multisource_variant.py`; figures under `trigger/figs/`).
 - `comparison/`: mixed models against one model per window (`data.json` from
