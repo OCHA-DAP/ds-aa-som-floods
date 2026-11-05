@@ -1020,7 +1020,7 @@ def build():
     F["lv"] = fig_levels()
     CR = correlations()
     F["corr"] = fig_corr(CR)
-    for k in (("deyr", 2023), ("deyr", 2019), ("gu", 2024)):
+    for k in (("deyr", 2023), ("deyr", 2019), ("deyr", 2020)):
         F[f"tl_{k[0]}_{k[1]}"] = fig_timeline(R, *k)
     RK = {s: rank_html(s) for s in ("deyr", "gu")}
     C = {s: consistency(s) for s in ("deyr", "gu")}
@@ -1191,14 +1191,14 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        scored years (reanalysis to 2023, forecasts 2016 to 2023), counting only seasons in which the source reached the threshold.</p>
     <div class="tablewrap">{TS}</div>
 
-    <h2><span class="num">6</span>Event chronologies: Deyr 2023, Deyr 2019, Gu 2024</h2>
+    <h2><span class="num">6</span>Event chronologies: Deyr 2023, Deyr 2019, Deyr 2020</h2>
     <p>Gauge rows: circle, first day over the 1-in-3; diamond, first day over the 1-in-5 (only the diamond is shown when both fall on the same day);
        tick, the peak, dated in the row label. Source rows: threshold reached on the reanalysis (filled square), first forecast issue reaching the
        threshold (hollow square), one mark when both fall on the same day. FloodScan people in flooded area, by river, where it covers the season;
        the dotted line is the day the third of the 14 framework districts went over its own 1-in-5 flooded population.</p>
     <figure class="chart"><img src="{F['tl_deyr_2023']}" alt="Deyr 2023 day by day"><figcaption>Deyr 2023.</figcaption></figure>
     <figure class="chart"><img src="{F['tl_deyr_2019']}" alt="Deyr 2019 day by day"><figcaption>Deyr 2019.</figcaption></figure>
-    <figure class="chart"><img src="{F['tl_gu_2024']}" alt="Gu 2024 day by day"><figcaption>Gu 2024. FloodScan does not cover 2024. On the Juba, Bardheere has no record and Bualle's is too short, so the Juba benchmark rests on Dollow and Luuq.</figcaption></figure>
+    <figure class="chart"><img src="{F['tl_deyr_2020']}" alt="Deyr 2020 day by day"><figcaption>Deyr 2020. A 1 October date means the level was already exceeded when the season opened.</figcaption></figure>
 
     <h2><span class="num">7</span>POD, FAR and F1 by station</h2>
     <p>Each station's model against its gauge, reanalysis, seasons with a gauge record to 2023. Here a severe season is that one gauge over its own 1-in-{BENCH_RP},
