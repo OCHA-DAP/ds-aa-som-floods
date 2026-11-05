@@ -343,7 +343,8 @@ def fig_timeline(R, season, year):
             else:
                 pk = s.loc[s.level_m.idxmax(), "date"]
                 ax.scatter(pk, yc, s=170, marker="|", color=INK, linewidths=1.8, zorder=4)
-                ax.text(pk + pd.Timedelta(days=1), yc, f"peak {pk:%d %b}", ha="left", va="center", fontsize=7.5, color=INK)
+                near_edge = (B - pk).days < 14
+                ax.text(pk + pd.Timedelta(days=-1 if near_edge else 1), yc, f"peak {pk:%d %b}", ha="right" if near_edge else "left", va="center", fontsize=7.5, color=INK)
                 for lev, marker, lab in ((g3[st], "o", "1-in-3"), (g5[st], "D", "1-in-5")):
                     if np.isnan(lev):
                         continue
@@ -355,7 +356,7 @@ def fig_timeline(R, season, year):
                     else:
                         notes.append(f"{lab} not reached")
             if notes:
-                ax.text(B + pd.Timedelta(days=1), yc, chr(10).join(notes), va="center", ha="left", fontsize=7.5, color=FAINT, clip_on=False, linespacing=1.1)
+                ax.text(B - pd.Timedelta(days=1), yc, "; ".join(notes), va="center", ha="right", fontsize=7.5, color=FAINT, linespacing=1.1)
             ylab.append((yc, f"{NAME[st]} gauge"))
         # source rows
         for j, m in enumerate(models):
@@ -378,7 +379,7 @@ def fig_timeline(R, season, year):
                     ax.scatter(d, yc, s=110, facecolors="none", edgecolors=COL[m], linewidths=1.6, zorder=4)
                     ax.text(d, yc - 0.2, d.strftime("%d %b"), ha="center", va="top", fontsize=7.5, color=COL[m])
             if notes:
-                ax.text(B + pd.Timedelta(days=1), yc, chr(10).join(notes), va="center", ha="left", fontsize=7.5, color=FAINT, clip_on=False, linespacing=1.1)
+                ax.text(B - pd.Timedelta(days=1), yc, "; ".join(notes), va="center", ha="right", fontsize=7.5, color=FAINT, linespacing=1.1)
             ylab.append((yc, SHORT[m]))
         ax.axhline(n - len(sts) - 0.5, color=INK, linewidth=0.9, zorder=1)
         ax.set_yticks([y for y, _ in ylab], [l for _, l in ylab], fontsize=9)
@@ -419,7 +420,7 @@ def fig_timeline(R, season, year):
           Line2D([], [], marker="o", ls="", markerfacecolor="none", markeredgecolor=INK, markersize=9, markeredgewidth=1.6, label="first forecast issue")]
     fig.legend(handles=Hh, ncol=5, fontsize=8.5, loc="upper center", bbox_to_anchor=(0.5, 0.02), frameon=False)
     fig.suptitle(f"{season.title()} {year}: the gauges and each source, day by day", x=0.02, ha="left", fontsize=12)
-    fig.subplots_adjust(hspace=0.35, top=0.92, bottom=0.12, right=0.8, left=0.16)
+    fig.subplots_adjust(hspace=0.35, top=0.92, bottom=0.12, right=0.97, left=0.16)
     return save(fig, f"timeline_{season}_{year}")
 
 
