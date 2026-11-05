@@ -339,7 +339,7 @@ def fig_timing(R, season):
     Hh = [Rectangle((0, 0), 1, 1, facecolor=BODY, alpha=1.0, label="solid: reanalysis"),
           Rectangle((0, 0), 1, 1, facecolor=BODY, alpha=0.45, label="light: first forecast issue reaching the threshold (leads 1 to 7 days)")]
     ax.legend(handles=Hh, ncol=2, fontsize=9.5, loc="lower center", bbox_to_anchor=(0.5, 1.0), frameon=False)
-    ax.set_title(f"{SEASON_TITLE[season]}: days between the threshold being reached and the second gauge crossing its 1-in-3, five largest gauge floods per river", fontsize=11, pad=40)
+    ax.set_title(f"{SEASON_TITLE[season]}: days before or after the second gauge crossed its 1-in-3, five largest gauge floods per river", fontsize=11, pad=40, loc="left")
     fig.subplots_adjust(left=0.04, right=0.98)
     return save(fig, f"timing_{season}")
 
