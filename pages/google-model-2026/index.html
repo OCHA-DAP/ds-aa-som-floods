@@ -30,6 +30,8 @@ figure.chart figcaption { font-size:13px; color:#55606d; line-height:1.55; margi
 .callout p:last-child { margin:0; }
 .callout b { color:var(--n9); }
 .tablewrap { overflow-x:auto; }
+.pair { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+@media (max-width:760px) { .pair { grid-template-columns:1fr; } }
 table.data { border-collapse:collapse; width:100%; margin:16px 0 22px; font-size:13px; }
 table.data caption { text-align:left; font-family:'Merriweather',Georgia,serif; font-size:14px; color:var(--n9); padding:0 0 8px; }
 table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 10px 6px; }
@@ -69,14 +71,16 @@ table.data .y { display:block; font-size:11px; color:var(--n7); }
     <h2><span class="num">1</span>The worst floods first: the benchmark</h2>
     <p>The gauges' five worst seasons, worst first, and the rank each source gives the same seasons in its own record. A season's
        index is the level its second-highest station reached, as a share of that station's own 1-in-3 on that source.</p>
+    <div class="pair">
     <figure class="chart"><img src="figures/ranks_deyr.svg" alt="Deyr, seasons ranked by each source">
-      <figcaption>Row label: the second gauge's peak as a share of its 1-in-3. Column label: seasons in the record, reanalysis / forecasts.
-        In the top five of every source that covers the season: Juba 2023 (6 sources), 2024 (2 sources); Shabelle 2019 (7 sources).
-        In the top five of fewer than half the sources: Juba 2014 (2 of 5), 2006 (2 of 5); Shabelle 2006 (2 of 5).</figcaption></figure>
+      <figcaption>Deyr. In the top five of every source that covers the season: Juba 2023 (6 sources), 2024 (2 sources); Shabelle 2019 (7 sources).
+        In the top five of fewer than half: Juba 2014 (2 of 5), 2006 (2 of 5); Shabelle 2006 (2 of 5).</figcaption></figure>
     <figure class="chart"><img src="figures/ranks_gu.svg" alt="Gu, seasons ranked by each source">
-      <figcaption>In the top five of every source that covers the season: Juba 2018 (7 sources), 2020 (7 sources); Shabelle 2018 (7 sources).
-        In the top five of fewer than half the sources: Juba 2023 (3 of 7), 2005 (2 of 5); Shabelle 2023 (3 of 7), 2024 (0 of 2).
-        Belet Weyne's Gu record is capped at 8.30 m in six seasons.</figcaption></figure>
+      <figcaption>Gu. In the top five of every source that covers the season: Juba 2018 (7 sources), 2020 (7 sources); Shabelle 2018 (7 sources).
+        In the top five of fewer than half: Juba 2023 (3 of 7), 2005 (2 of 5); Shabelle 2023 (3 of 7), 2024 (0 of 2). Belet Weyne's Gu record is capped at 8.30 m in six seasons.</figcaption></figure>
+    </div>
+    <p class="muted" style="font-size:12.5px">Cells: rank on the reanalysis, with the rank on the forecasts in small print. Row label: the second gauge's peak as a share of its 1-in-3.
+       Column label: seasons in the record, reanalysis / forecasts.</p>
 
     <h2><span class="num">2</span>Deyr, season by season</h2>
     <figure class="chart"><img src="figures/backtest_deyr_ra.svg" alt="Deyr, reanalysis, season by season"><figcaption>Reanalysis. One row per model and river, one cell per season.</figcaption></figure>

@@ -482,7 +482,7 @@ def fig_ranks(season):
     Juba then Shabelle. Columns: the gauges and the four models. Each model cell carries the season's
     rank on the model's reanalysis (large, coloured) and on its forecast archive (small, below)."""
     models = [NEW, "google_grrr", "glofas_v4", "glofas_v5"]
-    fig, ax = plt.subplots(figsize=(10.5, 0.56 * 2 * N_RANK + 2.4))
+    fig, ax = plt.subplots(figsize=(7.4, 0.42 * 2 * N_RANK + 1.9))
     for _ in (season,):
         ms = [m for m in models if m in MODELS[season]]
         rows, ra_mat, fc_mat, ylab = [], [], [], []
@@ -511,15 +511,15 @@ def fig_ranks(season):
                 dark = shown[i, j] > 0.55
                 f = fc_mat[i, j]
                 if j == 0:
-                    ax.text(j, i, f"{int(v)}", ha="center", va="center", fontsize=10.5, color="white" if dark else BODY)
+                    ax.text(j, i, f"{int(v)}", ha="center", va="center", fontsize=9.5, color="white" if dark else BODY)
                 else:
-                    ax.text(j, i - 0.12, f"{int(v)}", ha="center", va="center", fontsize=10.5, color="white" if dark else BODY)
+                    ax.text(j, i - 0.13, f"{int(v)}", ha="center", va="center", fontsize=9.5, color="white" if dark else BODY)
                     ax.text(j, i + 0.27, "forecasts " + (f"{int(f)}" if not np.isnan(f) else "none") if n_fc.get(ms[j - 1], 0) else "no archive",
-                            ha="center", va="center", fontsize=7, color="white" if dark else FAINT)
+                            ha="center", va="center", fontsize=6.5, color="white" if dark else FAINT)
         labels = [f"gauges\n{n_ra['gauge']}"] + [
             f"{SHORT[m].replace(', ', chr(10))}\n{n_ra[m]}" + (f" / {n_fc[m]}" if n_fc[m] else "") for m in ms]
-        ax.set_xticks(range(len(labels)), labels, fontsize=8.5)
-        ax.set_yticks(range(len(rows)), ylab, fontsize=10)
+        ax.set_xticks(range(len(labels)), labels, fontsize=8)
+        ax.set_yticks(range(len(rows)), ylab, fontsize=9)
         ax.tick_params(length=0)
         for sp in ax.spines.values():
             sp.set_visible(False)
@@ -528,7 +528,7 @@ def fig_ranks(season):
         ax.grid(which="minor", color="white", linewidth=1.4)
         ax.tick_params(which="minor", length=0)
         ax.axhline(rows.count("juba") - 0.5, color=INK, linewidth=1.2)
-    ax.set_title(f"{SEASON_TITLE[season]}: the {N_RANK} worst gauge seasons per river, and each source's own rank of them", fontsize=12)
+    ax.set_title(f"{SEASON_TITLE[season]}", fontsize=11.5)
     fig.subplots_adjust(top=0.9, bottom=0.12)
     return save(fig, f"ranks_{season}")
 
@@ -729,6 +729,8 @@ figure.chart figcaption {{ font-size:13px; color:#55606d; line-height:1.55; marg
 .callout p:last-child {{ margin:0; }}
 .callout b {{ color:var(--n9); }}
 .tablewrap {{ overflow-x:auto; }}
+.pair {{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }}
+@media (max-width:760px) {{ .pair {{ grid-template-columns:1fr; }} }}
 table.data {{ border-collapse:collapse; width:100%; margin:16px 0 22px; font-size:13px; }}
 table.data caption {{ text-align:left; font-family:'Merriweather',Georgia,serif; font-size:14px; color:var(--n9); padding:0 0 8px; }}
 table.data th {{ text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 10px 6px; }}
@@ -768,14 +770,16 @@ table.data .y {{ display:block; font-size:11px; color:var(--n7); }}
     <h2><span class="num">1</span>The worst floods first: the benchmark</h2>
     <p>The gauges' five worst seasons, worst first, and the rank each source gives the same seasons in its own record. A season's
        index is the level its second-highest station reached, as a share of that station's own 1-in-3 on that source.</p>
+    <div class="pair">
     <figure class="chart"><img src="{F['rk_deyr']}" alt="Deyr, seasons ranked by each source">
-      <figcaption>Row label: the second gauge's peak as a share of its 1-in-3. Column label: seasons in the record, reanalysis / forecasts.
-        In the top five of every source that covers the season: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
-        In the top five of fewer than half the sources: Juba {cons_txt(C['deyr']['juba'][1])}; Shabelle {cons_txt(C['deyr']['shabelle'][1])}.</figcaption></figure>
+      <figcaption>Deyr. In the top five of every source that covers the season: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
+        In the top five of fewer than half: Juba {cons_txt(C['deyr']['juba'][1])}; Shabelle {cons_txt(C['deyr']['shabelle'][1])}.</figcaption></figure>
     <figure class="chart"><img src="{F['rk_gu']}" alt="Gu, seasons ranked by each source">
-      <figcaption>In the top five of every source that covers the season: Juba {cons_txt(C['gu']['juba'][0])}; Shabelle {cons_txt(C['gu']['shabelle'][0])}.
-        In the top five of fewer than half the sources: Juba {cons_txt(C['gu']['juba'][1])}; Shabelle {cons_txt(C['gu']['shabelle'][1])}.
-        Belet Weyne's Gu record is capped at 8.30 m in six seasons.</figcaption></figure>
+      <figcaption>Gu. In the top five of every source that covers the season: Juba {cons_txt(C['gu']['juba'][0])}; Shabelle {cons_txt(C['gu']['shabelle'][0])}.
+        In the top five of fewer than half: Juba {cons_txt(C['gu']['juba'][1])}; Shabelle {cons_txt(C['gu']['shabelle'][1])}. Belet Weyne's Gu record is capped at 8.30 m in six seasons.</figcaption></figure>
+    </div>
+    <p class="muted" style="font-size:12.5px">Cells: rank on the reanalysis, with the rank on the forecasts in small print. Row label: the second gauge's peak as a share of its 1-in-3.
+       Column label: seasons in the record, reanalysis / forecasts.</p>
 
     <h2><span class="num">2</span>Deyr, season by season</h2>
     <figure class="chart"><img src="{F['bt_deyr_ra']}" alt="Deyr, reanalysis, season by season"><figcaption>Reanalysis. One row per model and river, one cell per season.</figcaption></figure>
