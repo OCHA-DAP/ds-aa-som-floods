@@ -481,7 +481,7 @@ def fig_timeline(R, season, year):
                     if filled:
                         ax.scatter(d, yc, s=80, marker="s", color=COL[m], edgecolors="white", linewidths=0.8, zorder=4)
                         ax.scatter(d, yc, s=150, marker="s", facecolors="none", edgecolors=COL[m], linewidths=1.6, zorder=4)
-                        ax.text(d, yc + 0.2, d.strftime("%d %b") + " (reanalysis and forecasts)", ha="center", va="bottom", fontsize=8.5, color=COL[m])
+                        ax.text(d, yc + 0.2, d.strftime("%d %b") + " (reanalysis and forecasts)", ha="left" if (d - A).days < 12 else "right" if (B - d).days < 12 else "center", va="bottom", fontsize=8.5, color=COL[m])
                     continue
                 if filled:
                     ax.scatter(d, yc, s=80, marker="s", color=COL[m], edgecolors="white", linewidths=0.8, zorder=4)
