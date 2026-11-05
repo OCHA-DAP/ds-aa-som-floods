@@ -14,39 +14,47 @@
 .hero.hero-sub h1 { font-size:28px; }
 .crumb { font-size:12px; margin:0 0 14px; }
 .crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
-article { padding:8px 44px 40px; max-width:1000px; }
-article h2 { font-family:'Merriweather',Georgia,serif; font-size:22px; color:var(--n9); margin:44px 0 8px; padding-top:18px; border-top:1px solid #e9eded; }
-article h3 { font-family:'Merriweather',Georgia,serif; font-size:16px; color:var(--n9); margin:28px 0 6px; }
-article p, article li { font-size:14.5px; color:var(--n8); line-height:1.6; }
-.muted { color:var(--n7); }
-figure { margin:10px 0 4px; }
-figure img { width:100%; height:auto; display:block; }
-.key { background:var(--n05); border:1px solid #e7ecec; border-radius:5px; padding:14px 16px; margin:18px 0 6px; font-size:13.5px; }
-.key p { margin:0 0 6px; font-size:13.5px; }
-.key p:last-child { margin:0; }
-.key b { color:var(--n9); }
-table.sc { border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 0 18px; }
-.sc th, .sc td { border-bottom:1px solid #e9eded; padding:5px 7px; text-align:left; vertical-align:top; }
-.sc th { background:var(--n05); color:var(--n7); font-weight:500; font-size:11.5px; }
-.sc th:first-child { color:var(--n9); font-weight:700; font-size:12.5px; }
-.sc tr.riv td { background:#fff; color:var(--n9); font-weight:500; padding-top:10px; border-bottom:1px solid #d9dfdf; }
-.sc td:first-child { white-space:nowrap; }
-.sc .y { display:block; font-size:11px; color:var(--n7); }
-.read { font-size:13px; color:var(--n7); margin:4px 0 0; }
-@media (max-width:640px) { article { padding:8px 22px 30px; } }
+article { padding:8px 44px 24px; max-width:960px; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9); margin:44px 0 10px; line-height:1.25; }
+article h2 .num { color:var(--b5); font-size:15px; margin-right:8px; }
+article h3 { font-family:'Merriweather',Georgia,serif; font-size:15.5px; color:var(--n9); margin:26px 0 6px; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; }
+article ul { padding-left:22px; }
+article code { background:var(--n05); border:1px solid #e2e7e7; padding:1px 5px; border-radius:3px; font-size:12.5px; color:var(--b7); }
+.muted { color:#6b7683; }
+figure.chart { margin:18px 0 26px; }
+figure.chart img { width:100%; height:auto; display:block; }
+figure.chart figcaption { font-size:13px; color:#55606d; line-height:1.55; margin-top:10px; padding-left:2px; }
+.callout { margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
+.callout p { margin:0 0 7px; font-size:13.5px; }
+.callout p:last-child { margin:0; }
+.callout b { color:var(--n9); }
+.tablewrap { overflow-x:auto; }
+table.data { border-collapse:collapse; width:100%; margin:16px 0 22px; font-size:13px; }
+table.data caption { text-align:left; font-family:'Merriweather',Georgia,serif; font-size:14px; color:var(--n9); padding:0 0 8px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 10px 6px; }
+table.data td { border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8); vertical-align:top; }
+table.data tr.riv td { color:var(--n9); font-weight:500; padding-top:12px; border-bottom:1px solid #d9dfdf; background:#fff; }
+table.data td:first-child { white-space:nowrap; }
+table.data .y { display:block; font-size:11px; color:var(--n7); }
+.provenance { margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7; font-size:12px; color:var(--n7); line-height:1.7; }
+.provenance li { font-size:12px; color:var(--n7); margin:0 0 6px; }
+@media (max-width:640px) { article { padding:4px 22px 16px; } .hero.hero-sub { padding:32px 22px 28px; } .provenance { margin:28px 22px 32px; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="hero hero-sub">
-    <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / Google's new river model</p>
-    <h1>Google's new river model</h1>
-    <p>Google's November 2026 river model at the seven trigger points, read with the trigger's own rules next to GloFAS v4,
-       GloFAS v5 and the current Google model, on each model's reanalysis and on its forecast archive, against the SWALIM
-       gauges. The live Flood Hub feed does not run the new model yet.</p>
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / Google's new river model</p>
+      <h1>Google's new river model</h1>
+      <p>Google's November 2026 river model at the seven trigger points, read with the trigger's own rules next to GloFAS v4,
+         GloFAS v5 and the current Google model, on each model's reanalysis and on its forecast archive, against the SWALIM
+         gauges. The live Flood Hub feed does not run the new model yet.</p>
+    </div>
   </header>
   <article>
-    <div class="key">
+    <div class="callout">
       <p><b>Threshold reached:</b> three of the four Juba points, or two of the three Shabelle points, over their own level on the
          same day (Juba 1-in-4 and Shabelle 1-in-5 in Deyr, Juba 1-in-5 and Shabelle 1-in-6 in Gu, each model's
          own levels on its 1999 to 2023 seasonal maxima).</p>
@@ -56,21 +64,21 @@ table.sc { border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 0
       <p><b>Gauges:</b> a flood is two SWALIM gauges on the river at their own 1-in-3 level, severe at 1-in-5. Gauge data run to July 2026.</p>
     </div>
 
-    <h2>The worst floods first: the benchmark</h2>
-    <p>The gauges' twelve worst seasons, worst first, and the rank each source gives the same seasons in its own record. A season's
+    <h2><span class="num">1</span>The worst floods first: the benchmark</h2>
+    <p>The gauges' five worst seasons, worst first, and the rank each source gives the same seasons in its own record. A season's
        index is the level its second-highest station reached, as a share of that station's own 1-in-3 on that source.</p>
-    <figure><img src="figures/ranks_deyr.svg" alt="Deyr, seasons ranked"></figure>
-    <p class="read">Deyr, in the top five of every source that covers the season: Juba 2023 (6 sources), 2024 (2 sources); Shabelle 2019 (7 sources), 2014 (5 sources).
-       In the top five of fewer than half: Juba 2014 (2 of 5), 2006 (2 of 5), 2008 (2 of 5), 2015 (2 of 5), 2011 (0 of 5), 2020 (3 of 7), 2022 (0 of 7), 2013 (1 of 5); Shabelle 2006 (2 of 5), 2008 (1 of 5), 2012 (0 of 5), 2009 (0 of 5), 2007 (0 of 5), 2015 (0 of 5), 2025 (0 of 2).</p>
-    <figure><img src="figures/ranks_gu.svg" alt="Gu, seasons ranked"></figure>
-    <p class="read">Gu, in the top five of every source that covers the season: Juba 2018 (7 sources), 2020 (7 sources), 2024 (2 sources); Shabelle 2018 (7 sources), 2016 (7 sources), 2010 (5 sources).
-       In the top five of fewer than half: Juba 2023 (3 of 7), 2005 (2 of 5), 2006 (0 of 5), 2021 (1 of 7), 2015 (0 of 5), 2003 (0 of 5); Shabelle 2023 (3 of 7), 2024 (0 of 2), 2003 (0 of 5), 2021 (2 of 7), 2006 (0 of 5), 2004 (0 of 5).
-       Belet Weyne's Gu record is capped at 8.30 m in six seasons.</p>
+    <figure class="chart"><img src="figures/ranks_deyr.svg" alt="Deyr, seasons ranked">
+      <figcaption>Deyr. In the top five of every source that covers the season: Juba 2023 (6 sources), 2024 (2 sources); Shabelle 2019 (7 sources).
+        In the top five of fewer than half: Juba 2014 (2 of 5), 2006 (2 of 5); Shabelle 2006 (2 of 5).</figcaption></figure>
+    <figure class="chart"><img src="figures/ranks_gu.svg" alt="Gu, seasons ranked">
+      <figcaption>Gu. In the top five of every source that covers the season: Juba 2018 (7 sources), 2020 (7 sources); Shabelle 2018 (7 sources).
+        In the top five of fewer than half: Juba 2023 (3 of 7), 2005 (2 of 5); Shabelle 2023 (3 of 7), 2024 (0 of 2).
+        Belet Weyne's Gu record is capped at 8.30 m in six seasons.</figcaption></figure>
 
-    <h2>Deyr</h2>
-    <figure><img src="figures/backtest_deyr_ra.svg" alt="Deyr, reanalysis, season by season"></figure>
-    <figure><img src="figures/backtest_deyr_fc.svg" alt="Deyr, forecasts, season by season"></figure>
-    <table class='sc'><thead><tr><th>Reanalysis, 1999 to 2023</th><th>severe seasons caught</th><th>ordinary floods covered</th><th>threshold reached, no gauge flood</th><th>severe seasons missed</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
+    <h2><span class="num">2</span>Deyr, season by season</h2>
+    <figure class="chart"><img src="figures/backtest_deyr_ra.svg" alt="Deyr, reanalysis, season by season"><figcaption>Reanalysis. One row per model and river, one cell per season.</figcaption></figure>
+    <figure class="chart"><img src="figures/backtest_deyr_fc.svg" alt="Deyr, forecasts, season by season"><figcaption>Forecasts, leads 1 to 7. Blank cells are seasons outside the archive.</figcaption></figure>
+    <div class="tablewrap"><table class='data'><caption>Reanalysis, 1999 to 2023</caption><thead><tr><th>Source</th><th>severe seasons caught</th><th>ordinary floods covered</th><th>threshold reached, no gauge flood</th><th>severe seasons missed</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
 <tr class='riv'><td colspan='8'>Juba: severe seasons 2006, 2014, 2023</td></tr>
 <tr><td>Google, new</td><td>1 of 3<span class='y'>2023</span></td><td>1<span class='y'>2008</span></td><td>2<span class='y'>2019, 2020</span></td><td>2<span class='y'>2006, 2014</span></td><td style="background:rgba(30,121,95,0.22)">0.33</td><td style="background:rgba(30,121,95,0.29)">0.50</td><td style="background:rgba(30,121,95,0.25)">0.40</td></tr>
 <tr><td>Google, current</td><td>2 of 3<span class='y'>2006, 2023</span></td><td>0<span class='y'>none</span></td><td>2<span class='y'>2013, 2019</span></td><td>1<span class='y'>2014</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.29)">0.50</td><td style="background:rgba(30,121,95,0.32)">0.57</td></tr>
@@ -81,8 +89,8 @@ table.sc { border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 0
 <tr><td>Google, current</td><td>4 of 5<span class='y'>2006, 2014, 2019, 2023</span></td><td>1<span class='y'>2008</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2020</span></td><td style="background:rgba(30,121,95,0.42)">0.80</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.45)">0.89</td></tr>
 <tr><td>GloFAS v4</td><td>3 of 5<span class='y'>2014, 2019, 2020</span></td><td>0<span class='y'>none</span></td><td>2<span class='y'>2010, 2013</span></td><td>2<span class='y'>2006, 2023</span></td><td style="background:rgba(30,121,95,0.33)">0.60</td><td style="background:rgba(30,121,95,0.33)">0.40</td><td style="background:rgba(30,121,95,0.33)">0.60</td></tr>
 <tr><td>GloFAS v5</td><td>4 of 5<span class='y'>2006, 2014, 2019, 2023</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2020</span></td><td style="background:rgba(30,121,95,0.42)">0.80</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.45)">0.89</td></tr>
-</tbody></table>
-    <table class='sc'><thead><tr><th>Forecasts, 2016 to 2023</th><th>severe seasons caught</th><th>ordinary floods covered</th><th>threshold reached, no gauge flood</th><th>severe seasons missed</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
+</tbody></table></div>
+    <div class="tablewrap"><table class='data'><caption>Forecasts, 2016 to 2023</caption><thead><tr><th>Source</th><th>severe seasons caught</th><th>ordinary floods covered</th><th>threshold reached, no gauge flood</th><th>severe seasons missed</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
 <tr class='riv'><td colspan='8'>Juba: severe seasons 2023</td></tr>
 <tr><td>Google, new</td><td>1 of 1<span class='y'>2023</span></td><td>0<span class='y'>none</span></td><td>2<span class='y'>2019, 2020</span></td><td>0<span class='y'>none</span></td><td style="background:rgba(30,121,95,0.50)">1.00</td><td style="background:rgba(30,121,95,0.22)">0.67</td><td style="background:rgba(30,121,95,0.29)">0.50</td></tr>
 <tr><td>Google, current<span class='y'>archive 2016 to 2022</span></td><td>0 of 0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2019</span></td><td>0<span class='y'>none</span></td><td>n/a</td><td style="background:rgba(30,121,95,0.08)">1.00</td><td>n/a</td></tr>
@@ -91,13 +99,13 @@ table.sc { border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 0
 <tr><td>Google, new</td><td>3 of 3<span class='y'>2019, 2020, 2023</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td style="background:rgba(30,121,95,0.50)">1.00</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
 <tr><td>Google, current<span class='y'>archive 2016 to 2022</span></td><td>1 of 2<span class='y'>2019</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2020</span></td><td style="background:rgba(30,121,95,0.29)">0.50</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.36)">0.67</td></tr>
 <tr><td>GloFAS v4</td><td>2 of 3<span class='y'>2019, 2020</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
-</tbody></table>
-    <p class="read">New model, Deyr 2024: threshold not reached on both records; gauges: Juba flood, Shabelle severe. Deyr 2025: threshold not reached on both records; gauges: Juba nothing, Shabelle nothing.</p>
+</tbody></table></div>
+    <p class="muted" style="font-size:13px">New model, Deyr 2024: threshold not reached on both records; gauges: Juba flood, Shabelle severe. Deyr 2025: threshold not reached on both records; gauges: Juba nothing, Shabelle nothing.</p>
 
-    <h2>Gu</h2>
-    <figure><img src="figures/backtest_gu_ra.svg" alt="Gu, reanalysis, season by season"></figure>
-    <figure><img src="figures/backtest_gu_fc.svg" alt="Gu, forecasts, season by season"></figure>
-    <table class='sc'><thead><tr><th>Reanalysis, 1999 to 2023</th><th>severe seasons caught</th><th>ordinary floods covered</th><th>threshold reached, no gauge flood</th><th>severe seasons missed</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
+    <h2><span class="num">3</span>Gu, season by season</h2>
+    <figure class="chart"><img src="figures/backtest_gu_ra.svg" alt="Gu, reanalysis, season by season"><figcaption>Reanalysis.</figcaption></figure>
+    <figure class="chart"><img src="figures/backtest_gu_fc.svg" alt="Gu, forecasts, season by season"><figcaption>Forecasts, leads 1 to 7.</figcaption></figure>
+    <div class="tablewrap"><table class='data'><caption>Reanalysis, 1999 to 2023</caption><thead><tr><th>Source</th><th>severe seasons caught</th><th>ordinary floods covered</th><th>threshold reached, no gauge flood</th><th>severe seasons missed</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
 <tr class='riv'><td colspan='8'>Juba: severe seasons 2018, 2020, 2023</td></tr>
 <tr><td>Google, new</td><td>2 of 3<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
 <tr><td>Google, current</td><td>2 of 3<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>1<span class='y'>2013</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.40)">0.25</td><td style="background:rgba(30,121,95,0.38)">0.71</td></tr>
@@ -106,8 +114,8 @@ table.sc { border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 0
 <tr><td>Google, new</td><td>3 of 3<span class='y'>2016, 2020, 2023</span></td><td>1<span class='y'>2018</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td style="background:rgba(30,121,95,0.50)">1.00</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
 <tr><td>Google, current</td><td>2 of 3<span class='y'>2016, 2020</span></td><td>1<span class='y'>2018</span></td><td>1<span class='y'>2013</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.40)">0.25</td><td style="background:rgba(30,121,95,0.38)">0.71</td></tr>
 <tr><td>GloFAS v4</td><td>1 of 3<span class='y'>2016</span></td><td>3<span class='y'>2005, 2010, 2018</span></td><td>0<span class='y'>none</span></td><td>2<span class='y'>2020, 2023</span></td><td style="background:rgba(30,121,95,0.22)">0.33</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.29)">0.50</td></tr>
-</tbody></table>
-    <table class='sc'><thead><tr><th>Forecasts, 2016 to 2023</th><th>severe seasons caught</th><th>ordinary floods covered</th><th>threshold reached, no gauge flood</th><th>severe seasons missed</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
+</tbody></table></div>
+    <div class="tablewrap"><table class='data'><caption>Forecasts, 2016 to 2023</caption><thead><tr><th>Source</th><th>severe seasons caught</th><th>ordinary floods covered</th><th>threshold reached, no gauge flood</th><th>severe seasons missed</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
 <tr class='riv'><td colspan='8'>Juba: severe seasons 2018, 2020, 2023</td></tr>
 <tr><td>Google, new</td><td>2 of 3<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
 <tr><td>Google, current</td><td>2 of 3<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
@@ -116,31 +124,36 @@ table.sc { border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 0
 <tr><td>Google, new</td><td>3 of 3<span class='y'>2016, 2020, 2023</span></td><td>1<span class='y'>2018</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td style="background:rgba(30,121,95,0.50)">1.00</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
 <tr><td>Google, current</td><td>3 of 3<span class='y'>2016, 2020, 2023</span></td><td>1<span class='y'>2018</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td style="background:rgba(30,121,95,0.50)">1.00</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
 <tr><td>GloFAS v4</td><td>1 of 3<span class='y'>2016</span></td><td>1<span class='y'>2018</span></td><td>0<span class='y'>none</span></td><td>2<span class='y'>2020, 2023</span></td><td style="background:rgba(30,121,95,0.22)">0.33</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.29)">0.50</td></tr>
-</tbody></table>
-    <p class="read">New model, Gu 2024: threshold reached on the Juba on both records; gauges: Juba flood, Shabelle severe. Gu 2025: threshold not reached on both records; gauges: Juba no gauge record, Shabelle nothing.</p>
+</tbody></table></div>
+    <p class="muted" style="font-size:13px">New model, Gu 2024: threshold reached on the Juba on both records; gauges: Juba flood, Shabelle severe. Gu 2025: threshold not reached on both records; gauges: Juba no gauge record, Shabelle nothing.</p>
 
-    <h2>Timing against the gauges</h2>
-    <p>One row per flood season; the line is the day the second gauge crossed its 1-in-3 level.</p>
-    <figure><img src="figures/timing_deyr_ra.svg" alt="Deyr timing, reanalysis"></figure>
-    <figure><img src="figures/timing_deyr_fc.svg" alt="Deyr timing, forecasts"></figure>
-    <figure><img src="figures/timing_gu_ra.svg" alt="Gu timing, reanalysis"></figure>
-    <figure><img src="figures/timing_gu_fc.svg" alt="Gu timing, forecasts"></figure>
+    <h2><span class="num">4</span>Timing against the gauges</h2>
+    <p>The seasons in the worst third of the gauge ranking, one row per river and season. Zero is the day the river's second
+       gauge crossed its 1-in-3 level. A dot on the green side means that source reached the threshold that many days before the
+       gauges confirmed the flood; on the red side, that many days after; in the grey column, not at all that season. The bar is
+       the river's peak.</p>
+    <figure class="chart"><img src="figures/timing_deyr_ra.svg" alt="Deyr timing, reanalysis"><figcaption>Deyr, reanalysis.</figcaption></figure>
+    <figure class="chart"><img src="figures/timing_deyr_fc.svg" alt="Deyr timing, forecasts"><figcaption>Deyr, forecasts. GloFAS v5 has no archive; the current Google archive ends June 2023.</figcaption></figure>
+    <figure class="chart"><img src="figures/timing_gu_ra.svg" alt="Gu timing, reanalysis"><figcaption>Gu, reanalysis.</figcaption></figure>
+    <figure class="chart"><img src="figures/timing_gu_fc.svg" alt="Gu timing, forecasts"><figcaption>Gu, forecasts.</figcaption></figure>
 
-    <h2>Three seasons at all seven points</h2>
-    <p>The gauge as a share of its 1-in-3 level, each model's reanalysis as a share of its own trigger level; the last panel lists the dates.</p>
-    <figure><img src="figures/season_deyr_2023.svg" alt="Deyr 2023, all points"></figure>
-    <figure><img src="figures/season_deyr_2024.svg" alt="Deyr 2024, all points"></figure>
-    <figure><img src="figures/season_gu_2024.svg" alt="Gu 2024, all points"></figure>
+    <h2><span class="num">5</span>Three seasons at all seven points</h2>
+    <p>Same layout as the season charts on the timing page: the new model at each station as a share of its own trigger level, the gauges
+       dashed as a share of their 1-in-3, the days the threshold was reached, and flood exposure where FloodScan covers the season.</p>
+    <figure class="chart"><img src="figures/season_deyr_2023.svg" alt="Deyr 2023, all points"></figure>
+    <figure class="chart"><img src="figures/season_deyr_2024.svg" alt="Deyr 2024, all points"></figure>
+    <figure class="chart"><img src="figures/season_gu_2024.svg" alt="Gu 2024, all points"></figure>
 
-    <h2>Station by station</h2>
+    <h2><span class="num">6</span>Station by station</h2>
     <p>Each point against its own gauge, reanalysis 1999 to 2023; severe is the gauge over its own 1-in-5, a false alarm is the model over its level with the gauge under its 1-in-3.</p>
-    <figure><img src="figures/stations_deyr.svg" alt="Deyr station scores"></figure>
-    <figure><img src="figures/stations_gu.svg" alt="Gu station scores"></figure>
+    <figure class="chart"><img src="figures/stations_deyr.svg" alt="Deyr station scores"><figcaption>Deyr.</figcaption></figure>
+    <figure class="chart"><img src="figures/stations_gu.svg" alt="Gu station scores"><figcaption>Gu.</figcaption></figure>
 
-    <h2>The two Google models are on different scales</h2>
-    <figure><img src="figures/levels.svg" alt="Trigger levels, current against new"></figure>
+    <h2><span class="num">7</span>The two Google models are on different scales</h2>
+    <figure class="chart"><img src="figures/levels.svg" alt="Trigger levels, current against new"><figcaption>The trigger level at each point on the current Google model and on the new one, both fitted the same way.</figcaption></figure>
+  </article>
 
-    <h2>Notes</h2>
+  <div class="provenance">
     <ul>
       <li>Source: Google Runoff Reanalysis and Reforecast, November 2026 release (reanalysis 1981 to 2025, reforecast 2016 to 2025, leads 0 to 10 days),
           one HydroBasins outlet per station, the main-stem outlet within 15 km with the largest 1-in-5 flow; ids in <code>data.json</code>.</li>
@@ -155,7 +168,7 @@ table.sc { border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 0
           2026 is in no archive.</li>
       <li>Generated by <code>scripts/page_additions/build_google_model_2026_page.py</code>; dates, levels and scores in <code>data.json</code>.</li>
     </ul>
-  </article>
+  </div>
 </div>
 </body>
 </html>
