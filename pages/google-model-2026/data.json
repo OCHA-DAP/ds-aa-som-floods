@@ -1716,6 +1716,7 @@
    "station": "dollow",
    "model": "grrr_2026_11",
    "n_years": 8,
+   "n_severe": 1,
    "POD": 1.0,
    "FAR": 0.5,
    "F1": 0.6666666667
@@ -1725,6 +1726,7 @@
    "station": "dollow",
    "model": "google_grrr",
    "n_years": 8,
+   "n_severe": 1,
    "POD": 1.0,
    "FAR": 0.6666666667,
    "F1": 0.5
@@ -1734,6 +1736,7 @@
    "station": "dollow",
    "model": "glofas_v4",
    "n_years": 8,
+   "n_severe": 1,
    "POD": 1.0,
    "FAR": 0.3333333333,
    "F1": 0.8
@@ -1743,6 +1746,7 @@
    "station": "dollow",
    "model": "glofas_v5",
    "n_years": 8,
+   "n_severe": 1,
    "POD": 1.0,
    "FAR": 0.3333333333,
    "F1": 0.8
@@ -1752,6 +1756,7 @@
    "station": "luuq",
    "model": "grrr_2026_11",
    "n_years": 23,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.3333333333,
    "F1": 0.5714285714
@@ -1761,6 +1766,7 @@
    "station": "luuq",
    "model": "google_grrr",
    "n_years": 23,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.1666666667,
    "F1": 0.625
@@ -1770,6 +1776,7 @@
    "station": "luuq",
    "model": "glofas_v4",
    "n_years": 23,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.3333333333,
    "F1": 0.5714285714
@@ -1779,6 +1786,7 @@
    "station": "luuq",
    "model": "glofas_v5",
    "n_years": 23,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.5,
    "F1": 0.5
@@ -1788,6 +1796,7 @@
    "station": "bardheere",
    "model": "grrr_2026_11",
    "n_years": 23,
+   "n_severe": 4,
    "POD": 0.75,
    "FAR": 0.5,
    "F1": 0.6
@@ -1797,6 +1806,7 @@
    "station": "bardheere",
    "model": "google_grrr",
    "n_years": 23,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.6666666667,
    "F1": 0.4
@@ -1806,6 +1816,7 @@
    "station": "bardheere",
    "model": "glofas_v4",
    "n_years": 23,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.6666666667,
    "F1": 0.4
@@ -1815,6 +1826,7 @@
    "station": "bardheere",
    "model": "glofas_v5",
    "n_years": 23,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.6666666667,
    "F1": 0.4
@@ -1824,6 +1836,7 @@
    "station": "bualle",
    "model": "grrr_2026_11",
    "n_years": 16,
+   "n_severe": 3,
    "POD": 0.6666666667,
    "FAR": 0.2,
    "F1": 0.7272727273
@@ -1833,6 +1846,7 @@
    "station": "bualle",
    "model": "google_grrr",
    "n_years": 16,
+   "n_severe": 3,
    "POD": 0.3333333333,
    "FAR": 0.3333333333,
    "F1": 0.4444444444
@@ -1842,6 +1856,7 @@
    "station": "bualle",
    "model": "glofas_v4",
    "n_years": 16,
+   "n_severe": 3,
    "POD": 1.0,
    "FAR": 0.25,
    "F1": 0.8571428571
@@ -1851,6 +1866,7 @@
    "station": "bualle",
    "model": "glofas_v5",
    "n_years": 16,
+   "n_severe": 3,
    "POD": 0.3333333333,
    "FAR": 0.5,
    "F1": 0.4
@@ -1860,6 +1876,7 @@
    "station": "belet_weyne",
    "model": "grrr_2026_11",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.75,
    "FAR": 0.2,
    "F1": 0.7741935484
@@ -1869,6 +1886,7 @@
    "station": "belet_weyne",
    "model": "google_grrr",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 1.0,
    "FAR": 0.0,
    "F1": 1.0
@@ -1878,6 +1896,7 @@
    "station": "belet_weyne",
    "model": "glofas_v4",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.4,
    "F1": 0.5454545455
@@ -1887,6 +1906,7 @@
    "station": "belet_weyne",
    "model": "glofas_v5",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 1.0,
    "FAR": 0.2,
    "F1": 0.8888888889
@@ -1896,6 +1916,7 @@
    "station": "bulo_burti",
    "model": "grrr_2026_11",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.75,
    "FAR": 0.2,
    "F1": 0.7741935484
@@ -1905,6 +1926,7 @@
    "station": "bulo_burti",
    "model": "google_grrr",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.75,
    "FAR": 0.0,
    "F1": 0.8571428571
@@ -1914,6 +1936,7 @@
    "station": "bulo_burti",
    "model": "glofas_v4",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.4,
    "F1": 0.5454545455
@@ -1923,6 +1946,7 @@
    "station": "bulo_burti",
    "model": "glofas_v5",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.75,
    "FAR": 0.2,
    "F1": 0.7741935484
@@ -1932,6 +1956,7 @@
    "station": "jowhar",
    "model": "grrr_2026_11",
    "n_years": 24,
+   "n_severe": 6,
    "POD": 0.5,
    "FAR": 0.4,
    "F1": 0.5454545455
@@ -1941,6 +1966,7 @@
    "station": "jowhar",
    "model": "google_grrr",
    "n_years": 24,
+   "n_severe": 6,
    "POD": 0.3333333333,
    "FAR": 0.4,
    "F1": 0.4285714286
@@ -1950,6 +1976,7 @@
    "station": "jowhar",
    "model": "glofas_v4",
    "n_years": 24,
+   "n_severe": 6,
    "POD": 0.5,
    "FAR": 0.4,
    "F1": 0.5454545455
@@ -1959,6 +1986,7 @@
    "station": "jowhar",
    "model": "glofas_v5",
    "n_years": 24,
+   "n_severe": 6,
    "POD": 0.3333333333,
    "FAR": 0.6,
    "F1": 0.3636363636
@@ -1968,6 +1996,7 @@
    "station": "dollow",
    "model": "grrr_2026_11",
    "n_years": 9,
+   "n_severe": 2,
    "POD": 1.0,
    "FAR": 0.25,
    "F1": 0.8571428571
@@ -1977,6 +2006,7 @@
    "station": "dollow",
    "model": "google_grrr",
    "n_years": 9,
+   "n_severe": 2,
    "POD": 1.0,
    "FAR": 0.3333333333,
    "F1": 0.8
@@ -1986,6 +2016,7 @@
    "station": "dollow",
    "model": "glofas_v4",
    "n_years": 9,
+   "n_severe": 2,
    "POD": 1.0,
    "FAR": 0.3333333333,
    "F1": 0.8
@@ -1995,6 +2026,7 @@
    "station": "dollow",
    "model": "glofas_v5",
    "n_years": 9,
+   "n_severe": 2,
    "POD": 1.0,
    "FAR": 0.3333333333,
    "F1": 0.8
@@ -2004,6 +2036,7 @@
    "station": "luuq",
    "model": "grrr_2026_11",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.75,
    "FAR": 0.2,
    "F1": 0.7741935484
@@ -2013,6 +2046,7 @@
    "station": "luuq",
    "model": "google_grrr",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.75,
    "FAR": 0.2,
    "F1": 0.7741935484
@@ -2022,6 +2056,7 @@
    "station": "luuq",
    "model": "glofas_v4",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 1.0,
    "FAR": 0.0,
    "F1": 1.0
@@ -2031,6 +2066,7 @@
    "station": "luuq",
    "model": "glofas_v5",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.75,
    "FAR": 0.2,
    "F1": 0.7741935484
@@ -2040,6 +2076,7 @@
    "station": "bardheere",
    "model": "grrr_2026_11",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.75,
    "FAR": 0.2,
    "F1": 0.7741935484
@@ -2049,6 +2086,7 @@
    "station": "bardheere",
    "model": "google_grrr",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.2,
    "F1": 0.6153846154
@@ -2058,6 +2096,7 @@
    "station": "bardheere",
    "model": "glofas_v4",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.2,
    "F1": 0.6153846154
@@ -2067,6 +2106,7 @@
    "station": "bardheere",
    "model": "glofas_v5",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.2,
    "F1": 0.6153846154
@@ -2076,6 +2116,7 @@
    "station": "bualle",
    "model": "grrr_2026_11",
    "n_years": 16,
+   "n_severe": 3,
    "POD": 1.0,
    "FAR": 0.2,
    "F1": 0.8888888889
@@ -2085,6 +2126,7 @@
    "station": "bualle",
    "model": "google_grrr",
    "n_years": 16,
+   "n_severe": 3,
    "POD": 0.6666666667,
    "FAR": 0.2,
    "F1": 0.7272727273
@@ -2094,6 +2136,7 @@
    "station": "bualle",
    "model": "glofas_v4",
    "n_years": 16,
+   "n_severe": 3,
    "POD": 0.6666666667,
    "FAR": 0.25,
    "F1": 0.7058823529
@@ -2103,6 +2146,7 @@
    "station": "bualle",
    "model": "glofas_v5",
    "n_years": 16,
+   "n_severe": 3,
    "POD": 0.6666666667,
    "FAR": 0.2,
    "F1": 0.7272727273
@@ -2112,6 +2156,7 @@
    "station": "belet_weyne",
    "model": "grrr_2026_11",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.75,
    "FAR": 0.0,
    "F1": 0.8571428571
@@ -2121,6 +2166,7 @@
    "station": "belet_weyne",
    "model": "google_grrr",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.25,
    "F1": 0.6
@@ -2130,6 +2176,7 @@
    "station": "belet_weyne",
    "model": "glofas_v4",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.25,
    "FAR": 0.0,
    "F1": 0.4
@@ -2139,6 +2186,7 @@
    "station": "belet_weyne",
    "model": "glofas_v5",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.0,
    "F1": 0.6666666667
@@ -2148,6 +2196,7 @@
    "station": "bulo_burti",
    "model": "grrr_2026_11",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.75,
    "FAR": 0.0,
    "F1": 0.8571428571
@@ -2157,6 +2206,7 @@
    "station": "bulo_burti",
    "model": "google_grrr",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.25,
    "F1": 0.6
@@ -2166,6 +2216,7 @@
    "station": "bulo_burti",
    "model": "glofas_v4",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.5,
    "FAR": 0.0,
    "F1": 0.6666666667
@@ -2175,6 +2226,7 @@
    "station": "bulo_burti",
    "model": "glofas_v5",
    "n_years": 22,
+   "n_severe": 4,
    "POD": 0.75,
    "FAR": 0.0,
    "F1": 0.8571428571
@@ -2184,6 +2236,7 @@
    "station": "jowhar",
    "model": "grrr_2026_11",
    "n_years": 25,
+   "n_severe": 7,
    "POD": 0.2857142857,
    "FAR": 0.5,
    "F1": 0.3636363636
@@ -2193,6 +2246,7 @@
    "station": "jowhar",
    "model": "google_grrr",
    "n_years": 25,
+   "n_severe": 7,
    "POD": 0.4285714286,
    "FAR": 0.25,
    "F1": 0.5454545455
@@ -2202,6 +2256,7 @@
    "station": "jowhar",
    "model": "glofas_v4",
    "n_years": 25,
+   "n_severe": 7,
    "POD": 0.1428571429,
    "FAR": 0.75,
    "F1": 0.1818181818
@@ -2211,6 +2266,7 @@
    "station": "jowhar",
    "model": "glofas_v5",
    "n_years": 25,
+   "n_severe": 7,
    "POD": 0.2857142857,
    "FAR": 0.5,
    "F1": 0.3636363636
