@@ -941,7 +941,8 @@ def framework(R):
         fc = {int(y): d for y, d in first_issue_in_season(NEW, river, season, rp, n_req, span=range(FRAMEWORK_FC_SPAN[0], FRAMEWORK_FC_SPAN[1] + 1)).items()}
         sev = set(L.gauge_crossings(river, season, 5, span=YEARS))
         thr = L.model_thresholds(NEW, river, season, rp)
-        out[(river, season)] = dict(rp=rp, ra=ra, fc=fc, sev=sev, thr=thr, assess=rec["assess"], bench=rec["bench"], flood3=rec["severe"])
+        bench5 = {int(y): d for y, d in L.gauge_crossings(river, season, 5, span=YEARS).items()}
+        out[(river, season)] = dict(rp=rp, ra=ra, fc=fc, sev=sev, thr=thr, assess=rec["assess"], bench=bench5, flood3=rec["severe"])
     return out
 
 
@@ -968,7 +969,7 @@ def framework_html(F):
     half_up = lambda v: int(np.floor(v + 0.5))
     word = lambda v: "same day" if half_up(v) == 0 else f"{abs(half_up(v))} d {'before' if half_up(v) > 0 else 'after'}"
     a = ["<table class='data'><thead><tr><th>River, season</th><th>Level</th><th>Activations<span class='y'>reanalysis 1999 to 2023</span></th>"
-         "<th>1-in-5 gauge floods not reached</th><th>Reached, no 1-in-5 flood</th><th>Timing, mean<span class='y'>against the second gauge's 1-in-3; reanalysis / forecasts</span></th></tr></thead><tbody>"]
+         "<th>1-in-5 gauge floods not reached</th><th>Reached, no 1-in-5 flood</th><th>Timing, mean<span class='y'>against the second gauge's 1-in-5; reanalysis / forecasts</span></th></tr></thead><tbody>"]
     fc_note = []
     for k, x in F.items():
         scored = set(range(SCORE_RA[0], SCORE_RA[1] + 1)) & x["assess"]
