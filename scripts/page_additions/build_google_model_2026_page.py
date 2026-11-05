@@ -69,6 +69,7 @@ WINDOW = {"deyr": ("10-01", "12-31"), "gu": ("03-01", "05-31")}
 DISTRICTS = {"juba": ["SO2605", "SO2606", "SO2602", "SO2703", "SO2701", "SO2702"],
              "shabelle": ["SO2001", "SO2002", "SO2003", "SO2101", "SO2103", "SO2302", "SO2305", "SO2301"]}
 BASIS_TITLE = {"ra": "reanalysis", "fc": "forecasts"}
+GAUGE_C = "#7C8794"   # gauge marks on the timelines; the peak tick is INK on top of them
 ok = lambda x: x is not None and not pd.isna(x)
 fmt = lambda d: d.strftime("%d %b") if ok(d) else "never"
 yrs = lambda xs: ", ".join(str(y) for y in sorted(xs)) if xs else "none"
@@ -212,11 +213,12 @@ def score(rec, m, basis, span):
 
 def save(fig, name, tight=True):
     FIGS.mkdir(parents=True, exist_ok=True)
-    fig.savefig(FIGS / f"{name}.svg", format="svg", bbox_inches="tight" if tight else None)
+    kw = dict(bbox_inches="tight", pad_inches=0.3) if tight else {}
+    fig.savefig(FIGS / f"{name}.svg", format="svg", **kw)
     if os.environ.get("SOM_FIG_PNG_DIR"):  # raster copies for review, outside the repo
         png = Path(os.environ["SOM_FIG_PNG_DIR"])
         png.mkdir(parents=True, exist_ok=True)
-        fig.savefig(png / f"{name}.png", format="png", dpi=130, bbox_inches="tight" if tight else None)
+        fig.savefig(png / f"{name}.png", format="png", dpi=130, **kw)
     plt.close(fig)
     return f"figures/{name}.svg"
 
@@ -230,7 +232,7 @@ def fig_backtest(R, season, basis):
         rec = R[(river, season)]
         for m in models:
             lines.append((f"{river.title()}: {SHORT[m]}", rec, m))
-    fig, ax = plt.subplots(figsize=(14.2, 0.6 * len(lines) + 2.6))
+    fig, ax = plt.subplots(figsize=(14.8, 0.6 * len(lines) + 2.6))
     for i, (name, rec, m) in enumerate(lines[::-1]):
         f, yr = activations_of(rec, m, basis), years_of(rec, m, basis)
         for j, y in enumerate(YEARS):
@@ -255,9 +257,9 @@ def fig_backtest(R, season, basis):
     ax.axhline(len(models) - 0.5, color=INK, linewidth=1.0)
     for edge_year in (span[0] - 0.5, span[1] + 0.5):
         ax.axvline(YEARS.index(int(edge_year + 0.5)) - 0.5, color=INK, linewidth=0.9, ls=":", zorder=4)
-    ax.text(-0.5, -0.62, f" dotted lines: the tallies on the right count the seasons with a gauge record between them ({rng(span)})", ha="left", va="top", fontsize=8.5, color=FAINT,
+    ax.text(-0.5, -0.62, " dotted lines: the tallies on the right count the seasons with a gauge record between them", ha="left", va="top", fontsize=8.5, color=FAINT,
             bbox=dict(facecolor="white", edgecolor="none", pad=1), zorder=6)
-    ax.set_xlim(-0.6, len(YEARS) + 8.4)
+    ax.set_xlim(-0.6, len(YEARS) + 9.6)
     ax.set_ylim(-1.1, len(lines) - 0.4)
     ax.set_yticks(range(len(lines)), [ln[0] for ln in lines[::-1]], fontsize=10.5)
     ax.set_xticks(range(0, len(YEARS), 2), [str(y) for y in YEARS[::2]], fontsize=9.5)
@@ -272,7 +274,7 @@ def fig_backtest(R, season, basis):
     ax.legend(handles=H, ncol=3, fontsize=9.5, loc="upper center", bbox_to_anchor=(0.45, -0.08))
     what = "reanalysis" if basis == "ra" else "forecasts, first issue reaching the threshold (leads 1 to 7 days)"
     ax.set_title(f"{SEASON_TITLE[season]}, {what}", fontsize=12, loc="left")
-    fig.subplots_adjust(left=0.15, right=0.99, top=0.92, bottom=0.26 if len(lines) <= 6 else 0.2)
+    fig.subplots_adjust(left=0.145, right=0.995, top=0.92, bottom=0.26 if len(lines) <= 6 else 0.2)
     return save(fig, f"backtest_{season}_{basis}", tight=False)
 
 
@@ -325,6 +327,8 @@ def fig_timing(R, season):
         mm = rec["models"][m]
         for k, (basis, alpha) in enumerate((("ra", 1.0), ("fc", 0.45))):
             yb = yc + (0.2 if k == 0 else -0.2)
+            if not ok(b):
+                continue
             have = y in mm[f"{basis}_years"]
             d = mm[basis].get(y)
             tag = "reanalysis" if basis == "ra" else "forecasts"
@@ -380,7 +384,8 @@ def timing_stats(R, season, basis, m):
 
 
 def timing_summary_html(R):
-    fmt_d = lambda v: ("same day" if round(v) == 0 else f"{abs(v):.0f} d {'before' if v > 0 else 'after'}")
+    half_up = lambda v: int(np.floor(abs(v) + 0.5))
+    fmt_d = lambda v: ("same day" if half_up(v) == 0 else f"{half_up(v)} d {'before' if v > 0 else 'after'}")
     head = ("<table class='data'><thead><tr><th rowspan='2'>Source</th><th colspan='2'>Deyr</th><th colspan='2'>Gu</th></tr>"
             "<tr><th>reanalysis</th><th>forecasts</th><th>reanalysis</th><th>forecasts</th></tr></thead><tbody>")
     out = [head]
@@ -414,7 +419,7 @@ def fig_timeline(R, season, year):
     n_rows = {r: len(TRIGGER_STATIONS[r]) + len(models) for r in RIVERS}
     has_exp = year <= 2023
     ratios = ([n_rows["juba"], 3, n_rows["shabelle"], 3] if has_exp else [n_rows["juba"], n_rows["shabelle"]])
-    fig, axes = plt.subplots(len(ratios), 1, figsize=(11.6, 0.62 * sum(ratios) + 2.6), sharex=True,
+    fig, axes = plt.subplots(len(ratios), 1, figsize=(11.6, 0.72 * sum(ratios) + 2.6), sharex=True,
                              gridspec_kw=dict(height_ratios=ratios))
     row_axes = [axes[0], axes[2]] if has_exp else [axes[0], axes[1]]
     for ax, river in zip(row_axes, RIVERS):
@@ -435,7 +440,7 @@ def fig_timeline(R, season, year):
                 notes.append("no gauge record" if s.empty else "gauge record too short")
             else:
                 pk = s.loc[s.level_m.idxmax(), "date"]
-                ax.scatter(pk, yc, s=230, marker="|", color=INK, linewidths=1.8, zorder=6)
+                ax.scatter(pk, yc, s=380, marker="|", color=INK, linewidths=2.2, zorder=6)
                 row_label = f"{NAME[st]} gauge, peak {pk:%d %b}"
                 first = {}
                 for lab, lev in (("1-in-3", g3[st]), ("1-in-5", g5[st])):
@@ -450,8 +455,8 @@ def fig_timeline(R, season, year):
                     c = s[s.level_m >= lev]
                     if len(c):
                         d = c.date.iloc[0]
-                        ax.scatter(d, yc, s=70 if marker == "o" else 60, marker=marker, color=BODY, edgecolors="white", linewidths=0.8, zorder=5)
-                        ax.text(d, yc + (0.24 if marker == "o" else -0.24), f"{d:%d %b}", ha=edge(d), va="bottom" if marker == "o" else "top", fontsize=8.5, color=BODY)
+                        ax.scatter(d, yc, s=70 if marker == "o" else 60, marker=marker, color=GAUGE_C, edgecolors="white", linewidths=0.8, zorder=5)
+                        ax.text(d, yc + (0.22 if marker == "o" else -0.22), f"{d:%d %b}", ha=edge(d), va="bottom" if marker == "o" else "top", fontsize=8.5, color=BODY)
             if notes:
                 ax.text(B - pd.Timedelta(days=1), yc, "; ".join(notes), va="center", ha="right", fontsize=8.5, color=FAINT)
             ylab.append((yc, row_label))
@@ -528,9 +533,9 @@ def fig_timeline(R, season, year):
             axe.set_axisbelow(True)
     axes[-1].xaxis.set_major_locator(mdates.DayLocator(bymonthday=[1, 15]))
     axes[-1].xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
-    Hh = [Line2D([], [], marker="o", ls="", color=BODY, markersize=7, label="gauge over its 1-in-3"),
-          Line2D([], [], marker="D", ls="", color=BODY, markersize=6, label="gauge over its 1-in-5"),
-          Line2D([], [], marker="|", ls="", color=INK, markersize=12, markeredgewidth=1.8, label="gauge peak"),
+    Hh = [Line2D([], [], marker="o", ls="", color=GAUGE_C, markersize=7, label="gauge over its 1-in-3"),
+          Line2D([], [], marker="D", ls="", color=GAUGE_C, markersize=6, label="gauge over its 1-in-5"),
+          Line2D([], [], marker="|", ls="", color=INK, markersize=14, markeredgewidth=2.2, label="gauge peak"),
           Line2D([], [], marker="s", ls="", color=INK, markersize=8, label="threshold reached, reanalysis (source colour)"),
           Line2D([], [], marker="s", ls="", markerfacecolor="none", markeredgecolor=INK, markersize=9, markeredgewidth=1.6, label="first forecast issue reaching the threshold")]
     fig.legend(handles=Hh, ncol=5, fontsize=9.5, loc="upper center", bbox_to_anchor=(0.5, 0.03), frameon=False)
@@ -828,7 +833,7 @@ def fig_corr(CR):
         heat(ax, mat, [SHORT[m].replace(", ", chr(10)) for m in ms], [NAME[s] for s in STATIONS] if season == "deyr" else [""] * len(STATIONS),
              vmin=0.3, vmax=0.95, cmap="Greens")
         ax.set_title(f"{SEASON_TITLE[season]}\n(dark = high)", fontsize=10)
-    fig.suptitle(f"Best-lag rank correlation between each model's daily flow and the gauge level, seasons with a gauge record, {rng(SCORE_RA)}", x=0.02, ha="left", fontsize=11)
+    fig.suptitle("Rank correlation between each model's daily flow and the gauge level at the best lag, seasons with a gauge record to 2023", x=0.02, ha="left", fontsize=11)
     fig.subplots_adjust(wspace=0.08, top=0.8)
     return save(fig, "correlation")
 
@@ -847,15 +852,15 @@ def fig_levels():
             ax.text(max(o, nw) * 1.1, y, f"{nw / o:.1f}x", va="center", fontsize=8.5, color=FAINT)
         ax.set_xlim(0, 1250)
         ax.set_title(SEASON_TITLE[season])
-        ax.set_xlabel("trigger level at the point, m³/s (ratio: new over current)")
+        ax.set_xlabel(f"1-in-{TRIGGER_RP} level at the point, m³/s (ratio: new over current)")
         style_ax(ax, grid="x")
     axes[0].set_yticks(ys, [NAME[s] for s in STATIONS])
     fig.legend(*axes[0].get_legend_handles_labels(), ncol=2, fontsize=9, loc="upper center", bbox_to_anchor=(0.5, 1.02), frameon=False)
     for ax in axes:
         ax.axhline(len(STATIONS) - len(TRIGGER_STATIONS["juba"]) - 0.5, color=INK, linewidth=0.9)
         bb = dict(facecolor="white", edgecolor="none", pad=1.5)
-        ax.text(ax.get_xlim()[1] * 0.98, len(STATIONS) - 0.6, "Juba", ha="right", va="top", fontsize=9, color=FAINT, bbox=bb)
-        ax.text(ax.get_xlim()[1] * 0.98, len(STATIONS) - len(TRIGGER_STATIONS["juba"]) - 0.7, "Shabelle", ha="right", va="top", fontsize=9, color=FAINT, bbox=bb)
+        ax.text(12, len(STATIONS) - 0.55, "Juba", ha="left", va="top", fontsize=9, color=FAINT, bbox=bb)
+        ax.text(12, len(STATIONS) - len(TRIGGER_STATIONS["juba"]) - 0.6, "Shabelle", ha="left", va="top", fontsize=9, color=FAINT, bbox=bb)
     fig.subplots_adjust(wspace=0.06, top=0.84)
     return save(fig, "levels")
 
@@ -896,9 +901,9 @@ def fig_stations(S, season):
     fig, axes = plt.subplots(1, 3, figsize=(12.4, 0.5 * len(sts) + 2.3))
     for ax, met, title in zip(axes, ["POD", "FAR", "F1"], ["POD", "FAR", "F1"]):
         mat = [[float(S[(S.season == season) & (S.station == st) & (S.model == m)][met].iloc[0]) for m in ms] for st in sts]
-        heat(ax, mat, [SHORT[m].replace(", ", chr(10)) for m in ms], ylab if met == "POD" else [""] * len(sts), cmap="Greens")
+        heat(ax, mat, [SHORT[m].replace(", ", chr(10)) for m in ms], ylab if met == "POD" else [""] * len(sts), cmap="Greys" if met == "FAR" else "Greens")
         ax.set_title(title + "\n(dark = high)", fontsize=9.5)
-    fig.suptitle(f"{SEASON_TITLE[season]}, reanalysis {rng(SCORE_RA)}, each point against its own gauge", x=0.02, ha="left", fontsize=11)
+    fig.suptitle(f"{SEASON_TITLE[season]}, reanalysis, seasons with a gauge record to 2023, each point against its own gauge", x=0.02, ha="left", fontsize=11)
     fig.subplots_adjust(wspace=0.25, top=0.78)
     return save(fig, f"stations_{season}")
 
@@ -950,7 +955,7 @@ def rank_html(season):
         top = top_seasons(Rk)
         out.append(f"<tr class='riv'><td colspan='{2 + len(models)}'>{river.title()}</td></tr>")
         for y in top:
-            cells = [f"<td>{int(y)}</td><td>{100 * P.loc[y, 'gauge']:.1f}%</td>"]
+            cells = [f"<td>{int(y)}</td><td>{np.floor(1000 * P.loc[y, 'gauge']) / 10:.1f}%</td>"]
             for m in models:
                 ra = Rk[(m, "ra")].loc[y] if (m, "ra") in Rk.columns else np.nan
                 fc = Rk[(m, "fc")].loc[y] if (m, "fc") in Rk.columns else np.nan
@@ -1244,7 +1249,8 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <h2><span class="num">2</span>Benchmark: the largest floods at the gauges</h2>
     <p>The five largest gauge floods per river, largest first, and each source's own rank of them (1 = highest; reanalysis / forecasts).
        Index: the second-highest gauge's peak as a percentage of its own 1-in-{BENCH_RP}; for a model, the same at its trigger points. Tied seasons share a rank.
-       Shaded cells: top five on the reanalysis. No record: season outside the reanalysis. No archive: no forecast archive.</p>
+       Shaded cells: top five on the reanalysis. No record: season outside the reanalysis. No archive: no forecast archive. The notes under each table
+       list only seasons covered by at least three records.</p>
     <h3>Deyr</h3>
     <div class="tablewrap">{RK['deyr']}</div>
     <p class="note">In the top five of every record that covers the season: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
@@ -1286,7 +1292,8 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <h2><span class="num">6</span>Event chronologies: Deyr 2023, Deyr 2019, Gu 2024</h2>
     <p>Gauge rows: circle, first day over the 1-in-3; diamond, first day over the 1-in-5 (only the diamond is shown when both fall on the same day);
        tick, the peak, dated in the row label. Source rows: threshold reached on the reanalysis (filled square), first forecast issue reaching the
-       threshold (hollow square), one mark when both fall on the same day. FloodScan people in flooded area, by river, where it covers the season.</p>
+       threshold (hollow square), one mark when both fall on the same day. FloodScan people in flooded area, by river, where it covers the season;
+       the dotted line is the day the third of the 14 framework districts went over its own 1-in-5 flooded population.</p>
     <figure class="chart"><img src="{F['tl_deyr_2023']}" alt="Deyr 2023 day by day"><figcaption>Deyr 2023.</figcaption></figure>
     <figure class="chart"><img src="{F['tl_deyr_2019']}" alt="Deyr 2019 day by day"><figcaption>Deyr 2019.</figcaption></figure>
     <figure class="chart"><img src="{F['tl_gu_2024']}" alt="Gu 2024 day by day"><figcaption>Gu 2024. FloodScan does not cover 2024.</figcaption></figure>
