@@ -1004,9 +1004,14 @@ def findings(R, C):
         if a_ is None or b_ is None:
             return ""
         return ", GloFAS v4 earlier" if b_ > a_ else ", Google, new earlier" if a_ > b_ else ", the same on average"
-    out.append("<strong>Timing on the forecasts</strong> (mean over the largest gauge floods from 2016, seasons with the threshold reached). Deyr: Google, new "
-               f"{when('deyr', NEW)}; GloFAS v4 {when('deyr', 'glofas_v4')}{earlier('deyr')}; Google, current {when('deyr', 'google_grrr')}, on few seasons. "
-               f"Gu: Google, new {when('gu', NEW)}; Google, current {when('gu', 'google_grrr')}; GloFAS v4 {when('gu', 'glofas_v4')}.")
+    def pair(season):
+        a_, b_ = when(season, NEW), when(season, "glofas_v4")
+        if a_ == b_:
+            return f"Google, new and GloFAS v4 {a_}{earlier(season)}"
+        return f"Google, new {a_}; GloFAS v4 {b_}"
+    out.append("<strong>Timing on the forecasts</strong> (mean over the largest gauge floods from 2016, seasons with the threshold reached). "
+               f"Deyr: {pair('deyr')}; Google, current {when('deyr', 'google_grrr')}, on few seasons. "
+               f"Gu: {pair('gu')}; Google, current {when('gu', 'google_grrr')}.")
     out.append(f"<strong>After 2023.</strong> Deyr 2024, a severe Shabelle flood: threshold not reached by Google, new on either record. Gu 2024: threshold reached on the Juba only; "
                "on the Shabelle, a severe flood, not reached. 2025: threshold not reached in either season.")
     out.append("<strong>Trigger levels.</strong> Google, new levels are higher than Google, current's at every point, by the most on the Juba in Deyr.")
