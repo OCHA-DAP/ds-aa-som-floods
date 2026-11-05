@@ -528,8 +528,7 @@ def fig_ranks(season):
         ax.grid(which="minor", color="white", linewidth=1.4)
         ax.tick_params(which="minor", length=0)
         ax.axhline(rows.count("juba") - 0.5, color=INK, linewidth=1.2)
-    ax.set_title(f"{SEASON_TITLE[season]}: the {N_RANK} worst gauge seasons on each river and each source's own rank of them "
-                 "(1 = highest; small print: rank on the forecasts)", fontsize=11.5)
+    ax.set_title(f"{SEASON_TITLE[season]}: the {N_RANK} worst gauge seasons per river, and each source's own rank of them", fontsize=12)
     fig.subplots_adjust(top=0.9, bottom=0.12)
     return save(fig, f"ranks_{season}")
 
