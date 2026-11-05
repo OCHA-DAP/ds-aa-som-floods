@@ -516,8 +516,8 @@ def fig_ranks():
                     ax.text(j, i - 0.12, f"{int(v)}", ha="center", va="center", fontsize=10.5, color="white" if dark else BODY)
                     ax.text(j, i + 0.27, "forecasts " + (f"{int(f)}" if not np.isnan(f) else "none") if n_fc.get(ms[j - 1], 0) else "no archive",
                             ha="center", va="center", fontsize=7, color="white" if dark else FAINT)
-        labels = [f"gauges\n{n_ra['gauge']} seasons"] + [
-            f"{SHORT[m].replace(', ', ' ')}\n{n_ra[m]}" + (f" / {n_fc[m]}" if n_fc[m] else "") + " seasons" for m in ms]
+        labels = [f"gauges\n{n_ra['gauge']}"] + [
+            f"{SHORT[m].replace(', ', chr(10))}\n{n_ra[m]}" + (f" / {n_fc[m]}" if n_fc[m] else "") for m in ms]
         ax.set_xticks(range(len(labels)), labels, fontsize=8.5)
         ax.set_yticks(range(len(rows)), ylab, fontsize=10)
         ax.tick_params(length=0)
