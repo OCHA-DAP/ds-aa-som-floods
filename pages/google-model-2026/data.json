@@ -658,7 +658,7 @@
    "season": "deyr",
    "model": "grrr_2026_11",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2001 to 2023",
    "n_years": 23,
    "threshold_reached": [
     2008,
@@ -722,7 +722,7 @@
    "season": "deyr",
    "model": "google_grrr",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2001 to 2023",
    "n_years": 23,
    "threshold_reached": [
     2006,
@@ -756,7 +756,7 @@
    "season": "deyr",
    "model": "google_grrr",
    "basis": "fc",
-   "span": "2016 to 2023",
+   "span": "2016 to 2022",
    "n_years": 7,
    "threshold_reached": [
     2019
@@ -777,7 +777,7 @@
    "season": "deyr",
    "model": "glofas_v4",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2001 to 2023",
    "n_years": 23,
    "threshold_reached": [
     2001,
@@ -879,7 +879,7 @@
    "season": "deyr",
    "model": "glofas_v5",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2001 to 2023",
    "n_years": 23,
    "threshold_reached": [
     2006,
@@ -908,7 +908,7 @@
    "season": "deyr",
    "model": "grrr_2026_11",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2002 to 2023",
    "n_years": 22,
    "threshold_reached": [
     2010,
@@ -975,7 +975,7 @@
    "season": "deyr",
    "model": "google_grrr",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2002 to 2023",
    "n_years": 22,
    "threshold_reached": [
     2006,
@@ -1013,7 +1013,7 @@
    "season": "deyr",
    "model": "google_grrr",
    "basis": "fc",
-   "span": "2016 to 2023",
+   "span": "2016 to 2022",
    "n_years": 7,
    "threshold_reached": [
     2019
@@ -1039,7 +1039,7 @@
    "season": "deyr",
    "model": "glofas_v4",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2002 to 2023",
    "n_years": 22,
    "threshold_reached": [
     2010,
@@ -1146,7 +1146,7 @@
    "season": "deyr",
    "model": "glofas_v5",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2002 to 2023",
    "n_years": 22,
    "threshold_reached": [
     2006,
@@ -1181,7 +1181,7 @@
    "season": "gu",
    "model": "grrr_2026_11",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2002 to 2023",
    "n_years": 22,
    "threshold_reached": [
     2016,
@@ -1245,7 +1245,7 @@
    "season": "gu",
    "model": "google_grrr",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2002 to 2023",
    "n_years": 22,
    "threshold_reached": [
     2013,
@@ -1312,7 +1312,7 @@
    "season": "gu",
    "model": "glofas_v4",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2002 to 2023",
    "n_years": 22,
    "threshold_reached": [
     2005,
@@ -1414,7 +1414,7 @@
    "season": "gu",
    "model": "glofas_v5",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2002 to 2023",
    "n_years": 22,
    "threshold_reached": [
     2010,
@@ -1448,7 +1448,7 @@
    "season": "gu",
    "model": "grrr_2026_11",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2002 to 2023",
    "n_years": 22,
    "threshold_reached": [
     2016,
@@ -1512,7 +1512,7 @@
    "season": "gu",
    "model": "google_grrr",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2002 to 2023",
    "n_years": 22,
    "threshold_reached": [
     2013,
@@ -1579,7 +1579,7 @@
    "season": "gu",
    "model": "glofas_v4",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2002 to 2023",
    "n_years": 22,
    "threshold_reached": [
     2005,
@@ -1680,7 +1680,7 @@
    "season": "gu",
    "model": "glofas_v5",
    "basis": "ra",
-   "span": "1999 to 2023",
+   "span": "2002 to 2023",
    "n_years": 22,
    "threshold_reached": [
     2005,
