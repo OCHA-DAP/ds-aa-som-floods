@@ -192,7 +192,7 @@ def fig_backtest(R, season, basis):
         rec = R[(river, season)]
         for m in models:
             lines.append((f"{river.title()}: {SHORT[m]}", rec, m))
-    fig, ax = plt.subplots(figsize=(13.4, 0.55 * len(lines) + 2.4))
+    fig, ax = plt.subplots(figsize=(12.6, 0.6 * len(lines) + 2.4))
     for i, (name, rec, m) in enumerate(lines[::-1]):
         f, yr = fired(rec, m, basis), years_of(rec, m, basis)
         for j, y in enumerate(YEARS):
@@ -205,27 +205,27 @@ def fig_backtest(R, season, basis):
             ax.add_patch(Rectangle((j - 0.46, i - 0.36), 0.92, 0.72, facecolor=CELL[kind],
                                    edgecolor="white" if kind != "none" else GRID, linewidth=0.8))
         s = score(rec, m, basis, span)
-        ax.text(len(YEARS) + 0.2, i + 0.13, f"{len(s['caught'])} of {len(s['severe'])} severe caught", va="center", fontsize=8.5, color=INK)
-        ax.text(len(YEARS) + 0.2, i - 0.2, f"{len(s['false'])} false fires", va="center", fontsize=8.5,
+        ax.text(len(YEARS) + 0.2, i + 0.14, f"{len(s['caught'])} of {len(s['severe'])} severe caught", va="center", fontsize=9.5, color=INK)
+        ax.text(len(YEARS) + 0.2, i - 0.2, f"{len(s['false'])} with no gauge flood", va="center", fontsize=9.5,
                 color="#B07A1E" if s["false"] else FAINT)
     ax.axhline(len(models) - 0.5, color=INK, linewidth=1.0)
     ax.set_xlim(-0.6, len(YEARS) + 4.8)
     ax.set_ylim(-0.6, len(lines) - 0.4)
-    ax.set_yticks(range(len(lines)), [ln[0] for ln in lines[::-1]], fontsize=9.5)
-    ax.set_xticks(range(0, len(YEARS), 2), [str(y) for y in YEARS[::2]], fontsize=8.5)
+    ax.set_yticks(range(len(lines)), [ln[0] for ln in lines[::-1]], fontsize=10.5)
+    ax.set_xticks(range(0, len(YEARS), 2), [str(y) for y in YEARS[::2]], fontsize=9.5)
     ax.tick_params(length=0)
     for sp in ax.spines.values():
         sp.set_visible(False)
-    H = [Rectangle((0, 0), 1, 1, facecolor=CELL["hit_sev"], label="fired, severe flood followed"),
-         Rectangle((0, 0), 1, 1, facecolor=CELL["hit"], label="fired, ordinary flood followed"),
-         Rectangle((0, 0), 1, 1, facecolor=CELL["false"], label="fired, nothing at the gauges"),
+    H = [Rectangle((0, 0), 1, 1, facecolor=CELL["hit_sev"], label="activated, severe flood"),
+         Rectangle((0, 0), 1, 1, facecolor=CELL["hit"], label="activated, ordinary flood"),
+         Rectangle((0, 0), 1, 1, facecolor=CELL["false"], label="activated, no flood at the gauges"),
          Rectangle((0, 0), 1, 1, facecolor=CELL["miss_sev"], label="severe flood missed"),
-         Rectangle((0, 0), 1, 1, facecolor=CELL["miss"], label="ordinary flood, not fired"),
+         Rectangle((0, 0), 1, 1, facecolor=CELL["miss"], label="ordinary flood, no activation"),
          Rectangle((0, 0), 1, 1, facecolor=CELL["quiet"], edgecolor=GRID, label="quiet season"),
          Rectangle((0, 0), 1, 1, facecolor="white", edgecolor=GRID, label="no record")]
-    ax.legend(handles=H, ncol=4, fontsize=8.5, loc="upper center", bbox_to_anchor=(0.45, -0.08))
-    what = "the rule met in the model's historical run" if basis == "ra" else "a forecast issue meeting the rule at leads 1 to 7"
-    ax.set_title(f"{SEASON_TITLE[season]}, {BASIS_TITLE[basis]}: {what}. Tallies over {rng(span)}")
+    ax.legend(handles=H, ncol=4, fontsize=9.5, loc="upper center", bbox_to_anchor=(0.45, -0.08))
+    what = "reanalysis" if basis == "ra" else "forecasts, leads 1 to 7"
+    ax.set_title(f"{SEASON_TITLE[season]}: {what}. Tallies on the right count {rng(span)}", fontsize=12.5)
     return save(fig, f"backtest_{season}_{basis}")
 
 
@@ -249,9 +249,9 @@ def fig_timing(R, season, basis):
     ax.axvspan(-30, 0, color="#F9ECE9", zorder=0)
     ax.axvspan(0, 42, color="#EAF3EE", zorder=0)
     ax.axvspan(-42, -30, color="#F2F4F5", zorder=0)
-    ax.text(21, len(rows) - 0.35, "fired BEFORE the gauges confirmed", ha="center", va="center", fontsize=9, color="#2F6B4A", fontweight="bold")
-    ax.text(-15, len(rows) - 0.35, "fired AFTER", ha="center", va="center", fontsize=9, color="#9E4B3F", fontweight="bold")
-    ax.text(-36, len(rows) - 0.35, "did not\nfire", ha="center", va="center", fontsize=8.5, color=BODY, fontweight="bold")
+    ax.text(21, len(rows) - 0.35, "activated before the second gauge crossed", ha="center", va="center", fontsize=9, color="#2F6B4A", fontweight="bold")
+    ax.text(-15, len(rows) - 0.35, "activated after", ha="center", va="center", fontsize=9, color="#9E4B3F", fontweight="bold")
+    ax.text(-36, len(rows) - 0.35, "no\nactivation", ha="center", va="center", fontsize=8.5, color=BODY, fontweight="bold")
     ax.axvline(0, color=INK, linewidth=1.2, zorder=2)
     ax.axvline(-30, color="white", linewidth=1.5, zorder=1)
     for i, (river, y, b, pk, sev) in enumerate(rows[::-1]):
@@ -266,19 +266,19 @@ def fig_timing(R, season, basis):
             d = rec["models"][m][basis].get(y)
             x = max(min((b - d).days, 41), -29) if ok(d) else -36 + (k - (len(models) - 1) / 2) * 2.2
             ax.scatter(x, i + dy, s=58, color=COL[m], edgecolors="white", linewidths=0.9, zorder=4)
-    ax.set_yticks(range(len(rows)), [f"{y} {r.title()}" + ("  (severe)" if s else "") for r, y, _, _, s in rows[::-1]], fontsize=9.5)
+    ax.set_yticks(range(len(rows)), [f"{y} {r.title()}" + ("  (severe)" if s else "") for r, y, _, _, s in rows[::-1]], fontsize=10.5)
     ax.set_xlim(-42, 42)
     ax.set_ylim(-0.6, len(rows) + 0.1)
     ax.set_xticks([-30, -20, -10, 0, 10, 20, 30, 40], ["30", "20", "10", "0", "10", "20", "30", "40"])
-    ax.set_xlabel("days before the second gauge crossed its 1-in-3 level")
+    ax.set_xlabel("days before the second gauge crossed its 1-in-3 level", fontsize=10.5)
     ax.tick_params(length=0)
     for sp in ax.spines.values():
         sp.set_visible(False)
     H = [Line2D([], [], marker="o", ls="", color=COL[m], markersize=8, label=SHORT[m]) for m in models]
     H += [Line2D([], [], marker="|", ls="", color=INK, markersize=12, markeredgewidth=1.6, label="river peak")]
-    ax.legend(handles=H, ncol=len(H), fontsize=9, loc="upper center", bbox_to_anchor=(0.5, -0.13))
-    what = "day the rule was met in the model's historical run" if basis == "ra" else "first forecast issue meeting the rule (leads 1 to 7)"
-    ax.set_title(f"{SEASON_TITLE[season]}, {BASIS_TITLE[basis]}: {what}, against the gauges")
+    ax.legend(handles=H, ncol=len(H), fontsize=10, loc="upper center", bbox_to_anchor=(0.5, -0.13))
+    what = "reanalysis, activation day" if basis == "ra" else "forecasts, first issue that activates"
+    ax.set_title(f"{SEASON_TITLE[season]}: {what}", fontsize=12.5)
     return save(fig, f"timing_{season}_{basis}")
 
 
@@ -331,7 +331,7 @@ def fig_season(R, season, year):
         lines.append(f"  2nd gauge at 1-in-3: {fmt(rec['bench'].get(year))}")
         lines.append("")
     ax.text(-0.02, 0.98, "\n".join(lines), va="top", ha="left", fontsize=7.6, color=BODY, linespacing=1.3, transform=ax.transAxes)
-    seen["dashed: day the rule was met in the reanalysis"] = Line2D([], [], color=BODY, ls="--")
+    seen["dashed: activation day on the reanalysis"] = Line2D([], [], color=BODY, ls="--")
     seen["dotted: second gauge over its 1-in-3"] = Line2D([], [], color=INK, ls=":")
     axes[0][0].set_ylabel("% of own level")
     axes[1][0].set_ylabel("% of own level")
@@ -396,7 +396,7 @@ def fig_stations(S, season):
     ms = MODELS[season]
     sts = [s for s in STATIONS if s in set(S[S.season == season].station)]
     fig, axes = plt.subplots(1, 3, figsize=(11.6, 0.5 * len(sts) + 1.8))
-    for ax, met, title in zip(axes, ["POD", "FAR", "F1"], ["Severe seasons caught (share)", "False alarms (share of fires)", "F1"]):
+    for ax, met, title in zip(axes, ["POD", "FAR", "F1"], ["Severe seasons caught (share)", "False alarms (share of activations)", "F1"]):
         mat = [[float(S[(S.season == season) & (S.station == st) & (S.model == m)][met].iloc[0]) for m in ms] for st in sts]
         heat(ax, mat, [SHORT[m] for m in ms], [NAME[s] for s in sts] if met == "POD" else [""] * len(sts), reverse=(met == "FAR"))
         ax.set_title(title + "\n(dark = better)", fontsize=10)
@@ -419,8 +419,8 @@ def num(v):
 def score_table(R, season, basis):
     span = SCORE_RA if basis == "ra" else SCORE_FC
     models = [m for m in MODELS[season] if basis == "ra" or m in FC_SPAN]
-    out = [f"<table class='sc'><thead><tr><th>{BASIS_TITLE[basis].title()}, {rng(span)}</th><th>severe caught</th><th>ordinary floods caught</th>"
-           f"<th>false fires</th><th>missed severe</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>"]
+    out = [f"<table class='sc'><thead><tr><th>{BASIS_TITLE[basis].title()}, {rng(span)}</th><th>severe seasons caught</th><th>ordinary floods covered</th>"
+           f"<th>activations with no gauge flood</th><th>severe seasons missed</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>"]
     for river in RIVERS:
         rec = R[(river, season)]
         sev = rec["severe"] & set(range(span[0], span[1] + 1))
@@ -443,8 +443,8 @@ def v4_full_archive(R, season):
     parts = []
     for river in RIVERS:
         s = score(R[(river, season)], "glofas_v4", "fc", FC_SPAN["glofas_v4"])
-        parts.append(f"{river.title()}: fires {yrs(s['fires'])}; severe seasons {yrs(s['severe'])}, caught {yrs(s['caught'])}; "
-                     f"false fires {yrs(s['false'])}.")
+        parts.append(f"{river.title()}: activates in {yrs(s['fires'])}; severe seasons {yrs(s['severe'])}, of which it catches {yrs(s['caught'])}; "
+                     f"activations with no gauge flood {yrs(s['false'])}.")
     return " ".join(parts)
 
 
@@ -455,8 +455,8 @@ def after_2023(R, season, y):
     for r in RIVERS:
         rec = R[(r, season)]
         outc.append(f"{r.title()} {'severe' if y in rec['severe'] else 'flood' if y in rec['flood'] else 'nothing' if y in rec['assess'] else 'no gauge record'}")
-    return (f"reanalysis {('fired on the ' + ' and '.join(fired_r)) if fired_r else 'did not fire'}; "
-            f"forecasts {('fired on the ' + ' and '.join(fc_r)) if fc_r else 'did not fire'}; gauges: {', '.join(outc)}")
+    return (f"reanalysis {('activates on the ' + ' and '.join(fired_r)) if fired_r else 'no activation'}; "
+            f"forecasts {('activate on the ' + ' and '.join(fc_r)) if fc_r else 'no activation'}; gauges: {', '.join(outc)}")
 
 
 def build():
@@ -547,17 +547,17 @@ table.sc {{ border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 
   </header>
   <article>
     <div class="key">
-      <p><b>The rule.</b> A model <b>fires</b> when three of the four Juba points, or two of the three Shabelle points, are over
-         their own trigger levels on the same day. Levels are each model's own return levels (Weibull plotting position on its
+      <p><b>The trigger.</b> A window <b>activates</b> when three of the four Juba gauges, or two of the three Shabelle gauges, are
+         over their own level on the same day in the model being read. Levels are each model's own return levels (Weibull plotting position on its
          1999 to 2023 seasonal maxima): Juba 1-in-{TRIGGER_CONFIG[('juba','deyr')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','deyr')]['rp']} in Deyr,
          Juba 1-in-{TRIGGER_CONFIG[('juba','gu')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','gu')]['rp']} in Gu.</p>
-      <p><b>Two records per model.</b> <b>Reanalysis</b>: the model's historical run; the rule is read on it day by day.
-         <b>Forecasts</b>: the first issue on which the rule is met at leads 1 to 7 days, which is what the live trigger reads.
+      <p><b>Two records per model.</b> <b>Reanalysis</b>: the model's own record of the past, read day by day.
+         <b>Forecasts</b>: the first issue that activates at leads 1 to 7 days, which is what the live trigger reads.
          Archives differ: GloFAS v4 2003 to 2023 (ensemble median, about two issues a week), the current Google model 2016 to June 2023
          (one trace, daily; it holds Gu 2023 but not Deyr 2023), the new Google model 2016 to 2025 (one trace, daily), GloFAS v5 none. Scores are given over
          {rng(SCORE_RA)} on the reanalysis and {rng(SCORE_FC)} on the forecasts, the years every record covers.</p>
       <p><b>The gauges.</b> A river has a <b>flood</b> in a season when two of its SWALIM gauges reach their own 1-in-3 level, and a
-         <b>severe</b> flood at 1-in-5 (levels fitted on 2000 to 2023). A fire in a season with no flood is a <b>false fire</b>.
+         <b>severe</b> flood at 1-in-5 (levels fitted on 2000 to 2023). An activation in a season with no gauge flood is counted as a false alarm.
          Gauge data run to July 2026, so the new model's 2024 and 2025 seasons are scored on gauges too.</p>
     </div>
 
@@ -582,8 +582,8 @@ table.sc {{ border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 
     <p class="read">The new model after 2023. Gu 2024: {after_2023(R, 'gu', 2024)}. Gu 2025: {after_2023(R, 'gu', 2025)}.</p>
 
     <h2>Timing against the gauges</h2>
-    <p>Every season in which a river flooded. Zero is the day the second gauge crossed its 1-in-3 level. Green side: the
-       model fired before that day. Red side: after it. Grey column: it did not fire that season. The bar is the river's peak.</p>
+    <p>One row per flood season. The vertical line is the day the second gauge crossed its 1-in-3 level. Green side: the
+       model activated before that day. Red side: after it. Grey column: no activation that season. The bar is the river's peak.</p>
     <h3>Deyr</h3>
     <figure><img src="{F['tm_deyr_ra']}" alt="Deyr timing, reanalysis"></figure>
     <figure><img src="{F['tm_deyr_fc']}" alt="Deyr timing, forecasts"></figure>
@@ -620,8 +620,8 @@ table.sc {{ border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 
           days ahead for the current Google model, as in the rest of this site.</li>
       <li>The same-day rule is sensitive at the margin on the new model. In Juba Deyr 2006 and 2017 and Juba Gu 2013 and 2023 all
           four Juba outlets go over their levels within the season, by 1 to 4%, but never on the same day, so those seasons count
-          as not fired. The lead window also matters: read at leads 0 to 6 (the window used for GloFAS and the new model) the
-          current Google model does not fire in Gu 2023; read at leads 2 to 8 the new model's years are unchanged.</li>
+          as no activation. The lead window also matters: read at leads 0 to 6 (the window used for GloFAS and the new model) the
+          current Google model does not activate in Gu 2023; read at leads 2 to 8 the new model's years are unchanged.</li>
       <li>Three severe seasons rest on a gauge reading equal to its level: Shabelle Deyr 2020 (Jowhar 5.30 m against a 5.30 m
           level), Shabelle Gu 2016 and Gu 2023 (Belet Weyne at its 8.30 m ceiling). The Juba Deyr 2023 peaks are capped at bank
           full at all four gauges, and Dollow's Deyr record has eight seasons, the minimum for a fit.</li>
