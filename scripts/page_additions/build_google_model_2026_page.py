@@ -925,6 +925,81 @@ def near_miss_note(R):
             + ", ".join(items) + ".")
 
 
+# ------------------------------------------------- a 1-in-3 framework on the new model
+FRAMEWORK_RP = {("juba", "deyr"): 7, ("shabelle", "deyr"): 6, ("juba", "gu"): 7, ("shabelle", "gu"): 6}
+FRAMEWORK_FC_SPAN = (2016, 2025)
+
+
+def framework(R):
+    """The chosen return periods on Google, new: activation years on both records, the 1-in-5
+    gauge floods they meet, scores, and timing against the second gauge crossing its 1-in-3."""
+    out = {}
+    for (river, season), rp in FRAMEWORK_RP.items():
+        rec = R[(river, season)]
+        n_req = TRIGGER_CONFIG[(river, season)]["n_req"]
+        ra = {int(y): d for y, d in L.first_crossing_dates(NEW, river, season, rp, n_req, span=YEARS).items()}
+        fc = {int(y): d for y, d in first_issue_in_season(NEW, river, season, rp, n_req, span=range(FRAMEWORK_FC_SPAN[0], FRAMEWORK_FC_SPAN[1] + 1)).items()}
+        sev = set(L.gauge_crossings(river, season, 5, span=YEARS))
+        thr = L.model_thresholds(NEW, river, season, rp)
+        bench5 = {int(y): d for y, d in L.gauge_crossings(river, season, 5, span=YEARS).items()}
+        out[(river, season)] = dict(rp=rp, ra=ra, fc=fc, sev=sev, thr=thr, assess=rec["assess"], bench=bench5, flood3=rec["severe"])
+    return out
+
+
+def fw_score(F, keys, basis, span):
+    yrs = set(range(span[0], span[1] + 1))
+    universe, f, sev = set(), set(), set()
+    for k in keys:
+        x = F[k]
+        own = yrs & x["assess"] & (set(YEARS) if basis == "ra" else set(range(FRAMEWORK_FC_SPAN[0], FRAMEWORK_FC_SPAN[1] + 1)))
+        universe |= own
+        f |= set(x[basis]) & own
+        sev |= x["sev"] & own
+    pod = len(f & sev) / len(sev) if sev else np.nan
+    far = len(f - sev) / len(f) if f else np.nan
+    prec = 1 - far if f else np.nan
+    f1 = np.nan if np.isnan(pod) else (2 * pod * prec / (pod + prec) if f and (pod + prec) > 0 else 0.0)
+    return dict(POD=pod, FAR=far, F1=f1, caught=sorted(f & sev), floods=sorted(sev), false=sorted(f - sev), reached=sorted(f), n=len(universe))
+
+
+def framework_html(F):
+    """One table: level, activation years, floods not reached, activations with no flood, timing. One
+    score table for the combined scopes. Two notes: the forecast replay and the station levels."""
+    name = lambda k: f"{k[0].title()} {k[1].title()}"
+    half_up = lambda v: int(np.floor(v + 0.5))
+    word = lambda v: "same day" if half_up(v) == 0 else f"{abs(half_up(v))} d {'before' if half_up(v) > 0 else 'after'}"
+    a = ["<table class='data'><thead><tr><th>River, season</th><th>Level</th><th>Activations<span class='y'>reanalysis 1999 to 2023</span></th>"
+         "<th>1-in-5 gauge floods not reached</th><th>Reached, no 1-in-5 flood</th><th>Timing, mean<span class='y'>against the second gauge's 1-in-5; reanalysis / forecasts</span></th></tr></thead><tbody>"]
+    fc_note = []
+    for k, x in F.items():
+        scored = set(range(SCORE_RA[0], SCORE_RA[1] + 1)) & x["assess"]
+        sev = x["sev"] & scored
+        ra23 = set(x["ra"]) & scored
+        d_ra = [-(x["ra"][y] - x["bench"][y]).days for y in ra23 if ok(x["bench"].get(y))]
+        d_fc = [-(x["fc"][y] - x["bench"][y]).days for y in x["fc"] if y <= SCORE_RA[1] and ok(x["bench"].get(y))]
+        tm = (word(float(np.mean(d_ra))) if d_ra else "none") + " / " + (word(float(np.mean(d_fc))) if d_fc else "none")
+        a.append(f"<tr><td>{name(k)}</td><td>1-in-{x['rp']}</td><td>{yrs(x['ra'])}</td><td>{yrs(sev - ra23)}</td><td>{yrs(ra23 - sev)}</td><td>{tm}</td></tr>")
+        ra16 = {y for y in x["ra"] if y >= FRAMEWORK_FC_SPAN[0]}
+        extra, missing = set(x["fc"]) - ra16, ra16 - set(x["fc"])
+        if extra or missing:
+            fc_note.append(f"{name(k)}: " + "; ".join(filter(None, [f"forecasts add {yrs(extra)}" if extra else "", f"forecasts do not reach {yrs(missing)}" if missing else ""])))
+    a.append("</tbody></table>")
+    b_ = ["<table class='data'><thead><tr><th rowspan='2'>Scope</th><th colspan='3'>Reanalysis, seasons with a gauge record to 2023</th><th colspan='3'>Forecasts 2016 to 2023</th></tr>"
+          "<tr><th>POD</th><th>FAR</th><th>F1</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>"]
+    scopes = [("Deyr, both rivers", [k for k in F if k[1] == "deyr"]), ("Gu, both rivers", [k for k in F if k[1] == "gu"]), ("Either season, either river", list(F))]
+    for lab, keys in scopes:
+        cells = [f"<td>{lab}</td>"]
+        for basis, span in (("ra", SCORE_RA), ("fc", SCORE_FC)):
+            sc_ = fw_score(F, keys, basis, span)
+            cells.append(f"<td>{num(sc_['POD'])}<span class='y'>{len(sc_['caught'])} of {len(sc_['floods'])}</span></td>"
+                         f"<td>{num(sc_['FAR'])}<span class='y'>{len(sc_['false'])} of {len(sc_['reached'])}</span></td><td>{num(sc_['F1'])}</td>")
+        b_.append("<tr>" + "".join(cells) + "</tr>")
+    b_.append("</tbody></table>")
+    fc_txt = ("Forecasts 2016 to 2025 reproduce every reanalysis activation from 2016" + (" except: " + "; ".join(fc_note) if fc_note else "") + ".")
+    lv_txt = "Levels, m³/s: " + "; ".join(f"{name(k)} " + ", ".join(f"{NAME[st]} {v:.0f}" for st, v in x["thr"].items()) for k, x in F.items()) + "."
+    return "\n".join(a), "\n".join(b_), fc_txt, lv_txt
+
+
 def compare_table(R):
     """Google, new against each other source on the seasons both cover: gauge floods with the
     threshold reached, and seasons with the threshold reached and no gauge flood."""
@@ -1087,6 +1162,12 @@ def build():
     NEAR_MISS = near_miss_note(R)
     SPAN_TXT = span_text(R)
     CMP = compare_table(R)
+    FW = framework(R)
+    FW_A, FW_B, FW_FC, FW_LV = framework_html(FW)
+    fw_deyr = {y for k, x in FW.items() if k[1] == "deyr" for y in x["ra"] if y <= SCORE_RA[1]}
+    fw_gu = {y for k, x in FW.items() if k[1] == "gu" for y in x["ra"] if y <= SCORE_RA[1]}
+    FW_SEASONS = (f"Deyr {yrs(fw_deyr)}; Gu {yrs(fw_gu)}: {len(fw_deyr) + len(fw_gu)} season activations in {len(YEARS) - 2} years, one per "
+                  f"{(len(YEARS) - 2) / (len(fw_deyr) + len(fw_gu)):.1f} years, with both seasons in {yrs(fw_deyr & fw_gu)}.")
 
     # everything behind the page, for review
     dump, sc = {}, []
@@ -1116,6 +1197,10 @@ def build():
                 rank={str(int(y)): {("gauge" if k == "gauge" else f"{k[0]}_{k[1]}"): (None if pd.isna(v) else int(v)) for k, v in Rk.loc[y].items()} for y in Rk.index})
     (OUT / "data.json").write_text(json.dumps(clean(dict(
         outlets=_read_json("chosen_outlets.json"), trigger_levels=levels, record=dump, scores=sc, benchmark_ranks=ranks,
+        framework={f"{k[0]}_{k[1]}": dict(rp=x["rp"], levels={st: float(v) for st, v in x["thr"].items()},
+                                          reanalysis={str(y): d.strftime("%Y-%m-%d") for y, d in x["ra"].items()},
+                                          forecast={str(y): d.strftime("%Y-%m-%d") for y, d in x["fc"].items()},
+                                          gauge_floods_1in5=sorted(int(y) for y in x["sev"])) for k, x in FW.items()},
         gauge_levels={f"{r}_{se}": {f"1in{rp}": {st: (None if np.isnan(v) else float(v)) for st, v in L.gauge_levels(r, se, rp).items()} for rp in (3, 5)}
                       for r in RIVERS for se in ("deyr", "gu")},
         timing_stats=[dict(season=se, basis=b, model=m, **dict(zip(("mean_days_before", "median_days_before", "n_reached", "n_seasons"), timing_stats(R, se, b, m))))
@@ -1197,12 +1282,20 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
          gauge crossed. Gauge data run to July 2026.</p>
     </div>
 
-    <h2><span class="num">1</span>Key takeaways</h2>
+    <h2><span class="num">1</span>Possible trigger approach</h2>
+    <p>Return periods from a search over 1-in-3 to 1-in-10 per river and season on the reanalysis, for about eight season activations in 25 years
+       (one per season in which either river reaches its threshold), Juba stricter than Shabelle, scored against the two-gauge 1-in-5 floods.</p>
+    <div class="tablewrap">{FW_A}</div>
+    <p class="note">{FW_SEASONS} {FW_FC}</p>
+    <h3>POD, FAR and F1 against the 1-in-5 gauge floods</h3>
+    <div class="tablewrap">{FW_B}</div>
+
+    <h2><span class="num">2</span>Key takeaways</h2>
     <ul class="takeaways">
 {FIND}
     </ul>
 
-    <h2><span class="num">2</span>Threshold outcome and scores by season</h2>
+    <h2><span class="num">3</span>Threshold outcome and scores by season</h2>
     <p>Each model's threshold outcome in every season against the gauge benchmark: under each source a reanalysis row and, where an archive exists,
        a forecast row. White cells are seasons outside the model record or without a gauge record. Reanalysis rows are tallied over every season
        with a gauge record, forecast rows between the dotted lines.</p>
@@ -1224,13 +1317,13 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        Google, new first. Shaded where the two differ.</p>
     <div class="tablewrap">{CMP}</div>
 
-    <h2><span class="num">3</span>POD, FAR and F1 by station</h2>
+    <h2><span class="num">4</span>POD, FAR and F1 by station</h2>
     <p>Each station's model against its gauge, reanalysis, seasons with a gauge record to 2023. Here a flood season is that one gauge over its own 1-in-{BENCH_RP},
        not the two-gauge benchmark used elsewhere.</p>
     <figure class="chart"><img src="{F['st_deyr']}" alt="Deyr, POD, FAR and F1 per station"></figure>
     <figure class="chart"><img src="{F['st_gu']}" alt="Gu, POD, FAR and F1 per station"></figure>
 
-    <h2><span class="num">4</span>Correlation with the gauges by station</h2>
+    <h2><span class="num">5</span>Correlation with the gauges by station</h2>
     <p>For each station, the model's daily flow is set against the gauge's daily level in 1-in-3 seasons: seasons in which the gauge went over its
        own 1-in-3 level or the model went over its own, among seasons with a gauge record to 2023. Spearman rank correlation orders the days by
        model flow and, separately, by gauge level, and measures how far the two orders agree: 1 means the model's highest days are the gauge's
@@ -1240,7 +1333,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        not whether a threshold is reached.</p>
     <figure class="chart"><img src="{F['corr']}" alt="Correlation with the gauges by station"><figcaption>The small figure under each value is the number of seasons.</figcaption></figure>
 
-    <h2><span class="num">5</span>Benchmark: the largest floods at the gauges</h2>
+    <h2><span class="num">6</span>Benchmark: the largest floods at the gauges</h2>
     <p>The five largest gauge floods per river, largest first, and each source's own rank of them (1 = highest; reanalysis / forecasts).
        Index: the second-highest gauge's peak as a percentage of its own 1-in-{TIMING_RP}; for a model, the same at its stations. Tied seasons share a rank.
        Shaded cells: top five on the reanalysis. No record: season outside the reanalysis. No archive: no forecast archive. The notes under each table
@@ -1255,7 +1348,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        In the top five of fewer than half: Juba {cons_txt(C['gu']['juba'][1])}; Shabelle {cons_txt(C['gu']['shabelle'][1])}. The Belet Weyne gauge reads no higher than
        8.30 m, which six Gu seasons reach, so those seasons tie at that gauge.</p>
 
-    <h2><span class="num">6</span>Timing against the second gauge crossing its 1-in-3</h2>
+    <h2><span class="num">7</span>Timing against the second gauge crossing its 1-in-3</h2>
     <p>The five largest gauge floods per river. Zero is the day the second gauge crossed its 1-in-3; bars to the left reached the
        threshold before that day, bars to the right after it. Solid: reanalysis. Light: first forecast issue reaching the threshold (leads 1 to 7 days).</p>
     <figure class="chart"><img src="{F['tm_deyr']}" alt="Deyr timing"></figure>
@@ -1265,7 +1358,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        scored years (reanalysis to 2023, forecasts 2016 to 2023), counting only seasons in which the source reached the threshold.</p>
     <div class="tablewrap">{TS}</div>
 
-    <h2><span class="num">7</span>Event chronologies: Deyr 2023, Deyr 2019, Deyr 2020</h2>
+    <h2><span class="num">8</span>Event chronologies: Deyr 2023, Deyr 2019, Deyr 2020</h2>
     <p>Gauge rows: circle, first day over the 1-in-3; diamond, first day over the 1-in-5 (only the diamond is shown when both fall on the same day);
        tick, the peak, dated in the row label. Source rows: threshold reached on the reanalysis (filled square), first forecast issue reaching the
        threshold (hollow square), one mark when both fall on the same day. FloodScan people in flooded area, by river, where it covers the season;
@@ -1274,7 +1367,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <figure class="chart"><img src="{F['tl_deyr_2019']}" alt="Deyr 2019 day by day"><figcaption>Deyr 2019.</figcaption></figure>
     <figure class="chart"><img src="{F['tl_deyr_2020']}" alt="Deyr 2020 day by day"><figcaption>Deyr 2020. A 1 October date means the level was already exceeded when the season opened.</figcaption></figure>
 
-    <h2><span class="num">8</span>Notes</h2>
+    <h2><span class="num">9</span>Notes</h2>
     <p class="note">Source: Google Runoff Reanalysis and Reforecast, November 2026 release (reanalysis 1981 to 2025, reforecast 2016 to 2025, leads 0 to 10 days where lead 0 is the day before the issue, so its leads 1 to 7 are read as the issue day and the six days after it; the archive has leads to 10
        days), one HydroBasins outlet per station, the main-stem outlet within 15 km with the largest 1-in-5 flow. Leads 1 to 7 cover the issue day and
        the six days after it for GloFAS and Google, new, and days 1 to 7 after the issue day for Google, current, following each archive's own labelling;
