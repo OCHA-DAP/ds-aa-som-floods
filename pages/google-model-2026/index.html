@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Google's new river model: Somalia Riverine Flood Trigger</title>
-<meta name="description" content="Google's November 2026 river model at the seven Somalia trigger points: would it have carried Deyr, does it keep Gu, and when does it fire relative to the river gauges.">
+<meta name="description" content="Google's November 2026 river model at the seven Somalia trigger points, read with the trigger's rules next to GloFAS v4, GloFAS v5 and the current Google model, on the reanalysis and on the forecast archives, against the SWALIM gauges.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -15,14 +15,23 @@
 .crumb { font-size:12px; margin:0 0 14px; }
 .crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
 article { padding:8px 44px 40px; max-width:1000px; }
-article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9); margin:40px 0 8px; }
-article h3 { font-family:'Merriweather',Georgia,serif; font-size:16px; color:var(--n9); margin:26px 0 6px; }
-article p { font-size:14.5px; color:var(--n8); line-height:1.6; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:22px; color:var(--n9); margin:44px 0 8px; padding-top:18px; border-top:1px solid #e9eded; }
+article h3 { font-family:'Merriweather',Georgia,serif; font-size:16px; color:var(--n9); margin:28px 0 6px; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.6; }
 .muted { color:var(--n7); }
 figure { margin:10px 0 4px; }
 figure img { width:100%; height:auto; display:block; }
-.answer { background:var(--b05); border-left:5px solid var(--b5); padding:12px 16px; border-radius:4px; margin:14px 0; font-size:14.5px; line-height:1.6; }
-.answer.flag { background:#fff7e8; border-left-color:#e0a04b; }
+.key { background:var(--n05); border:1px solid #e7ecec; border-radius:5px; padding:14px 16px; margin:18px 0 6px; font-size:13.5px; }
+.key p { margin:0 0 6px; font-size:13.5px; }
+.key p:last-child { margin:0; }
+.key b { color:var(--n9); }
+table.sc { border-collapse:collapse; width:100%; font-size:12.5px; margin:10px 0 18px; }
+.sc th, .sc td { border-bottom:1px solid #e9eded; padding:5px 7px; text-align:left; vertical-align:top; }
+.sc th { background:var(--n05); color:var(--n7); font-weight:500; font-size:11.5px; }
+.sc th:first-child { color:var(--n9); font-weight:700; font-size:12.5px; }
+.sc tr.riv td { background:#fff; color:var(--n9); font-weight:500; padding-top:10px; border-bottom:1px solid #d9dfdf; }
+.sc td:first-child { white-space:nowrap; }
+.sc .y { display:block; font-size:11px; color:var(--n7); }
 .read { font-size:13px; color:var(--n7); margin:4px 0 0; }
 @media (max-width:640px) { article { padding:8px 22px 30px; } }
 </style>
@@ -32,69 +41,131 @@ figure img { width:100%; height:auto; display:block; }
   <header class="hero hero-sub">
     <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / Google's new river model</p>
     <h1>Google's new river model</h1>
-    <p>Google has a new river model (November 2026). We read it at the seven trigger points with the trigger's
-       own rules and asked two things: would it have carried Deyr instead of GloFAS, and when does it fire
-       compared with the rivers actually rising. The live Flood Hub feed does not run this model yet.</p>
+    <p>Google's November 2026 river model, read at the seven trigger points with the trigger's own rules, next to
+       the three sources the trigger has used: GloFAS v4 (runs Deyr today), the current Google model (runs Gu today)
+       and GloFAS v5 (the Deyr design). Each model is shown on two records, its reanalysis and its forecast archive,
+       and scored against the SWALIM gauges. The live Flood Hub feed does not run the new model yet.</p>
   </header>
   <article>
-    <p class="read" style="margin-top:22px">A season is <b>severe</b> when two gauges on the river reach their own 1-in-5 level, a <b>flood</b> at 1-in-3.
-       A model <b>fires</b> when the trigger rule is met in its record: three of four Juba points, or two of three Shabelle
-       points, over their own levels on the same day. 1999 to 2023 for every source, to 2025 for the new model.</p>
+    <div class="key">
+      <p><b>The rule.</b> A model <b>fires</b> when three of the four Juba points, or two of the three Shabelle points, are over
+         their own trigger levels on the same day. Levels are each model's own return levels (Weibull plotting position on its
+         1999 to 2023 seasonal maxima): Juba 1-in-4 and Shabelle 1-in-5 in Deyr,
+         Juba 1-in-5 and Shabelle 1-in-6 in Gu.</p>
+      <p><b>Two records per model.</b> <b>Reanalysis</b>: the model's historical run; the rule is read on it day by day.
+         <b>Forecasts</b>: the first issue on which the rule is met at leads 1 to 7 days, which is what the live trigger reads.
+         Archives differ: GloFAS v4 2003 to 2023 (ensemble median, about two issues a week), the current Google model 2016 to 2023
+         (one trace, daily), the new Google model 2016 to 2025 (one trace, daily), GloFAS v5 none. Scores are given over
+         1999 to 2023 on the reanalysis and 2016 to 2023 on the forecasts, the years every record covers.</p>
+      <p><b>The gauges.</b> A river has a <b>flood</b> in a season when two of its SWALIM gauges reach their own 1-in-3 level, and a
+         <b>severe</b> flood at 1-in-5 (levels fitted on 2000 to 2023). A fire in a season with no flood is a <b>false fire</b>.
+         Gauge data run to July 2026, so the new model's 2024 and 2025 seasons are scored on gauges too.</p>
+    </div>
 
-    <h2>Would Google have carried Deyr?</h2>
-    <div class="answer flag"><b>Juba: no.</b> It catches 1 of the 3 severe seasons; GloFAS v4 catches 2, v5 2, the Google model running today 2.
-       It fires 2 times with nothing at the gauges, v4 3 times, today's Google 3 times.<br>
-       <b>Shabelle: yes.</b> It catches 4 of 5 against v4's 3, with 1 false fire against 2, and it sees the 2023 flood that v4 never did.
-       Today's Google model matches it on the Shabelle (4 of 5, 0 false fires): it misses 2020 where the new one misses 2006.</div>
-    <figure><img src="figures/backtest_deyr.svg" alt="Deyr backtest grid"></figure>
-    <p class="read">One row per model and river, one cell per season: did it fire, and what did the gauges do.</p>
-    <figure><img src="figures/scores_deyr.svg" alt="Deyr scores"></figure>
+    <h2>Deyr</h2>
+    <h3>Season by season</h3>
+    <figure><img src="figures/backtest_deyr_ra.svg" alt="Deyr, reanalysis, season by season"></figure>
+    <figure><img src="figures/backtest_deyr_fc.svg" alt="Deyr, forecasts, season by season"></figure>
+    <h3>Scores</h3>
+    <table class='sc'><thead><tr><th>Reanalysis, 1999 to 2023</th><th>severe caught</th><th>ordinary floods caught</th><th>false fires</th><th>missed severe</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
+<tr class='riv'><td colspan='8'>Juba: severe seasons 2006, 2014, 2023</td></tr>
+<tr><td>Google, new</td><td>1 of 3<span class='y'>2023</span></td><td>1<span class='y'>2008</span></td><td>2<span class='y'>2019, 2020</span></td><td>2<span class='y'>2006, 2014</span></td><td style="background:rgba(30,121,95,0.22)">0.33</td><td style="background:rgba(30,121,95,0.29)">0.50</td><td style="background:rgba(30,121,95,0.25)">0.40</td></tr>
+<tr><td>Google, current</td><td>2 of 3<span class='y'>2006, 2023</span></td><td>0<span class='y'>none</span></td><td>3<span class='y'>2013, 2015, 2019</span></td><td>1<span class='y'>2014</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.25)">0.60</td><td style="background:rgba(30,121,95,0.29)">0.50</td></tr>
+<tr><td>GloFAS v4</td><td>2 of 3<span class='y'>2014, 2023</span></td><td>1<span class='y'>2017</span></td><td>3<span class='y'>2001, 2005, 2015</span></td><td>1<span class='y'>2006</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.29)">0.50</td><td style="background:rgba(30,121,95,0.32)">0.57</td></tr>
+<tr><td>GloFAS v5</td><td>2 of 3<span class='y'>2006, 2023</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2014</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
+<tr class='riv'><td colspan='8'>Shabelle: severe seasons 2006, 2014, 2019, 2020, 2023</td></tr>
+<tr><td>Google, new</td><td>4 of 5<span class='y'>2014, 2019, 2020, 2023</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2010</span></td><td>1<span class='y'>2006</span></td><td style="background:rgba(30,121,95,0.42)">0.80</td><td style="background:rgba(30,121,95,0.42)">0.20</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
+<tr><td>Google, current</td><td>4 of 5<span class='y'>2006, 2014, 2019, 2023</span></td><td>1<span class='y'>2008</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2020</span></td><td style="background:rgba(30,121,95,0.42)">0.80</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.45)">0.89</td></tr>
+<tr><td>GloFAS v4</td><td>3 of 5<span class='y'>2014, 2019, 2020</span></td><td>0<span class='y'>none</span></td><td>2<span class='y'>2010, 2013</span></td><td>2<span class='y'>2006, 2023</span></td><td style="background:rgba(30,121,95,0.33)">0.60</td><td style="background:rgba(30,121,95,0.33)">0.40</td><td style="background:rgba(30,121,95,0.33)">0.60</td></tr>
+<tr><td>GloFAS v5</td><td>4 of 5<span class='y'>2006, 2014, 2019, 2023</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2020</span></td><td style="background:rgba(30,121,95,0.42)">0.80</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.45)">0.89</td></tr>
+</tbody></table>
+    <table class='sc'><thead><tr><th>Forecasts, 2016 to 2023</th><th>severe caught</th><th>ordinary floods caught</th><th>false fires</th><th>missed severe</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
+<tr class='riv'><td colspan='8'>Juba: severe seasons 2023</td></tr>
+<tr><td>Google, new</td><td>1 of 1<span class='y'>2023</span></td><td>0<span class='y'>none</span></td><td>2<span class='y'>2019, 2020</span></td><td>0<span class='y'>none</span></td><td style="background:rgba(30,121,95,0.50)">1.00</td><td style="background:rgba(30,121,95,0.22)">0.67</td><td style="background:rgba(30,121,95,0.29)">0.50</td></tr>
+<tr><td>Google, current</td><td>0 of 1<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2019</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.08)">0.00</td><td style="background:rgba(30,121,95,0.08)">1.00</td><td style="background:rgba(30,121,95,0.08)">0.00</td></tr>
+<tr><td>GloFAS v4</td><td>1 of 1<span class='y'>2023</span></td><td>1<span class='y'>2017</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td style="background:rgba(30,121,95,0.50)">1.00</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
+<tr class='riv'><td colspan='8'>Shabelle: severe seasons 2019, 2020, 2023</td></tr>
+<tr><td>Google, new</td><td>3 of 3<span class='y'>2019, 2020, 2023</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td style="background:rgba(30,121,95,0.50)">1.00</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
+<tr><td>Google, current</td><td>1 of 3<span class='y'>2019</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>2<span class='y'>2020, 2023</span></td><td style="background:rgba(30,121,95,0.22)">0.33</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.29)">0.50</td></tr>
+<tr><td>GloFAS v4</td><td>2 of 3<span class='y'>2019, 2020</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
+</tbody></table>
+    <p class="read">GloFAS v4 over its whole forecast archive, 2003 to 2023. Juba: fires 2005, 2014, 2015, 2017, 2023; severe seasons 2006, 2014, 2023, caught 2014, 2023; false fires 2005, 2015. Shabelle: fires 2010, 2013, 2014, 2019, 2020; severe seasons 2006, 2014, 2019, 2020, 2023, caught 2014, 2019, 2020; false fires 2010, 2013.</p>
+    <p class="read">The new model after 2023. Deyr 2024: reanalysis did not fire; forecasts did not fire; gauges: Juba flood, Shabelle severe. Deyr 2025: reanalysis did not fire; forecasts did not fire; gauges: Juba nothing, Shabelle nothing.</p>
 
-    <h2>Does it keep Gu?</h2>
-    <div class="answer"><b>Yes.</b> It catches Juba 2 of 3 and Shabelle 3 of 3 severe seasons, against 2 and 2
-       for the Google model running today, with 0 false fires against 2. It is the only source that fires in Gu 2023.</div>
-    <figure><img src="figures/backtest_gu.svg" alt="Gu backtest grid"></figure>
-    <figure><img src="figures/scores_gu.svg" alt="Gu scores"></figure>
+    <h2>Gu</h2>
+    <h3>Season by season</h3>
+    <figure><img src="figures/backtest_gu_ra.svg" alt="Gu, reanalysis, season by season"></figure>
+    <figure><img src="figures/backtest_gu_fc.svg" alt="Gu, forecasts, season by season"></figure>
+    <h3>Scores</h3>
+    <table class='sc'><thead><tr><th>Reanalysis, 1999 to 2023</th><th>severe caught</th><th>ordinary floods caught</th><th>false fires</th><th>missed severe</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
+<tr class='riv'><td colspan='8'>Juba: severe seasons 2018, 2020, 2023</td></tr>
+<tr><td>Google, new</td><td>2 of 3<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
+<tr><td>Google, current</td><td>2 of 3<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>1<span class='y'>2013</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.40)">0.25</td><td style="background:rgba(30,121,95,0.38)">0.71</td></tr>
+<tr><td>GloFAS v4</td><td>2 of 3<span class='y'>2018, 2020</span></td><td>2<span class='y'>2005, 2010</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
+<tr class='riv'><td colspan='8'>Shabelle: severe seasons 2016, 2020, 2023</td></tr>
+<tr><td>Google, new</td><td>3 of 3<span class='y'>2016, 2020, 2023</span></td><td>1<span class='y'>2018</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td style="background:rgba(30,121,95,0.50)">1.00</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
+<tr><td>Google, current</td><td>2 of 3<span class='y'>2016, 2020</span></td><td>1<span class='y'>2018</span></td><td>1<span class='y'>2013</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.40)">0.25</td><td style="background:rgba(30,121,95,0.38)">0.71</td></tr>
+<tr><td>GloFAS v4</td><td>1 of 3<span class='y'>2016</span></td><td>3<span class='y'>2005, 2010, 2018</span></td><td>0<span class='y'>none</span></td><td>2<span class='y'>2020, 2023</span></td><td style="background:rgba(30,121,95,0.22)">0.33</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.29)">0.50</td></tr>
+</tbody></table>
+    <table class='sc'><thead><tr><th>Forecasts, 2016 to 2023</th><th>severe caught</th><th>ordinary floods caught</th><th>false fires</th><th>missed severe</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>
+<tr class='riv'><td colspan='8'>Juba: severe seasons 2018, 2020, 2023</td></tr>
+<tr><td>Google, new</td><td>2 of 3<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
+<tr><td>Google, current</td><td>2 of 3<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
+<tr><td>GloFAS v4</td><td>2 of 3<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2023</span></td><td style="background:rgba(30,121,95,0.36)">0.67</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.42)">0.80</td></tr>
+<tr class='riv'><td colspan='8'>Shabelle: severe seasons 2016, 2020, 2023</td></tr>
+<tr><td>Google, new</td><td>3 of 3<span class='y'>2016, 2020, 2023</span></td><td>1<span class='y'>2018</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td style="background:rgba(30,121,95,0.50)">1.00</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
+<tr><td>Google, current</td><td>3 of 3<span class='y'>2016, 2020, 2023</span></td><td>1<span class='y'>2018</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td style="background:rgba(30,121,95,0.50)">1.00</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.50)">1.00</td></tr>
+<tr><td>GloFAS v4</td><td>1 of 3<span class='y'>2016</span></td><td>1<span class='y'>2018</span></td><td>0<span class='y'>none</span></td><td>2<span class='y'>2020, 2023</span></td><td style="background:rgba(30,121,95,0.22)">0.33</td><td style="background:rgba(30,121,95,0.50)">0.00</td><td style="background:rgba(30,121,95,0.29)">0.50</td></tr>
+</tbody></table>
+    <p class="read">GloFAS v4 over its whole forecast archive, 2003 to 2023. Juba: fires 2005, 2010, 2016, 2018, 2020; severe seasons 2018, 2020, 2023, caught 2018, 2020; false fires none. Shabelle: fires 2005, 2010, 2016, 2018; severe seasons 2016, 2020, 2023, caught 2016; false fires none.</p>
+    <p class="read">The new model after 2023. Gu 2024: reanalysis fired on the Juba; forecasts fired on the Juba; gauges: Juba flood, Shabelle severe. Gu 2025: reanalysis did not fire; forecasts did not fire; gauges: Juba no gauge record, Shabelle nothing.</p>
 
     <h2>Timing against the gauges</h2>
-    <p>Every season in which a river flooded. Zero is the day the second gauge crossed its 1-in-3 level.
-       Green side: the model fired before the gauges confirmed. Red side: after. Grey column: it never fired that season.</p>
-    <figure><img src="figures/timing_deyr.svg" alt="Deyr timing"></figure>
-    <p class="read">Deyr median: the new model fires +1 days before the gauges confirm (over 6 river-seasons), GloFAS v4 +5 (over 6).
-       GloFAS is earlier on the Juba. On the Shabelle in 2023 the new model is the one that fires at all.</p>
-    <figure><img src="figures/timing_gu.svg" alt="Gu timing"></figure>
-    <p class="read">Gu median: the new model -5 days (over 8), the Google model running today -2 (over 6).</p>
-    <h3>The same, read from the forecasts</h3>
-    <p>What the operator would have seen: the first forecast issue on which the rule was met at leads 1 to 7 days.
-       Forecast archives start in 2016 for both Google models; GloFAS v5 has none.</p>
-    <figure><img src="figures/timing_fc_deyr.svg" alt="Deyr forecast timing"></figure>
-    <figure><img src="figures/timing_fc_gu.svg" alt="Gu forecast timing"></figure>
+    <p>Every season in which a river flooded. Zero is the day the second gauge crossed its 1-in-3 level. Green side: the
+       model fired before that day. Red side: after it. Grey column: it did not fire that season. The bar is the river's peak.</p>
+    <h3>Deyr</h3>
+    <figure><img src="figures/timing_deyr_ra.svg" alt="Deyr timing, reanalysis"></figure>
+    <figure><img src="figures/timing_deyr_fc.svg" alt="Deyr timing, forecasts"></figure>
+    <h3>Gu</h3>
+    <figure><img src="figures/timing_gu_ra.svg" alt="Gu timing, reanalysis"></figure>
+    <figure><img src="figures/timing_gu_fc.svg" alt="Gu timing, forecasts"></figure>
 
-    <h3>Three seasons in full</h3>
-    <p>All seven points. The gauge as a share of its 1-in-3 level, each model at the same point as a share of its
-       own trigger level. Above the dotted 100% line means over the level. Lines above 400% are cut off.</p>
-    <figure><img src="figures/season_deyr_2023.svg" alt="Deyr 2023"></figure>
-    <p class="read">Deyr 2023. Juba: GloFAS v4 fired 21 Oct, the new model 03 Nov, the second gauge crossed 25 Oct.
-       Shabelle: only the new model fired, 09 Nov; the gauges crossed 06 Nov.</p>
-    <figure><img src="figures/season_deyr_2024.svg" alt="Deyr 2024"></figure>
-    <p class="read">Deyr 2024: the new model did not fire, gauges: severe. The Shabelle gauges crossed 18 Oct.</p>
-    <figure><img src="figures/season_gu_2024.svg" alt="Gu 2024"></figure>
-    <p class="read">Gu 2024: the new model fired on the Juba, gauges: severe. 2025: Deyr did not fire, gauges: nothing; Gu did not fire, gauges: nothing.</p>
+    <h2>Three seasons at all seven points</h2>
+    <p>The gauge as a share of its 1-in-3 level and each model's reanalysis at the same point as a share of its own trigger
+       level. Above the dotted 100% line is over the level. Lines above 400% are cut off. The last panel lists the dates on
+       both records.</p>
+    <figure><img src="figures/season_deyr_2023.svg" alt="Deyr 2023, all points"></figure>
+    <figure><img src="figures/season_deyr_2024.svg" alt="Deyr 2024, all points"></figure>
+    <figure><img src="figures/season_gu_2024.svg" alt="Gu 2024, all points"></figure>
 
     <h2>Station by station</h2>
-    <p>The same scores for each point on its own, against that gauge's own levels.</p>
+    <p>Each point on its own against its own gauge, reanalysis, 1999 to 2023: a severe season is the gauge over its own 1-in-5,
+       a false alarm is the model over its level with the gauge under its 1-in-3.</p>
     <figure><img src="figures/stations_deyr.svg" alt="Deyr station scores"></figure>
     <figure><img src="figures/stations_gu.svg" alt="Gu station scores"></figure>
 
-    <h2>The numbers are on a different scale</h2>
-    <p>At the same points the new model's flows are several times the current Google model's. Every Google-based
-       level, the Gu triggers and the 1-in-6 line quoted at Luuq included, would have to be refitted.</p>
-    <figure><img src="figures/levels.svg" alt="Levels, current against new"></figure>
+    <h2>The two Google models are on different scales</h2>
+    <p>The trigger level at each point on the current Google model and on the new one, both fitted the same way.</p>
+    <figure><img src="figures/levels.svg" alt="Trigger levels, current against new"></figure>
 
-    <p class="muted" style="font-size:12.5px;margin-top:30px">Source: Google Runoff Reanalysis and Reforecast, November 2026 release
-       (reanalysis 1981 to 2025, reforecast 2016 to 2025 at leads 0 to 10 days), one HydroBasins outlet per station. Levels are fitted on each
-       model's own 1999 to 2023 seasonal maxima. Gauges: SWALIM, to July 2026. Forecast issues use leads 1 to 7 days, lead 1 being the issue day.
-       The dates behind the charts are in <code>data.json</code> beside this page; the seven-station extracts are on the team's storage.</p>
+    <h2>Notes</h2>
+    <ul>
+      <li>Source: Google Runoff Reanalysis and Reforecast, November 2026 release, public bucket, CC-BY-4.0. Reanalysis 1981 to 2025;
+          reforecast 2016 to 2025 at leads 0 to 10 days. One HydroBasins outlet per station, chosen as the main-stem outlet within
+          15 km with the largest 1-in-5 flow; the outlet ids are in <code>data.json</code> beside this page.</li>
+      <li>Lead labelling differs between archives. GloFAS day n is the calendar day issue + (n - 1). The current Google archive's lead n is
+          issue + n. The new archive's lead 0 is the day before the issue, and it is relabelled here so that day 1 is the issue day, as
+          for GloFAS. "Leads 1 to 7" therefore spans the issue day to six days ahead for GloFAS and the new model, and one to seven
+          days ahead for the current Google model, as in the rest of this site.</li>
+      <li>Sample sizes are small: 8 seasons on the forecast record, and one to five severe seasons per window. GloFAS v4 forecasts are an
+          ensemble median; both Google archives are a single trace.</li>
+      <li>The current Google model's forecast archive has not been verified to be the same model as the live Flood Hub feed, and the
+          new model's scale is not the live feed's scale. 2026 is in no archive.</li>
+      <li>The gauge record is censored at some stations (a flat maximum at bank full), so a season can be scored as severe or not on a
+          reading that sits exactly on the level.</li>
+      <li>Everything on this page is generated by <code>scripts/page_additions/build_google_model_2026_page.py</code>; the dates, levels and
+          scores behind every chart are in <code>data.json</code>.</li>
+    </ul>
   </article>
 </div>
 </body>
