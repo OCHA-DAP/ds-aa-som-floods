@@ -1281,7 +1281,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
          gauge crossed. Gauge data run to July 2026.</p>
     </div>
 
-    <h2><span class="num">1</span>A 1-in-3 framework on Google, new</h2>
+    <h2><span class="num">1</span>Possible trigger approach</h2>
     <p>Return periods from a search over 1-in-3 to 1-in-10 per river and season on the reanalysis, for about eight season activations in 25 years
        (one per season in which either river reaches its threshold), Juba stricter than Shabelle, scored against the two-gauge 1-in-5 floods.</p>
     <div class="tablewrap">{FW_A}</div>
