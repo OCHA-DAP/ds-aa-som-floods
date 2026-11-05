@@ -344,19 +344,19 @@ def fig_timeline(R, season, year):
                     ax.scatter(d, yc, s=110, facecolors="none", edgecolors=COL[m], linewidths=1.6, zorder=4)
                     ax.text(d, yc - 0.22, d.strftime("%d %b"), ha="center", va="top", fontsize=8, color=COL[m])
             if notes:
-                ax.text(B + pd.Timedelta(days=1), yc, "; ".join(notes), va="center", ha="left", fontsize=8, color=FAINT, clip_on=False)
+                ax.text(B + pd.Timedelta(days=1), yc, chr(10).join(notes), va="center", ha="left", fontsize=7.5, color=FAINT, clip_on=False, linespacing=1.1)
             ylab.append((yc, SHORT[m]))
         bd, pk = rec["bench"].get(year), rec["peak"].get(year)
         ax.axhline(0, color=GRID, linewidth=0.8, zorder=0)
         if ok(bd):
             ax.scatter(bd, 0, s=100, marker="D", color=INK, zorder=4)
-            ax.text(bd, 0.24, f"2nd gauge over 1-in-3\n{bd:%d %b}", ha="center", va="bottom", fontsize=8, color=INK)
+            ax.text(bd, -0.22, f"2nd gauge over 1-in-3 {bd:%d %b}", ha="center", va="top", fontsize=8, color=INK)
             ax.axvline(bd, color=INK, lw=0.9, ls=":", zorder=1)
         else:
             ax.text(B + pd.Timedelta(days=1), 0, "no gauge flood", va="center", ha="left", fontsize=8, color=FAINT, clip_on=False)
         if ok(pk):
             ax.scatter(pk, 0, s=180, marker="|", color=INK, linewidths=1.8, zorder=4)
-            ax.text(pk, -0.24, f"peak {pk:%d %b}", ha="center", va="top", fontsize=8, color=INK)
+            ax.text(pk, 0.22, f"peak {pk:%d %b}", ha="center", va="bottom", fontsize=8, color=INK)
         ylab.append((0, "gauges"))
         ax.set_yticks([y for y, _ in ylab], [l for _, l in ylab], fontsize=9.5)
         ax.set_ylim(-0.8, n - 0.2)
@@ -376,7 +376,7 @@ def fig_timeline(R, season, year):
           Line2D([], [], marker="|", ls="", color=INK, markersize=12, markeredgewidth=1.8, label="river peak")]
     fig.legend(handles=Hh, ncol=4, fontsize=9, loc="upper center", bbox_to_anchor=(0.5, 0.02), frameon=False)
     fig.suptitle(f"{season.title()} {year}: when each source reached the threshold, and when the gauges did", x=0.02, ha="left", fontsize=12)
-    fig.subplots_adjust(hspace=0.5, top=0.9, bottom=0.14, right=0.76)
+    fig.subplots_adjust(hspace=0.5, top=0.9, bottom=0.14, right=0.8)
     return save(fig, f"timeline_{season}_{year}")
 
 
