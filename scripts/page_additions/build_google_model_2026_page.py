@@ -422,8 +422,8 @@ def _fc_peaks(m, st, season):
 
 
 def season_index(season, river, source, basis):
-    """Per year, the mean of the two highest stations' season peaks, each as a share of that
-    station's own 1-in-RANK_RP level on the same source. Forecast peaks are read against the
+    """Per year, the second-highest station's season peak as a share of that station's own
+    1-in-RANK_RP level on the same source: the level the river's second gauge reached. Forecast peaks are read against the
     model's reanalysis levels, as the trigger reads them."""
     cols = {}
     if source == "gauge":
@@ -443,9 +443,9 @@ def season_index(season, river, source, basis):
                 cols[st] = x.groupby(x.index.year).max() / lev
             else:
                 cols[st] = _fc_peaks(source, st, season) / lev
-    # the mean of the two highest station shares, where at least two stations report
+    # the second-highest station share: the level the river's second gauge reaches, as in the benchmark
     df = pd.DataFrame(cols)
-    return df.apply(lambda r: r.dropna().nlargest(2).mean() if r.notna().sum() >= 2 else np.nan, axis=1)
+    return df.apply(lambda r: r.dropna().nlargest(2).min() if r.notna().sum() >= 2 else np.nan, axis=1)
 
 
 def rank_table(season, river):
@@ -637,7 +637,7 @@ def rank_html(season):
     """The gauges' N_RANK worst seasons per river and each source's own rank of them, as a table.
     Cell: rank on the reanalysis / rank on the forecasts. Shaded where the rank is within the top N_RANK."""
     models = [m for m in [NEW, "google_grrr", "glofas_v4", "glofas_v5"] if m in MODELS[season]]
-    head = ("<table class='data rk'><thead><tr><th>Season</th><th>two highest gauges, mean % of their 1-in-3</th>"
+    head = ("<table class='data rk'><thead><tr><th>Season</th><th>second gauge, % of its 1-in-3</th>"
             + "".join(f"<th>{SHORT[m]}<span class='y'>reanalysis / forecasts</span></th>" for m in models)
             + "</tr></thead><tbody>")
     out = [head]
@@ -898,8 +898,8 @@ table.tim th[colspan] {{ text-align:left; }}
 
     <h2><span class="num">2</span>The worst floods first: the benchmark</h2>
     <p>The gauges' five worst seasons, worst first, and the rank each source gives the same seasons in its own record (1 is that
-       source's highest; reanalysis / forecasts). A season's index is the mean of the river's two highest stations, each station's
-       season peak taken as a share of its own 1-in-3 on that source.</p>
+       source's highest; reanalysis / forecasts). A season's index is the level its second-highest station reached, as a share of
+       that station's own 1-in-3 on that source, as in the gauge benchmark.</p>
     <h3>Deyr</h3>
     <div class="tablewrap">{RK['deyr']}</div>
     <p class="muted" style="font-size:12.5px">In the top five of every source that covers the season: Juba {cons_txt(C['deyr']['juba'][0])}; Shabelle {cons_txt(C['deyr']['shabelle'][0])}.
