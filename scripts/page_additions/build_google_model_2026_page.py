@@ -591,24 +591,28 @@ def num(v):
     return "n/a" if v is None or (isinstance(v, float) and np.isnan(v)) else f"{v:.2f}"
 
 
-def score_table(R, season, basis):
-    span = SCORE_RA if basis == "ra" else SCORE_FC
-    models = [m for m in MODELS[season] if basis == "ra" or m in FC_SPAN]
-    out = [f"<table class='data'><caption>{BASIS_TITLE[basis].title()}, {rng(span)}</caption><thead><tr><th>Source</th><th>severe seasons caught</th><th>ordinary floods covered</th>"
-           f"<th>threshold reached, no gauge flood</th><th>severe seasons missed</th><th>POD</th><th>FAR</th><th>F1</th></tr></thead><tbody>"]
+def score_table(R, season):
+    """One compact table per season: rows per source and river, the reanalysis and forecast
+    scores side by side, counts only (the years are in the grids above)."""
+    hdr = ("<table class='data'><thead><tr><th rowspan='2'>Source</th>"
+           f"<th colspan='3'>Reanalysis, {rng(SCORE_RA)}</th><th colspan='3'>Forecasts, {rng(SCORE_FC)}</th></tr>"
+           "<tr><th>severe caught</th><th>no gauge flood</th><th>F1</th><th>severe caught</th><th>no gauge flood</th><th>F1</th></tr></thead><tbody>")
+    out = [hdr]
     for river in RIVERS:
         rec = R[(river, season)]
-        sev = rec["severe"] & set(range(span[0], span[1] + 1))
-        out.append(f"<tr class='riv'><td colspan='8'>{river.title()}: severe seasons {yrs(sev)}</td></tr>")
-        for m in models:
-            s = score(rec, m, basis, span)
-            yr = years_of(rec, m, basis)
-            tag = "" if yr >= set(range(span[0], span[1] + 1)) else f"<span class='y'>archive {min(yr)} to {max(yr)}</span>"
-            out.append(f"<tr><td>{SHORT[m]}{tag}</td><td>{len(s['caught'])} of {len(s['severe'])}<span class='y'>{yrs(s['caught'])}</span></td>"
-                       f"<td>{len(s['ordinary'])}<span class='y'>{yrs(s['ordinary'])}</span></td>"
-                       f"<td>{len(s['false'])}<span class='y'>{yrs(s['false'])}</span></td>"
-                       f"<td>{len(s['missed_severe'])}<span class='y'>{yrs(s['missed_severe'])}</span></td>"
-                       f"<td{shade(s['POD'])}>{num(s['POD'])}</td><td{shade(s['FAR'], True)}>{num(s['FAR'])}</td><td{shade(s['F1'])}>{num(s['F1'])}</td></tr>")
+        out.append(f"<tr class='riv'><td colspan='7'>{river.title()}</td></tr>")
+        for m in MODELS[season]:
+            cells = [f"<td>{SHORT[m]}</td>"]
+            for basis, span in (("ra", SCORE_RA), ("fc", SCORE_FC)):
+                if basis == "fc" and m not in FC_SPAN:
+                    cells.append("<td class='muted' colspan='3'>no forecast archive</td>")
+                    continue
+                s = score(rec, m, basis, span)
+                yr = years_of(rec, m, basis)
+                tag = "" if yr >= set(range(span[0], span[1] + 1)) else f" <span class='muted'>({min(yr)} to {max(yr)})</span>"
+                cells.append(f"<td>{len(s['caught'])} of {len(s['severe'])}{tag}</td><td>{len(s['false'])}</td>"
+                             f"<td{shade(s['F1'])}>{num(s['F1'])}</td>")
+            out.append("<tr>" + "".join(cells) + "</tr>")
     out.append("</tbody></table>")
     return "\n".join(out)
 
@@ -654,7 +658,7 @@ def build():
     F["rk_deyr"], F["rk_gu"] = fig_ranks("deyr"), fig_ranks("gu")
     C = {s: consistency(s) for s in ("deyr", "gu")}
     cons_txt = lambda xs: ", ".join(xs) if xs else "none"
-    T = {f"{s}_{b}": score_table(R, s, b) for s in ("deyr", "gu") for b in ("ra", "fc")}
+    T = {s: score_table(R, s) for s in ("deyr", "gu")}
 
     # everything behind the page, for review
     dump, sc = {}, []
@@ -717,6 +721,7 @@ table.data th {{ text-align:left; font-size:11px; text-transform:uppercase; lett
 table.data td {{ border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8); vertical-align:top; }}
 table.data tr.riv td {{ color:var(--n9); font-weight:500; padding-top:12px; border-bottom:1px solid #d9dfdf; background:#fff; }}
 table.data td:first-child {{ white-space:nowrap; }}
+table.data th[colspan] {{ text-align:center; border-bottom:1px solid #e2e7e7; }}
 table.data .y {{ display:block; font-size:11px; color:var(--n7); }}
 .provenance {{ margin:34px 44px 40px; padding-top:14px; border-top:1px solid #e2e7e7; font-size:12px; color:var(--n7); line-height:1.7; }}
 .provenance li {{ font-size:12px; color:var(--n7); margin:0 0 6px; }}
@@ -759,15 +764,14 @@ table.data .y {{ display:block; font-size:11px; color:var(--n7); }}
     <h2><span class="num">2</span>Deyr, season by season</h2>
     <figure class="chart"><img src="{F['bt_deyr_ra']}" alt="Deyr, reanalysis, season by season"><figcaption>Reanalysis. One row per model and river, one cell per season.</figcaption></figure>
     <figure class="chart"><img src="{F['bt_deyr_fc']}" alt="Deyr, forecasts, season by season"><figcaption>Forecasts, leads 1 to 7. Blank cells are seasons outside the archive.</figcaption></figure>
-    <div class="tablewrap">{T['deyr_ra']}</div>
-    <div class="tablewrap">{T['deyr_fc']}</div>
+    <div class="tablewrap">{T['deyr']}</div>
+    <p class="muted" style="font-size:12.5px;margin-top:-10px">Severe caught: of the severe seasons in the scoring span. No gauge flood: seasons with the threshold reached and no flood at the gauges. F1 combines the two; POD, FAR and the years are in <code>data.json</code>.</p>
     <p class="muted" style="font-size:13px">New model, Deyr 2024: {after_2023(R, 'deyr', 2024)}. Deyr 2025: {after_2023(R, 'deyr', 2025)}.</p>
 
     <h2><span class="num">3</span>Gu, season by season</h2>
     <figure class="chart"><img src="{F['bt_gu_ra']}" alt="Gu, reanalysis, season by season"><figcaption>Reanalysis.</figcaption></figure>
     <figure class="chart"><img src="{F['bt_gu_fc']}" alt="Gu, forecasts, season by season"><figcaption>Forecasts, leads 1 to 7.</figcaption></figure>
-    <div class="tablewrap">{T['gu_ra']}</div>
-    <div class="tablewrap">{T['gu_fc']}</div>
+    <div class="tablewrap">{T['gu']}</div>
     <p class="muted" style="font-size:13px">New model, Gu 2024: {after_2023(R, 'gu', 2024)}. Gu 2025: {after_2023(R, 'gu', 2025)}.</p>
 
     <h2><span class="num">4</span>Timing against the gauges</h2>
