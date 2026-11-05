@@ -262,7 +262,7 @@ def fig_backtest(R, season):
     ax.axhline(len(lines) - n_juba - 0.5, color=INK, linewidth=1.0)
     for edge_year in (SCORE_FC[0] - 0.5, SCORE_FC[1] + 0.5):
         ax.axvline(YEARS.index(int(edge_year + 0.5)) - 0.5, color=INK, linewidth=0.9, ls=":", zorder=4)
-    ax.text(-0.5, -0.62, f" forecast rows are tallied between the dotted lines ({rng(SCORE_FC)}); reanalysis rows over every season with a gauge record",
+    ax.text(-0.5, -0.62, f" forecast rows are tallied between the dotted lines ({rng(SCORE_FC)}; Google, current in Deyr to 2022); reanalysis rows over every season with a gauge record to {SCORE_RA[1]}",
             ha="left", va="top", fontsize=8.5, color=FAINT, bbox=dict(facecolor="white", edgecolor="none", pad=1), zorder=6)
     ax.set_xlim(-0.6, len(YEARS) + 9.6)
     ax.set_ylim(-1.1, len(lines) - 0.4)
@@ -348,7 +348,11 @@ def fig_timing(R, season):
             lab = f"{abs(n)} d {'before' if n < 0 else 'after'}" if n else "same day"
             if abs(n) > 38:
                 lab += " (bar cut)"
-            ax.text(x + (1.2 if n >= 0 else -1.2), yb, lab, va="center", ha="left" if n >= 0 else "right", fontsize=8.5, color=BODY, zorder=5)
+            if abs(n) > 22:   # long bar: the label sits inside it
+                ax.text(x - (1.2 if n >= 0 else -1.2), yb, lab, va="center", ha="right" if n >= 0 else "left", fontsize=8.5,
+                        color="white" if alpha == 1.0 else INK, zorder=5)
+            else:
+                ax.text(x + (1.2 if n >= 0 else -1.2), yb, lab, va="center", ha="left" if n >= 0 else "right", fontsize=8.5, color=BODY, zorder=5)
         ax.text(-38, yc, SHORT[m], ha="left", va="center", fontsize=9, color=BODY, zorder=5)
     ax.set_yticks([])
     ax.set_ylim(-0.7, ymax + 0.8)
@@ -386,8 +390,8 @@ def timing_stats(R, season, basis, m):
 
 
 def timing_summary_html(R):
-    half_up = lambda v: int(np.floor(abs(v) + 0.5))
-    fmt_d = lambda v: ("same day" if half_up(v) == 0 else f"{half_up(v)} d {'before' if v > 0 else 'after'}")
+    half_up = lambda v: int(np.floor(v + 0.5))
+    fmt_d = lambda v: ("same day" if half_up(v) == 0 else f"{abs(half_up(v))} d {'before' if half_up(v) > 0 else 'after'}")
     head = ("<table class='data'><thead><tr><th rowspan='2'>Source</th><th colspan='2'>Deyr</th><th colspan='2'>Gu</th></tr>"
             "<tr><th>reanalysis</th><th>forecasts</th><th>reanalysis</th><th>forecasts</th></tr></thead><tbody>")
     out = [head]
@@ -442,7 +446,7 @@ def fig_timeline(R, season, year):
                 notes.append("no gauge record" if s.empty else "gauge record too short")
             else:
                 pk = s.loc[s.level_m.idxmax(), "date"]
-                ax.scatter(pk, yc, s=380, marker="|", color=INK, linewidths=2.2, zorder=6)
+                ax.scatter(pk, yc, s=560, marker="|", color=INK, linewidths=2.2, zorder=6)
                 row_label = f"{NAME[st]} gauge, peak {pk:%d %b}"
                 first = {}
                 for lab, lev in (("1-in-3", g3[st]), ("1-in-5", g5[st])):
@@ -458,7 +462,10 @@ def fig_timeline(R, season, year):
                     if len(c):
                         d = c.date.iloc[0]
                         ax.scatter(d, yc, s=70 if marker == "o" else 60, marker=marker, color=GAUGE_C, edgecolors="white", linewidths=0.8, zorder=5)
-                        ax.text(d, yc + (0.22 if marker == "o" else -0.22), f"{d:%d %b}", ha=edge(d), va="bottom" if marker == "o" else "top", fontsize=8.5, color=BODY)
+                        dx = pd.Timedelta(days=1.5) if d == pk else pd.Timedelta(0)
+                        ax.text(d + dx, yc + (0.22 if marker == "o" else -0.22), f"{d:%d %b}", ha="left" if d == pk else edge(d), va="bottom" if marker == "o" else "top", fontsize=8.5, color=BODY)
+                if first["1-in-3"] is None:
+                    notes.append("not over its 1-in-3")
             if notes:
                 ax.text(B - pd.Timedelta(days=1), yc, "; ".join(notes), va="center", ha="right", fontsize=8.5, color=FAINT)
             ylab.append((yc, row_label))
@@ -520,7 +527,7 @@ def fig_timeline(R, season, year):
             axe.fill_between(e.index, e.values, color=colr, alpha=0.15, lw=0)
             axe.plot(e.index, e.values, color=colr, lw=1.4)
             axe.set_ylim(0, max(float(e.max()), 1.0) * 1.4)    # room above the peak for the note
-            if fd is None and river_d == "juba":
+            if fd is None:
                 axe.text(A + pd.Timedelta(days=1), axe.get_ylim()[1] * 0.96, f" fewer than three of the 14 districts over their 1-in-5 exposure ({n_d} district{'s' if n_d != 1 else ''})", va="top", ha="left", fontsize=8, color=INK)
             if fd is not None:
                 axe.axvline(fd, color=INK, lw=1.1, ls=":", zorder=1)
@@ -528,7 +535,7 @@ def fig_timeline(R, season, year):
             axe.set_title(f"Flood exposure, {len(DISTRICTS[river_d])} {river_d.title()} districts (FloodScan)", fontsize=10.5, loc="left")
             axe.set_ylabel("people in flooded area", color=BODY, fontsize=9)
             axe.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v/1000:g}k" if v else "0"))
-            axe.tick_params(length=0, labelsize=8)
+            axe.tick_params(length=0, labelsize=8.5)
             for sp in axe.spines.values():
                 sp.set_visible(False)
             axe.grid(axis="y", color=GRID, linewidth=0.8)
@@ -695,7 +702,7 @@ def fig_corr(CR):
                     ax.text(j, i + 0.3, f"{int(r.n_seasons)} seasons", ha="center", va="center", fontsize=6.5,
                             color="white" if r.rho > 0.62 else BODY)
         ax.set_title(f"{SEASON_TITLE[season]}\n(dark = high)", fontsize=10)
-    fig.suptitle("Rank correlation at the best lag between each model's daily flow and the gauge level, 1-in-3 seasons with a gauge record to 2023",
+    fig.suptitle("Rank correlation between each model's daily flow and the gauge level, at the lag with the highest agreement,\nseasons in which the gauge or the model went over its own 1-in-3, with a gauge record, to 2023",
                  x=0.02, ha="left", fontsize=11)
     fig.subplots_adjust(wspace=0.08, top=0.8)
     return save(fig, "correlation")
@@ -738,7 +745,7 @@ def fig_stations(S, season):
     fig, axes = plt.subplots(1, 3, figsize=(12.4, 0.5 * len(sts) + 2.3))
     for ax, met, title in zip(axes, ["POD", "FAR", "F1"], ["POD", "FAR", "F1"]):
         mat = [[float(S[(S.season == season) & (S.station == st) & (S.model == m)][met].iloc[0]) for m in ms] for st in sts]
-        heat(ax, mat, [SHORT[m].replace(", ", chr(10)) for m in ms], ylab if met == "POD" else [""] * len(sts), cmap="Greys" if met == "FAR" else "Greens")
+        heat(ax, mat, [SHORT[m].replace(", ", chr(10)) for m in ms], ylab if met == "POD" else [""] * len(sts), cmap="Greys" if met == "FAR" else "Greens", vmin=-0.12, vmax=1.0)
         ax.set_title(title + "\n(dark = high)", fontsize=9.5)
     fig.suptitle(f"{SEASON_TITLE[season]}, reanalysis, seasons with a gauge record to 2023, each station's model against its gauge", x=0.02, ha="left", fontsize=11)
     fig.subplots_adjust(wspace=0.25, top=0.78)
@@ -764,10 +771,10 @@ def score_both(R, seasons, m, basis, span):
     pairs = [(r, se) for se in seasons for r in RIVERS]
     recs = {k: R[k] for k in pairs}
     yrs = set(range(span[0], span[1] + 1))
-    model_years = set.intersection(*[years_of(rec, m, basis) for rec in recs.values()])
-    universe = yrs & model_years & set.union(*[rec["assess"] for rec in recs.values()])
-    f = set.union(*[activations_of(rec, m, basis) for rec in recs.values()]) & universe
-    sev = set.union(*[rec["severe"] for rec in recs.values()]) & universe
+    own = {k: yrs & years_of(rec, m, basis) & rec["assess"] for k, rec in recs.items()}
+    universe = set.union(*own.values())
+    f = set.union(*[activations_of(rec, m, basis) & own[k] for k, rec in recs.items()])
+    sev = set.union(*[rec["severe"] & own[k] for k, rec in recs.items()])
     pod = len(f & sev) / len(sev) if sev else np.nan
     far = len(f - sev) / len(f) if f else np.nan
     prec = 1 - far if f else np.nan
@@ -913,7 +920,7 @@ def near_miss_note(R):
             if all(v >= 1 for v in ratios.values()):
                 items.append(f"{season.title()} {y} (smallest margin {100 * (min(ratios.values()) - 1):.1f}%)")
     if not items:
-        return "On the Google, new reanalysis, no season has all four Juba stations above their levels without the same-day rule being met."
+        return "On the Google, new reanalysis, every season in which all four Juba stations go above their levels has them above on the same day."
     return ("On the Google, new reanalysis, all four Juba stations go above their levels within the season but never on the same day in "
             + ", ".join(items) + ".")
 
@@ -990,7 +997,7 @@ def findings(R, C):
                         continue
                     cspan = (min(common), max(common))
                     a_, b_ = g(season, river, NEW, basis, cspan), g(season, river, other, basis, cspan)
-                    tag = f"{season.title()} {river.title()} {lab}" + (f" ({rng(cspan)})" if cspan != span else "")
+                    tag = f"{river.title()} {season.title()} {lab}" + (f" ({rng(cspan)})" if cspan != span else "")
                     dc, df_ = len(a_["caught"]) - len(b_["caught"]), len(a_["false"]) - len(b_["false"])
                     (more_sev if dc > 0 else fewer_sev).append(tag) if dc else None
                     (more_nf if df_ > 0 else fewer_nf).append(tag) if df_ else None
@@ -1013,7 +1020,7 @@ def findings(R, C):
         mean, med, n, n_all = timing_stats(R, season, "fc", m)
         if n == 0:
             return "not reached"
-        if int(np.floor(abs(mean) + 0.5)) == 0:
+        if int(np.floor(mean + 0.5)) == 0:
             return "on the day the second gauge crossed"
         return ("before" if mean > 0 else "after") + " the second gauge crossed"
     def earlier(season):
@@ -1029,7 +1036,7 @@ def findings(R, C):
         if not diffs:
             return ""
         d = float(np.mean(diffs))
-        return ", Google, new earlier in the seasons both reached" if d > 0 else ", GloFAS v4 earlier in the seasons both reached" if d < 0 else ", the same in the seasons both reached"
+        return ", Google, new earlier on average in the seasons both reached" if d > 0 else ", GloFAS v4 earlier on average in the seasons both reached" if d < 0 else ", the same on average in the seasons both reached"
     def pair(season):
         a_, b_ = when(season, NEW), when(season, "glofas_v4")
         if a_ == b_:
@@ -1105,7 +1112,7 @@ def build():
         for river in RIVERS:
             P, Rk = rank_table(season, river)
             ranks[f"{river}_{season}"] = dict(
-                index={str(int(y)): {("gauge" if k == "gauge" else f"{k[0]}_{k[1]}"): (None if pd.isna(v) else round(float(v), 3)) for k, v in P.loc[y].items()} for y in P.index},
+                index={str(int(y)): {("gauge" if k == "gauge" else f"{k[0]}_{k[1]}"): (None if pd.isna(v) else round(float(v), 4)) for k, v in P.loc[y].items()} for y in P.index},
                 rank={str(int(y)): {("gauge" if k == "gauge" else f"{k[0]}_{k[1]}"): (None if pd.isna(v) else int(v)) for k, v in Rk.loc[y].items()} for y in Rk.index})
     (OUT / "data.json").write_text(json.dumps(clean(dict(
         outlets=_read_json("chosen_outlets.json"), trigger_levels=levels, record=dump, scores=sc, benchmark_ranks=ranks,
@@ -1132,7 +1139,7 @@ def build():
 .hero.hero-sub h1 {{ font-size:28px; }}
 .crumb {{ font-size:12px; margin:0 0 14px; }}
 .crumb a {{ color:rgba(255,255,255,.85); text-decoration:none; }}
-article {{ padding:8px 44px 24px; max-width:880px; }}
+article {{ padding:8px 44px 24px; max-width:none; }}
 article h2 {{ font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9); margin:40px 0 10px; line-height:1.25; }}
 article h2 .num {{ color:var(--b5); font-size:15px; margin-right:8px; }}
 article h3 {{ font-family:'Merriweather',Georgia,serif; font-size:15.5px; color:var(--n9); margin:26px 0 6px; }}
@@ -1152,14 +1159,14 @@ figure.chart figcaption {{ font-size:13px; color:#55606d; line-height:1.55; marg
 .takeaways {{ margin:18px 0 6px; padding:0; list-style:none; }}
 .takeaways li {{ border-left:3px solid var(--b1); padding:0 0 0 14px; margin:0 0 16px; }}
 .tablewrap {{ overflow:visible; }}
-table.data {{ border-collapse:collapse; width:100%; margin:16px 0 22px; font-size:12px; table-layout:auto; }}
-table.data th {{ text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:6px 6px 5px; }}
+table.data {{ border-collapse:collapse; width:100%; margin:16px 0 22px; font-size:14px; table-layout:auto; }}
+table.data th {{ text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:6px 6px 5px; }}
 table.data th[colspan] {{ text-align:center; border-bottom:1px solid #e2e7e7; }}
-table.data td {{ border-bottom:1px solid #eef1f1; padding:6px 6px; color:var(--n8); vertical-align:top; }}
+table.data td {{ border-bottom:1px solid #eef1f1; padding:7px 5px; color:var(--n8); vertical-align:top; }}
 table.data tr.riv td {{ color:var(--n9); font-weight:500; padding-top:12px; border-bottom:1px solid #d9dfdf; background:#fff; }}
 table.data td:first-child {{ white-space:nowrap; }}
 table.data td:nth-child(5) {{ border-right:1px solid #e2e7e7; }}
-table.data .y {{ display:block; font-size:10.5px; color:var(--n7); font-weight:400; text-transform:none; letter-spacing:0; }}
+table.data .y {{ display:block; font-size:11.5px; color:var(--n7); font-weight:400; text-transform:none; letter-spacing:0; }}
 table.data td.top {{ background:rgba(30,121,95,.12); }}
 .notes li {{ font-size:13px; color:var(--n7); margin:0 0 8px; }}
 @media (max-width:640px) {{ article {{ padding:4px 22px 16px; }} .hero.hero-sub {{ padding:32px 22px 28px; }} }}
@@ -1172,21 +1179,21 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
       <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / Google's new river model</p>
       <h1>Google's new river model</h1>
       <p>Google's November 2026 river model at the seven trigger stations, scored with the trigger's rules and compared with GloFAS v4,
-         GloFAS v5 and the current Google model, on each model's reanalysis and forecast archive, against the SWALIM gauges.
+         GloFAS v5 and Google, current, on each model's reanalysis and forecast archive, against the SWALIM gauges.
          The live Flood Hub feed does not run the new model. Generated {TODAY} from the source data.</p>
     </div>
   </header>
   <article>
     <div class="callout">
       <p><strong>Sources:</strong> Google, new (the November 2026 model); Google, current (Google's published 2024 model, not verified as the live
-         Flood Hub model); GloFAS v4 (runs Deyr today); GloFAS v5 (the model the Deyr thresholds were designed on). <strong>Records:</strong> reanalysis, the model's own
+         Flood Hub model); GloFAS v4 (the source the Deyr trigger runs on today); GloFAS v5 (the model the Deyr thresholds were designed on). <strong>Records:</strong> reanalysis, the model's own
          record of the past; forecasts, the first issue dated in the season that reaches the threshold at any lead from 1 to 7 days. The live trigger reads forecasts this way.
          Archives: GloFAS v4 2003 to 2023, Google, current 2016 to June 2023, Google, new 2016 to 2025, GloFAS v5 none.</p>
       <p><strong>Threshold rule:</strong> three of the four Juba stations, or two of the three Shabelle stations, over their own 1-in-{TRIGGER_RP} level on the
-         same day, each model's own levels on its 1999 to 2023 seasonal maxima, the same return period at every station and in both seasons. Scores: seasons with a
+         same day. Each model's levels are fitted on its own 1999 to 2023 seasonal maxima, with the same return period at every station and in both seasons. Scores: seasons with a
          gauge record, {SPAN_TXT}, on the reanalysis; {rng(SCORE_FC)} on the forecasts (Google, current in Deyr: 2016 to 2022).</p>
       <p><strong>Gauge benchmark:</strong> a gauge flood is two SWALIM gauges on the same river over their own 1-in-{BENCH_RP} level, fitted on 2000 to 2023.
-         A threshold reached in a season with no gauge flood counts against the source. The ranking of seasons and the timing use the day the second
+         A threshold reached in a season with no gauge flood is a false alarm. The ranking of seasons and the timing use the day the second
          gauge crossed. Gauge data run to July 2026.</p>
     </div>
 
@@ -1200,17 +1207,17 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        a forecast row. White cells are seasons outside the model record or without a gauge record. Reanalysis rows are tallied over every season
        with a gauge record, forecast rows between the dotted lines.</p>
     <h3>Deyr</h3>
-    <figure class="chart"><img src="{F['bt_deyr']}" alt="Deyr, outcome by season, reanalysis and forecasts"><figcaption>Deyr.</figcaption></figure>
+    <figure class="chart"><img src="{F['bt_deyr']}" alt="Deyr, outcome by season, reanalysis and forecasts"></figure>
     <div class="tablewrap">{T['deyr']}</div>
     <p class="note">Gauge floods counted are those in the seasons scored: {SPAN_TXT}.</p>
     <h3>Gu</h3>
-    <figure class="chart"><img src="{F['bt_gu']}" alt="Gu, outcome by season, reanalysis and forecasts"><figcaption>Gu.</figcaption></figure>
+    <figure class="chart"><img src="{F['bt_gu']}" alt="Gu, outcome by season, reanalysis and forecasts"></figure>
     <div class="tablewrap">{T['gu']}</div>
     <p class="note">The Google, current archive labels the issue day lead 0; the page reads its leads 1 to 7, the seven days after the issue day, as the live
        trigger does. Read at leads 0 to 6 instead, Google, current does not reach the threshold in Gu 2023 on the Shabelle.</p>
     <h3>Both rivers together</h3>
     <p>A year counts as reached when the threshold is reached on either river, and as a gauge flood when either river has one; the last column
-       joins the two seasons, so it is the share of years in which the framework as a whole would have reached a threshold.</p>
+       joins the two seasons: the framework as a whole, by year.</p>
     <div class="tablewrap">{TB}</div>
     <h3>Google, new against each other source</h3>
     <p>Counts over the seasons both sources cover: gauge floods with the threshold reached, and seasons with the threshold reached and no gauge flood,
@@ -1220,8 +1227,8 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <h2><span class="num">3</span>POD, FAR and F1 by station</h2>
     <p>Each station's model against its gauge, reanalysis, seasons with a gauge record to 2023. Here a flood season is that one gauge over its own 1-in-{BENCH_RP},
        not the two-gauge benchmark used elsewhere.</p>
-    <figure class="chart"><img src="{F['st_deyr']}" alt="Deyr, POD, FAR and F1 per station"><figcaption>Deyr.</figcaption></figure>
-    <figure class="chart"><img src="{F['st_gu']}" alt="Gu, POD, FAR and F1 per station"><figcaption>Gu.</figcaption></figure>
+    <figure class="chart"><img src="{F['st_deyr']}" alt="Deyr, POD, FAR and F1 per station"></figure>
+    <figure class="chart"><img src="{F['st_gu']}" alt="Gu, POD, FAR and F1 per station"></figure>
 
     <h2><span class="num">4</span>Correlation with the gauges by station</h2>
     <p>For each station, the model's daily flow is set against the gauge's daily level in 1-in-3 seasons: seasons in which the gauge went over its
@@ -1229,10 +1236,9 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
        model flow and, separately, by gauge level, and measures how far the two orders agree: 1 means the model's highest days are the gauge's
        highest days, 0 means no relation. It uses the order of the days, not their values, so the scale of the model does not matter. The lag
        is the shift in days between the two series that gives the highest agreement, tried from 10 days behind to 30 days ahead; a positive lag
-       means the model rises before the gauge. The figure shows the value at the best lag. It measures day-to-day tracking in flood seasons,
+       means the model rises before the gauge. The figure shows the value at that lag. It measures day-to-day tracking in flood seasons,
        not whether a threshold is reached.</p>
-    <figure class="chart"><img src="{F['corr']}" alt="Correlation with the gauges by station"><figcaption>Deyr and Gu, reanalysis, 1-in-3 seasons with a gauge record to 2023;
-       the small figure under each value is the number of seasons.</figcaption></figure>
+    <figure class="chart"><img src="{F['corr']}" alt="Correlation with the gauges by station"><figcaption>The small figure under each value is the number of seasons.</figcaption></figure>
 
     <h2><span class="num">5</span>Benchmark: the largest floods at the gauges</h2>
     <p>The five largest gauge floods per river, largest first, and each source's own rank of them (1 = highest; reanalysis / forecasts).
@@ -1252,8 +1258,8 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <h2><span class="num">6</span>Timing against the second gauge crossing its 1-in-3</h2>
     <p>The five largest gauge floods per river. Zero is the day the second gauge crossed its 1-in-3; bars to the left reached the
        threshold before that day, bars to the right after it. Solid: reanalysis. Light: first forecast issue reaching the threshold (leads 1 to 7 days).</p>
-    <figure class="chart"><img src="{F['tm_deyr']}" alt="Deyr timing"><figcaption>Deyr.</figcaption></figure>
-    <figure class="chart"><img src="{F['tm_gu']}" alt="Gu timing"><figcaption>Gu.</figcaption></figure>
+    <figure class="chart"><img src="{F['tm_deyr']}" alt="Deyr timing"></figure>
+    <figure class="chart"><img src="{F['tm_gu']}" alt="Gu timing"></figure>
     <h3>Average timing</h3>
     <p>Mean and median days between the threshold being reached and the second gauge crossing its 1-in-3, over the seasons above that fall in the
        scored years (reanalysis to 2023, forecasts 2016 to 2023), counting only seasons in which the source reached the threshold.</p>
@@ -1263,13 +1269,13 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <p>Gauge rows: circle, first day over the 1-in-3; diamond, first day over the 1-in-5 (only the diamond is shown when both fall on the same day);
        tick, the peak, dated in the row label. Source rows: threshold reached on the reanalysis (filled square), first forecast issue reaching the
        threshold (hollow square), one mark when both fall on the same day. FloodScan people in flooded area, by river, where it covers the season;
-       the dotted line is the day the third of the 14 framework districts went over its own 1-in-5 flooded population.</p>
+       the dotted line is the day the third of the 14 framework districts went over its own 1-in-5 exposure (people in flooded area).</p>
     <figure class="chart"><img src="{F['tl_deyr_2023']}" alt="Deyr 2023 day by day"><figcaption>Deyr 2023.</figcaption></figure>
     <figure class="chart"><img src="{F['tl_deyr_2019']}" alt="Deyr 2019 day by day"><figcaption>Deyr 2019.</figcaption></figure>
     <figure class="chart"><img src="{F['tl_deyr_2020']}" alt="Deyr 2020 day by day"><figcaption>Deyr 2020. A 1 October date means the level was already exceeded when the season opened.</figcaption></figure>
 
     <h2><span class="num">8</span>Notes</h2>
-    <p class="note">Source: Google Runoff Reanalysis and Reforecast, November 2026 release (reanalysis 1981 to 2025, reforecast 2016 to 2025, leads 0 to 10
+    <p class="note">Source: Google Runoff Reanalysis and Reforecast, November 2026 release (reanalysis 1981 to 2025, reforecast 2016 to 2025, leads 0 to 10 days where lead 0 is the day before the issue, so its leads 1 to 7 are read as the issue day and the six days after it; the archive has leads to 10
        days), one HydroBasins outlet per station, the main-stem outlet within 15 km with the largest 1-in-5 flow. Leads 1 to 7 cover the issue day and
        the six days after it for GloFAS and Google, new, and days 1 to 7 after the issue day for Google, current, following each archive's own labelling;
        only issues dated within October to December or March to May are read, and only days in those months count, so a threshold date of 1 October or
