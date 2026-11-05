@@ -1109,15 +1109,15 @@ figure.chart figcaption {{ font-size:13px; color:#55606d; line-height:1.55; marg
 .callout strong {{ color:var(--n9); }}
 .takeaways {{ margin:18px 0 6px; padding:0; list-style:none; }}
 .takeaways li {{ border-left:3px solid var(--b1); padding:0 0 0 14px; margin:0 0 16px; }}
-.tablewrap {{ overflow-x:auto; }}
-table.data {{ border-collapse:collapse; width:100%; margin:16px 0 22px; font-size:13px; }}
-table.data th {{ text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:7px 10px 6px; }}
+.tablewrap {{ overflow:visible; }}
+table.data {{ border-collapse:collapse; width:100%; margin:16px 0 22px; font-size:12px; table-layout:auto; }}
+table.data th {{ text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:6px 6px 5px; }}
 table.data th[colspan] {{ text-align:center; border-bottom:1px solid #e2e7e7; }}
-table.data td {{ border-bottom:1px solid #eef1f1; padding:7px 10px; color:var(--n8); vertical-align:top; }}
+table.data td {{ border-bottom:1px solid #eef1f1; padding:6px 6px; color:var(--n8); vertical-align:top; }}
 table.data tr.riv td {{ color:var(--n9); font-weight:500; padding-top:12px; border-bottom:1px solid #d9dfdf; background:#fff; }}
-table.data td:first-child, table.data td:nth-child(2) {{ white-space:nowrap; }}
+table.data td:first-child {{ white-space:nowrap; }}
 table.data td:nth-child(5) {{ border-right:1px solid #e2e7e7; }}
-table.data .y {{ display:block; font-size:11px; color:var(--n7); font-weight:400; text-transform:none; letter-spacing:0; }}
+table.data .y {{ display:block; font-size:10.5px; color:var(--n7); font-weight:400; text-transform:none; letter-spacing:0; }}
 table.data td.top {{ background:rgba(30,121,95,.12); }}
 .notes li {{ font-size:13px; color:var(--n7); margin:0 0 8px; }}
 @media (max-width:640px) {{ article {{ padding:4px 22px 16px; }} .hero.hero-sub {{ padding:32px 22px 28px; }} }}
