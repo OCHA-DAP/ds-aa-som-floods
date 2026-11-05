@@ -455,7 +455,7 @@ def fig_ranks(season):
         ax.set_yticks(np.arange(-0.5, len(top), 1), minor=True)
         ax.grid(which="minor", color="white", linewidth=1.4)
         ax.tick_params(which="minor", length=0)
-        ax.set_title(f"{river.title()}: the {N_RANK} worst seasons at the gauges, worst first (row label: % of its 1-in-3 reached by the second gauge), and where each source ranks them", fontsize=10.5)
+        ax.set_title(f"{river.title()}: the {N_RANK} worst gauge seasons, worst first (label: second gauge, % of its 1-in-3)", fontsize=11)
     fig.suptitle(f"{SEASON_TITLE[season]}: rank of each season within each source's own record, all stations, 1 = highest (dark = high)", x=0.02, ha="left", fontsize=12)
     fig.subplots_adjust(hspace=0.42, top=0.93)
     return save(fig, f"ranks_{season}")
