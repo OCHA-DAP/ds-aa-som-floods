@@ -63,7 +63,7 @@ SCORE_FC = (2016, 2023)          # every forecast archive overlaps here
 YEARS = list(range(1999, 2026))
 CELL = {"hit_sev": "#123F5F", "hit": "#3E86BE", "false": "#F4A93B", "miss_sev": "#B34036",
         "miss": "#E3B4AF", "quiet": "#EDF1F4", "none": "#FFFFFF"}
-WINDOW = {"deyr": ("09-20", "12-31"), "gu": ("02-15", "06-25")}
+WINDOW = {"deyr": ("10-01", "12-31"), "gu": ("03-01", "05-31")}
 BASIS_TITLE = {"ra": "reanalysis", "fc": "forecasts"}
 ok = lambda x: x is not None and not pd.isna(x)
 fmt = lambda d: d.strftime("%d %b") if ok(d) else "never"
@@ -134,6 +134,27 @@ def gauge_peaks(river, season):
     return {y: g.loc[g.level_m.idxmax(), "date"].normalize() for y, g in d.groupby(d.date.dt.year) if y in YEARS}
 
 
+def first_issue_in_season(model, river, season, rp, n_req, span):
+    """somlib.first_issue_dates with one more condition: the issue itself is dated within the
+    season months, so nothing before 1 October (Deyr) or 1 March (Gu) counts."""
+    rf = L.reforecast(model)
+    rf = rf[rf.station.isin(TRIGGER_STATIONS[river]) & rf.leadtime_days.between(1, 7)
+            & rf.valid_time.dt.month.isin(SEASONS[season]) & rf.issued_time.dt.month.isin(SEASONS[season])]
+    med = rf.groupby(["issued_time", "valid_time", "station"]).discharge.median().unstack("station")
+    thr = L.model_thresholds(model, river, season, rp)
+    cols = [c for c in thr.index if c in med.columns and not np.isnan(thr[c])]
+    votes = (med[cols] >= thr[cols]).sum(axis=1)
+    hit = votes[votes >= n_req].reset_index()
+    hit.columns = ["issued", "valid", "votes"]
+    hit["year"] = hit["valid"].dt.year
+    out = {}
+    for y, g in hit.groupby("year"):
+        if y in span:
+            g = g.sort_values(["issued", "valid"])
+            out[y] = g.iloc[0]["issued"].normalize()
+    return out
+
+
 def record():
     """Per (river, season): the gauge benchmark and, per model, the first day the rule is met in
     the reanalysis (ra) and the first forecast issue that meets it (fc), by year."""
@@ -148,7 +169,7 @@ def record():
                 fc, fc_years = {}, []
                 if m in FC_SPAN:
                     fc_years = list(range(FC_SPAN[m][0], FC_END.get((m, season), FC_SPAN[m][1]) + 1))
-                    fc = {y: v[0] for y, v in L.first_issue_dates(m, river, season, *cfg(river, season), span=fc_years).items()}
+                    fc = first_issue_in_season(m, river, season, *cfg(river, season), span=fc_years)
                 models[m] = dict(ra=ra, fc=fc, ra_years=set(ra_years), fc_years=set(fc_years))
             R[(river, season)] = dict(flood=fl, severe=sev, assess=assess,
                                       bench=L.gauge_crossings(river, season, 3, span=YEARS),
@@ -546,6 +567,7 @@ def _fc_peaks(m, st, season):
     rf = rf[(rf.station == st) & rf.leadtime_days.between(1, 7) & rf.valid_time.dt.month.isin(SEASONS[season])]
     med = rf.groupby(["issued_time", "valid_time"]).discharge.median().reset_index()
     years = set(range(FC_SPAN[m][0], FC_END.get((m, season), FC_SPAN[m][1]) + 1))
+    med = med[med.issued_time.dt.month.isin(SEASONS[season])]
     mx = med.groupby(med.valid_time.dt.year).discharge.max()
     return mx[mx.index.isin(years)]
 
@@ -977,7 +999,7 @@ table.tim th[colspan] {{ text-align:left; }}
       <p><b>Threshold reached:</b> three of the four Juba points, or two of the three Shabelle points, over their own level on the
          same day (Juba 1-in-{TRIGGER_CONFIG[('juba','deyr')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','deyr')]['rp']} in Deyr, Juba 1-in-{TRIGGER_CONFIG[('juba','gu')]['rp']} and Shabelle 1-in-{TRIGGER_CONFIG[('shabelle','gu')]['rp']} in Gu, each model's
          own levels on its 1999 to 2023 seasonal maxima).</p>
-      <p><b>Reanalysis:</b> the model's own record of the past. <b>Forecasts:</b> the first issue reaching the threshold at leads 1 to 7 days,
+      <p><b>Reanalysis:</b> the model's own record of the past. <b>Forecasts:</b> the first issue, dated within the season, reaching the threshold at leads 1 to 7 days,
          what the live trigger reads. Archives: GloFAS v4 2003 to 2023, current Google 2016 to June 2023, new Google 2016 to 2025,
          GloFAS v5 none. Scores: {rng(SCORE_RA)} on the reanalysis, {rng(SCORE_FC)} on the forecasts.</p>
       <p><b>Gauges:</b> a flood is two SWALIM gauges on the river at their own 1-in-3 level, severe at 1-in-5. Gauge data run to July 2026.</p>
