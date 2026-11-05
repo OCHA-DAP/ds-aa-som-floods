@@ -96,7 +96,9 @@
     2006,
     2008,
     2014,
+    2015,
     2017,
+    2019,
     2023,
     2024
    ],
@@ -135,9 +137,11 @@
    "second_gauge_1in3": {
     "2006": "2006-10-30",
     "2008": "2008-11-15",
-    "2014": "2014-10-22",
+    "2014": "2014-10-21",
+    "2015": "2015-11-11",
     "2017": "2017-11-07",
-    "2023": "2023-10-25",
+    "2019": "2019-10-09",
+    "2023": "2023-10-22",
     "2024": "2024-11-06"
    },
    "gauge_peak": {
@@ -194,7 +198,7 @@
       "2019": "2019-10-14"
      },
      "reanalysis_years": "1999 to 2023",
-     "forecast_years": "2016 to 2023"
+     "forecast_years": "2016 to 2022"
     },
     "glofas_v4": {
      "reanalysis": {
@@ -230,6 +234,7 @@
    "flood": [
     2006,
     2008,
+    2012,
     2014,
     2019,
     2020,
@@ -273,11 +278,12 @@
    "second_gauge_1in3": {
     "2006": "2006-11-02",
     "2008": "2008-11-20",
+    "2012": "2012-10-01",
     "2014": "2014-10-20",
-    "2019": "2019-10-14",
+    "2019": "2019-10-13",
     "2020": "2020-10-01",
     "2023": "2023-11-06",
-    "2024": "2024-10-18"
+    "2024": "2024-10-17"
    },
    "gauge_peak": {
     "1999": "1999-11-03",
@@ -337,7 +343,7 @@
       "2019": "2019-10-02"
      },
      "reanalysis_years": "1999 to 2023",
-     "forecast_years": "2016 to 2023"
+     "forecast_years": "2016 to 2022"
     },
     "glofas_v4": {
      "reanalysis": {
@@ -675,10 +681,10 @@
     2023
    ],
    "ordinary": [
-    2008
+    2008,
+    2019
    ],
    "false": [
-    2019,
     2020
    ],
    "missed_severe": [
@@ -686,8 +692,8 @@
     2014
    ],
    "POD": 0.3333333333333333,
-   "FAR": 0.5,
-   "F1": 0.4
+   "FAR": 0.25,
+   "F1": 0.46153846153846156
   },
   {
    "river": "juba",
@@ -707,15 +713,16 @@
    "caught": [
     2023
    ],
-   "ordinary": [],
+   "ordinary": [
+    2019
+   ],
    "false": [
-    2019,
     2020
    ],
    "missed_severe": [],
    "POD": 1.0,
-   "FAR": 0.6666666666666666,
-   "F1": 0.5
+   "FAR": 0.3333333333333333,
+   "F1": 0.8
   },
   {
    "river": "juba",
@@ -739,17 +746,18 @@
     2006,
     2023
    ],
-   "ordinary": [],
-   "false": [
-    2013,
+   "ordinary": [
     2019
+   ],
+   "false": [
+    2013
    ],
    "missed_severe": [
     2014
    ],
    "POD": 0.6666666666666666,
-   "FAR": 0.5,
-   "F1": 0.5714285714285715
+   "FAR": 0.25,
+   "F1": 0.7058823529411765
   },
   {
    "river": "juba",
@@ -763,13 +771,13 @@
    ],
    "severe": [],
    "caught": [],
-   "ordinary": [],
-   "false": [
+   "ordinary": [
     2019
    ],
+   "false": [],
    "missed_severe": [],
    "POD": NaN,
-   "FAR": 1.0,
+   "FAR": 0.0,
    "F1": NaN
   },
   {
@@ -797,19 +805,19 @@
     2023
    ],
    "ordinary": [
+    2015,
     2017
    ],
    "false": [
     2001,
-    2005,
-    2015
+    2005
    ],
    "missed_severe": [
     2006
    ],
    "POD": 0.6666666666666666,
-   "FAR": 0.5,
-   "F1": 0.5714285714285715
+   "FAR": 0.3333333333333333,
+   "F1": 0.6666666666666666
   },
   {
    "river": "juba",
@@ -861,18 +869,18 @@
     2023
    ],
    "ordinary": [
+    2015,
     2017
    ],
    "false": [
-    2005,
-    2015
+    2005
    ],
    "missed_severe": [
     2006
    ],
    "POD": 0.6666666666666666,
-   "FAR": 0.4,
-   "F1": 0.631578947368421
+   "FAR": 0.2,
+   "F1": 0.7272727272727272
   },
   {
    "river": "juba",
@@ -1944,7 +1952,7 @@
      "glofas_v5_ra": 0.517
     },
     "2022": {
-     "gauge": 0.991,
+     "gauge": 0.99,
      "grrr_2026_11_ra": 0.854,
      "grrr_2026_11_fc": 0.86,
      "google_grrr_ra": 0.31,
@@ -2846,7 +2854,7 @@
      "glofas_v5_ra": 0.871
     },
     "2003": {
-     "gauge": 0.917,
+     "gauge": 0.918,
      "grrr_2026_11_ra": 0.773,
      "grrr_2026_11_fc": null,
      "google_grrr_ra": 1.129,
@@ -2866,7 +2874,7 @@
      "glofas_v5_ra": 0.957
     },
     "2005": {
-     "gauge": 1.054,
+     "gauge": 1.053,
      "grrr_2026_11_ra": 1.18,
      "grrr_2026_11_fc": null,
      "google_grrr_ra": 1.064,
@@ -2876,7 +2884,7 @@
      "glofas_v5_ra": 1.182
     },
     "2006": {
-     "gauge": 0.997,
+     "gauge": 0.996,
      "grrr_2026_11_ra": 1.004,
      "grrr_2026_11_fc": null,
      "google_grrr_ra": 1.186,
@@ -2936,7 +2944,7 @@
      "glofas_v5_ra": 0.74
     },
     "2012": {
-     "gauge": 0.721,
+     "gauge": 0.722,
      "grrr_2026_11_ra": 0.561,
      "grrr_2026_11_fc": null,
      "google_grrr_ra": 0.659,
@@ -2946,7 +2954,7 @@
      "glofas_v5_ra": 0.648
     },
     "2013": {
-     "gauge": 0.896,
+     "gauge": 0.895,
      "grrr_2026_11_ra": 1.329,
      "grrr_2026_11_fc": null,
      "google_grrr_ra": 1.953,
@@ -2996,7 +3004,7 @@
      "glofas_v5_ra": 0.24
     },
     "2018": {
-     "gauge": 1.204,
+     "gauge": 1.205,
      "grrr_2026_11_ra": 1.968,
      "grrr_2026_11_fc": 1.976,
      "google_grrr_ra": 2.195,
@@ -3006,7 +3014,7 @@
      "glofas_v5_ra": 1.953
     },
     "2019": {
-     "gauge": 0.856,
+     "gauge": 0.857,
      "grrr_2026_11_ra": 0.779,
      "grrr_2026_11_fc": 0.78,
      "google_grrr_ra": 0.487,
@@ -3036,7 +3044,7 @@
      "glofas_v5_ra": 0.423
     },
     "2022": {
-     "gauge": 0.86,
+     "gauge": 0.859,
      "grrr_2026_11_ra": 0.524,
      "grrr_2026_11_fc": 0.525,
      "google_grrr_ra": 0.415,
@@ -3422,7 +3430,7 @@
      "glofas_v5_ra": 2.169
     },
     "2006": {
-     "gauge": 0.966,
+     "gauge": 0.965,
      "grrr_2026_11_ra": 0.962,
      "grrr_2026_11_fc": null,
      "google_grrr_ra": 0.754,
@@ -3432,7 +3440,7 @@
      "glofas_v5_ra": 0.563
     },
     "2007": {
-     "gauge": 0.933,
+     "gauge": 0.932,
      "grrr_2026_11_ra": 0.808,
      "grrr_2026_11_fc": null,
      "google_grrr_ra": 0.491,
@@ -3452,7 +3460,7 @@
      "glofas_v5_ra": 0.117
     },
     "2009": {
-     "gauge": 0.53,
+     "gauge": 0.531,
      "grrr_2026_11_ra": 0.429,
      "grrr_2026_11_fc": null,
      "google_grrr_ra": 0.331,
@@ -3462,7 +3470,7 @@
      "glofas_v5_ra": 0.159
     },
     "2010": {
-     "gauge": 1.009,
+     "gauge": 1.008,
      "grrr_2026_11_ra": 1.748,
      "grrr_2026_11_fc": null,
      "google_grrr_ra": 1.223,
@@ -3472,7 +3480,7 @@
      "glofas_v5_ra": 1.754
     },
     "2011": {
-     "gauge": 0.842,
+     "gauge": 0.841,
      "grrr_2026_11_ra": 0.408,
      "grrr_2026_11_fc": null,
      "google_grrr_ra": 0.555,
@@ -3502,7 +3510,7 @@
      "glofas_v5_ra": 0.978
     },
     "2014": {
-     "gauge": 0.795,
+     "gauge": 0.794,
      "grrr_2026_11_ra": 0.631,
      "grrr_2026_11_fc": null,
      "google_grrr_ra": 0.553,
@@ -3512,7 +3520,7 @@
      "glofas_v5_ra": 0.328
     },
     "2015": {
-     "gauge": 0.931,
+     "gauge": 0.932,
      "grrr_2026_11_ra": 0.563,
      "grrr_2026_11_fc": null,
      "google_grrr_ra": 0.592,
@@ -3522,7 +3530,7 @@
      "glofas_v5_ra": 0.373
     },
     "2016": {
-     "gauge": 1.037,
+     "gauge": 1.036,
      "grrr_2026_11_ra": 2.797,
      "grrr_2026_11_fc": 2.866,
      "google_grrr_ra": 1.339,
@@ -3542,7 +3550,7 @@
      "glofas_v5_ra": 0.231
     },
     "2018": {
-     "gauge": 1.128,
+     "gauge": 1.129,
      "grrr_2026_11_ra": 2.285,
      "grrr_2026_11_fc": 2.337,
      "google_grrr_ra": 1.34,
@@ -3572,7 +3580,7 @@
      "glofas_v5_ra": 2.993
     },
     "2021": {
-     "gauge": 0.996,
+     "gauge": 0.995,
      "grrr_2026_11_ra": 1.271,
      "grrr_2026_11_fc": 1.302,
      "google_grrr_ra": 0.99,
@@ -3582,7 +3590,7 @@
      "glofas_v5_ra": 1.5
     },
     "2022": {
-     "gauge": 0.789,
+     "gauge": 0.788,
      "grrr_2026_11_ra": 0.374,
      "grrr_2026_11_fc": 0.382,
      "google_grrr_ra": 0.384,
@@ -3896,6 +3904,188 @@
    }
   }
  },
+ "gauge_levels": {
+  "juba_deyr": {
+   "1in3": {
+    "dollow": 5.08,
+    "luuq": 5.3,
+    "bardheere": 9.0,
+    "bualle": 7.27
+   },
+   "1in5": {
+    "dollow": 5.23,
+    "luuq": 5.87,
+    "bardheere": 9.02,
+    "bualle": 7.39
+   }
+  },
+  "juba_gu": {
+   "1in3": {
+    "dollow": 5.27,
+    "luuq": 5.23,
+    "bardheere": 7.82,
+    "bualle": 6.61
+   },
+   "1in5": {
+    "dollow": 5.56,
+    "luuq": 5.64,
+    "bardheere": 8.36,
+    "bualle": 7.43
+   }
+  },
+  "shabelle_deyr": {
+   "1in3": {
+    "belet_weyne": 6.7,
+    "bulo_burti": 6.39,
+    "jowhar": 5.1
+   },
+   "1in5": {
+    "belet_weyne": 7.78,
+    "bulo_burti": 7.19,
+    "jowhar": 5.3
+   }
+  },
+  "shabelle_gu": {
+   "1in3": {
+    "belet_weyne": 7.35,
+    "bulo_burti": 6.37,
+    "jowhar": 5.28
+   },
+   "1in5": {
+    "belet_weyne": 8.3,
+    "bulo_burti": 6.85,
+    "jowhar": 5.3
+   }
+  }
+ },
+ "timing_stats": [
+  {
+   "season": "deyr",
+   "basis": "ra",
+   "model": "grrr_2026_11",
+   "mean_days_before": -2.5,
+   "median_days_before": -1.5,
+   "n_reached": 4,
+   "n_seasons": 8
+  },
+  {
+   "season": "deyr",
+   "basis": "ra",
+   "model": "google_grrr",
+   "mean_days_before": 1.0,
+   "median_days_before": 4.0,
+   "n_reached": 5,
+   "n_seasons": 8
+  },
+  {
+   "season": "deyr",
+   "basis": "ra",
+   "model": "glofas_v4",
+   "mean_days_before": 5.2,
+   "median_days_before": 1.0,
+   "n_reached": 5,
+   "n_seasons": 8
+  },
+  {
+   "season": "deyr",
+   "basis": "ra",
+   "model": "glofas_v5",
+   "mean_days_before": -2.0,
+   "median_days_before": 0.0,
+   "n_reached": 5,
+   "n_seasons": 8
+  },
+  {
+   "season": "deyr",
+   "basis": "fc",
+   "model": "grrr_2026_11",
+   "mean_days_before": 2.25,
+   "median_days_before": 1.5,
+   "n_reached": 4,
+   "n_seasons": 5
+  },
+  {
+   "season": "deyr",
+   "basis": "fc",
+   "model": "google_grrr",
+   "mean_days_before": 11.0,
+   "median_days_before": 11.0,
+   "n_reached": 1,
+   "n_seasons": 3
+  },
+  {
+   "season": "deyr",
+   "basis": "fc",
+   "model": "glofas_v4",
+   "mean_days_before": 7.5,
+   "median_days_before": 6.0,
+   "n_reached": 4,
+   "n_seasons": 5
+  },
+  {
+   "season": "gu",
+   "basis": "ra",
+   "model": "grrr_2026_11",
+   "mean_days_before": -9.666666666666666,
+   "median_days_before": -9.5,
+   "n_reached": 6,
+   "n_seasons": 9
+  },
+  {
+   "season": "gu",
+   "basis": "ra",
+   "model": "google_grrr",
+   "mean_days_before": -2.2,
+   "median_days_before": -4.0,
+   "n_reached": 5,
+   "n_seasons": 9
+  },
+  {
+   "season": "gu",
+   "basis": "ra",
+   "model": "glofas_v4",
+   "mean_days_before": -7.8,
+   "median_days_before": -6.0,
+   "n_reached": 5,
+   "n_seasons": 9
+  },
+  {
+   "season": "gu",
+   "basis": "ra",
+   "model": "glofas_v5",
+   "mean_days_before": -4.0,
+   "median_days_before": -2.0,
+   "n_reached": 6,
+   "n_seasons": 9
+  },
+  {
+   "season": "gu",
+   "basis": "fc",
+   "model": "grrr_2026_11",
+   "mean_days_before": -3.5,
+   "median_days_before": -3.5,
+   "n_reached": 6,
+   "n_seasons": 7
+  },
+  {
+   "season": "gu",
+   "basis": "fc",
+   "model": "google_grrr",
+   "mean_days_before": 2.3333333333333335,
+   "median_days_before": 1.0,
+   "n_reached": 6,
+   "n_seasons": 7
+  },
+  {
+   "season": "gu",
+   "basis": "fc",
+   "model": "glofas_v4",
+   "mean_days_before": -10.0,
+   "median_days_before": -9.5,
+   "n_reached": 4,
+   "n_seasons": 7
+  }
+ ],
  "station_scores": [
   {
    "season": "deyr",
@@ -3904,8 +4094,8 @@
    "n_years": 8,
    "n_severe": 1,
    "POD": 1.0,
-   "FAR": 0.5,
-   "F1": 0.6666666667
+   "FAR": 0.25,
+   "F1": 0.8571428571
   },
   {
    "season": "deyr",
@@ -3914,8 +4104,8 @@
    "n_years": 8,
    "n_severe": 1,
    "POD": 1.0,
-   "FAR": 0.6666666667,
-   "F1": 0.5
+   "FAR": 0.0,
+   "F1": 1.0
   },
   {
    "season": "deyr",
@@ -3924,8 +4114,8 @@
    "n_years": 8,
    "n_severe": 1,
    "POD": 1.0,
-   "FAR": 0.3333333333,
-   "F1": 0.8
+   "FAR": 0.0,
+   "F1": 1.0
   },
   {
    "season": "deyr",
@@ -3934,8 +4124,8 @@
    "n_years": 8,
    "n_severe": 1,
    "POD": 1.0,
-   "FAR": 0.3333333333,
-   "F1": 0.8
+   "FAR": 0.0,
+   "F1": 1.0
   },
   {
    "season": "deyr",
@@ -3984,8 +4174,8 @@
    "n_years": 23,
    "n_severe": 4,
    "POD": 0.75,
-   "FAR": 0.5,
-   "F1": 0.6
+   "FAR": 0.0,
+   "F1": 0.8571428571
   },
   {
    "season": "deyr",
@@ -3994,8 +4184,8 @@
    "n_years": 23,
    "n_severe": 4,
    "POD": 0.5,
-   "FAR": 0.6666666667,
-   "F1": 0.4
+   "FAR": 0.5,
+   "F1": 0.5
   },
   {
    "season": "deyr",
@@ -4004,8 +4194,8 @@
    "n_years": 23,
    "n_severe": 4,
    "POD": 0.5,
-   "FAR": 0.6666666667,
-   "F1": 0.4
+   "FAR": 0.5,
+   "F1": 0.5
   },
   {
    "season": "deyr",
@@ -4014,8 +4204,8 @@
    "n_years": 23,
    "n_severe": 4,
    "POD": 0.5,
-   "FAR": 0.6666666667,
-   "F1": 0.4
+   "FAR": 0.5,
+   "F1": 0.5
   },
   {
    "season": "deyr",

@@ -123,6 +123,10 @@ def new_reforecast():
 _daily0, _rf0 = L.daily, L.reforecast
 L.daily = lambda m: new_daily() if m == NEW else _daily0(m)
 L.reforecast = lambda m: new_reforecast() if m == NEW else _rf0(m)
+# gauge levels at the gauge's own precision (centimetres): a reading equal to its fitted level is
+# a crossing, which float noise in the Weibull interpolation (5.080000000000001) otherwise denies
+_gl0 = L.gauge_levels
+L.gauge_levels = lambda river, season, rp: _gl0(river, season, rp).round(2)
 
 
 # ---------------------------------------------------------------------------- record
@@ -273,9 +277,9 @@ def _timing_seasons(season):
     out = []
     for river in RIVERS:
         _, Rk = rank_table(season, river)
-        g = Rk["gauge"].dropna().sort_values()
-        for y, r in g.head(N_RANK).items():
-            out.append((river, int(y), int(r)))
+        g = Rk["gauge"].dropna()
+        for y in top_seasons(Rk):
+            out.append((river, int(y), int(g.loc[y])))
     return out
 
 
@@ -318,7 +322,7 @@ def fig_timing(R, season):
                 ax.text(1.2, yb, f"{tag}: no archive" if basis == "fc" else "outside the model record", va="center", fontsize=8.5, color=FAINT)
                 continue
             if not ok(d) or not ok(b):
-                ax.text(1.2, yb, f"{tag}: not reached" if ok(b) else "no gauge flood", va="center", fontsize=8.5, color=FAINT)
+                ax.text(1.2, yb, f"{tag}: not reached" if ok(b) else f"{tag}: no gauge flood", va="center", fontsize=8.5, color=FAINT)
                 continue
             n = (d - b).days            # negative: before the gauges (left), positive: after (right)
             x = max(min(n, 38), -38)
@@ -353,7 +357,7 @@ def timing_stats(R, season, basis, m):
         mm = rec["models"][m]
         if y not in mm[f"{basis}_years"] or y not in rec["bench"]:
             continue
-        if basis == "fc" and y < SCORE_FC[0]:
+        if y > (SCORE_FC[1] if basis == "fc" else SCORE_RA[1]) or (basis == "fc" and y < SCORE_FC[0]):
             continue
         n_all += 1
         d = mm[basis].get(y)
@@ -491,11 +495,13 @@ def fig_timeline(R, season, year):
         from src.constants import C_JUBA, C_SHAB
         ex = sc.exposure()
         ex = ex[(ex.valid_date >= A) & (ex.valid_date <= B)]
-        fd, _ = sc.flood_date(season, year)
+        fd, n_d = sc.flood_date(season, year)
         for axe, river_d, colr in ((axes[1], "juba", "#6B7683"), (axes[3], "shabelle", "#6B7683")):
             e = ex[ex.pcode.isin(DISTRICTS[river_d])].groupby("valid_date")["sum"].sum()
             axe.fill_between(e.index, e.values, color=colr, alpha=0.15, lw=0)
             axe.plot(e.index, e.values, color=colr, lw=1.4)
+            if fd is None and river_d == "juba":
+                axe.text(A + pd.Timedelta(days=1), axe.get_ylim()[1] * 0.97, f" fewer than three of the 14 districts over their 1-in-5 exposure ({n_d})", va="top", ha="left", fontsize=8, color=INK)
             if fd is not None:
                 axe.axvline(fd, color=INK, lw=1.1, ls=":", zorder=1)
                 axe.text(fd, axe.get_ylim()[1] * 0.97, f" dotted: third of all 14 districts over its 1-in-5 exposure, {fd:%d %b}", va="top", ha="left", fontsize=8, color=INK,
@@ -680,6 +686,12 @@ def season_index(season, river, source, basis):
     return df.apply(lambda r: r.dropna().nlargest(2).min() if r.notna().sum() >= 2 else np.nan, axis=1)
 
 
+def top_seasons(Rk):
+    """The gauges' seasons ranked within N_RANK, ties included, in a stable order."""
+    g = Rk["gauge"].dropna().sort_index().sort_values(kind="stable")
+    return [int(y) for y, r in g.items() if r <= N_RANK]
+
+
 def rank_table(season, river):
     """Season index per source (all stations), and each source's rank of every season."""
     idx = {"gauge": season_index(season, river, "gauge", None)}
@@ -697,12 +709,12 @@ def consistency(season, top_n=5):
     out = {}
     for river in RIVERS:
         P, Rk = rank_table(season, river)
-        top = Rk["gauge"].dropna().sort_values().index[:N_RANK]
+        top = top_seasons(Rk)
         srcs = [c for c in Rk.columns if c != "gauge" and c[0] in MODELS[season]]
         all_top, few_top = [], []
         for y in top:
             r = Rk.loc[y, srcs].dropna()
-            if len(r) == 0:
+            if len(r) < 3:
                 continue
             k = int((r <= top_n).sum())
             if k == len(r):
@@ -924,7 +936,7 @@ def rank_html(season):
     out = [head]
     for river in RIVERS:
         P, Rk = rank_table(season, river)
-        top = Rk["gauge"].dropna().sort_values().index[:N_RANK]
+        top = top_seasons(Rk)
         out.append(f"<tr class='riv'><td colspan='{2 + len(models)}'>{river.title()}</td></tr>")
         for y in top:
             cells = [f"<td>{int(y)}</td><td>{100 * P.loc[y, 'gauge']:.1f}%</td>"]
@@ -935,12 +947,37 @@ def rank_html(season):
                 if np.isnan(ra):
                     cells.append("<td class='muted'>no record</td>")
                     continue
-                fc_txt = (f"{int(fc)}" if not np.isnan(fc) else "not reached") if has_fc else "no archive"
+                fc_txt = f"{int(fc)}" if (has_fc and not np.isnan(fc)) else "no archive"
                 cls = " class='top'" if (ra <= N_RANK) else ""
                 cells.append(f"<td{cls}>{int(ra)} <span class='muted'>/ {fc_txt}</span></td>")
             out.append("<tr>" + "".join(cells) + "</tr>")
     out.append("</tbody></table>")
     return "\n".join(out)
+
+
+def near_miss_note(R):
+    """Seasons in which every Juba point of Google, new goes above its level within the season but the
+    same-day rule is not met, with the smallest margin by which the lagging point cleared its level."""
+    items = []
+    for season in ("deyr", "gu"):
+        rec = R[("juba", season)]
+        rp, n_req = cfg("juba", season)
+        d = L.daily(NEW)
+        d = d[d.station.isin(TRIGGER_STATIONS["juba"]) & d.date.dt.month.isin(SEASONS[season])]
+        thr = {st: L.model_threshold(NEW, st, season, rp) for st in TRIGGER_STATIONS["juba"]}
+        for y in range(RA_SPAN[NEW][0], RA_SPAN[NEW][1] + 1):
+            if y in rec["models"][NEW]["ra"]:
+                continue
+            x = d[d.date.dt.year == y]
+            if x.empty:
+                continue
+            ratios = {st: x[x.station == st].discharge.max() / thr[st] for st in thr}
+            if all(v >= 1 for v in ratios.values()):
+                items.append(f"{season.title()} {y} (smallest margin {100 * (min(ratios.values()) - 1):.1f}%)")
+    if not items:
+        return "On Google, new, no season has all four Juba trigger points above their levels without the same-day rule being met."
+    return ("On Google, new, all four Juba trigger points go above their levels within the season but never on the same day in "
+            + ", ".join(items) + ".")
 
 
 def findings(R, C):
@@ -972,6 +1009,8 @@ def findings(R, C):
                         continue
                     ya, yb = years_of(R[(river, season)], NEW, basis), years_of(R[(river, season)], other, basis)
                     common = ya & yb & set(range(span[0], span[1] + 1))
+                    if not common:
+                        continue
                     cspan = (min(common), max(common))
                     a_, b_ = g(season, river, NEW, basis, cspan), g(season, river, other, basis, cspan)
                     tag = f"{season.title()} {river.title()} {lab}" + (f" ({rng(cspan)})" if cspan != span else "")
@@ -982,12 +1021,14 @@ def findings(R, C):
         if more_sev:
             parts.append("threshold reached in more severe floods in " + ", ".join(more_sev))
         if fewer_sev:
-            parts.append("in fewer severe floods in " + ", ".join(fewer_sev))
+            parts.append("threshold reached in fewer severe floods in " + ", ".join(fewer_sev))
         if more_nf:
-            parts.append("has more seasons with the threshold reached and no gauge flood in " + ", ".join(more_nf))
+            parts.append("more seasons with the threshold reached and no gauge flood in " + ", ".join(more_nf))
         if fewer_nf:
-            parts.append("fewer such seasons in " + ", ".join(fewer_nf))
-        return f"<strong>Google, new against {name}:</strong> " + ("; ".join(parts) if parts else "no difference") + ". Elsewhere the two are equal."
+            parts.append("fewer seasons with the threshold reached and no gauge flood in " + ", ".join(fewer_nf))
+        if not parts:
+            return f"<strong>Google, new against {name}:</strong> no difference in any season, river or record."
+        return f"<strong>Google, new against {name}:</strong> " + "; ".join(parts) + ". Elsewhere the two are equal."
 
     for other, name in (("google_grrr", "Google, current"), ("glofas_v4", "GloFAS v4"), ("glofas_v5", "GloFAS v5")):
         out.append(compare(other, name))
@@ -1000,10 +1041,19 @@ def findings(R, C):
             return "on the day the second gauge crossed"
         return ("before" if mean > 0 else "after") + " the second gauge crossed"
     def earlier(season):
-        a_, b_ = timing_stats(R, season, "fc", NEW)[0], timing_stats(R, season, "fc", "glofas_v4")[0]
-        if a_ is None or b_ is None:
+        """Mean difference over the seasons both sources reached on their forecasts."""
+        diffs = []
+        for river, y, rank in _timing_seasons(season):
+            if y < SCORE_FC[0] or y > SCORE_FC[1]:
+                continue
+            rec = R[(river, season)]
+            a_, b_ = rec["models"][NEW]["fc"].get(y), rec["models"]["glofas_v4"]["fc"].get(y)
+            if ok(a_) and ok(b_) and y in rec["bench"]:
+                diffs.append((b_ - a_).days)
+        if not diffs:
             return ""
-        return ", GloFAS v4 earlier" if b_ > a_ else ", Google, new earlier" if a_ > b_ else ", the same on average"
+        d = float(np.mean(diffs))
+        return ", Google, new earlier in the seasons both reached" if d > 0 else ", GloFAS v4 earlier in the seasons both reached" if d < 0 else ", the same in the seasons both reached"
     def pair(season):
         a_, b_ = when(season, NEW), when(season, "glofas_v4")
         if a_ == b_:
@@ -1012,8 +1062,8 @@ def findings(R, C):
     out.append("<strong>Timing on the forecasts</strong> (mean over the largest gauge floods from 2016, seasons with the threshold reached). "
                f"Deyr: {pair('deyr')}; Google, current {when('deyr', 'google_grrr')}, on few seasons. "
                f"Gu: {pair('gu')}; Google, current {when('gu', 'google_grrr')}.")
-    out.append(f"<strong>After 2023.</strong> Deyr 2024, a severe Shabelle flood: threshold not reached by Google, new on either record. Gu 2024: threshold reached on the Juba only; "
-               "on the Shabelle, a severe flood, not reached. 2025: threshold not reached in either season.")
+    out.append(f"<strong>Google, new after 2023.</strong> Deyr 2024: {after_2023(R, 'deyr', 2024)}. Gu 2024: {after_2023(R, 'gu', 2024)}. "
+               f"Deyr 2025: {after_2023(R, 'deyr', 2025)}. Gu 2025: {after_2023(R, 'gu', 2025)}.")
     out.append("<strong>Trigger levels.</strong> Google, new levels are higher than Google, current's at every point, by the most on the Juba in Deyr.")
     return "\n".join(f"<li>{x}</li>" for x in out)
 
@@ -1065,6 +1115,7 @@ def build():
     import datetime as _dt
     TODAY = _dt.date.today().isoformat()
     TS = timing_summary_html(R)
+    NEAR_MISS = near_miss_note(R)
 
     # everything behind the page, for review
     dump, sc = {}, []
@@ -1075,7 +1126,7 @@ def build():
             gauge_peak={str(y): v.strftime("%Y-%m-%d") for y, v in rec["peak"].items()},
             models={m: dict(reanalysis={str(y): v.strftime("%Y-%m-%d") for y, v in mm["ra"].items()},
                             forecast={str(y): v.strftime("%Y-%m-%d") for y, v in mm["fc"].items()},
-                            reanalysis_years=rng(RA_SPAN[m]), forecast_years=rng(FC_SPAN[m]) if m in FC_SPAN else None)
+                            reanalysis_years=rng(RA_SPAN[m]), forecast_years=(rng((min(mm["fc_years"]), max(mm["fc_years"]))) if mm["fc_years"] else None))
                     for m, mm in rec["models"].items()})
         for m in MODELS[season]:
             sc.append(dict(river=river, season=season, **score(rec, m, "ra", SCORE_RA)))
@@ -1094,6 +1145,10 @@ def build():
                 rank={str(int(y)): {("gauge" if k == "gauge" else f"{k[0]}_{k[1]}"): (None if pd.isna(v) else int(v)) for k, v in Rk.loc[y].items()} for y in Rk.index})
     (OUT / "data.json").write_text(json.dumps(dict(
         outlets=_read_json("chosen_outlets.json"), trigger_levels=levels, record=dump, scores=sc, benchmark_ranks=ranks,
+        gauge_levels={f"{r}_{se}": {f"1in{rp}": {st: (None if np.isnan(v) else float(v)) for st, v in L.gauge_levels(r, se, rp).items()} for rp in (3, 5)}
+                      for r in RIVERS for se in ("deyr", "gu")},
+        timing_stats=[dict(season=se, basis=b, model=m, **dict(zip(("mean_days_before", "median_days_before", "n_reached", "n_seasons"), timing_stats(R, se, b, m))))
+                      for se in ("deyr", "gu") for b in ("ra", "fc") for m in MODELS[se] if b == "ra" or m in FC_SPAN],
         station_scores=json.loads(ST.to_json(orient="records")),
         correlations=json.loads(CR.to_json(orient="records"))), indent=1, default=str))
 
@@ -1244,8 +1299,7 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
       <li>Leads 1 to 7 cover the issue day and the six days after it for GloFAS and Google, new, and days 1 to 7 after the issue day for Google, current,
           following each archive's own labelling. Only issues dated within October to December or March to May are read, and only days in those months
           count: a threshold date of 1 October or 1 March means the level was already exceeded when the season opened.</li>
-      <li>On Google, new, Juba Deyr 2006 and 2017 and Juba Gu 2013 and 2023 have all four trigger points above their levels within the season, by 1 to 4%,
-          but never on the same day.</li>
+      <li>{NEAR_MISS}</li>
       <li>Shabelle Deyr 2020, Gu 2016 and Gu 2023 count as severe floods on a gauge reading equal to its 1-in-5 level (Jowhar 5.30 m; Belet Weyne at its 8.30 m
           ceiling). The Juba Deyr 2023 peaks are capped at bank full. Dollow's Deyr record has eight seasons.</li>
       <li>Forecast windows cover 7 or 8 seasons (Google, current in Deyr: 7), with 0 to 3 severe floods each. GloFAS forecasts are an ensemble median, the Google archives
