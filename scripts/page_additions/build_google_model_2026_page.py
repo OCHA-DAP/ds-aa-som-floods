@@ -767,6 +767,47 @@ def fig_ranks(season):
     return save(fig, f"ranks_{season}")
 
 
+# --------------------------------------------- figure: correlation with the gauge, by station
+def best_lag_rho(model_series, gauge_series, lags=range(-10, 31), min_obs=60):
+    """Best Spearman rank correlation over lags, as scripts/model_selection.py: positive lag means
+    the model leads the gauge by that many days."""
+    best = 0.0
+    for lag in lags:
+        j = pd.concat([model_series, gauge_series.shift(-lag)], axis=1, join="inner").dropna()
+        if len(j) < min_obs:
+            continue
+        r = j.iloc[:, 0].corr(j.iloc[:, 1], method="spearman")
+        if pd.notna(r) and abs(r) > abs(best):
+            best = float(r)
+    return best
+
+
+def correlations():
+    lv = L.levels()
+    rows = []
+    for season in ("deyr", "gu"):
+        for st in STATIONS:
+            g = lv[(lv.station == st)].set_index("date").level_m.dropna().sort_index()
+            g = g[g.index.month.isin(SEASONS[season]) & g.index.year.isin(range(SCORE_RA[0], SCORE_RA[1] + 1))]
+            for m in [NEW, "google_grrr", "glofas_v4", "glofas_v5"]:
+                x = L.season_series(m, st, season)
+                rows.append(dict(season=season, station=st, model=m, rho=best_lag_rho(x, g) if len(g) else np.nan, n_days=int(len(g))))
+    return pd.DataFrame(rows)
+
+
+def fig_corr(CR):
+    ms = [NEW, "google_grrr", "glofas_v4", "glofas_v5"]
+    fig, axes = plt.subplots(1, 2, figsize=(11.6, 0.52 * len(STATIONS) + 2.2))
+    for ax, season in zip(axes, ("deyr", "gu")):
+        mat = [[float(CR[(CR.season == season) & (CR.station == st) & (CR.model == m)].rho.iloc[0]) for m in ms] for st in STATIONS]
+        heat(ax, mat, [SHORT[m].replace(", ", chr(10)) for m in ms], [NAME[s] for s in STATIONS] if season == "deyr" else [""] * len(STATIONS),
+             vmin=0.3, vmax=0.95)
+        ax.set_title(f"{SEASON_TITLE[season]}\n(dark = high)", fontsize=10)
+    fig.suptitle(f"Best-lag rank correlation between each model's daily flow and the gauge level, {rng(SCORE_RA)}", x=0.02, ha="left", fontsize=11)
+    fig.subplots_adjust(wspace=0.08, top=0.8)
+    return save(fig, "correlation")
+
+
 # ------------------------------------------------------------ figure: scale of the levels
 def fig_levels():
     fig, axes = plt.subplots(1, 2, figsize=(11.6, 3.6), sharey=True)
@@ -996,6 +1037,8 @@ def build():
         F[f"tm_{s}"] = fig_timing(R, s)
         F[f"st_{s}"] = fig_stations(ST, s)
     F["lv"] = fig_levels()
+    CR = correlations()
+    F["corr"] = fig_corr(CR)
     for k in (("deyr", 2023), ("deyr", 2019), ("gu", 2024)):
         F[f"tl_{k[0]}_{k[1]}"] = fig_timeline(R, *k)
     RK = {s: rank_html(s) for s in ("deyr", "gu")}
@@ -1028,7 +1071,8 @@ def build():
               for m in [NEW, "google_grrr", "glofas_v4", "glofas_v5"]}
     (OUT / "data.json").write_text(json.dumps(dict(
         outlets=_read_json("chosen_outlets.json"), trigger_levels=levels, record=dump, scores=sc,
-        station_scores=json.loads(ST.to_json(orient="records"))), indent=1, default=str))
+        station_scores=json.loads(ST.to_json(orient="records")),
+        correlations=json.loads(CR.to_json(orient="records"))), indent=1, default=str))
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1162,7 +1206,13 @@ table.data td.top {{ background:rgba(30,121,95,.12); }}
     <figure class="chart"><img src="{F['st_deyr']}" alt="Deyr, POD, FAR and F1 per trigger point"><figcaption>Deyr.</figcaption></figure>
     <figure class="chart"><img src="{F['st_gu']}" alt="Gu, POD, FAR and F1 per trigger point"><figcaption>Gu.</figcaption></figure>
 
-    <h2><span class="num">8</span>Data and method notes</h2>
+    <h2><span class="num">8</span>Correlation with the gauges by trigger point</h2>
+    <p>Spearman rank correlation between each model's daily flow at the trigger point and the daily level at its gauge, in the season
+       months, at the lag between 10 days behind and 30 days ahead that gives the highest value. It measures day-to-day tracking, not
+       whether a threshold is reached.</p>
+    <figure class="chart"><img src="{F['corr']}" alt="Correlation with the gauges by trigger point"><figcaption>Deyr and Gu, reanalysis {rng(SCORE_RA)}.</figcaption></figure>
+
+    <h2><span class="num">9</span>Data and method notes</h2>
     <ul class="notes">
       <li>Source: Google Runoff Reanalysis and Reforecast, November 2026 release (reanalysis 1981 to 2025, reforecast 2016 to 2025, leads 0 to 10 days),
           one HydroBasins outlet per station, the main-stem outlet within 15 km with the largest 1-in-5 flow.</li>

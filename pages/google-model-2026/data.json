@@ -2215,5 +2215,399 @@
    "FAR": 0.5,
    "F1": 0.3636363636
   }
+ ],
+ "correlations": [
+  {
+   "season": "deyr",
+   "station": "dollow",
+   "model": "grrr_2026_11",
+   "rho": 0.8947368763,
+   "n_days": 717
+  },
+  {
+   "season": "deyr",
+   "station": "dollow",
+   "model": "google_grrr",
+   "rho": 0.614451823,
+   "n_days": 717
+  },
+  {
+   "season": "deyr",
+   "station": "dollow",
+   "model": "glofas_v4",
+   "rho": 0.8112834629,
+   "n_days": 717
+  },
+  {
+   "season": "deyr",
+   "station": "dollow",
+   "model": "glofas_v5",
+   "rho": 0.827629883,
+   "n_days": 717
+  },
+  {
+   "season": "deyr",
+   "station": "luuq",
+   "model": "grrr_2026_11",
+   "rho": 0.8957441557,
+   "n_days": 2087
+  },
+  {
+   "season": "deyr",
+   "station": "luuq",
+   "model": "google_grrr",
+   "rho": 0.6216826094,
+   "n_days": 2087
+  },
+  {
+   "season": "deyr",
+   "station": "luuq",
+   "model": "glofas_v4",
+   "rho": 0.8434151649,
+   "n_days": 2087
+  },
+  {
+   "season": "deyr",
+   "station": "luuq",
+   "model": "glofas_v5",
+   "rho": 0.8391621779,
+   "n_days": 2087
+  },
+  {
+   "season": "deyr",
+   "station": "bardheere",
+   "model": "grrr_2026_11",
+   "rho": 0.8565643961,
+   "n_days": 2032
+  },
+  {
+   "season": "deyr",
+   "station": "bardheere",
+   "model": "google_grrr",
+   "rho": 0.5534000488,
+   "n_days": 2032
+  },
+  {
+   "season": "deyr",
+   "station": "bardheere",
+   "model": "glofas_v4",
+   "rho": 0.7579681582,
+   "n_days": 2032
+  },
+  {
+   "season": "deyr",
+   "station": "bardheere",
+   "model": "glofas_v5",
+   "rho": 0.7613523365,
+   "n_days": 2032
+  },
+  {
+   "season": "deyr",
+   "station": "bualle",
+   "model": "grrr_2026_11",
+   "rho": 0.8312533189,
+   "n_days": 1430
+  },
+  {
+   "season": "deyr",
+   "station": "bualle",
+   "model": "google_grrr",
+   "rho": 0.6987086085,
+   "n_days": 1430
+  },
+  {
+   "season": "deyr",
+   "station": "bualle",
+   "model": "glofas_v4",
+   "rho": 0.764660022,
+   "n_days": 1430
+  },
+  {
+   "season": "deyr",
+   "station": "bualle",
+   "model": "glofas_v5",
+   "rho": 0.8187374444,
+   "n_days": 1430
+  },
+  {
+   "season": "deyr",
+   "station": "belet_weyne",
+   "model": "grrr_2026_11",
+   "rho": 0.8696050385,
+   "n_days": 2006
+  },
+  {
+   "season": "deyr",
+   "station": "belet_weyne",
+   "model": "google_grrr",
+   "rho": 0.6266488576,
+   "n_days": 2006
+  },
+  {
+   "season": "deyr",
+   "station": "belet_weyne",
+   "model": "glofas_v4",
+   "rho": 0.6709518138,
+   "n_days": 2006
+  },
+  {
+   "season": "deyr",
+   "station": "belet_weyne",
+   "model": "glofas_v5",
+   "rho": 0.813793663,
+   "n_days": 2006
+  },
+  {
+   "season": "deyr",
+   "station": "bulo_burti",
+   "model": "grrr_2026_11",
+   "rho": 0.8013900158,
+   "n_days": 2024
+  },
+  {
+   "season": "deyr",
+   "station": "bulo_burti",
+   "model": "google_grrr",
+   "rho": 0.543389917,
+   "n_days": 2024
+  },
+  {
+   "season": "deyr",
+   "station": "bulo_burti",
+   "model": "glofas_v4",
+   "rho": 0.6185668535,
+   "n_days": 2024
+  },
+  {
+   "season": "deyr",
+   "station": "bulo_burti",
+   "model": "glofas_v5",
+   "rho": 0.7597172535,
+   "n_days": 2024
+  },
+  {
+   "season": "deyr",
+   "station": "jowhar",
+   "model": "grrr_2026_11",
+   "rho": 0.7935589414,
+   "n_days": 2185
+  },
+  {
+   "season": "deyr",
+   "station": "jowhar",
+   "model": "google_grrr",
+   "rho": 0.5599098118,
+   "n_days": 2185
+  },
+  {
+   "season": "deyr",
+   "station": "jowhar",
+   "model": "glofas_v4",
+   "rho": 0.6594531771,
+   "n_days": 2185
+  },
+  {
+   "season": "deyr",
+   "station": "jowhar",
+   "model": "glofas_v5",
+   "rho": 0.7776351205,
+   "n_days": 2185
+  },
+  {
+   "season": "gu",
+   "station": "dollow",
+   "model": "grrr_2026_11",
+   "rho": 0.8589316434,
+   "n_days": 774
+  },
+  {
+   "season": "gu",
+   "station": "dollow",
+   "model": "google_grrr",
+   "rho": 0.857417404,
+   "n_days": 774
+  },
+  {
+   "season": "gu",
+   "station": "dollow",
+   "model": "glofas_v4",
+   "rho": 0.7796225255,
+   "n_days": 774
+  },
+  {
+   "season": "gu",
+   "station": "dollow",
+   "model": "glofas_v5",
+   "rho": 0.7856070393,
+   "n_days": 774
+  },
+  {
+   "season": "gu",
+   "station": "luuq",
+   "model": "grrr_2026_11",
+   "rho": 0.8794305957,
+   "n_days": 1999
+  },
+  {
+   "season": "gu",
+   "station": "luuq",
+   "model": "google_grrr",
+   "rho": 0.8656123086,
+   "n_days": 1999
+  },
+  {
+   "season": "gu",
+   "station": "luuq",
+   "model": "glofas_v4",
+   "rho": 0.8209649599,
+   "n_days": 1999
+  },
+  {
+   "season": "gu",
+   "station": "luuq",
+   "model": "glofas_v5",
+   "rho": 0.8461728526,
+   "n_days": 1999
+  },
+  {
+   "season": "gu",
+   "station": "bardheere",
+   "model": "grrr_2026_11",
+   "rho": 0.8659521839,
+   "n_days": 2023
+  },
+  {
+   "season": "gu",
+   "station": "bardheere",
+   "model": "google_grrr",
+   "rho": 0.8579976321,
+   "n_days": 2023
+  },
+  {
+   "season": "gu",
+   "station": "bardheere",
+   "model": "glofas_v4",
+   "rho": 0.8172311725,
+   "n_days": 2023
+  },
+  {
+   "season": "gu",
+   "station": "bardheere",
+   "model": "glofas_v5",
+   "rho": 0.845524195,
+   "n_days": 2023
+  },
+  {
+   "season": "gu",
+   "station": "bualle",
+   "model": "grrr_2026_11",
+   "rho": 0.8432874531,
+   "n_days": 1450
+  },
+  {
+   "season": "gu",
+   "station": "bualle",
+   "model": "google_grrr",
+   "rho": 0.8595063942,
+   "n_days": 1450
+  },
+  {
+   "season": "gu",
+   "station": "bualle",
+   "model": "glofas_v4",
+   "rho": 0.8138409862,
+   "n_days": 1450
+  },
+  {
+   "season": "gu",
+   "station": "bualle",
+   "model": "glofas_v5",
+   "rho": 0.8223052205,
+   "n_days": 1450
+  },
+  {
+   "season": "gu",
+   "station": "belet_weyne",
+   "model": "grrr_2026_11",
+   "rho": 0.8894369194,
+   "n_days": 1968
+  },
+  {
+   "season": "gu",
+   "station": "belet_weyne",
+   "model": "google_grrr",
+   "rho": 0.7748537235,
+   "n_days": 1968
+  },
+  {
+   "season": "gu",
+   "station": "belet_weyne",
+   "model": "glofas_v4",
+   "rho": 0.8276754477,
+   "n_days": 1968
+  },
+  {
+   "season": "gu",
+   "station": "belet_weyne",
+   "model": "glofas_v5",
+   "rho": 0.7660664727,
+   "n_days": 1968
+  },
+  {
+   "season": "gu",
+   "station": "bulo_burti",
+   "model": "grrr_2026_11",
+   "rho": 0.8931633058,
+   "n_days": 1992
+  },
+  {
+   "season": "gu",
+   "station": "bulo_burti",
+   "model": "google_grrr",
+   "rho": 0.7749795414,
+   "n_days": 1992
+  },
+  {
+   "season": "gu",
+   "station": "bulo_burti",
+   "model": "glofas_v4",
+   "rho": 0.827384347,
+   "n_days": 1992
+  },
+  {
+   "season": "gu",
+   "station": "bulo_burti",
+   "model": "glofas_v5",
+   "rho": 0.7383248055,
+   "n_days": 1992
+  },
+  {
+   "season": "gu",
+   "station": "jowhar",
+   "model": "grrr_2026_11",
+   "rho": 0.828379577,
+   "n_days": 2287
+  },
+  {
+   "season": "gu",
+   "station": "jowhar",
+   "model": "google_grrr",
+   "rho": 0.7681849826,
+   "n_days": 2287
+  },
+  {
+   "season": "gu",
+   "station": "jowhar",
+   "model": "glofas_v4",
+   "rho": 0.790050131,
+   "n_days": 2287
+  },
+  {
+   "season": "gu",
+   "station": "jowhar",
+   "model": "glofas_v5",
+   "rho": 0.7076014418,
+   "n_days": 2287
+  }
  ]
 }

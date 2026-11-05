@@ -184,7 +184,13 @@ table.data td.top { background:rgba(30,121,95,.12); }
     <figure class="chart"><img src="figures/stations_deyr.svg" alt="Deyr, POD, FAR and F1 per trigger point"><figcaption>Deyr.</figcaption></figure>
     <figure class="chart"><img src="figures/stations_gu.svg" alt="Gu, POD, FAR and F1 per trigger point"><figcaption>Gu.</figcaption></figure>
 
-    <h2><span class="num">8</span>Data and method notes</h2>
+    <h2><span class="num">8</span>Correlation with the gauges by trigger point</h2>
+    <p>Spearman rank correlation between each model's daily flow at the trigger point and the daily level at its gauge, in the season
+       months, at the lag between 10 days behind and 30 days ahead that gives the highest value. It measures day-to-day tracking, not
+       whether a threshold is reached.</p>
+    <figure class="chart"><img src="figures/correlation.svg" alt="Correlation with the gauges by trigger point"><figcaption>Deyr and Gu, reanalysis 1999 to 2023.</figcaption></figure>
+
+    <h2><span class="num">9</span>Data and method notes</h2>
     <ul class="notes">
       <li>Source: Google Runoff Reanalysis and Reforecast, November 2026 release (reanalysis 1981 to 2025, reforecast 2016 to 2025, leads 0 to 10 days),
           one HydroBasins outlet per station, the main-stem outlet within 15 km with the largest 1-in-5 flow.</li>
