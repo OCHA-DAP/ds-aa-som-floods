@@ -357,6 +357,7 @@ def river_rule(rp):
                     if "held out" not in basis:
                         dates[(season, river, m, basis, rp)] = {int(y): v for y, v in d.items()}
             dates[(season, river, "gauge", "gauge", rp)] = {int(y): v for y, v in gx.items()}
+            dates[(season, river, "assess", "assess", rp)] = sorted(int(y) for y in assess)
     return pd.DataFrame(rows), dates
 
 
