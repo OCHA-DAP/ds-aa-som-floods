@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review of Google's new river model: Somalia Riverine Flood Trigger</title>
+<meta name="description" content="A review of Google's November 2026 river model at the seven Somalia stations against the SWALIM gauges, beside Google's 2024 model, GloFAS v4 and GloFAS v5: the largest floods day by day and every score by season, river and station.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+.hero.hero-sub { padding:40px 44px 34px; }
+.hero.hero-sub h1 { font-size:28px; }
+.crumb { font-size:12px; margin:0 0 14px; }
+.crumb a { color:rgba(255,255,255,.85); text-decoration:none; }
+article { padding:8px 44px 24px; max-width:none; }
+article h2 { font-family:'Merriweather',Georgia,serif; font-size:21px; color:var(--n9); margin:40px 0 10px; line-height:1.25; }
+article h2 .num { color:var(--b5); font-size:15px; margin-right:8px; }
+article h3 { font-family:'Merriweather',Georgia,serif; font-size:15.5px; color:var(--n9); margin:26px 0 6px; }
+article p, article li { font-size:14.5px; color:var(--n8); line-height:1.65; max-width:1100px; }
+article ul { padding-left:22px; }
+article strong { color:var(--n9); }
+.muted { color:#6b7683; }
+p.note { font-size:13px; color:var(--n7); margin:6px 0 0; }
+figure.chart { margin:18px 0 26px; }
+figure.chart img { width:100%; height:auto; display:block; }
+figure.chart figcaption { font-size:13px; color:#55606d; line-height:1.55; margin-top:8px; }
+.callout { margin:20px 0; padding:13px 17px; border-radius:4px; background:var(--b05); border-left:5px solid var(--b5); font-size:13.5px; color:var(--n8); line-height:1.6; }
+.callout p { margin:0 0 7px; font-size:13.5px; max-width:none; }
+.callout p:last-child { margin:0; }
+.takeaways { margin:18px 0 6px; padding:0; list-style:none; }
+.takeaways li { border-left:3px solid var(--b1); padding:0 0 0 14px; margin:0 0 14px; }
+.pick { display:flex; flex-wrap:wrap; gap:6px; margin:12px 0 4px; }
+.pick button { font:500 13px Roboto,Arial,sans-serif; color:var(--n8); background:#fff; border:1px solid #cfd6d6; border-radius:16px; padding:5px 13px; cursor:pointer; }
+.pick button.on { background:var(--b5); border-color:var(--b5); color:#fff; }
+.pick button:focus-visible { outline:2px solid var(--b7); outline-offset:2px; }
+.picklabel { font-size:12px; color:var(--n7); text-transform:uppercase; letter-spacing:.05em; margin:14px 0 0; }
+.tablewrap { overflow-x:auto; }
+table.data { border-collapse:collapse; width:100%; margin:12px 0 20px; font-size:14px; }
+table.data th { text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--n7); font-weight:700; border-bottom:2px solid var(--b1); padding:6px 6px 5px; vertical-align:bottom; }
+table.data td { border-bottom:1px solid #eef1f1; padding:7px 6px; color:var(--n8); vertical-align:top; }
+table.data tr.sep td { border-top:2px solid #d9dfdf; }
+table.data .y { display:block; font-size:11.5px; color:var(--n7); font-weight:400; text-transform:none; letter-spacing:0; }
+.files a { margin-right:14px; }
+@media (max-width:640px) { article { padding:4px 18px 16px; } .hero.hero-sub { padding:32px 18px 28px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero hero-sub">
+    <div class="inner">
+      <p class="crumb"><a href="../">Somalia Riverine Flood Trigger</a> / Review of Google's new river model</p>
+      <h1>Review of Google's new river model</h1>
+      <p>Google's November 2026 river model at the seven stations of the trigger, checked against the SWALIM gauges and set beside
+         Google's 2024 model, GloFAS v4 and GloFAS v5. Generated 2026-11-17.</p>
+    </div>
+  </header>
+  <article>
+    <div class="callout">
+      <p><strong>Sources.</strong> Google, new (the November 2026 model); Google, current (Google's published 2024 model); GloFAS v4; GloFAS v5.
+         Each has a reanalysis, the model's own record of past flow, scored on 1999 to 2023. Three have a forecast archive: Google, new 2016 to 2025,
+         Google, current 2016 to June 2023, GloFAS v4 2003 to 2023; forecasts are compared on 2016 to 2023.</p>
+      <p><strong>Benchmark.</strong> The SWALIM river gauges at the same seven stations. A gauge measures water level and a model gives flow, so each is read
+         against its own levels: a flood season at a station is a season whose highest value reaches the station's own 1-in-3 level (or 1-in-5 where stated).
+         Gauge levels are fitted on 2000 to 2023, model levels on 1999 to 2023. Seasons are Deyr, October to December, and Gu, March to May.</p>
+    </div>
+
+    <h2><span class="num">1</span>What the records show</h2>
+    <ul class="takeaways">
+<li><strong>Day-to-day agreement with the gauges.</strong> The new model has the highest same-day rank correlation of the four sources at 13 of the 14 station-seasons, between 0.79 and 0.90.</li>
+<li><strong>Timing</strong> (the shift at which the daily agreement is highest): on the Juba in Deyr the new model rises 1 days after the gauge; on the Shabelle in Deyr it rises 2 to 3 days before the gauge; on the Juba in Gu the new model rises 4 to 6 days after the gauge; on the Shabelle in Gu the new model rises 2 to 4 days after the gauge.</li>
+<li><strong>Flood seasons at single stations (1-in-3), all seven stations added up, new model.</strong> Deyr: threshold reached in 33 of 51 flood seasons, and 18 of its 51 threshold seasons had no flood; Gu: threshold reached in 37 of 44 flood seasons, and 14 of its 51 threshold seasons had no flood. At Jowhar no source reaches its threshold in more than 5 of 11 flood seasons in either season (POD 0.27 to 0.45; at the other six stations 0.40 to 1.00).</li>
+<li><strong>The trigger rule by river (1-in-3), new model, both rivers added up.</strong> Deyr: reanalysis 11 of 14 river floods reached with 5 false alarms, forecasts 6 of 6 with 2; Gu: reanalysis 12 of 13 river floods reached with 3 false alarms, forecasts 8 of 8 with 2.</li>
+<li><strong>Forecasts.</strong> The new model's forecast peaks stay between 0.97 and 1.03 times its reanalysis peaks from 1 to 10 days ahead, and its scores do not change with the lead time. The forecast archive is close to a copy of the reanalysis.</li>
+<li><strong>Size of the flows against SWALIM's discharge series.</strong> At Belet Weyne, Bulo Burti, Luuq the new model's typical flow is 1.5 to 2.0 times the measured one (GloFAS v5 0.8 to 1.0, GloFAS v4 3.9 to 5.5, Google, current 0.5 to 1.3). At Bardheere it is 0.3 times.</li>
+    </ul>
+
+    <h2><span class="num">2</span>The largest floods, day by day</h2>
+    <p>The gauges' five largest seasons on each river, one panel per station. Every line is drawn as a share of its own 1-in-3 level, so 100% is the
+       flood level for the gauge and for the model alike. The gauge is a water level and the model a flow, so the heights of the curves differ; what can be
+       compared is when each rises and whether each reaches its 100% line. Where a gauge line runs flat at its top, the record holds one value for
+       those days.</p>
+    <p class="picklabel">Season</p>
+    <div class='pick' data-group='ts' data-dim='year'><button type='button' data-key='deyr_2023' class='on'>Deyr 2023</button><button type='button' data-key='deyr_2019'>Deyr 2019</button><button type='button' data-key='deyr_2006'>Deyr 2006</button><button type='button' data-key='deyr_2024'>Deyr 2024</button><button type='button' data-key='deyr_2020'>Deyr 2020</button><button type='button' data-key='deyr_2014'>Deyr 2014</button><button type='button' data-key='deyr_2017'>Deyr 2017</button><button type='button' data-key='gu_2018'>Gu 2018</button><button type='button' data-key='gu_2020'>Gu 2020</button><button type='button' data-key='gu_2023'>Gu 2023</button><button type='button' data-key='gu_2024'>Gu 2024</button><button type='button' data-key='gu_2005'>Gu 2005</button><button type='button' data-key='gu_2016'>Gu 2016</button></div>
+    <p class="picklabel">Lines</p>
+    <div class='pick' data-group='ts' data-dim='lines'><button type='button' data-key='new' class='on'>Gauge and the new model</button><button type='button' data-key='all'>Gauge and all four sources</button></div>
+    <div class='sw' data-group='ts' data-year='deyr_2023' data-lines='new'><figure class='chart'><img src='figures/ts_deyr_2023_new.svg' alt='Deyr 2023, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2023' data-lines='all'><figure class='chart'><img src='figures/ts_deyr_2023_all.svg' alt='Deyr 2023, seven stations, all' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2019' data-lines='new'><figure class='chart'><img src='figures/ts_deyr_2019_new.svg' alt='Deyr 2019, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2019' data-lines='all'><figure class='chart'><img src='figures/ts_deyr_2019_all.svg' alt='Deyr 2019, seven stations, all' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2006' data-lines='new'><figure class='chart'><img src='figures/ts_deyr_2006_new.svg' alt='Deyr 2006, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2006' data-lines='all'><figure class='chart'><img src='figures/ts_deyr_2006_all.svg' alt='Deyr 2006, seven stations, all' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2024' data-lines='new'><figure class='chart'><img src='figures/ts_deyr_2024_new.svg' alt='Deyr 2024, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2024' data-lines='all'><figure class='chart'><img src='figures/ts_deyr_2024_all.svg' alt='Deyr 2024, seven stations, all' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2020' data-lines='new'><figure class='chart'><img src='figures/ts_deyr_2020_new.svg' alt='Deyr 2020, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2020' data-lines='all'><figure class='chart'><img src='figures/ts_deyr_2020_all.svg' alt='Deyr 2020, seven stations, all' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2014' data-lines='new'><figure class='chart'><img src='figures/ts_deyr_2014_new.svg' alt='Deyr 2014, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2014' data-lines='all'><figure class='chart'><img src='figures/ts_deyr_2014_all.svg' alt='Deyr 2014, seven stations, all' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2017' data-lines='new'><figure class='chart'><img src='figures/ts_deyr_2017_new.svg' alt='Deyr 2017, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='deyr_2017' data-lines='all'><figure class='chart'><img src='figures/ts_deyr_2017_all.svg' alt='Deyr 2017, seven stations, all' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='gu_2018' data-lines='new'><figure class='chart'><img src='figures/ts_gu_2018_new.svg' alt='Gu 2018, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='gu_2018' data-lines='all'><figure class='chart'><img src='figures/ts_gu_2018_all.svg' alt='Gu 2018, seven stations, all' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='gu_2020' data-lines='new'><figure class='chart'><img src='figures/ts_gu_2020_new.svg' alt='Gu 2020, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='gu_2020' data-lines='all'><figure class='chart'><img src='figures/ts_gu_2020_all.svg' alt='Gu 2020, seven stations, all' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='gu_2023' data-lines='new'><figure class='chart'><img src='figures/ts_gu_2023_new.svg' alt='Gu 2023, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='gu_2023' data-lines='all'><figure class='chart'><img src='figures/ts_gu_2023_all.svg' alt='Gu 2023, seven stations, all' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='gu_2024' data-lines='new'><figure class='chart'><img src='figures/ts_gu_2024_new.svg' alt='Gu 2024, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='gu_2024' data-lines='all'><figure class='chart'><img src='figures/ts_gu_2024_all.svg' alt='Gu 2024, seven stations, all' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='gu_2005' data-lines='new'><figure class='chart'><img src='figures/ts_gu_2005_new.svg' alt='Gu 2005, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='gu_2005' data-lines='all'><figure class='chart'><img src='figures/ts_gu_2005_all.svg' alt='Gu 2005, seven stations, all' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='gu_2016' data-lines='new'><figure class='chart'><img src='figures/ts_gu_2016_new.svg' alt='Gu 2016, seven stations, new' loading='lazy'></figure></div><div class='sw' data-group='ts' data-year='gu_2016' data-lines='all'><figure class='chart'><img src='figures/ts_gu_2016_all.svg' alt='Gu 2016, seven stations, all' loading='lazy'></figure></div>
+
+    <h2><span class="num">3</span>Day-to-day agreement with the gauges</h2>
+    <p>Rank correlation puts the days in order by model flow and, separately, by gauge level, and measures how far the two orders agree: 1 means the
+       model's highest days are the gauge's highest days, 0 means no relation. It uses the order of the days, not their values, so the scale of a model
+       does not matter.</p>
+    <figure class='chart'><img src='figures/rho_same_day.svg' alt='Rank correlation, same day' loading='lazy'></figure>
+    <p>The same measure with the model shifted against the gauge by up to 10 days one way and 30 the other, keeping the shift with the highest value.
+       The shift tells whether the model rises before the gauge (plus) or after it (minus).</p>
+    <figure class='chart'><img src='figures/rho_best_lag.svg' alt='Rank correlation at the shift with the highest value' loading='lazy'></figure>
+    <figure class='chart'><img src='figures/rho_flood_seasons.svg' alt='Rank correlation on flood seasons' loading='lazy'></figure>
+
+    <h2><span class="num">4</span>How each model orders the seasons</h2>
+    <p>Two measures of whether a model's large seasons are the gauge's large seasons. The rank correlation of season peaks compares the order of the
+       seasons by their highest model flow with their order by highest gauge level. AUC is the chance that a flood season at the gauge carries a higher
+       model peak than a season without a flood: 0.5 is a coin toss, 1 means every flood season outranks every other season. Neither depends on where a
+       threshold is set.</p>
+    <figure class='chart'><img src='figures/rho_season_peaks.svg' alt='Rank correlation of season peaks' loading='lazy'></figure>
+    <p class="picklabel">Flood level at the gauge</p>
+    <div class='pick' data-group='auc' data-dim='level'><button type='button' data-key='3' class='on'>1-in-3</button><button type='button' data-key='5'>1-in-5</button></div>
+    <div class='sw' data-group='auc' data-level='3'><figure class='chart'><img src='figures/auc_3.svg' alt='AUC, 1-in-3' loading='lazy'></figure></div>
+    <div class='sw' data-group='auc' data-level='5'><figure class='chart'><img src='figures/auc_5.svg' alt='AUC, 1-in-5' loading='lazy'></figure></div>
+
+    <h2><span class="num">5</span>Flood seasons at each station</h2>
+    <p>Each season is sorted into one of four boxes: the gauge flooded and the model reached its threshold (a hit), the gauge flooded and the model did not
+       (a miss), the model reached its threshold with no flood at the gauge (a false alarm), or neither. Every score below is a different way of reading
+       those four counts. Each station has about 22 seasons with a gauge record, so one season moves a score by several hundredths.</p>
+    <p class="picklabel">Score</p>
+    <div class='pick' data-group='ev' data-dim='metric'><button type='button' data-key='POD' class='on'>POD</button><button type='button' data-key='FAR'>FAR</button><button type='button' data-key='POFD'>POFD</button><button type='button' data-key='CSI'>CSI</button><button type='button' data-key='F1'>F1</button><button type='button' data-key='freq_bias'>Frequency bias</button><button type='button' data-key='accuracy'>Accuracy</button><button type='button' data-key='HSS'>HSS</button><button type='button' data-key='PSS'>PSS</button></div>
+    <p class="picklabel">Flood level</p>
+    <div class='pick' data-group='ev' data-dim='level'><button type='button' data-key='3' class='on'>1-in-3</button><button type='button' data-key='5'>1-in-5</button></div>
+    <p class='sw' data-group='ev' data-metric='POD'>POD, probability of detection: of the flood seasons at the gauge, the share in which the model reached its own threshold. 1 means no flood season was missed.</p><p class='sw' data-group='ev' data-metric='FAR'>FAR, false alarm ratio: of the seasons in which the model reached its threshold, the share with no flood at the gauge. 0 means no false alarm.</p><p class='sw' data-group='ev' data-metric='POFD'>POFD, probability of false detection: of the seasons with no flood at the gauge, the share in which the model still reached its threshold.</p><p class='sw' data-group='ev' data-metric='CSI'>CSI, critical success index: hits divided by hits plus misses plus false alarms. It falls with either kind of error; 1 is perfect.</p><p class='sw' data-group='ev' data-metric='F1'>F1: the balance of POD and 1 minus FAR. It is high only when both are; 1 is perfect.</p><p class='sw' data-group='ev' data-metric='freq_bias'>Frequency bias: seasons in which the model reached its threshold divided by flood seasons at the gauge. Above 1 the model reaches it more often than the gauge floods; below 1, less often.</p><p class='sw' data-group='ev' data-metric='accuracy'>Accuracy: the share of all seasons in which model and gauge agree, flood or no flood.</p><p class='sw' data-group='ev' data-metric='HSS'>HSS, Heidke skill score: accuracy with the agreement expected by chance taken out. 0 is chance, 1 is perfect.</p><p class='sw' data-group='ev' data-metric='PSS'>PSS, Peirce skill score: POD minus POFD. 0 means the model does not separate flood seasons from the rest; 1 means it separates them fully.</p>
+    <div class='sw' data-group='ev' data-metric='POD' data-level='3'><figure class='chart'><img src='figures/st_POD_3.svg' alt='POD by station, 1-in-3' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='FAR' data-level='3'><figure class='chart'><img src='figures/st_FAR_3.svg' alt='FAR by station, 1-in-3' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='POFD' data-level='3'><figure class='chart'><img src='figures/st_POFD_3.svg' alt='POFD by station, 1-in-3' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='CSI' data-level='3'><figure class='chart'><img src='figures/st_CSI_3.svg' alt='CSI by station, 1-in-3' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='F1' data-level='3'><figure class='chart'><img src='figures/st_F1_3.svg' alt='F1 by station, 1-in-3' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='freq_bias' data-level='3'><figure class='chart'><img src='figures/st_freq_bias_3.svg' alt='Frequency bias by station, 1-in-3' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='accuracy' data-level='3'><figure class='chart'><img src='figures/st_accuracy_3.svg' alt='Accuracy by station, 1-in-3' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='HSS' data-level='3'><figure class='chart'><img src='figures/st_HSS_3.svg' alt='HSS by station, 1-in-3' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='PSS' data-level='3'><figure class='chart'><img src='figures/st_PSS_3.svg' alt='PSS by station, 1-in-3' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='POD' data-level='5'><figure class='chart'><img src='figures/st_POD_5.svg' alt='POD by station, 1-in-5' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='FAR' data-level='5'><figure class='chart'><img src='figures/st_FAR_5.svg' alt='FAR by station, 1-in-5' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='POFD' data-level='5'><figure class='chart'><img src='figures/st_POFD_5.svg' alt='POFD by station, 1-in-5' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='CSI' data-level='5'><figure class='chart'><img src='figures/st_CSI_5.svg' alt='CSI by station, 1-in-5' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='F1' data-level='5'><figure class='chart'><img src='figures/st_F1_5.svg' alt='F1 by station, 1-in-5' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='freq_bias' data-level='5'><figure class='chart'><img src='figures/st_freq_bias_5.svg' alt='Frequency bias by station, 1-in-5' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='accuracy' data-level='5'><figure class='chart'><img src='figures/st_accuracy_5.svg' alt='Accuracy by station, 1-in-5' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='HSS' data-level='5'><figure class='chart'><img src='figures/st_HSS_5.svg' alt='HSS by station, 1-in-5' loading='lazy'></figure></div><div class='sw' data-group='ev' data-metric='PSS' data-level='5'><figure class='chart'><img src='figures/st_PSS_5.svg' alt='PSS by station, 1-in-5' loading='lazy'></figure></div>
+
+    <h2><span class="num">6</span>The trigger rule by river</h2>
+    <p>The trigger does not read one station. It needs three of the four Juba stations, or two of the three Shabelle stations, over their own level on the
+       same day. The benchmark is a river flood: two gauges on the river over their own level in the season. The grids show every season at the 1-in-3
+       level, with a reanalysis row and a forecast row for each source; the tables give the counts and scores at 1-in-3 and 1-in-5. Forecasts are the
+       first issue dated in the season that reaches the threshold at any lead from 1 to 7 days.</p>
+    <figure class='chart'><img src='figures/backtest_deyr.svg' alt='Deyr, threshold outcome by season' loading='lazy'></figure>
+    <figure class='chart'><img src='figures/backtest_gu.svg' alt='Gu, threshold outcome by season' loading='lazy'></figure>
+    <p class="picklabel">Level</p>
+    <div class='pick' data-group='rv' data-dim='level'><button type='button' data-key='3' class='on'>1-in-3</button><button type='button' data-key='5'>1-in-5</button></div>
+    <div class='sw' data-group='rv' data-level='3'><h3>Deyr</h3><div class='tablewrap'><table class='data'><thead><tr><th>River</th><th>Source</th><th>Record</th><th>Seasons</th><th>Gauge floods</th><th>Reached in a flood</th><th>Reached, no flood</th><th>Flood not reached</th><th>POD</th><th>FAR</th><th>POFD</th><th>CSI</th><th>F1</th><th>Frequency bias</th><th>HSS</th><th>Days before the gauges<span class='y'>median, floods reached</span></th></tr></thead><tbody>
+<tr class='sep'><td>Juba</td><td>Google, new</td><td class='muted'>reanalysis</td><td>23</td><td>7</td><td>6<span class='y'>2006, 2008, 2014, 2017, 2019, 2023</span></td><td>2<span class='y'>2013, 2020</span></td><td>1<span class='y'>2015</span></td><td>0.86</td><td>0.25</td><td>0.12</td><td>0.67</td><td>0.80</td><td>1.14</td><td>0.70</td><td>1 before</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts</td><td>8</td><td>3</td><td>3<span class='y'>2017, 2019, 2023</span></td><td>1<span class='y'>2020</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.25</td><td>0.20</td><td>0.75</td><td>0.86</td><td>1.33</td><td>0.75</td><td>5 before</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts to 2025</td><td>10</td><td>4</td><td>4<span class='y'>2017, 2019, 2023, 2024</span></td><td>2<span class='y'>2020, 2025</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.33</td><td>0.33</td><td>0.67</td><td>0.80</td><td>1.50</td><td>0.62</td><td>6 before</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>reanalysis</td><td>23</td><td>7</td><td>5<span class='y'>2006, 2008, 2015, 2019, 2023</span></td><td>3<span class='y'>2002, 2004, 2013</span></td><td>2<span class='y'>2014, 2017</span></td><td>0.71</td><td>0.38</td><td>0.19</td><td>0.50</td><td>0.67</td><td>1.14</td><td>0.51</td><td>same day</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>forecasts</td><td>7</td><td>2</td><td>1<span class='y'>2019</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2017</span></td><td>0.50</td><td>0.00</td><td>0.00</td><td>0.50</td><td>0.67</td><td>0.50</td><td>0.59</td><td>3 after</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>reanalysis</td><td>23</td><td>7</td><td>5<span class='y'>2006, 2014, 2015, 2017, 2023</span></td><td>3<span class='y'>2001, 2005, 2011</span></td><td>2<span class='y'>2008, 2019</span></td><td>0.71</td><td>0.38</td><td>0.19</td><td>0.50</td><td>0.67</td><td>1.14</td><td>0.51</td><td>12 before</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>forecasts</td><td>8</td><td>3</td><td>2<span class='y'>2017, 2023</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2019</span></td><td>0.67</td><td>0.00</td><td>0.00</td><td>0.67</td><td>0.80</td><td>0.67</td><td>0.71</td><td>16 before</td></tr>
+<tr><td></td><td>GloFAS v5</td><td class='muted'>reanalysis</td><td>23</td><td>7</td><td>5<span class='y'>2006, 2015, 2017, 2019, 2023</span></td><td>2<span class='y'>2004, 2018</span></td><td>2<span class='y'>2008, 2014</span></td><td>0.71</td><td>0.29</td><td>0.12</td><td>0.56</td><td>0.71</td><td>1.00</td><td>0.59</td><td>same day</td></tr>
+<tr class='sep'><td>Shabelle</td><td>Google, new</td><td class='muted'>reanalysis</td><td>22</td><td>7</td><td>5<span class='y'>2012, 2014, 2019, 2020, 2023</span></td><td>3<span class='y'>2010, 2013, 2021</span></td><td>2<span class='y'>2006, 2008</span></td><td>0.71</td><td>0.38</td><td>0.20</td><td>0.50</td><td>0.67</td><td>1.14</td><td>0.50</td><td>same day</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts</td><td>8</td><td>3</td><td>3<span class='y'>2019, 2020, 2023</span></td><td>1<span class='y'>2021</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.25</td><td>0.20</td><td>0.75</td><td>0.86</td><td>1.33</td><td>0.75</td><td>4 before</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts to 2025</td><td>10</td><td>4</td><td>4<span class='y'>2019, 2020, 2023, 2024</span></td><td>1<span class='y'>2021</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.20</td><td>0.17</td><td>0.80</td><td>0.89</td><td>1.25</td><td>0.80</td><td>4 before</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>reanalysis</td><td>22</td><td>7</td><td>5<span class='y'>2006, 2008, 2014, 2019, 2023</span></td><td>2<span class='y'>2013, 2015</span></td><td>2<span class='y'>2012, 2020</span></td><td>0.71</td><td>0.29</td><td>0.13</td><td>0.56</td><td>0.71</td><td>1.00</td><td>0.58</td><td>9 before</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>forecasts</td><td>7</td><td>2</td><td>1<span class='y'>2019</span></td><td>1<span class='y'>2017</span></td><td>1<span class='y'>2020</span></td><td>0.50</td><td>0.50</td><td>0.20</td><td>0.33</td><td>0.50</td><td>1.00</td><td>0.30</td><td>12 before</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>reanalysis</td><td>22</td><td>7</td><td>4<span class='y'>2006, 2014, 2019, 2020</span></td><td>4<span class='y'>2007, 2010, 2013, 2017</span></td><td>3<span class='y'>2008, 2012, 2023</span></td><td>0.57</td><td>0.50</td><td>0.27</td><td>0.36</td><td>0.53</td><td>1.14</td><td>0.29</td><td>12 before</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>forecasts</td><td>8</td><td>3</td><td>2<span class='y'>2019, 2020</span></td><td>1<span class='y'>2017</span></td><td>1<span class='y'>2023</span></td><td>0.67</td><td>0.33</td><td>0.20</td><td>0.50</td><td>0.67</td><td>1.00</td><td>0.47</td><td>5 before</td></tr>
+<tr><td></td><td>GloFAS v5</td><td class='muted'>reanalysis</td><td>22</td><td>7</td><td>5<span class='y'>2006, 2014, 2019, 2020, 2023</span></td><td>3<span class='y'>2007, 2010, 2013</span></td><td>2<span class='y'>2008, 2012</span></td><td>0.71</td><td>0.38</td><td>0.20</td><td>0.50</td><td>0.67</td><td>1.14</td><td>0.50</td><td>2 before</td></tr>
+</tbody></table></div></div><div class='sw' data-group='rv' data-level='3'><h3>Gu</h3><div class='tablewrap'><table class='data'><thead><tr><th>River</th><th>Source</th><th>Record</th><th>Seasons</th><th>Gauge floods</th><th>Reached in a flood</th><th>Reached, no flood</th><th>Flood not reached</th><th>POD</th><th>FAR</th><th>POFD</th><th>CSI</th><th>F1</th><th>Frequency bias</th><th>HSS</th><th>Days before the gauges<span class='y'>median, floods reached</span></th></tr></thead><tbody>
+<tr class='sep'><td>Juba</td><td>Google, new</td><td class='muted'>reanalysis</td><td>22</td><td>6</td><td>6<span class='y'>2005, 2010, 2016, 2018, 2020, 2023</span></td><td>1<span class='y'>2013</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.14</td><td>0.06</td><td>0.86</td><td>0.92</td><td>1.17</td><td>0.89</td><td>6 after</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts</td><td>8</td><td>4</td><td>4<span class='y'>2016, 2018, 2020, 2023</span></td><td>1<span class='y'>2021</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.20</td><td>0.25</td><td>0.80</td><td>0.89</td><td>1.25</td><td>0.75</td><td>2 after</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts to 2025</td><td>9</td><td>5</td><td>5<span class='y'>2016, 2018, 2020, 2023, 2024</span></td><td>1<span class='y'>2021</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.17</td><td>0.25</td><td>0.83</td><td>0.91</td><td>1.20</td><td>0.77</td><td>2 after</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>reanalysis</td><td>22</td><td>6</td><td>5<span class='y'>2010, 2016, 2018, 2020, 2023</span></td><td>2<span class='y'>2003, 2013</span></td><td>1<span class='y'>2005</span></td><td>0.83</td><td>0.29</td><td>0.12</td><td>0.62</td><td>0.77</td><td>1.17</td><td>0.67</td><td>3 after</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>forecasts</td><td>8</td><td>4</td><td>4<span class='y'>2016, 2018, 2020, 2023</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.00</td><td>0.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>2 before</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>reanalysis</td><td>22</td><td>6</td><td>6<span class='y'>2005, 2010, 2016, 2018, 2020, 2023</span></td><td>1<span class='y'>2013</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.14</td><td>0.06</td><td>0.86</td><td>0.92</td><td>1.17</td><td>0.89</td><td>7 after</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>forecasts</td><td>8</td><td>4</td><td>4<span class='y'>2016, 2018, 2020, 2023</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.00</td><td>0.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>7 after</td></tr>
+<tr><td></td><td>GloFAS v5</td><td class='muted'>reanalysis</td><td>22</td><td>6</td><td>5<span class='y'>2005, 2010, 2016, 2018, 2020</span></td><td>1<span class='y'>2013</span></td><td>1<span class='y'>2023</span></td><td>0.83</td><td>0.17</td><td>0.06</td><td>0.71</td><td>0.83</td><td>1.00</td><td>0.77</td><td>1 after</td></tr>
+<tr class='sep'><td>Shabelle</td><td>Google, new</td><td class='muted'>reanalysis</td><td>22</td><td>7</td><td>6<span class='y'>2005, 2010, 2016, 2018, 2020, 2023</span></td><td>2<span class='y'>2013, 2021</span></td><td>1<span class='y'>2003</span></td><td>0.86</td><td>0.25</td><td>0.13</td><td>0.67</td><td>0.80</td><td>1.14</td><td>0.70</td><td>6 before</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts</td><td>8</td><td>4</td><td>4<span class='y'>2016, 2018, 2020, 2023</span></td><td>1<span class='y'>2021</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.20</td><td>0.25</td><td>0.80</td><td>0.89</td><td>1.25</td><td>0.75</td><td>12 before</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts to 2025</td><td>10</td><td>5</td><td>5<span class='y'>2016, 2018, 2020, 2023, 2024</span></td><td>1<span class='y'>2021</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.17</td><td>0.20</td><td>0.83</td><td>0.91</td><td>1.20</td><td>0.80</td><td>12 before</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>reanalysis</td><td>22</td><td>7</td><td>6<span class='y'>2005, 2010, 2016, 2018, 2020, 2023</span></td><td>1<span class='y'>2013</span></td><td>1<span class='y'>2003</span></td><td>0.86</td><td>0.14</td><td>0.07</td><td>0.75</td><td>0.86</td><td>1.00</td><td>0.79</td><td>10 before</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>forecasts</td><td>8</td><td>4</td><td>4<span class='y'>2016, 2018, 2020, 2023</span></td><td>1<span class='y'>2021</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.20</td><td>0.25</td><td>0.80</td><td>0.89</td><td>1.25</td><td>0.75</td><td>16 before</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>reanalysis</td><td>22</td><td>7</td><td>5<span class='y'>2005, 2010, 2016, 2018, 2020</span></td><td>3<span class='y'>2004, 2006, 2013</span></td><td>2<span class='y'>2003, 2023</span></td><td>0.71</td><td>0.38</td><td>0.20</td><td>0.50</td><td>0.67</td><td>1.14</td><td>0.50</td><td>9 before</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>forecasts</td><td>8</td><td>4</td><td>3<span class='y'>2016, 2018, 2020</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2023</span></td><td>0.75</td><td>0.00</td><td>0.00</td><td>0.75</td><td>0.86</td><td>0.75</td><td>0.75</td><td>12 before</td></tr>
+<tr><td></td><td>GloFAS v5</td><td class='muted'>reanalysis</td><td>22</td><td>7</td><td>6<span class='y'>2003, 2005, 2010, 2016, 2018, 2020</span></td><td>1<span class='y'>2021</span></td><td>1<span class='y'>2023</span></td><td>0.86</td><td>0.14</td><td>0.07</td><td>0.75</td><td>0.86</td><td>1.00</td><td>0.79</td><td>4 before</td></tr>
+</tbody></table></div></div><div class='sw' data-group='rv' data-level='5'><h3>Deyr</h3><div class='tablewrap'><table class='data'><thead><tr><th>River</th><th>Source</th><th>Record</th><th>Seasons</th><th>Gauge floods</th><th>Reached in a flood</th><th>Reached, no flood</th><th>Flood not reached</th><th>POD</th><th>FAR</th><th>POFD</th><th>CSI</th><th>F1</th><th>Frequency bias</th><th>HSS</th><th>Days before the gauges<span class='y'>median, floods reached</span></th></tr></thead><tbody>
+<tr class='sep'><td>Juba</td><td>Google, new</td><td class='muted'>reanalysis</td><td>23</td><td>3</td><td>1<span class='y'>2023</span></td><td>3<span class='y'>2008, 2019, 2020</span></td><td>2<span class='y'>2006, 2014</span></td><td>0.33</td><td>0.75</td><td>0.15</td><td>0.17</td><td>0.29</td><td>1.33</td><td>0.16</td><td>9 after</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts</td><td>8</td><td>1</td><td>1<span class='y'>2023</span></td><td>2<span class='y'>2019, 2020</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.67</td><td>0.29</td><td>0.33</td><td>0.50</td><td>3.00</td><td>0.38</td><td>3 after</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts to 2025</td><td>10</td><td>1</td><td>1<span class='y'>2023</span></td><td>2<span class='y'>2019, 2020</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.67</td><td>0.22</td><td>0.33</td><td>0.50</td><td>3.00</td><td>0.41</td><td>3 after</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>reanalysis</td><td>23</td><td>3</td><td>2<span class='y'>2006, 2023</span></td><td>2<span class='y'>2013, 2019</span></td><td>1<span class='y'>2014</span></td><td>0.67</td><td>0.50</td><td>0.10</td><td>0.40</td><td>0.57</td><td>1.33</td><td>0.50</td><td>6 after</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>forecasts</td><td>7</td><td>0</td><td>0<span class='y'>none</span></td><td>1<span class='y'>2019</span></td><td>0<span class='y'>none</span></td><td>n/a</td><td>1.00</td><td>0.14</td><td>0.00</td><td>0.00</td><td>n/a</td><td>0.00</td><td>n/a</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>reanalysis</td><td>23</td><td>3</td><td>2<span class='y'>2014, 2023</span></td><td>3<span class='y'>2005, 2015, 2017</span></td><td>1<span class='y'>2006</span></td><td>0.67</td><td>0.60</td><td>0.15</td><td>0.33</td><td>0.50</td><td>1.67</td><td>0.40</td><td>same day</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>forecasts</td><td>8</td><td>1</td><td>1<span class='y'>2023</span></td><td>1<span class='y'>2017</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.50</td><td>0.14</td><td>0.50</td><td>0.67</td><td>2.00</td><td>0.60</td><td>4 before</td></tr>
+<tr><td></td><td>GloFAS v5</td><td class='muted'>reanalysis</td><td>23</td><td>3</td><td>2<span class='y'>2006, 2023</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2014</span></td><td>0.67</td><td>0.00</td><td>0.00</td><td>0.67</td><td>0.80</td><td>0.67</td><td>0.78</td><td>2 after</td></tr>
+<tr class='sep'><td>Shabelle</td><td>Google, new</td><td class='muted'>reanalysis</td><td>22</td><td>5</td><td>4<span class='y'>2014, 2019, 2020, 2023</span></td><td>1<span class='y'>2010</span></td><td>1<span class='y'>2006</span></td><td>0.80</td><td>0.20</td><td>0.06</td><td>0.67</td><td>0.80</td><td>1.00</td><td>0.74</td><td>12 before</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts</td><td>8</td><td>3</td><td>3<span class='y'>2019, 2020, 2023</span></td><td>0<span class='y'>none</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.00</td><td>0.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>1.00</td><td>16 before</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts to 2025</td><td>10</td><td>4</td><td>3<span class='y'>2019, 2020, 2023</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2024</span></td><td>0.75</td><td>0.00</td><td>0.00</td><td>0.75</td><td>0.86</td><td>0.75</td><td>0.78</td><td>16 before</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>reanalysis</td><td>22</td><td>5</td><td>4<span class='y'>2006, 2014, 2019, 2023</span></td><td>1<span class='y'>2008</span></td><td>1<span class='y'>2020</span></td><td>0.80</td><td>0.20</td><td>0.06</td><td>0.67</td><td>0.80</td><td>1.00</td><td>0.74</td><td>17 before</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>forecasts</td><td>7</td><td>2</td><td>1<span class='y'>2019</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2020</span></td><td>0.50</td><td>0.00</td><td>0.00</td><td>0.50</td><td>0.67</td><td>0.50</td><td>0.59</td><td>20 before</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>reanalysis</td><td>22</td><td>5</td><td>3<span class='y'>2014, 2019, 2020</span></td><td>2<span class='y'>2010, 2013</span></td><td>2<span class='y'>2006, 2023</span></td><td>0.60</td><td>0.40</td><td>0.12</td><td>0.43</td><td>0.60</td><td>1.00</td><td>0.48</td><td>16 before</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>forecasts</td><td>8</td><td>3</td><td>2<span class='y'>2019, 2020</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2023</span></td><td>0.67</td><td>0.00</td><td>0.00</td><td>0.67</td><td>0.80</td><td>0.67</td><td>0.71</td><td>12 before</td></tr>
+<tr><td></td><td>GloFAS v5</td><td class='muted'>reanalysis</td><td>22</td><td>5</td><td>4<span class='y'>2006, 2014, 2019, 2023</span></td><td>0<span class='y'>none</span></td><td>1<span class='y'>2020</span></td><td>0.80</td><td>0.00</td><td>0.00</td><td>0.80</td><td>0.89</td><td>0.80</td><td>0.86</td><td>9 before</td></tr>
+</tbody></table></div></div><div class='sw' data-group='rv' data-level='5'><h3>Gu</h3><div class='tablewrap'><table class='data'><thead><tr><th>River</th><th>Source</th><th>Record</th><th>Seasons</th><th>Gauge floods</th><th>Reached in a flood</th><th>Reached, no flood</th><th>Flood not reached</th><th>POD</th><th>FAR</th><th>POFD</th><th>CSI</th><th>F1</th><th>Frequency bias</th><th>HSS</th><th>Days before the gauges<span class='y'>median, floods reached</span></th></tr></thead><tbody>
+<tr class='sep'><td>Juba</td><td>Google, new</td><td class='muted'>reanalysis</td><td>22</td><td>3</td><td>2<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>1<span class='y'>2023</span></td><td>0.67</td><td>0.33</td><td>0.05</td><td>0.50</td><td>0.67</td><td>1.00</td><td>0.61</td><td>1 before</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts</td><td>8</td><td>3</td><td>2<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>1<span class='y'>2023</span></td><td>0.67</td><td>0.33</td><td>0.20</td><td>0.50</td><td>0.67</td><td>1.00</td><td>0.47</td><td>7 before</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts to 2025</td><td>9</td><td>3</td><td>2<span class='y'>2018, 2020</span></td><td>2<span class='y'>2016, 2024</span></td><td>1<span class='y'>2023</span></td><td>0.67</td><td>0.50</td><td>0.33</td><td>0.40</td><td>0.57</td><td>1.33</td><td>0.31</td><td>7 before</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>reanalysis</td><td>22</td><td>3</td><td>2<span class='y'>2018, 2020</span></td><td>2<span class='y'>2013, 2016</span></td><td>1<span class='y'>2023</span></td><td>0.67</td><td>0.50</td><td>0.11</td><td>0.40</td><td>0.57</td><td>1.33</td><td>0.49</td><td>4 before</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>forecasts</td><td>8</td><td>3</td><td>2<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>1<span class='y'>2023</span></td><td>0.67</td><td>0.33</td><td>0.20</td><td>0.50</td><td>0.67</td><td>1.00</td><td>0.47</td><td>10 before</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>reanalysis</td><td>22</td><td>3</td><td>2<span class='y'>2018, 2020</span></td><td>2<span class='y'>2005, 2010</span></td><td>1<span class='y'>2023</span></td><td>0.67</td><td>0.50</td><td>0.11</td><td>0.40</td><td>0.57</td><td>1.33</td><td>0.49</td><td>4 after</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>forecasts</td><td>8</td><td>3</td><td>2<span class='y'>2018, 2020</span></td><td>1<span class='y'>2016</span></td><td>1<span class='y'>2023</span></td><td>0.67</td><td>0.33</td><td>0.20</td><td>0.50</td><td>0.67</td><td>1.00</td><td>0.47</td><td>2 after</td></tr>
+<tr><td></td><td>GloFAS v5</td><td class='muted'>reanalysis</td><td>22</td><td>3</td><td>2<span class='y'>2018, 2020</span></td><td>2<span class='y'>2010, 2016</span></td><td>1<span class='y'>2023</span></td><td>0.67</td><td>0.50</td><td>0.11</td><td>0.40</td><td>0.57</td><td>1.33</td><td>0.49</td><td>5 before</td></tr>
+<tr class='sep'><td>Shabelle</td><td>Google, new</td><td class='muted'>reanalysis</td><td>22</td><td>3</td><td>3<span class='y'>2016, 2020, 2023</span></td><td>2<span class='y'>2010, 2018</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.40</td><td>0.11</td><td>0.60</td><td>0.75</td><td>1.67</td><td>0.70</td><td>6 before</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts</td><td>8</td><td>3</td><td>3<span class='y'>2016, 2020, 2023</span></td><td>1<span class='y'>2018</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.25</td><td>0.20</td><td>0.75</td><td>0.86</td><td>1.33</td><td>0.75</td><td>12 before</td></tr>
+<tr><td></td><td>Google, new</td><td class='muted'>forecasts to 2025</td><td>10</td><td>4</td><td>3<span class='y'>2016, 2020, 2023</span></td><td>1<span class='y'>2018</span></td><td>1<span class='y'>2024</span></td><td>0.75</td><td>0.25</td><td>0.17</td><td>0.60</td><td>0.75</td><td>1.00</td><td>0.58</td><td>12 before</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>reanalysis</td><td>22</td><td>3</td><td>2<span class='y'>2016, 2020</span></td><td>3<span class='y'>2005, 2013, 2018</span></td><td>1<span class='y'>2023</span></td><td>0.67</td><td>0.60</td><td>0.16</td><td>0.33</td><td>0.50</td><td>1.67</td><td>0.40</td><td>14 before</td></tr>
+<tr><td></td><td>Google, current</td><td class='muted'>forecasts</td><td>8</td><td>3</td><td>3<span class='y'>2016, 2020, 2023</span></td><td>1<span class='y'>2018</span></td><td>0<span class='y'>none</span></td><td>1.00</td><td>0.25</td><td>0.20</td><td>0.75</td><td>0.86</td><td>1.33</td><td>0.75</td><td>22 before</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>reanalysis</td><td>22</td><td>3</td><td>1<span class='y'>2016</span></td><td>3<span class='y'>2005, 2010, 2018</span></td><td>2<span class='y'>2020, 2023</span></td><td>0.33</td><td>0.75</td><td>0.16</td><td>0.17</td><td>0.29</td><td>1.33</td><td>0.15</td><td>9 before</td></tr>
+<tr><td></td><td>GloFAS v4</td><td class='muted'>forecasts</td><td>8</td><td>3</td><td>1<span class='y'>2016</span></td><td>1<span class='y'>2018</span></td><td>2<span class='y'>2020, 2023</span></td><td>0.33</td><td>0.50</td><td>0.20</td><td>0.25</td><td>0.40</td><td>0.67</td><td>0.14</td><td>10 before</td></tr>
+<tr><td></td><td>GloFAS v5</td><td class='muted'>reanalysis</td><td>22</td><td>3</td><td>2<span class='y'>2016, 2020</span></td><td>3<span class='y'>2005, 2010, 2018</span></td><td>1<span class='y'>2023</span></td><td>0.67</td><td>0.60</td><td>0.16</td><td>0.33</td><td>0.50</td><td>1.67</td><td>0.40</td><td>8 before</td></tr>
+</tbody></table></div></div>
+    <p class="note">Scores as in section 5. Days before the gauges: from the day the rule is met (reanalysis) or the day of the first forecast issue
+       meeting it (forecasts) to the day the second gauge crossed its level.</p>
+
+    <h2><span class="num">7</span>Timing at each station</h2>
+    <p>Two measures in days, over the flood seasons at each gauge: when the model peaks against when the gauge peaks, and when the model first reaches its
+       1-in-3 level against when the gauge first reaches its own.</p>
+    <figure class='chart'><img src='figures/peak_days.svg' alt='Days between model peak and gauge peak' loading='lazy'></figure>
+    <figure class='chart'><img src='figures/crossing_days.svg' alt='Days between model and gauge reaching the 1-in-3' loading='lazy'></figure>
+
+    <h2><span class="num">8</span>The forecasts, by days ahead</h2>
+    <p>Each forecast archive is read one lead time at a time: the forecast for a day made 1 day ahead, 2 days ahead, and so on (the new model to 10 days,
+       the others to 7). The first chart divides the forecast's season peak by the reanalysis peak on the same days: 1 means the forecast carries the same
+       peak as the reanalysis. Seasons 2016 to 2023; GloFAS v4 is the middle of its ensemble members.</p>
+    <p class="picklabel">Measure</p>
+    <div class='pick' data-group='ld' data-dim='metric'><button type='button' data-key='peak' class='on'>Forecast peak / reanalysis peak</button><button type='button' data-key='rho'>Rank correlation with the gauge</button><button type='button' data-key='pod'>POD</button><button type='button' data-key='far'>FAR</button></div>
+    <div class='sw' data-group='ld' data-metric='peak'><figure class='chart'><img src='figures/lead_peak.svg' alt='Forecast peak over reanalysis peak by days ahead' loading='lazy'></figure></div>
+    <div class='sw' data-group='ld' data-metric='rho'><figure class='chart'><img src='figures/lead_rho.svg' alt='Rank correlation with the gauge by days ahead' loading='lazy'></figure></div>
+    <div class='sw' data-group='ld' data-metric='pod'><figure class='chart'><img src='figures/lead_pod.svg' alt='POD by days ahead' loading='lazy'></figure></div>
+    <div class='sw' data-group='ld' data-metric='far'><figure class='chart'><img src='figures/lead_far.svg' alt='FAR by days ahead' loading='lazy'></figure></div>
+    <p class="note">POD and FAR here are at single stations at the 1-in-3 level, with the counts of the stations of a river added up.
+       At 7 days ahead the new model's daily forecast and its reanalysis have a rank correlation of 0.995 to 0.999 across the seven stations and two seasons.</p>
+
+    <h2><span class="num">9</span>Size of the flows against SWALIM's discharge series</h2>
+    <p>SWALIM publishes a discharge series, in cubic metres per second, at four of the seven stations. It is the only measurement the size of a model's
+       flow can be set against. The series stops rising at bank-full, so the highest floods are understated in it.</p>
+    <p class="picklabel">Measure</p>
+    <div class='pick' data-group='q' data-dim='metric'><button type='button' data-key='ratio_median' class='on'>Ratio of medians</button><button type='button' data-key='ratio_peak_median'>Ratio of season peaks</button><button type='button' data-key='pearson_r'>Correlation</button><button type='button' data-key='variability_ratio'>Variability ratio</button><button type='button' data-key='KGE'>KGE</button><button type='button' data-key='NSE'>NSE</button></div>
+    <p class='sw' data-group='q' data-metric='ratio_median'>Ratio of medians: the model's typical flow divided by SWALIM's typical flow on the same days. 1 means equal; 2 means the model runs at twice the measured flow.</p><p class='sw' data-group='q' data-metric='ratio_peak_median'>Ratio of season peaks: the model's highest flow of each season divided by SWALIM's, middle value over the seasons. SWALIM's series stops rising at bank-full, so a ratio above 1 can come from that ceiling.</p><p class='sw' data-group='q' data-metric='pearson_r'>Correlation of daily values, from 0 (no relation) to 1 (the two rise and fall together in proportion).</p><p class='sw' data-group='q' data-metric='variability_ratio'>Variability ratio: the size of the model's swings divided by the size of SWALIM's. 1 means the same spread.</p><p class='sw' data-group='q' data-metric='KGE'>KGE, Kling-Gupta efficiency: one score from three parts, the correlation, the variability ratio and the ratio of averages. 1 is perfect; below about -0.4 the model is no closer than the long-term average would be.</p><p class='sw' data-group='q' data-metric='NSE'>NSE, Nash-Sutcliffe efficiency: 1 is perfect, 0 is no closer than the average of the measurements, and negative is further away than that average.</p>
+    <div class='sw' data-group='q' data-metric='ratio_median'><figure class='chart'><img src='figures/q_ratio_median.svg' alt='Ratio of medians against SWALIM discharge' loading='lazy'></figure></div><div class='sw' data-group='q' data-metric='ratio_peak_median'><figure class='chart'><img src='figures/q_ratio_peak_median.svg' alt='Ratio of season peaks against SWALIM discharge' loading='lazy'></figure></div><div class='sw' data-group='q' data-metric='pearson_r'><figure class='chart'><img src='figures/q_pearson_r.svg' alt='Correlation against SWALIM discharge' loading='lazy'></figure></div><div class='sw' data-group='q' data-metric='variability_ratio'><figure class='chart'><img src='figures/q_variability_ratio.svg' alt='Variability ratio against SWALIM discharge' loading='lazy'></figure></div><div class='sw' data-group='q' data-metric='KGE'><figure class='chart'><img src='figures/q_KGE.svg' alt='KGE against SWALIM discharge' loading='lazy'></figure></div><div class='sw' data-group='q' data-metric='NSE'><figure class='chart'><img src='figures/q_NSE.svg' alt='NSE against SWALIM discharge' loading='lazy'></figure></div>
+    <p class="note">The trigger reads each model against the model's own levels, so a model that runs high or low by a steady factor is not penalised in
+       sections 3 to 8. This section is the only one about absolute size.</p>
+
+    <h2><span class="num">10</span>What this review does not establish</h2>
+    <ul>
+      <li>The live Flood Hub feed does not serve the new model yet. Everything here is from Google's published reanalysis and reforecast.</li>
+      <li>The new model's forecast archive is close to a copy of its reanalysis (section 8). What rainfall the reforecast was run with has not been checked,
+          so the archive may not show how a live forecast behaves when the rain forecast is wrong.</li>
+      <li>The forecast comparison rests on eight seasons, 2016 to 2023, with two to four river floods per river and season.</li>
+      <li>The Bardheere and Bualle gauges are out of service, so the lower Juba cannot be checked after 2023 and early 2024.</li>
+      <li>Model flows are read at one river-network outlet per station, chosen as the main-stem outlet nearest the station.</li>
+    </ul>
+
+    <h2><span class="num">11</span>Method and files</h2>
+    <p class="note">Levels: Weibull plotting position on seasonal maxima, gauges 2000 to 2023, models 1999 to 2023; a value equal to its level counts as
+       reaching it. A gauge season counts with at least 30 readings. Station floods compare the season's highest values; the river rule counts votes on the
+       same day, in the season months only. The new model's forecast lead 1 is the issue day. Source: Google Runoff Reanalysis and Reforecast, November 2026
+       release; SWALIM gauge levels and discharge series; GloFAS v4 and v5 from the Copernicus Emergency Management Service.</p>
+    <p class="note files">Every score, by season, river and station:
+      <a href="daily_agreement.csv">daily agreement</a><a href="station_floods_1in3.csv">station floods, 1-in-3</a><a href="station_floods_1in5.csv">station floods, 1-in-5</a>
+      <a href="river_rule.csv">river rule</a><a href="forecasts_by_lead.csv">forecasts by lead</a><a href="discharge.csv">discharge</a><a href="data.json">all, as JSON</a></p>
+  </article>
+</div>
+<script>
+(function () {
+  var state = {};
+  function apply(group) {
+    document.querySelectorAll('.sw[data-group="' + group + '"]').forEach(function (el) {
+      var show = true;
+      for (var dim in state[group]) {
+        var v = el.getAttribute('data-' + dim);
+        if (v !== null && v !== state[group][dim]) show = false;
+      }
+      el.style.display = show ? '' : 'none';
+    });
+  }
+  document.querySelectorAll('.pick').forEach(function (p) {
+    var group = p.getAttribute('data-group'), dim = p.getAttribute('data-dim');
+    state[group] = state[group] || {};
+    state[group][dim] = p.querySelector('button.on').getAttribute('data-key');
+    p.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      p.querySelectorAll('button').forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      state[group][dim] = b.getAttribute('data-key');
+      apply(group);
+    });
+  });
+  Object.keys(state).forEach(apply);
+})();
+</script>
+</body>
+</html>
