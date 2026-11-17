@@ -467,7 +467,32 @@ def sw(group, attrs, inner, tag="div"):
 
 
 def fig_html(src, alt, cap=""):
-    return f"<figure class='chart'><img src='{src}' alt='{alt}' loading='lazy'>{'<figcaption>' + cap + '</figcaption>' if cap else ''}</figure>"
+    return f"<figure class='chart'><a href='{src}'><img src='{src}' alt='{alt}' loading='lazy'></a>{'<figcaption>' + cap + '</figcaption>' if cap else ''}</figure>"
+
+
+def flood_view_note(T):
+    """Where the flood-season correlation here differs from the google-model-2026 page, and any value
+    whose shift sits at the end of the range tried."""
+    out = ""
+    edge = T[T.shift_flood_seasons.isin([min(R.LAGS), max(R.LAGS)]) & T.rho_flood_seasons.notna()]
+    if len(edge):
+        names = [f"{SHORT[r.model]} at {NAME[r.station]} in {r.season.title()} ({int(r.shift_flood_seasons):+d} days)" for r in edge.itertuples()]
+        out += " The highest value sits at the end of the range tried for " + "; ".join(names) + "."
+    sib = OUT.parent / "google-model-2026" / "data.json"
+    if sib.exists():
+        c = pd.DataFrame(json.loads(sib.read_text(encoding="utf-8"))["correlations"])
+        j = c.merge(T, on=["season", "station", "model"])
+        if len(j) == len(T):
+            d = (j.rho_flood_seasons - j.rho)
+            big = j[d.abs() > 0.05]
+            out += (f" The <a href='../google-model-2026/'>google-model-2026</a> page shows this score with the gauge's season days only, so at long shifts"
+                    f" the last days of the season drop out; here every season day of the model is used at every shift."
+                    f" The two agree within 0.05 at {int((d.abs() <= 0.05).sum())} of the {len(j)} values.")
+            if len(big):
+                which = "; ".join(f"{SHORT[r.model]} at {NAME[r.station]} in {r.season.title()}: {r.rho:.2f} there, {r.rho_flood_seasons:.2f} here, at a shift of {int(r.shift_flood_seasons)} days"
+                                  for r in big.sort_values("rho_flood_seasons").itertuples())
+                out += f" The others: {which}."
+    return out
 
 
 def rule_summary(M):
@@ -499,7 +524,7 @@ def after_line(Rrec, season, y):
     g = []
     for r in G.RIVERS:
         rec = Rrec[(r, season)]
-        g.append(f"{r.title()}: " + ("gauge flood" if y in rec["severe"] else "no gauge flood" if y in rec["assess"] else "no gauge record"))
+        g.append(f"{r.title()}: " + ("river flood" if y in rec["severe"] else "no river flood" if y in rec["assess"] else "no gauge record"))
     return f"{season.title()} {y}: {reached}. " + "; ".join(g) + "."
 
 
@@ -575,6 +600,8 @@ def findings(M, LT, Rrec):
 
 def build():
     FIGS.mkdir(parents=True, exist_ok=True)
+    for old in FIGS.glob("*.svg"):
+        old.unlink()
     M = R.compute()
     T, Q, BL, GN, QN = M["tracking"], M["discharge"], M["by_lead"], M["gauges"], M["discharge_notes"]
     LT = lead_table(BL)
@@ -660,7 +687,8 @@ def build():
         "flood": grid_fig(T, "rho_flood_seasons", "rho_flood_seasons", "Rank correlation of daily values with the model's curve slid to where the value is highest, on flood seasons only (gauge or model over its own 1-in-3)", "corr",
                           sub=lambda r: f"{int(r.n_flood_seasons)} seasons", note="Dark = high; the shading runs from 0.4 to 1. Small figure: seasons used, which differ by source because each source has its own flood seasons."),
     }
-    dg_blocks = "".join(sw("dg", {"view": k}, f"<p>{text}</p>" + fig_html(dg[k], lab)) for k, lab, text in D_METRICS)
+    dg_extra = {"flood": flood_view_note(T)}
+    dg_blocks = "".join(sw("dg", {"view": k}, f"<p>{text}{dg_extra.get(k, '')}</p>" + fig_html(dg[k], lab)) for k, lab, text in D_METRICS)
 
     # ---- ordering of seasons
     F["rmax"] = grid_fig(E3, "rho_season_peaks", "rho_season_peaks", "Rank correlation of season peaks, model against gauge", "good", sub=lambda r: f"{int(r.n)} seasons",
