@@ -1,4 +1,4 @@
-season,river,station,model,lead,peak_ratio_median,rho_vs_gauge,rho_vs_reanalysis,n_seasons,hits,false_alarms,misses,correct_negatives
+season,river,station,model,lead,peak_ratio_median,rho_vs_gauge,rho_vs_reanalysis,n_seasons,floods_reached,false_alarms,floods_not_reached,neither
 deyr,juba,dollow,"Google, new",1,1.0038169622421265,0.8923471849879558,0.9995671422037526,7,3,1,0,3
 deyr,juba,dollow,"Google, new",2,1.007650375366211,0.8923369369679081,0.9993444791048387,7,3,1,0,3
 deyr,juba,dollow,"Google, new",3,1.0129947662353516,0.8924926925900726,0.9992977357304788,7,3,1,0,3

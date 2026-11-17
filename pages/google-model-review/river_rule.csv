@@ -1,4 +1,4 @@
-season,river,model,record,rp,hits,false_alarms,misses,correct_negatives,n,n_floods,n_reached,POD,FAR,POFD,CSI,F1,freq_bias,accuracy,HSS,PSS,lead_days_median,lead_days_mean,hit_years,false_years,missed_years
+season,river,model,record,rp,floods_reached,false_alarms,floods_not_reached,neither,n,n_floods,n_reached,POD,FAR,POFD,CSI,F1,freq_bias,accuracy,HSS,PSS,lead_days_median,lead_days_mean,years_flood_reached,years_false_alarm,years_flood_not_reached
 deyr,juba,"Google, new",reanalysis,3,6,2,1,14,23,7,8,0.8571428571428571,0.25,0.125,0.6666666666666666,0.8,1.1428571428571428,0.8695652173913043,0.703862660944206,0.7321428571428571,1.0,0.16666666666666666,"[2006, 2008, 2014, 2017, 2019, 2023]","[2013, 2020]",[2015]
 deyr,juba,"Google, new",forecasts,3,3,1,0,4,8,3,4,1.0,0.25,0.2,0.75,0.8571428571428571,1.3333333333333333,0.875,0.75,0.8,5.0,3.0,"[2017, 2019, 2023]",[2020],[]
 deyr,juba,"Google, new",forecasts to 2025,3,4,2,0,4,10,4,6,1.0,0.3333333333333333,0.3333333333333333,0.6666666666666666,0.8,1.5,0.8,0.6153846153846154,0.6666666666666667,6.0,4.25,"[2017, 2019, 2023, 2024]","[2020, 2025]",[]

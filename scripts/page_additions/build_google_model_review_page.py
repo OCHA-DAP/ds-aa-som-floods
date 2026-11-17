@@ -53,33 +53,49 @@ def save(fig, name, tight=True):
 
 
 # ----------------------------------------------------------------------------- grids
+def _ink(face):
+    """Dark or white text, by the brightness of the cell."""
+    r, g, b = face[:3]
+    return "white" if (0.299 * r + 0.587 * g + 0.114 * b) < 0.52 else BODY
+
+
 def _colour(v, kind):
-    """Cell colour. good: 0 to 1, dark = high (green). bad: 0 to 1, dark = high (grey).
-    days: signed days around 0. ratio: around 1, on a doubling scale. eff: efficiency scores, 1 at the top."""
+    """Cell colour. good: a share from 0 to 1 (green, dark = high). corr: the same over 0.4 to 1.
+    auc: over 0.5 to 1. bad: a share from 0 to 1 (grey, dark = high). eff: green above 0, brown below.
+    days: signed days, teal = model ahead, brown = behind. ratio: teal above 1, brown below."""
     if v is None or np.isnan(v):
-        return (1, 1, 1, 1), BODY
+        return (1, 1, 1, 1)
+    clip = lambda x: min(max(x, 0.0), 1.0)
     if kind == "good":
-        x = min(max(v, 0), 1)
-        return plt.cm.Greens(0.08 + 0.8 * x), ("white" if x > 0.6 else BODY)
+        return plt.cm.Greens(0.06 + 0.82 * clip(v))
+    if kind == "corr":
+        return plt.cm.Greens(0.06 + 0.82 * clip((v - 0.4) / 0.6))
+    if kind == "auc":
+        return plt.cm.Greens(0.06 + 0.82 * clip((v - 0.5) / 0.5))
     if kind == "bad":
-        x = min(max(v, 0), 1)
-        return plt.cm.Greys(0.06 + 0.7 * x), ("white" if x > 0.62 else BODY)
+        return plt.cm.Greys(0.05 + 0.72 * clip(v))
     if kind == "eff":
-        x = (min(max(v, -1), 1) + 1) / 2
-        return plt.cm.Greens(0.05 + 0.85 * x ** 2), ("white" if x > 0.84 else BODY)
+        return plt.cm.Greens(0.10 + 0.78 * clip(v)) if v >= 0 else plt.cm.BrBG(0.42 - 0.34 * clip(-v))
     if kind == "days":
-        x = min(max(v / 20, -1), 1)
-        return plt.cm.BrBG(0.5 + 0.42 * x), ("white" if abs(x) > 0.7 else BODY)
+        x = min(max(v / 15, -1), 1)
+        return plt.cm.BrBG(0.5 + 0.40 * x)
     if kind == "ratio":
-        x = min(max(np.log2(v) / 2.3, -1), 1) if v > 0 else -1
-        return plt.cm.BrBG(0.5 + 0.42 * x), ("white" if abs(x) > 0.7 else BODY)
-    return (1, 1, 1, 1), BODY
+        x = min(max(np.log2(v), -1), 1) if v > 0 else -1
+        return plt.cm.BrBG(0.5 + 0.40 * x)
+    return (1, 1, 1, 1)
 
 
-def grid_fig(df, col, name, title, kind, fmt="{:.2f}", sub=None, note=None, rows=None, panels=None, row_names=None):
+def signed(v):
+    """Whole days with a sign, and a plain 0."""
+    r = int(np.floor(abs(v) + 0.5)) * (1 if v > 0 else -1)
+    return "0" if r == 0 else f"{r:+d}"
+
+
+def grid_fig(df, col, name, title, kind, fmt="{:.2f}", sub=None, note=None, rows=None, panels=None):
     """One figure: a panel per season (or per period), a row per station, a column per source."""
     panels = panels or [("deyr", SEASON_TITLE["deyr"]), ("gu", SEASON_TITLE["gu"])]
     rows = rows or STATIONS
+    n_j = sum(RIVER_OF[st] == "juba" for st in rows)
     pcol = "season" if "season" in df.columns else "period"
     fig, axes = plt.subplots(1, len(panels), figsize=(5.6 * len(panels) + 1.2, 0.5 * len(rows) + 2.0))
     axes = np.atleast_1d(axes)
@@ -89,34 +105,34 @@ def grid_fig(df, col, name, title, kind, fmt="{:.2f}", sub=None, note=None, rows
             for j, m in enumerate(MODELS):
                 r = d[(d.station == st) & (d.model == m)]
                 v = float(r[col].iloc[0]) if len(r) and pd.notna(r[col].iloc[0]) else np.nan
-                face, ink = _colour(v, kind)
+                face = _colour(v, kind)
                 ax.add_patch(plt.Rectangle((j - 0.5, i - 0.5), 1, 1, facecolor=face, edgecolor="white", linewidth=1.6))
                 if np.isnan(v):
                     ax.text(j, i, "no record" if not len(r) else "n/a", ha="center", va="center", fontsize=8, color=FAINT)
                     continue
-                s = sub(r.iloc[0]) if sub else None
-                ax.text(j, i - (0.13 if s else 0), fmt.format(v), ha="center", va="center", fontsize=10, color=ink)
-                if s:
-                    ax.text(j, i + 0.26, s, ha="center", va="center", fontsize=7.5, color=ink)
+                ink = _ink(face)
+                s_ = sub(r.iloc[0]) if sub else None
+                ax.text(j, i - (0.13 if s_ else 0), fmt(v) if callable(fmt) else fmt.format(v), ha="center", va="center", fontsize=10, color=ink)
+                if s_:
+                    ax.text(j, i + 0.26, s_, ha="center", va="center", fontsize=7.5, color=ink)
         ax.set_xlim(-0.5, len(MODELS) - 0.5)
         ax.set_ylim(len(rows) - 0.5, -0.5)
         ax.set_xticks(range(len(MODELS)), [SHORT[m].replace(", ", "\n") for m in MODELS], fontsize=9.5, color=BODY)
         ax.xaxis.tick_top()
-        labels = [row_names[st] if row_names else NAME[st] for st in rows]
-        ax.set_yticks(range(len(rows)), labels if ax is axes[0] else [""] * len(rows), fontsize=10, color=BODY)
+        ax.set_yticks(range(len(rows)), [NAME[st] for st in rows] if ax is axes[0] else [""] * len(rows), fontsize=10, color=BODY)
         ax.tick_params(length=0)
         for sp in ax.spines.values():
             sp.set_visible(False)
-        if rows is STATIONS or rows == STATIONS:
-            ax.axhline(N_JUBA - 0.5, color=INK, linewidth=1.0)
+        if 0 < n_j < len(rows):
+            ax.axhline(n_j - 0.5, color=INK, linewidth=1.0)
             if ax is axes[0]:
-                ax.text(-1.72, (N_JUBA - 1) / 2, "JUBA", ha="center", va="center", rotation=90, fontsize=8.5, color=FAINT, clip_on=False)
-                ax.text(-1.72, N_JUBA + (len(rows) - N_JUBA - 1) / 2, "SHABELLE", ha="center", va="center", rotation=90, fontsize=8.5, color=FAINT, clip_on=False)
+                ax.text(-1.72, (n_j - 1) / 2, "JUBA", ha="center", va="center", rotation=90, fontsize=8.5, color=FAINT, clip_on=False)
+                ax.text(-1.72, n_j + (len(rows) - n_j - 1) / 2, "SHABELLE", ha="center", va="center", rotation=90, fontsize=8.5, color=FAINT, clip_on=False)
         ax.set_title(ptitle, fontsize=11, loc="left", pad=34)
     fig.suptitle(title, x=0.01, ha="left", fontsize=11.5, y=1.02)
     if note:
         fig.text(0.01, -0.02, note, ha="left", va="top", fontsize=8.5, color=FAINT)
-    fig.subplots_adjust(wspace=0.06, left=0.16, right=0.99, top=0.78, bottom=0.03)
+    fig.subplots_adjust(wspace=0.06, left=0.16 if len(panels) == 2 else 0.12, right=0.99, top=0.78, bottom=0.03)
     return save(fig, name)
 
 
@@ -154,7 +170,6 @@ def fig_ts(season, year, variant):
         series[st] = lines
         for _, s in lines:
             top = max(top, float(s.max()) * 1.06)
-    top = min(top, 260)
     for r_, c_, st in order:
         ax = axes[r_, c_]
         ax.axhline(100, color=INK, lw=1.0, ls=":", zorder=1)
@@ -168,9 +183,9 @@ def fig_ts(season, year, variant):
             else:
                 ax.plot(s.index, s.values, color=COL[key], lw=2.0 if key == NEW else 1.2, zorder=3 if key == NEW else 2,
                         alpha=1.0 if key == NEW else 0.9)
+        ax.set_title(NAME[st], fontsize=11, loc="left")
         if not have_gauge:
-            ax.text(0.5, 0.9, "no gauge record this season", transform=ax.transAxes, ha="center", va="top", fontsize=9, color=FAINT)
-        ax.set_title(f"{NAME[st]}", fontsize=11, loc="left")
+            ax.set_title("no gauge record this season", fontsize=9, loc="right", color=FAINT, fontweight="normal")
         ax.set_xlim(A, B)
         ax.set_ylim(0, top)
         ax.set_xticks([pd.Timestamp(year, mth, 1) for mth in G.SEASONS[season]])
@@ -211,7 +226,7 @@ def lead_table(BL):
 
 
 def fig_lead(g, col, name, ylabel, ylim, ref=None):
-    fig, axes = plt.subplots(1, 4, figsize=(15.2, 3.5), sharey=True)
+    fig, axes = plt.subplots(1, 4, figsize=(15.2, 3.9), sharey=True)
     k = 0
     for season in ("deyr", "gu"):
         for river in G.RIVERS:
@@ -225,7 +240,7 @@ def fig_lead(g, col, name, ylabel, ylim, ref=None):
             ax.set_title(f"{season.title()}, {river.title()}", fontsize=11, loc="left")
             ax.set_xticks(range(1, 11))
             ax.set_xlim(0.6, 10.4)
-            ax.set_ylim(*ylim)
+            ax.set_ylim(ylim[0] - 0.04 * (ylim[1] - ylim[0]), ylim[1])
             ax.set_xlabel("days ahead", fontsize=9.5, color=BODY)
             ax.tick_params(length=0, labelsize=9, colors=BODY)
             ax.grid(axis="y", color=GRID, lw=0.8)
@@ -234,8 +249,9 @@ def fig_lead(g, col, name, ylabel, ylim, ref=None):
                 ax.spines[sp].set_visible(False)
             ax.spines["bottom"].set_color(GRID)
     axes[0].set_ylabel(ylabel, fontsize=9.5, color=BODY)
-    axes[0].legend(fontsize=9, frameon=False, loc="lower left")
-    fig.subplots_adjust(wspace=0.07, left=0.06, right=0.99, top=0.88, bottom=0.17)
+    h_, l_ = axes[0].get_legend_handles_labels()
+    fig.legend(h_, l_, ncol=3, fontsize=9.5, frameon=False, loc="lower center", bbox_to_anchor=(0.5, 0.0))
+    fig.subplots_adjust(wspace=0.07, left=0.06, right=0.99, top=0.88, bottom=0.27)
     return save(fig, name, tight=False)
 
 
@@ -252,7 +268,7 @@ def river_table(Rv, rp, season):
     head = ("<table class='data'><thead><tr><th>River</th><th>Source</th><th>Record</th><th>Seasons</th><th>Gauge floods</th>"
             "<th>Reached in a flood</th><th>Reached, no flood</th><th>Flood not reached</th>"
             "<th>POD</th><th>FAR</th><th>POFD</th><th>CSI</th><th>F1</th><th>Frequency bias</th><th>HSS</th>"
-            "<th>Days before the gauges<span class='y'>median, floods reached</span></th></tr></thead><tbody>")
+            "<th>Days against the gauges<span class='y'>median, floods reached</span></th></tr></thead><tbody>")
     out = [head]
     d = Rv[(Rv.rp == rp) & (Rv.season == season)]
     for river in G.RIVERS:
@@ -278,15 +294,18 @@ def river_table(Rv, rp, season):
     return "\n".join(out)
 
 
+LONG = {"POD": "POD, probability of detection", "FAR": "FAR, false alarm ratio", "POFD": "POFD, probability of false detection",
+        "CSI": "CSI, critical success index", "F1": "F1", "freq_bias": "Frequency bias", "accuracy": "Accuracy",
+        "HSS": "HSS, Heidke skill score", "PSS": "PSS, Peirce skill score", "KGE": "KGE, Kling-Gupta efficiency", "NSE": "NSE, Nash-Sutcliffe efficiency"}
 METRICS = [  # key, label, colour kind, format, one-sentence meaning
-    ("POD", "POD", "good", "{:.2f}", "POD, probability of detection: of the flood seasons at the gauge, the share in which the model reached its own threshold. 1 means no flood season was missed."),
+    ("POD", "POD", "good", "{:.2f}", "POD, probability of detection: of the flood seasons at the gauge, the share in which the model reached its own threshold. 1 means the threshold was reached in every flood season; 0 means in none."),
     ("FAR", "FAR", "bad", "{:.2f}", "FAR, false alarm ratio: of the seasons in which the model reached its threshold, the share with no flood at the gauge. 0 means no false alarm."),
-    ("POFD", "POFD", "bad", "{:.2f}", "POFD, probability of false detection: of the seasons with no flood at the gauge, the share in which the model still reached its threshold."),
-    ("CSI", "CSI", "good", "{:.2f}", "CSI, critical success index: hits divided by hits plus misses plus false alarms. It falls with either kind of error; 1 is perfect."),
-    ("F1", "F1", "good", "{:.2f}", "F1: the balance of POD and 1 minus FAR. It is high only when both are; 1 is perfect."),
+    ("POFD", "POFD", "bad", "{:.2f}", "POFD, probability of false detection: of the seasons with no flood at the gauge, the share in which the model still reached its threshold. 0 means the threshold was never reached without a flood."),
+    ("CSI", "CSI", "good", "{:.2f}", "CSI, critical success index: the floods reached, divided by the floods reached plus the floods not reached plus the false alarms. It falls with either kind of error; 1 means neither occurred."),
+    ("F1", "F1", "good", "{:.2f}", "F1: twice the floods reached, divided by twice the floods reached plus the floods not reached plus the false alarms. It is high only when POD is high and FAR is low; 1 means every flood was reached with no false alarm."),
     ("freq_bias", "Frequency bias", "ratio", "{:.2f}", "Frequency bias: seasons in which the model reached its threshold divided by flood seasons at the gauge. Above 1 the model reaches it more often than the gauge floods; below 1, less often."),
     ("accuracy", "Accuracy", "good", "{:.2f}", "Accuracy: the share of all seasons in which model and gauge agree, flood or no flood."),
-    ("HSS", "HSS", "eff", "{:.2f}", "HSS, Heidke skill score: accuracy with the agreement expected by chance taken out. 0 is chance, 1 is perfect."),
+    ("HSS", "HSS", "eff", "{:.2f}", "HSS, Heidke skill score: accuracy with the agreement expected by chance taken out. 0 means no more agreement than chance would give; 1 means model and gauge agree in every season."),
     ("PSS", "PSS", "eff", "{:.2f}", "PSS, Peirce skill score: POD minus POFD. 0 means the model does not separate flood seasons from the rest; 1 means it separates them fully."),
 ]
 Q_METRICS = [
@@ -316,61 +335,65 @@ def fig_html(src, alt, cap=""):
 
 
 def findings(M, LT):
-    T, E3, Rv, Q = M["tracking"], M["station_3"], M["river_3"], M["discharge"]
+    T, E3, Rv, Q, BL = M["tracking"], M["station_3"], M["river_3"], M["discharge"], M["by_lead"]
     out = []
     # 1 daily agreement
     piv = T.pivot_table(index=["season", "station"], columns="model", values="rho_same_day")
     top = int((piv.idxmax(axis=1) == NEW).sum())
-    out.append(f"<strong>Day-to-day agreement with the gauges.</strong> The new model has the highest same-day rank correlation of the four sources at "
-               f"{top} of the {len(piv)} station-seasons, between {piv[NEW].min():.2f} and {piv[NEW].max():.2f}.")
-    # 2 lag
+    out.append(f"<strong>Day-to-day agreement with the gauges.</strong> Rank correlation runs from 0 (no relation) to 1 (the model's highest days are the "
+               f"gauge's highest days). The new model has the highest value of the four sources at {top} of the {len(piv)} combinations of station and season, "
+               f"between {piv[NEW].min():.2f} and {piv[NEW].max():.2f}.")
+    # 2 position of the curve against the gauge
     lag = T[T.model == NEW].set_index(["season", "river", "station"]).best_lag_days
 
     def lag_txt(season, river):
         v = lag.loc[(season, river)]
         lo, hi = int(v.min()), int(v.max())
-        rng_ = lambda a, b: f"{a}" if a == b else f"{a} to {b}"
+        days = lambda a, b: (f"{a} day" + ("" if a == 1 else "s")) if a == b else f"{a} to {b} days"
         where = f"{river.title()} in {season.title()}"
         if hi < 0:
-            return f"on the {where} the new model rises {rng_(-hi, -lo)} days after the gauge"
+            return f"{where}: {days(-hi, -lo)} behind the gauge"
         if lo > 0:
-            return f"on the {where} it rises {rng_(lo, hi)} days before the gauge"
-        return f"on the {where} it is between {-lo} days after and {hi} days before the gauge" if lo < 0 else f"on the {where} it is within {hi} days before the gauge"
-    out.append("<strong>Timing</strong> (the shift at which the daily agreement is highest): "
+            return f"{where}: {days(lo, hi)} ahead of the gauge"
+        return f"{where}: between {-lo} days behind and {hi} days ahead"
+    out.append("<strong>Where the new model's daily curve sits against the gauge's</strong> (the shift at which the two agree most). "
                + "; ".join(lag_txt(s, r) for s in ("deyr", "gu") for r in G.RIVERS) + ".")
-    # 3 station events, pooled
-    def pooled(E, m, season):
-        d = E[(E.model == m) & (E.season == season)]
-        return int(d.hits.sum()), int(d.n_floods.sum()), int(d.false_alarms.sum()), int(d.n_reached.sum())
+    # 3 station events, the seven stations added up
     parts = []
     for season in ("deyr", "gu"):
-        h, f, b, r = pooled(E3, NEW, season)
-        parts.append(f"{season.title()}: threshold reached in {h} of {f} flood seasons, and {b} of its {r} threshold seasons had no flood")
-    jo = E3[E3.station == "jowhar"]
-    others = E3[E3.station != "jowhar"]
-    jow = (f" At Jowhar no source reaches its threshold in more than {int(jo.hits.max())} of {int(jo[jo.hits == jo.hits.max()].n_floods.iloc[0])} flood seasons in either season"
-           f" (POD {jo.POD.min():.2f} to {jo.POD.max():.2f}; at the other six stations {others.POD.min():.2f} to {others.POD.max():.2f}).")
-    out.append("<strong>Flood seasons at single stations (1-in-3), all seven stations added up, new model.</strong> " + "; ".join(parts) + "." + jow)
+        d = E3[(E3.model == NEW) & (E3.season == season)]
+        parts.append(f"{season.title()}: the gauges had {int(d.n_floods.sum())} flood seasons and the model reached its threshold in {int(d.hits.sum())} of them; "
+                     f"it reached its threshold {int(d.n_reached.sum())} times, {int(d.false_alarms.sum())} of them with no flood at the gauge")
+    jo, others = E3[E3.station == "jowhar"], E3[E3.station != "jowhar"]
+    out.append("<strong>Flood seasons at single stations (1-in-3), new model, the seven stations added up.</strong> " + ". ".join(parts)
+               + f". At Jowhar every source reaches its threshold in fewer than half of the flood seasons, in both seasons (POD {jo.POD.min():.2f} to {jo.POD.max():.2f}; "
+               f"at the other six stations {others.POD.min():.2f} to {others.POD.max():.2f}).")
     # 4 river rule
     def rr(season, rec):
         d = Rv[(Rv.model == NEW) & (Rv.season == season) & (Rv.record == rec) & (Rv.rp == 3)]
         return int(d.hits.sum()), int(d.n_floods.sum()), int(d.false_alarms.sum())
+    fa = lambda n: f"{n} false alarm" + ("" if n == 1 else "s")
     parts = []
     for season in ("deyr", "gu"):
-        a = rr(season, "reanalysis")
-        b = rr(season, "forecasts")
-        parts.append(f"{season.title()}: reanalysis {a[0]} of {a[1]} river floods reached with {a[2]} false alarms, forecasts {b[0]} of {b[1]} with {b[2]}")
-    out.append("<strong>The trigger rule by river (1-in-3), new model, both rivers added up.</strong> " + "; ".join(parts) + ".")
-    # 5 forecasts vs reanalysis
+        a, b = rr(season, "reanalysis"), rr(season, "forecasts")
+        parts.append(f"{season.title()}: on the reanalysis the threshold was reached in {a[0]} of {a[1]} river floods, with {fa(a[2])}; on the forecasts in {b[0]} of {b[1]}, with {fa(b[2])}")
+    out.append("<strong>The trigger rule by river (1-in-3), new model, the two rivers added up.</strong> " + ". ".join(parts) + ".")
+    # 5 forecasts against the reanalysis
     d = LT[LT.model == NEW]
-    out.append(f"<strong>Forecasts.</strong> The new model's forecast peaks stay between {d.peak.min():.2f} and {d.peak.max():.2f} times its reanalysis peaks from 1 to 10 days ahead, "
-               f"and its scores do not change with the lead time. The forecast archive is close to a copy of the reanalysis.")
-    # 6 magnitude
+    st = BL[BL.model == NEW]
+    hits = st.groupby("lead").hits.sum()
+    fal = st.groupby("lead").false_alarms.sum()
+    out.append(f"<strong>Forecasts.</strong> From 1 to 10 days ahead, the new model's forecast peak is {d.peak.min():.2f} to {d.peak.max():.2f} times its reanalysis peak "
+               f"(middle value over the stations of a river; single stations {st.peak_ratio_median.min():.2f} to {st.peak_ratio_median.max():.2f}). "
+               f"Added over all stations, the floods reached stay at {int(hits.min())} to {int(hits.max())} and the false alarms at {int(fal.min())} to {int(fal.max())} whatever the lead. "
+               "The forecast archive is close to a copy of the reanalysis.")
+    # 6 size of the flows
     q = Q[(Q.period == "year")].pivot_table(index="station", columns="model", values="ratio_median")
-    three = [s for s in q.index if s != "bardheere"]
-    out.append(f"<strong>Size of the flows against SWALIM's discharge series.</strong> At {', '.join(NAME[s] for s in three)} the new model's typical flow is "
-               f"{q.loc[three, NEW].min():.1f} to {q.loc[three, NEW].max():.1f} times the measured one (GloFAS v5 {q.loc[three, 'glofas_v5'].min():.1f} to {q.loc[three, 'glofas_v5'].max():.1f}, "
-               f"GloFAS v4 {q.loc[three, 'glofas_v4'].min():.1f} to {q.loc[three, 'glofas_v4'].max():.1f}, Google, current {q.loc[three, 'google_grrr'].min():.1f} to {q.loc[three, 'google_grrr'].max():.1f}). "
+    three = [s for s in ("luuq", "belet_weyne", "bulo_burti") if s in q.index]
+    names = ", ".join(NAME[s] for s in three[:-1]) + " and " + NAME[three[-1]]
+    rg = lambda m: f"{q.loc[three, m].min():.1f} to {q.loc[three, m].max():.1f}"
+    out.append(f"<strong>Size of the flows against SWALIM's discharge series, over the whole year.</strong> At {names} the new model's typical flow is "
+               f"{rg(NEW)} times the measured one (GloFAS v5 {rg('glofas_v5')}, GloFAS v4 {rg('glofas_v4')}, Google, current {rg('google_grrr')}). "
                f"At Bardheere it is {q.loc['bardheere', NEW]:.1f} times.")
     return "\n".join(f"<li>{x}</li>" for x in out)
 
@@ -395,22 +418,24 @@ def build():
                 ts_figs.append(sw("ts", {"year": key, "lines": variant}, fig_html(src, f"{season.title()} {y}, seven stations, {variant}")))
 
     # tracking grids
-    seasons_note = "Seasons with a gauge record, 1999 to 2023. Dark = high."
-    F["rho0"] = grid_fig(T, "rho_same_day", "rho_same_day", "Rank correlation of daily values, model and gauge on the same day", "good", note=seasons_note)
-    F["rhob"] = grid_fig(T, "rho_best_lag", "rho_best_lag", "Rank correlation of daily values at the shift with the highest value", "good",
-                         sub=lambda r: f"{int(r.best_lag_days):+d} d", note=seasons_note + " Small figure: the shift in days; plus means the model rises before the gauge.")
-    F["rhof"] = grid_fig(T, "rho_flood_seasons", "rho_flood_seasons", "The same, on flood seasons only (gauge or model over its own 1-in-3)", "good",
-                         sub=lambda r: f"{int(r.n_flood_seasons)} seasons", note="Dark = high. Small figure: seasons used.")
-    F["pk"] = grid_fig(T, "peak_days_late_median", "peak_days", "Days between the model's peak and the gauge's peak, flood seasons at the gauge (middle value)", "days", fmt="{:+.0f}",
-                       sub=lambda r: f"{int(r.n_peaks)} seasons", note="Plus: the model peaks after the gauge. Minus: before. Brown = model earlier, teal = model later.")
-    F["cx"] = grid_fig(T.assign(v=-T.crossing_days_early_median), "v", "crossing_days", "Days between the model reaching its 1-in-3 and the gauge reaching its own (middle value)", "days", fmt="{:+.0f}",
-                       sub=lambda r: f"{int(r.n_crossings)} seasons", note="Plus: the model reaches its level after the gauge. Minus: before. Seasons in which both reach it.")
+    seasons_note = "Seasons with a gauge record, 1999 to 2023. Dark = high; the shading runs from 0.4 to 1."
+    ahead_note = "Plus: the model ahead of the gauge. Minus: behind. Teal = ahead, brown = behind."
+    F["rho0"] = grid_fig(T, "rho_same_day", "rho_same_day", "Rank correlation of daily values, model and gauge on the same day", "corr", note=seasons_note)
+    F["rhob"] = grid_fig(T, "rho_best_lag", "rho_best_lag", "Rank correlation of daily values with the model's curve slid to where the value is highest (10 days behind to 30 ahead)", "corr",
+                         sub=lambda r: f"{int(r.best_lag_days):+d} d", note=seasons_note + " Small figure: the shift in days; plus means the model's curve runs ahead of the gauge's.")
+    F["rhof"] = grid_fig(T, "rho_flood_seasons", "rho_flood_seasons", "Rank correlation of daily values, slid as above, on flood seasons only (gauge or model over its own 1-in-3), 1999 to 2023", "corr",
+                         sub=lambda r: f"{int(r.n_flood_seasons)} seasons", note="Dark = high; the shading runs from 0.4 to 1. Small figure: seasons used, which differ by source because each source has its own flood seasons.")
+    F["pk"] = grid_fig(T.assign(v=-T.peak_days_late_median), "v", "peak_days", "Days from the model's peak to the gauge's peak, flood seasons at the gauge (middle value)", "days", fmt=signed,
+                       sub=lambda r: f"{int(r.n_peaks)} seasons", note=ahead_note + " Small figure: seasons used.")
+    F["cx"] = grid_fig(T, "crossing_days_early_median", "crossing_days", "Days from the model reaching its 1-in-3 to the gauge reaching its own (middle value)", "days", fmt=signed,
+                       sub=lambda r: f"{int(r.n_crossings)} seasons", note=ahead_note + " Small figure: seasons in which both reach their level.")
 
     # ordering
     E3, E5 = M["station_3"], M["station_5"]
-    F["rmax"] = grid_fig(E3, "rho_season_peaks", "rho_season_peaks", "Rank correlation of season peaks, model against gauge", "good", note=seasons_note)
-    F["auc3"] = grid_fig(E3, "AUC", "auc_3", "AUC: flood season at the gauge = over its 1-in-3", "good", note="0.5 is a coin toss. Dark = high.")
-    F["auc5"] = grid_fig(E5, "AUC", "auc_5", "AUC: flood season at the gauge = over its 1-in-5", "good", note="0.5 is a coin toss. Dark = high.")
+    F["rmax"] = grid_fig(E3, "rho_season_peaks", "rho_season_peaks", "Rank correlation of season peaks, model against gauge", "good", note="Seasons with a gauge record, 1999 to 2023. Dark = high.")
+    auc_note = "0.5 is a coin toss. Dark = high; the shading runs from 0.5 to 1."
+    F["auc3"] = grid_fig(E3, "AUC", "auc_3", "AUC: chance that a flood season has a higher model peak than a season without a flood. Flood = gauge over its 1-in-3", "auc", note=auc_note)
+    F["auc5"] = grid_fig(E5, "AUC", "auc_5", "AUC: chance that a flood season has a higher model peak than a season without a flood. Flood = gauge over its 1-in-5", "auc", note=auc_note)
 
     # station events
     ev_blocks = []
@@ -427,10 +452,14 @@ def build():
                 sub = lambda r: f"{int(r.hits)} / {int(r.misses)} / {int(r.false_alarms)}"
             elif key == "accuracy":
                 sub = lambda r: f"{int(r.hits + r.correct_negatives)} of {int(r.n)}"
-            note = {"good": "Dark = high.", "bad": "Dark = high.", "eff": "Dark = high.", "ratio": "Teal: above 1. Brown: below 1."}[kind]
-            if key in ("CSI", "F1"):
-                note += " Small figures: hits / misses / false alarms."
-            src = grid_fig(E, key, f"st_{key}_{rp}", f"{lab}, flood season = 1-in-{rp} at the station's gauge", kind, fmt=fmt, sub=sub, note=note)
+            note = {"good": "Dark = high.", "bad": "Dark = high.", "eff": "Green: above 0. Brown: below 0.", "ratio": "Teal: above 1. Brown: below 1."}[kind]
+            note += {"POD": " Small figures: flood seasons with the threshold reached, of flood seasons at the gauge.",
+                     "FAR": " Small figures: seasons with no flood, of seasons with the threshold reached.",
+                     "POFD": " Small figures: seasons with the threshold reached, of seasons with no flood.",
+                     "CSI": " Small figures: floods reached / floods not reached / false alarms.",
+                     "F1": " Small figures: floods reached / floods not reached / false alarms.",
+                     "accuracy": " Small figures: seasons in which model and gauge agree, of all seasons."}.get(key, "")
+            src = grid_fig(E, key, f"st_{key}_{rp}", f"{LONG[key]}. Flood season = the station's gauge over its 1-in-{rp}", kind, fmt=fmt, sub=sub, note=note)
             ev_blocks.append(sw("ev", {"metric": key, "level": rp}, fig_html(src, f"{lab} by station, 1-in-{rp}")))
     ev_text = "".join(sw("ev", {"metric": key}, text, tag="p") for key, _, _, _, text in METRICS)
 
@@ -444,9 +473,9 @@ def build():
 
     # by lead
     F["lead_peak"] = fig_lead(LT, "peak", "lead_peak", "forecast peak / reanalysis peak", (0.8, 1.25), ref=1.0)
-    F["lead_rho"] = fig_lead(LT, "rho", "lead_rho", "rank correlation with the gauge", (0.4, 1.0))
-    F["lead_pod"] = fig_lead(LT, "POD", "lead_pod", "POD, stations added up", (0, 1.05))
-    F["lead_far"] = fig_lead(LT, "FAR", "lead_far", "FAR, stations added up", (0, 1.05))
+    F["lead_rho"] = fig_lead(LT, "rho", "lead_rho", "rank correlation with the gauge", (0, 1.0))
+    F["lead_pod"] = fig_lead(LT, "POD", "lead_pod", "share of flood seasons with the threshold reached (POD)", (0, 1.0))
+    F["lead_far"] = fig_lead(LT, "FAR", "lead_far", "share of threshold seasons with no flood (FAR)", (0, 1.0))
     d7 = BL[(BL.model == NEW) & (BL.lead == 7)]
 
     # discharge
@@ -454,25 +483,40 @@ def build():
     q_panels = [("deyr", SEASON_TITLE["deyr"]), ("gu", SEASON_TITLE["gu"]), ("year", "Whole year")]
     q_blocks = []
     for key, lab, kind, fmt, _ in Q_METRICS:
-        note = {"good": "Dark = high.", "eff": "Dark = high; values below -1 are shown in the palest shade.", "ratio": "Teal: above 1. Brown: below 1."}[kind]
-        src = grid_fig(Q, key, f"q_{key}", f"{lab}: model flow against SWALIM's discharge series, 1999 to 2023", kind, fmt=fmt, note=note, rows=q_rows, panels=q_panels)
+        note = {"good": "Dark = high.", "eff": "Green: above 0. Brown: below 0; -1 and lower take the darkest brown.", "ratio": "Teal: above 1. Brown: below 1; the shading is full at 2 and at 0.5."}[kind]
+        src = grid_fig(Q, key, f"q_{key}", f"{LONG.get(key, lab)}: model flow against SWALIM's discharge series, 1999 to 2023", kind, fmt=fmt, note=note, rows=q_rows, panels=q_panels)
         q_blocks.append(sw("q", {"metric": key}, fig_html(src, f"{lab} against SWALIM discharge")))
     q_text = "".join(sw("q", {"metric": key}, text, tag="p") for key, _, _, _, text in Q_METRICS)
+    ceil = []
+    for st in q_rows:
+        o = R.obs_discharge(st)
+        n_top = int((o >= o.max() * 0.999).sum())
+        if n_top >= 10:
+            ceil.append(f"{NAME[st]} on {n_top} days")
+    CEIL_TXT = ("The series repeats its highest value at " + " and ".join(ceil) + ", which is what a ceiling in the measurement looks like, so the largest floods may be higher than the series shows."
+                if ceil else "")
 
     # data file
+    PUB = {"hits": "floods_reached", "misses": "floods_not_reached", "correct_negatives": "neither", "hit_years": "years_flood_reached",
+           "false_years": "years_false_alarm", "missed_years": "years_flood_not_reached"}
+
     def recs(df):
-        return json.loads(df.to_json(orient="records"))
+        return json.loads(df.rename(columns=PUB).to_json(orient="records"))
     (OUT / "data.json").write_text(json.dumps(G.clean(dict(
         sources={m: SHORT[m] for m in MODELS},
         worst_years=M["worst"],
         daily_agreement=recs(T), station_floods_1in3=recs(E3), station_floods_1in5=recs(E5),
         river_rule=recs(Rv), forecasts_by_lead=recs(BL), discharge=recs(Q))), indent=1))
     for nm, df in (("daily_agreement", T), ("station_floods_1in3", E3), ("station_floods_1in5", E5), ("river_rule", Rv), ("forecasts_by_lead", BL), ("discharge", Q)):
-        df.assign(model=df.model.map(SHORT)).to_csv(OUT / f"{nm}.csv", index=False)
+        df.assign(model=df.model.map(SHORT)).rename(columns=PUB).to_csv(OUT / f"{nm}.csv", index=False)
 
     today = dt.date.today().isoformat()
     FIND = findings(M, LT)
-    n_ev = int(E3.n.median())
+    n_lo, n_hi, f_lo, f_hi = int(E3.n.min()), int(E3.n.max()), int(E3.n_floods.min()), int(E3.n_floods.max())
+    short = E3[E3.n < 15].groupby("station").n.max()
+    SAMPLE_TXT = (f"The counts are small: a station has {n_lo} to {n_hi} seasons with a gauge record"
+                  + (" (" + ", ".join(f"{NAME[s]} {int(v)}" for s, v in short.items()) + " at most)" if len(short) else "")
+                  + f", of which {f_lo} to {f_hi} are flood seasons at the 1-in-3 level, so a single season moves POD by {1 / f_hi:.2f} to {1 / f_lo:.2f}.")
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -533,12 +577,14 @@ table.data .y {{ display:block; font-size:11.5px; color:var(--n7); font-weight:4
   </header>
   <article>
     <div class="callout">
-      <p><strong>Sources.</strong> Google, new (the November 2026 model); Google, current (Google's published 2024 model); GloFAS v4; GloFAS v5.
-         Each has a reanalysis, the model's own record of past flow, scored on 1999 to 2023. Three have a forecast archive: Google, new 2016 to 2025,
-         Google, current 2016 to June 2023, GloFAS v4 2003 to 2023; forecasts are compared on 2016 to 2023.</p>
+      <p><strong>Sources.</strong> Google, new is the November 2026 model under review. Google, current is the model Google published in 2024. GloFAS v4
+         and GloFAS v5 are the two versions of the European model. Each has a reanalysis, the model's own record of past flow, scored on 1999 to 2023.
+         Three have a forecast archive: Google, new 2016 to 2025, Google, current 2016 to June 2023, GloFAS v4 2003 to 2023. Forecasts are compared on
+         2016 to 2023.</p>
       <p><strong>Benchmark.</strong> The SWALIM river gauges at the same seven stations. A gauge measures water level and a model gives flow, so each is read
-         against its own levels: a flood season at a station is a season whose highest value reaches the station's own 1-in-3 level (or 1-in-5 where stated).
-         Gauge levels are fitted on 2000 to 2023, model levels on 1999 to 2023. Seasons are Deyr, October to December, and Gu, March to May.</p>
+         against its own levels. The 1-in-3 level of a gauge or a model is the height its season peak reaches in about one season in three; the 1-in-5
+         level, one in five. A flood season at a station is a season whose peak reaches the 1-in-3 level (or the 1-in-5 where stated). Gauge levels are
+         set from 2000 to 2023, model levels from 1999 to 2023. The seasons are Deyr, October to December, and Gu, March to May.</p>
     </div>
 
     <h2><span class="num">1</span>What the records show</h2>
@@ -550,7 +596,7 @@ table.data .y {{ display:block; font-size:11.5px; color:var(--n7); font-weight:4
     <p>The gauges' five largest seasons on each river, one panel per station. Every line is drawn as a share of its own 1-in-3 level, so 100% is the
        flood level for the gauge and for the model alike. The gauge is a water level and the model a flow, so the heights of the curves differ; what can be
        compared is when each rises and whether each reaches its 100% line. Where a gauge line runs flat at its top, the record holds one value for
-       those days.</p>
+       those days. A line that stops before the end of the season is the end of that record. The vertical scale changes from one season to the next.</p>
     <p class="picklabel">Season</p>
     {pick("ts", "year", ts_opts)}
     <p class="picklabel">Lines</p>
@@ -562,16 +608,16 @@ table.data .y {{ display:block; font-size:11.5px; color:var(--n7); font-weight:4
        model's highest days are the gauge's highest days, 0 means no relation. It uses the order of the days, not their values, so the scale of a model
        does not matter.</p>
     {fig_html(F["rho0"], "Rank correlation, same day")}
-    <p>The same measure with the model shifted against the gauge by up to 10 days one way and 30 the other, keeping the shift with the highest value.
-       The shift tells whether the model rises before the gauge (plus) or after it (minus).</p>
+    <p>The same measure with the model's curve slid along the calendar, from 10 days behind the gauge to 30 days ahead of it, keeping the position with
+       the highest value. The small figure is that position in days: plus means the model's curve runs ahead of the gauge's, minus means it runs behind.</p>
     {fig_html(F["rhob"], "Rank correlation at the shift with the highest value")}
     {fig_html(F["rhof"], "Rank correlation on flood seasons")}
 
     <h2><span class="num">4</span>How each model orders the seasons</h2>
     <p>Two measures of whether a model's large seasons are the gauge's large seasons. The rank correlation of season peaks compares the order of the
        seasons by their highest model flow with their order by highest gauge level. AUC is the chance that a flood season at the gauge carries a higher
-       model peak than a season without a flood: 0.5 is a coin toss, 1 means every flood season outranks every other season. Neither depends on where a
-       threshold is set.</p>
+       model peak than a season without a flood: 0.5 is a coin toss, 1 means every flood season has a higher model peak than every season without a flood.
+       Neither depends on where the model's threshold is set.</p>
     {fig_html(F["rmax"], "Rank correlation of season peaks")}
     <p class="picklabel">Flood level at the gauge</p>
     {pick("auc", "level", [("3", "1-in-3"), ("5", "1-in-5")])}
@@ -579,9 +625,9 @@ table.data .y {{ display:block; font-size:11.5px; color:var(--n7); font-weight:4
     {sw("auc", {"level": 5}, fig_html(F["auc5"], "AUC, 1-in-5"))}
 
     <h2><span class="num">5</span>Flood seasons at each station</h2>
-    <p>Each season is sorted into one of four boxes: the gauge flooded and the model reached its threshold (a hit), the gauge flooded and the model did not
-       (a miss), the model reached its threshold with no flood at the gauge (a false alarm), or neither. Every score below is a different way of reading
-       those four counts. Each station has about {n_ev} seasons with a gauge record, so one season moves a score by several hundredths.</p>
+    <p>Each season at a station falls into one of four boxes: a flood at the gauge with the model's threshold reached; a flood with the threshold not
+       reached; the threshold reached with no flood, which is a false alarm; or neither. Every score below is a different way of reading those four
+       counts. {SAMPLE_TXT}</p>
     <p class="picklabel">Score</p>
     {pick("ev", "metric", [(k, lab) for k, lab, _, _, _ in METRICS])}
     <p class="picklabel">Flood level</p>
@@ -591,20 +637,22 @@ table.data .y {{ display:block; font-size:11.5px; color:var(--n7); font-weight:4
 
     <h2><span class="num">6</span>The trigger rule by river</h2>
     <p>The trigger does not read one station. It needs three of the four Juba stations, or two of the three Shabelle stations, over their own level on the
-       same day. The benchmark is a river flood: two gauges on the river over their own level in the season. The grids show every season at the 1-in-3
-       level, with a reanalysis row and a forecast row for each source; the tables give the counts and scores at 1-in-3 and 1-in-5. Forecasts are the
-       first issue dated in the season that reaches the threshold at any lead from 1 to 7 days.</p>
+       same day. The benchmark is a river flood: two gauges on the river over their own level at any time in the season. The grids show every season at
+       the 1-in-3 level, with a reanalysis row and a forecast row for each source; the tables give the counts and scores at 1-in-3 and 1-in-5. For the
+       forecast rows the rule is checked on each day's forecast for the following 7 days, and the first forecast of the season that meets it is taken.</p>
     {fig_html(F["bt_deyr"], "Deyr, threshold outcome by season")}
     {fig_html(F["bt_gu"], "Gu, threshold outcome by season")}
     <p class="picklabel">Level</p>
     {pick("rv", "level", [("3", "1-in-3"), ("5", "1-in-5")])}
     {rv_blocks}
-    <p class="note">Scores as in section 5. Days before the gauges: from the day the rule is met (reanalysis) or the day of the first forecast issue
-       meeting it (forecasts) to the day the second gauge crossed its level.</p>
+    <p class="note">Scores as in section 5. Days against the gauges: from the day the rule is met (reanalysis) or the day of the first forecast
+       meeting it (forecasts) to the day the second gauge crossed its level. The rows marked "to 2025" score the new model's forecasts over its whole
+       archive, 2016 to 2025; no other source has forecasts after 2023. On the Juba, 2024 and 2025 rest on the Dollow and Luuq gauges only.</p>
 
     <h2><span class="num">7</span>Timing at each station</h2>
     <p>Two measures in days, over the flood seasons at each gauge: when the model peaks against when the gauge peaks, and when the model first reaches its
-       1-in-3 level against when the gauge first reaches its own.</p>
+       1-in-3 level against when the gauge first reaches its own. Plus means the model is ahead of the gauge, as in section 3. Where a gauge holds one
+       value at its top for several days, its peak is dated to the first of those days.</p>
     {fig_html(F["pk"], "Days between model peak and gauge peak")}
     {fig_html(F["cx"], "Days between model and gauge reaching the 1-in-3")}
 
@@ -622,8 +670,8 @@ table.data .y {{ display:block; font-size:11.5px; color:var(--n7); font-weight:4
        At 7 days ahead the new model's daily forecast and its reanalysis have a rank correlation of {d7.rho_vs_reanalysis.min():.3f} to {d7.rho_vs_reanalysis.max():.3f} across the seven stations and two seasons.</p>
 
     <h2><span class="num">9</span>Size of the flows against SWALIM's discharge series</h2>
-    <p>SWALIM publishes a discharge series, in cubic metres per second, at four of the seven stations. It is the only measurement the size of a model's
-       flow can be set against. The series stops rising at bank-full, so the highest floods are understated in it.</p>
+    <p>SWALIM publishes a discharge series, in cubic metres per second, at four of the seven stations. These are the only measurements of flow we have
+       for the stations, so they are the only check on the size of a model's flow. {CEIL_TXT}</p>
     <p class="picklabel">Measure</p>
     {pick("q", "metric", [(k, lab) for k, lab, _, _, _ in Q_METRICS])}
     {q_text}
@@ -633,19 +681,20 @@ table.data .y {{ display:block; font-size:11.5px; color:var(--n7); font-weight:4
 
     <h2><span class="num">10</span>What this review does not establish</h2>
     <ul>
-      <li>The live Flood Hub feed does not serve the new model yet. Everything here is from Google's published reanalysis and reforecast.</li>
-      <li>The new model's forecast archive is close to a copy of its reanalysis (section 8). What rainfall the reforecast was run with has not been checked,
-          so the archive may not show how a live forecast behaves when the rain forecast is wrong.</li>
+      <li>On 5 November 2026 the live Flood Hub feed was not serving the new model. Everything here is from Google's published reanalysis and forecast archive.</li>
+      <li>The new model's forecast archive is close to a copy of its reanalysis (section 8). Which rainfall the archive was run with has not been checked,
+          so it is not known whether a live forecast would stay this close when the rain forecast is off.</li>
       <li>The forecast comparison rests on eight seasons, 2016 to 2023, with two to four river floods per river and season.</li>
-      <li>The Bardheere and Bualle gauges are out of service, so the lower Juba cannot be checked after 2023 and early 2024.</li>
-      <li>Model flows are read at one river-network outlet per station, chosen as the main-stem outlet nearest the station.</li>
+      <li>The Bardheere gauge has no readings after November 2023 and the Bualle gauge none after March 2024, so the lower Juba cannot be checked from then on.</li>
+      <li>Each model's flow is read at one place on its river network per station: the cell or reach on the main river nearest the station.</li>
     </ul>
 
     <h2><span class="num">11</span>Method and files</h2>
-    <p class="note">Levels: Weibull plotting position on seasonal maxima, gauges 2000 to 2023, models 1999 to 2023; a value equal to its level counts as
-       reaching it. A gauge season counts with at least 30 readings. Station floods compare the season's highest values; the river rule counts votes on the
-       same day, in the season months only. The new model's forecast lead 1 is the issue day. Source: Google Runoff Reanalysis and Reforecast, November 2026
-       release; SWALIM gauge levels and discharge series; GloFAS v4 and v5 from the Copernicus Emergency Management Service.</p>
+    <p class="note">Levels are read from each record's own season peaks (Weibull plotting position), gauges 2000 to 2023, models 1999 to 2023; a value
+       equal to its level counts as reaching it. A gauge season counts with at least 30 readings. Station floods compare the season's highest values; the
+       river rule counts the stations over their level on the same day, in the season months only. Days ahead: for Google, new and GloFAS, 1 is the day
+       the forecast is issued; for Google, current, 1 is the day after. Sources: Google Runoff Reanalysis and Reforecast, November 2026 release; SWALIM gauge
+       levels and discharge series; GloFAS v4 and v5 from the Copernicus Emergency Management Service.</p>
     <p class="note files">Every score, by season, river and station:
       <a href="daily_agreement.csv">daily agreement</a><a href="station_floods_1in3.csv">station floods, 1-in-3</a><a href="station_floods_1in5.csv">station floods, 1-in-5</a>
       <a href="river_rule.csv">river rule</a><a href="forecasts_by_lead.csv">forecasts by lead</a><a href="discharge.csv">discharge</a><a href="data.json">all, as JSON</a></p>
