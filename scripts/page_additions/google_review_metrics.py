@@ -416,7 +416,22 @@ def by_lead():
                     fmax = season_max(f)
                     uni = set(gmax.index) & set(fmax.index)
                     c = contingency(set(fmax[fmax >= mlev].index), obs, uni)
-                    rows.append(dict(season=season, river=RIVER_OF[st], station=st, model=m, lead=lead,
+                    # the forecast against its own model's reanalysis, on the days both have
+                    fr = dict(fr_ratio_median=np.nan, fr_pearson_r=np.nan, fr_variability_ratio=np.nan, fr_KGE=np.nan, fr_NSE=np.nan)
+                    if len(j) >= 60:
+                        r_p, alpha, beta = float(j.f.corr(j.r)), float(j.f.std() / j.r.std()), float(j.f.mean() / j.r.mean())
+                        fr = dict(fr_ratio_median=float(j.f.median() / j.r.median()), fr_pearson_r=r_p, fr_variability_ratio=alpha,
+                                  fr_KGE=float(1 - np.sqrt((r_p - 1) ** 2 + (alpha - 1) ** 2 + (beta - 1) ** 2)),
+                                  fr_NSE=1 - float(((j.f - j.r) ** 2).sum() / ((j.r - j.r.mean()) ** 2).sum()))
+                    jf, jr = j.groupby(j.index.year).f.max() >= mlev, j.groupby(j.index.year).r.max() >= mlev
+                    # the reanalysis against the gauge on the same seasons and the same days
+                    ra_same = ra[ra.index.isin(f.index)]
+                    ramax = season_max(ra_same)
+                    c_ra = contingency(set(ramax[ramax >= mlev].index), obs, uni)
+                    rows.append(dict(season=season, river=RIVER_OF[st], station=st, model=m, lead=lead, **fr, fr_n_days=len(j),
+                                     fr_both=int((jf & jr).sum()), fr_forecast_only=int((jf & ~jr).sum()), fr_reanalysis_only=int((~jf & jr).sum()),
+                                     fr_neither=int((~jf & ~jr).sum()), rho_ra_vs_gauge=lag_rho(ra_same, g, 0)[0],
+                                     **{f"ra_{k}": c_ra[k] for k in ("hits", "false_alarms", "misses", "correct_negatives")},
                                      peak_ratio_median=float(pk.median()) if len(pk) else np.nan,
                                      rho_vs_gauge=lag_rho(f, g, 0)[0], rho_vs_reanalysis=spearman(j.f, j.r) if len(j) else np.nan,
                                      shift_vs_reanalysis=best_lag(f, ra_all)[1] if lead == 1 else None,
