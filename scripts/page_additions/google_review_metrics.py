@@ -143,7 +143,7 @@ def boot_events(sim, obs, universe, n_boot=1000):
         return {}
     s = np.array([y in sim for y in yrs])
     o = np.array([y in obs for y in yrs])
-    idx = RNG.integers(0, len(yrs), (n_boot, len(yrs)))
+    idx = np.random.default_rng(20261117).integers(0, len(yrs), (n_boot, len(yrs)))   # same seasons drawn for every row
     a, b, c = (s & o)[idx].sum(1), (s & ~o)[idx].sum(1), (~s & o)[idx].sum(1)
     with np.errstate(divide="ignore", invalid="ignore"):
         pod, far, f1 = a / (a + c), b / (a + b), 2 * a / (2 * a + b + c)
