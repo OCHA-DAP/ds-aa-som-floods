@@ -43,6 +43,11 @@ Layout, with the script that writes each directory:
   against the live sources (`scripts/page_additions/build_google_model_2026_page.py`; the
   seven-station extracts come from blob `ds-aa-som-floods/google_grrr_2026_11/`, or a local
   copy via `SOM_GRRR_2026_DIR`). Everything in the directory is generated.
+- `google-model-review/`: the new Google model checked against the SWALIM gauges, with every
+  score by season, river and station (`scripts/page_additions/build_google_model_review_page.py`,
+  scores in `scripts/page_additions/google_review_metrics.py`; same inputs as `google-model-2026/`
+  plus SWALIM's discharge series from blob `ds-aa-som-floods/raw/ef5/analysis/`, or a local copy via
+  `SOM_OBS_Q_DIR`). Everything in the directory is generated.
 - `trigger/`: the multi-source study the adopted design was compared with
   (`scripts/build_multisource_variant.py`; figures under `trigger/figs/`).
 - `comparison/`: mixed models against one model per window (`data.json` from
